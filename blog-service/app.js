@@ -4,15 +4,14 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-const log4js = require('./log');
-const errlogger = log4js.getLogger('err');
+const log = require('./log');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
 
-log4js.useLogger(app);
+log.useLogger(app);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -38,7 +37,7 @@ app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  errlogger.error(err);
+  log.error(err);
 
   // render the error page
   res.status(err.status || 500);

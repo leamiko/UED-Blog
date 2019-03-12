@@ -6,7 +6,7 @@ log4js.configure({
         stdout: { //控制台输出
             type: 'stdout'
         },
-        req: { //请求日志
+        req: { //log日志
             type: 'dateFile',
             filename: 'logs/reqlog/req',
             pattern: 'yyyy-MM-dd.log',
@@ -15,12 +15,6 @@ log4js.configure({
         err: { //错误日志
             type: 'dateFile',
             filename: 'logs/errlog/err',
-            pattern: 'yyyy-MM-dd.log',
-            alwaysIncludePattern: true
-        },
-        oth: { //其他日志
-            type: 'dateFile',
-            filename: 'logs/othlog/oth',
             pattern: 'yyyy-MM-dd.log',
             alwaysIncludePattern: true
         }
@@ -33,17 +27,17 @@ log4js.configure({
         err: {
             appenders: ['stdout', 'err'],
             level: 'error'
-        },
-        oth: {
-            appenders: ['stdout', 'oth'],
-            level: 'info'
         }
     }
 })
 
 
-exports.getLogger = function(name) { //name取categories项
-    return log4js.getLogger(name || 'default')
+exports.info = function(info) { //name取categories项
+    return log4js.getLogger('default').info(info);
+}
+
+exports.error = function(info) { //name取categories项
+    return log4js.getLogger('err').error(info);
 }
 
 exports.useLogger = function(app, logger) { //用来与express结合
