@@ -18,6 +18,16 @@ var BlogSchema = new Schema({
 	isGood: {
 		type: Number  //是否精选 1是2不是
 	},
+	author: {
+		type: String  //作者
+	},
+	userId: {
+		type: String  //作者Id
+	},
+	likeNum: {
+		type: Number,  //点赞数
+		default: 0
+	},
 	updateAt: {
 		type: Date,
 		default: Date.parse(new Date())   //更新时间
