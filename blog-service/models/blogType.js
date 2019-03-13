@@ -6,9 +6,6 @@ var BlogTypeSchema = new Schema({
 	title: {
 		type: String  //分类名称
 	},
-	// id: {
-	// 	type: Number  //分类Id
-	// },
 	updateAt: {
 		type: Date,
 		default: Date.parse(new Date())   //更新时间

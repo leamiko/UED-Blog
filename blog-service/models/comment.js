@@ -11,7 +11,7 @@ var CommentSchema = new Schema({
   },
   blogId: {
     type: String  //文章id
-  }
+  },
 	likeNum: {
 		type: Number,  //点赞数
 		default: 0

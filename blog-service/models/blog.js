@@ -7,7 +7,7 @@ var BlogSchema = new Schema({
 		type: String  //文章名称
 	},
 	blogType: {
-		type: Number  //文章类别
+		type: Number  //文章类别objectId
 	},
 	info: {
 		type: String  //文章简介
@@ -19,10 +19,10 @@ var BlogSchema = new Schema({
 		type: Number  //是否精选 1是2不是
 	},
 	author: {
-		type: String  //作者
+		type: String  //作者  登录用户昵称
 	},
 	userId: {
-		type: String  //作者Id
+		type: String  //作者objectId  登录用户objectId
 	},
 	likeNum: {
 		type: Number,  //点赞数

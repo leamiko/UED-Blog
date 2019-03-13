@@ -7,19 +7,19 @@ var ReplySchema = new Schema({
     type: String  //回复人
   },
   replyId: {
-    type: String  //回复人id
+    type: String  //回复人objectId
   },
   reReplyName: {
     type: String  //被回复人
   },
   reReplyId: {
-    type: String  //被回复人id
+    type: String  //被回复人objectId
   },
   blogId: {
-    type: String  //文章id
+    type: String  //文章objectId
   },
   commentId: {
-    type: String  //评论id
+    type: String  //评论objectId
   },
 	likeNum: {
 		type: Number,  //点赞数
