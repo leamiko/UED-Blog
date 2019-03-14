@@ -7,7 +7,7 @@ var BlogSchema = new Schema({
 		type: String  //文章名称
 	},
 	blogType: {
-		type: Number  //文章类别objectId
+		type: Number  //文章类别id
 	},
 	info: {
 		type: String  //文章简介
