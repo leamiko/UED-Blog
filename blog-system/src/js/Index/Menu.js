@@ -14,11 +14,19 @@ export default {
     Bus.$on('menuCollapse', (value) => {
       this.IsOpen = value
     })
+
+    // 获取当前加载页面url的key
+    this.menuList.forEach(item => {
+      if (item.linkUrl === this.$route.path) {
+        this.initKey = item.code
+        return true
+      }
+    })
   },
   methods: {
     selectItem (code) {
       console.log(code)
-      this.initKey = '\'' + code + '\''
+      this.initKey = code
       // localStorage.setItem('menuCode', code)
     }
   }

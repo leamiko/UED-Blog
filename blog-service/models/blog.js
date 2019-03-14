@@ -16,17 +16,26 @@ var BlogSchema = new Schema({
 		type: String,  //文章内容
 	},
 	isGood: {
-		type: Number  //是否精选 1是2不是
+		type: Boolean,  //是否精选
+		default: false
+	},
+	isAudit: {
+		type: Boolean,  //是否审核通过
+		default: false
 	},
 	author: {
 		type: String  //作者  登录用户昵称
 	},
 	userId: {
-		type: String  //作者objectId  登录用户objectId
+		type: String  //作者objectId也是登录用户objectId
 	},
 	likeNum: {
 		type: Number,  //点赞数
 		default: 0
+	},
+	deleted: {
+		type: Boolean,  //是否软删除
+		default: false
 	},
 	updateAt: {
 		type: Date,

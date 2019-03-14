@@ -7,10 +7,10 @@ var CommentSchema = new Schema({
     type: String  //评论人
   },
   commenId: {
-    type: String  //评论人id
+    type: String  //评论人objectid
   },
   blogId: {
-    type: String  //文章id
+    type: String  //文章objectid
   },
 	likeNum: {
 		type: Number,  //点赞数
