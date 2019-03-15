@@ -9,8 +9,6 @@ export default {
     }
   },
   mounted () {
-    // var localCode = localStorage.getItem('menuCode')
-    // this.initKey = '\'' + localCode + '\''
     Bus.$on('menuCollapse', (value) => {
       this.IsOpen = value
     })
@@ -25,9 +23,7 @@ export default {
   },
   methods: {
     selectItem (code) {
-      console.log(code)
       this.initKey = code
-      // localStorage.setItem('menuCode', code)
     }
   }
 }

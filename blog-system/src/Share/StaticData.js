@@ -13,19 +13,19 @@ const menuList = [{
 {
   code: '3',
   name: '缺陷管理',
-  linkUrl: '/article',
+  linkUrl: '/bug',
   iconName: 'alert'
 },
 {
   code: '4',
   name: '用户管理',
-  linkUrl: '/article',
+  linkUrl: '/userInfo',
   iconName: 'team'
 },
 {
   code: '5',
   name: '字典管理',
-  linkUrl: '/article',
+  linkUrl: '/dictionary',
   iconName: 'file-search'
 }
 ]
