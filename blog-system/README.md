@@ -31,4 +31,12 @@ npm run test:unit
 ```
 
 ### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+See [Configuration Reference](https://cli.vuejs.org/config/)
+
+doc
+### vue--ant design
+https://vue.ant.design/docs/vue/use-with-vue-cli-cn/
+
+### sass
+https://www.sasscss.com/docs/
+

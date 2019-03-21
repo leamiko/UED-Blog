@@ -1,7 +1,8 @@
 var User = require("../models/user.js");   //引入user表
-const log4js = require('../log');   //引入日志
-const logger = log4js.getLogger();
+const logger = require('../log');   //引入日志
 
-exports.login = function(req, res,url){
-
+exports.login = function (req, res, url) {
+  console.log(logger)
+  logger.info('123')
+  logger.error('123')
 }

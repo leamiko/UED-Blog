@@ -2,12 +2,15 @@ var mongoose = require('mongoose');
 var blog = require('./db.js');
 var Schema = mongoose.Schema;
 
-var BlogTypeSchema = new Schema({
-	title: {
-		type: String  //分类名称
-	},
+var DictionarySchema = new Schema({
 	id: {
-		type: Number  //分类Id
+		type: String  //分类id
+	},
+	parentId: {
+		type: String  //父级id
+	},
+	name: {
+		type: String  //分类名称
 	},
 	updateAt: {
 		type: Date,
@@ -19,4 +22,4 @@ var BlogTypeSchema = new Schema({
 	},
 });
 
-module.exports = blog.model('BlogType', BlogTypeSchema);
+module.exports = blog.model('Dictionary', DictionarySchema);

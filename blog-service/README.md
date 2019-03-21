@@ -51,4 +51,26 @@ pm2 start bin/www --watch
 pm2 stop all
 ```
 
+### 日志
+
+```bash
+请勿使用console.log！！！
+请勿使用console.log！！！
+请勿使用console.log！！！
+
+请使用log.js  具体使用方法详见 controller/user.js
+
+#先引入log.js
+const logger = require('../log');
+
+#INFO
+logger.info('info');
+
+#ERROR
+logger.error('info');
+
+会自动在终端打印  同时在logs文件夹中生成当日日志
+
+```
+
 

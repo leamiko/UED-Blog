@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
-const log4js = require('../log');
-const logger = log4js.getLogger();
+const logger = require('../log');
 
 var DB_URL = 'mongodb://localhost:27017/blog';
 
