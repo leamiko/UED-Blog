@@ -36,15 +36,7 @@ var BlogSchema = new Schema({
 	deleted: {
 		type: Boolean,  //是否软删除
 		default: false
-	},
-	updateAt: {
-		type: Date,
-		default: Date.parse(new Date())   //更新时间
-	},
-	createAt: {
-		type: Date,
-		default: Date.parse(new Date())   //创建时间
-	},
-});
+	}
+}, { timestamps: { createdAt: 'createAt', updatedAt: 'updateAt' } });
 
 module.exports = blog.model('Blog', BlogSchema);
