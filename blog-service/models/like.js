@@ -8,15 +8,7 @@ var LikeSchema = new Schema({
   },
   blogId: {
     type: String  //文章objectId
-  },
-  updateAt: {
-    type: Date,
-    default: Date.parse(new Date())   //更新时间
-  },
-  createAt: {
-    type: Date,
-    default: Date.parse(new Date())   //创建时间
-  },
-});
+  }
+}, { timestamps: { createdAt: 'createAt', updatedAt: 'updateAt' } });
 
 module.exports = blog.model('Like', LikeSchema);

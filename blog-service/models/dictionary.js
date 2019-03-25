@@ -11,15 +11,7 @@ var DictionarySchema = new Schema({
 	},
 	name: {
 		type: String  //分类名称
-	},
-	updateAt: {
-		type: Date,
-		default: Date.parse(new Date())   //更新时间
-	},
-	createAt: {
-		type: Date,
-		default: Date.parse(new Date())   //创建时间
-	},
-});
+	}
+}, { timestamps: { createdAt: 'createAt', updatedAt: 'updateAt' } });
 
 module.exports = blog.model('Dictionary', DictionarySchema);
