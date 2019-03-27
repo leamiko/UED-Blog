@@ -52,7 +52,7 @@ router.post('/CreateDictionary', function (req, res, next) {
     return
   }
   var postData = {
-    user: req.body.entity.id,
+    id: req.body.entity.id,
     parentId: req.body.entity.parentId,
     name: req.body.entity.name
   };
