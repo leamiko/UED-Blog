@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var blog = require('./db.js');
+var db = require('./db.js');
 var Schema = mongoose.Schema;
 
 var BugSchema = new Schema({
@@ -7,16 +7,18 @@ var BugSchema = new Schema({
         type: String //Bug名称
     },
     keyword: {
-        type: Number //Bug关键词
+        type: String //Bug关键词
     },
     content: {
         type: String, //Bug内容
+        default: []
     },
     bugStatus: {
         type: Boolean //bug是否解决
     },
     bugSolution: {
-        type: String //bug解决方案
+        type: String, //bug解决方案
+        default: ''
     },
     author: {
         type: String //作者  登录用户昵称
@@ -31,15 +33,12 @@ var BugSchema = new Schema({
     deleted: {
         type: Boolean, //是否软删除
         default: false
-    },
-    updateAt: {
-        type: Date,
-        default: Date.parse(new Date()) //更新时间
-    },
-    createAt: {
-        type: Date,
-        default: Date.parse(new Date()) //创建时间
-    },
+    }
+}, {
+    timestamps: {
+        createdAt: 'createAt',
+        updatedAt: 'updateAt'
+    }
 });
 
-module.exports = blog.model('Bug', BugSchema);
+module.exports = db.model('Bug', BugSchema);
