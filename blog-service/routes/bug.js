@@ -61,6 +61,8 @@ router.post('/AddBugItems', cors(corsOptionsDelegate), (req, res, next) => {
         }
     })
 })
+
+// bug列表 
 router.post('/GetBugList', cors(corsOptionsDelegate), async (req, res, next) => {
     var buglist = await Bug.find({}, null, {
         skip: (req.query.pageIndex - 1) * req.query.pageSize,
@@ -70,6 +72,42 @@ router.post('/GetBugList', cors(corsOptionsDelegate), async (req, res, next) => 
         Data: buglist
     })
 })
+
+
+// bug条目更新
+router.post('/UpdateBugById', cors(corsOptionsDelegate), async(req, res, next) => {
+    var id = req.body.id
+    var update = req.body;
+     Bug.findByIdAndUpdate(id, update , function(err, result) {
+        if (err) {
+            res.send({
+                message: 'fail'
+            })
+        } else {
+            res.send({
+                entity: result
+            })
+        }
+    })
+})
+
+// bug条目删除
+router.post('/DeleteBugById', cors(corsOptionsDelegate), async(req, res, next) => {
+    var id = req.body.id
+    Bug.findByIdAndDelete(id , function(err, result) {
+        if (err) {
+            res.send({
+                message: 'fail'
+            })
+        } else {
+            res.send({
+                message: 'success'
+            })
+        }
+    })
+})
+
+
 
 // 新增关键词
 router.post('/AddBugKeywords', cors(corsOptionsDelegate), async (req, res, next) => {
