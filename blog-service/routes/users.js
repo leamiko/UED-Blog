@@ -3,13 +3,13 @@ var router = express.Router();
 var user = require('../controller/user');
 
 /* GET users listing. */
-router.get('/login', function (req, res, next) {
-  //解决跨域
-  res.header('Access-Control-Allow-Credentials', true);
-  res.header('Access-Control-Allow-Origin', req.headers.origin);
-
+router.post('/login', function (req, res, next) {
   //调用controller方法
-  user.login(req, res);
+  // user.login(req, res);
+
+  res.send({
+    data: 'ok'
+  })
 });
 
 module.exports = router;
