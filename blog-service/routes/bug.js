@@ -3,31 +3,12 @@ var router = express.Router();
 var Bug = require('../Models/bugItem');
 var BuKeywords = require('../Models/bugKeywords');
 
-var cors = require('cors');
-var whitelist = ['http://localhost:4200']
-
 /* GET users listing. */
 router.get('/', function (req, res, next) {
     res.send('respond with a resource');
 });
-
-//cors 跨域配置
-var corsOptionsDelegate = function (req, callback) {
-    var corsOptions;
-
-    if (whitelist.indexOf(req.header('Origin')) !== -1) {
-        corsOptions = {
-            origin: true
-        } // reflect (enable) the requested origin in the CORS response
-    } else {
-        corsOptions = {
-            origin: false
-        } // disable CORS for this request
-    }
-    callback(null, corsOptions) // callback expects two parameters: error and options
-}
 // 新增bug条目
-router.post('/AddBugItems', cors(corsOptionsDelegate), (req, res, next) => {
+router.post('/AddBugItems', (req, res, next) => {
     var postData = {
         title: req.body.title,
         keyword: req.body.keyword,
@@ -61,9 +42,7 @@ router.post('/AddBugItems', cors(corsOptionsDelegate), (req, res, next) => {
         }
     })
 })
-
-// bug列表 
-router.post('/GetBugList', cors(corsOptionsDelegate), async (req, res, next) => {
+router.post('/GetBugList', async (req, res, next) => {
     var buglist = await Bug.find({}, null, {
         skip: (req.query.pageIndex - 1) * req.query.pageSize,
         limit: req.query.pageSize,
@@ -75,7 +54,7 @@ router.post('/GetBugList', cors(corsOptionsDelegate), async (req, res, next) => 
 
 
 // bug条目更新
-router.post('/UpdateBugById', cors(corsOptionsDelegate), async(req, res, next) => {
+router.post('/UpdateBugById', async(req, res, next) => {
     var id = req.body.id
     var update = req.body;
      Bug.findByIdAndUpdate(id, update , function(err, result) {
@@ -92,7 +71,7 @@ router.post('/UpdateBugById', cors(corsOptionsDelegate), async(req, res, next) =
 })
 
 // bug条目删除
-router.post('/DeleteBugById', cors(corsOptionsDelegate), async(req, res, next) => {
+router.post('/DeleteBugById', async(req, res, next) => {
     var id = req.body.id
     Bug.findByIdAndDelete(id , function(err, result) {
         if (err) {
@@ -110,7 +89,7 @@ router.post('/DeleteBugById', cors(corsOptionsDelegate), async(req, res, next) =
 
 
 // 新增关键词
-router.post('/AddBugKeywords', cors(corsOptionsDelegate), async (req, res, next) => {
+router.post('/AddBugKeywords', async (req, res, next) => {
     var dataCache = req.body;
     // 保存到数据库
     BuKeywords.findOne({
@@ -132,7 +111,7 @@ router.post('/AddBugKeywords', cors(corsOptionsDelegate), async (req, res, next)
     })
 })
 // 获取所有关键词
-router.get('/GetAllBugKeywords', cors(corsOptionsDelegate), async (req, res, next) => {
+router.get('/GetAllBugKeywords', async (req, res, next) => {
     BuKeywords.find({}, (err, data) => {
         if (err) throw err;
         res.json(data)
