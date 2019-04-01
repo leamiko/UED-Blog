@@ -72,5 +72,9 @@ logger.error('info');
 会自动在终端打印  同时在logs文件夹中生成当日日志
 
 ```
+### 跨域
+```bash
+app.js中已经引用了cors插件（记得npm install一下）解决跨域问题，不需要单独再去单独解决跨域
+```
 
 
