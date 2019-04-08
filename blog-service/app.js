@@ -9,6 +9,7 @@ const log = require('./log');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var bugsRouter = require('./routes/bug');
+var blogsRouter = require('./routes/blog');
 
 var app = express();
 var cors = require('cors');
@@ -49,6 +50,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/bugs', bugsRouter);
+app.use('/blogs', blogsRouter);
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
