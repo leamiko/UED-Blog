@@ -14,7 +14,7 @@ var DictionaryRouter = require('./routes/dictionary');
 
 var app = express();
 var cors = require('cors');
-var whitelist = ['http://localhost:4200']
+var whitelist = ['http://localhost:4200','http://localhost:8080'] //添加前端端口号
 //cors 跨域配置
 var corsOptionsDelegate = function (req, callback) {
   var corsOptions;

@@ -40,3 +40,6 @@ https://vue.ant.design/docs/vue/use-with-vue-cli-cn/
 ### sass
 https://www.sasscss.com/docs/
 
+### 使用axios访问api
+npm install axios
+
