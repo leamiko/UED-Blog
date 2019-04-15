@@ -25,4 +25,22 @@ router.get('/deleteBlog', function (req, res, next) {
   blog.deleteBlog(req, res);
 });
 
+//blog点赞
+router.get('/likeBlog', function (req, res, next) {
+  //调用controller方法
+  blog.likeBlog(req, res);
+});
+
+//blog评论
+router.post('/commentBlog', function (req, res, next) {
+  //调用controller方法
+  blog.commentBlog(req, res);
+});
+
+//获取blog评论
+router.get('/getBlogComment', function (req, res, next) {
+  //调用controller方法
+  blog.getBlogComment(req, res);
+});
+
 module.exports = router;

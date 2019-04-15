@@ -40,3 +40,10 @@ https://vue.ant.design/docs/vue/use-with-vue-cli-cn/
 ### sass
 https://www.sasscss.com/docs/
 
+### 请求API方法
+```bash
+1. 在utils/api文件中添加API
+2. 在代码中写axios请求 事例：Login.vue
+```
+
+
