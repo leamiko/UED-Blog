@@ -10,10 +10,11 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var bugsRouter = require('./routes/bug');
 var blogsRouter = require('./routes/blog');
+var DictionaryRouter = require('./routes/dictionary');
 
 var app = express();
 var cors = require('cors');
-var whitelist = ['http://localhost:4200']
+var whitelist = ['http://localhost:4200','http://localhost:8080'] //添加前端端口号
 //cors 跨域配置
 var corsOptionsDelegate = function (req, callback) {
   var corsOptions;
@@ -51,6 +52,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/bugs', bugsRouter);
 app.use('/blogs', blogsRouter);
+app.use('/dictionary', DictionaryRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -69,5 +71,4 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
 module.exports = app;

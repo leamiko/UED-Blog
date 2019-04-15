@@ -46,4 +46,6 @@ https://www.sasscss.com/docs/
 2. 在代码中写axios请求 事例：Login.vue
 ```
 
+### 使用axios访问api
+npm install axios
 
