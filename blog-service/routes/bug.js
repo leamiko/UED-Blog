@@ -64,7 +64,7 @@ router.post('/UpdateBugById', async(req, res, next) => {
             })
         } else {
             res.send({
-                entity: result
+                data: result
             })
         }
     })
