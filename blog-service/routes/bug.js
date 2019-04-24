@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var Bug = require('../Models/bugItem');
-var BuKeywords = require('../Models/bugKeywords');
+var Bug = require('../models/bugItem');
+var BuKeywords = require('../models/bugKeywords');
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
