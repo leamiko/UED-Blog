@@ -1,84 +1,82 @@
 <template>
-  <div class="edit_form">
-    <a-form :form="form" @submit="handleSubmit">
-      <a-form-item v-bind="formItemLayout" label="名称">
-        <a-input v-decorator="[
-          'model.title',
-          {
-            rules: [{
-              required: true, message: '请输入bug名称!', 
-            }],
-            initialValue:model.title
-          }
-        ]" />
-      </a-form-item>
-      <a-form-item v-bind="formItemLayout" label="关键词">
-        <a-input v-decorator="[
-          'model.keyword',
-          {
-            rules: [{
-              required: true, message: '请输入关键词!',
-            }],
-            initialValue:model.keyword
-          }
-        ]" />
-      </a-form-item>
-      <a-form-item v-bind="formItemLayout" label="内容">
-        <quill-editor  v-model="model.content" ref="myTextEditor"  :options="editorOption">
-        </quill-editor>
-        <!-- <a-input v-decorator="[
-          'model.content',
-          {
-            rules: [{
-              required: true, message: 'Please confirm your password!',
-            }],
-            initialValue:model.content
-          }
-        ]" @blur="handleConfirmBlur" /> -->
-      </a-form-item>
-      <a-form-item v-bind="formItemLayout" label="状态">
-        <a-radio-group name="radioGroup" v-decorator="[
-        'model.bugStatus',{
-            rules: [{ required: true, message: '请选择状态!' }],
-            initialValue:model.bugStatus
-        }
-        ]">
-          <a-radio :value="true">已解决</a-radio>
-          <a-radio :value="false">未解决</a-radio>
-        </a-radio-group>
-      </a-form-item>
-      <a-form-item v-bind="formItemLayout" label="解决方案">
-        <quill-editor  v-model="model.bugSolution" ref="myTextEditor"  :options="editorOption">
-        </quill-editor>
-        <!-- <a-textarea v-decorator="[
-          'model.bugSolution',
-          {
-            initialValue:model.bugSolution
-          }
-        ]" :autosize="{ minRows: 2, maxRows: 6 }" /> -->
-      </a-form-item>
-      <a-form-item v-bind="formItemLayout" label="作者">
-        <a-input v-decorator="[
-          'model.author',
-          {
-            rules: [{ required: true, message: '请填写作者姓名!' }],
-            initialValue:model.author
-          }
-        ]">
-        </a-input>
-      </a-form-item>
-      <a-form-item v-bind="tailFormItemLayout">
-        <a-button type="primary" html-type="submit">
-          确定
-        </a-button>
-      </a-form-item>
-    </a-form>
-  </div>
-
+    <div class="add_form">
+      <a-form :form="form" @submit="handleSubmit">
+        <a-form-item v-bind="formItemLayout" label="名称">
+          <a-input v-decorator="[
+            'model.title',
+            {
+                rules: [{
+                required: true, message: '请输入bug名称!', 
+                }],
+            }
+          ]" />
+        </a-form-item>
+        <a-form-item v-bind="formItemLayout" label="关键词">
+            <a-input v-decorator="[
+            'model.keyword',
+            {
+                rules: [{
+                required: true, message: '请输入关键词!',
+                }],
+                initialValue:model.keyword
+            }
+            ]" />
+        </a-form-item>
+        <a-form-item v-bind="formItemLayout" label="内容">
+            <quill-editor v-model="model.content" ref="myTextEditor"  :options="editorOption">
+            </quill-editor>
+            <!-- <a-input v-decorator="[
+            'model.content',
+            {
+                rules: [{
+                required: true, message: 'Please confirm your password!',
+                }],
+                initialValue:model.content
+            }
+            ]" @blur="handleConfirmBlur" /> -->
+        </a-form-item>
+        <a-form-item v-bind="formItemLayout" label="状态">
+            <a-radio-group name="radioGroup" v-decorator="[
+            'model.bugStatus',{
+                rules: [{ required: true, message: '请选择状态!' }],
+                initialValue:model.bugStatus
+            }
+            ]">
+            <a-radio :value="true">已解决</a-radio>
+            <a-radio :value="false">未解决</a-radio>
+            </a-radio-group>
+        </a-form-item>
+        <a-form-item v-bind="formItemLayout" label="解决方案">
+            <quill-editor  v-model="model.bugSolution" ref="myTextEditor"  :options="editorOption">
+            </quill-editor>
+            <!-- <a-textarea v-decorator="[
+            'model.bugSolution',
+            {
+                initialValue:model.bugSolution
+            }
+            ]" :autosize="{ minRows: 2, maxRows: 6 }" /> -->
+        </a-form-item>
+        <a-form-item v-bind="formItemLayout" label="作者">
+            <a-input v-decorator="[
+            'model.author',
+            {
+                rules: [{ required: true, message: '请填写作者姓名!' }],
+                initialValue:model.author
+            }
+            ]">
+            </a-input>
+        </a-form-item>
+        <a-form-item v-bind="tailFormItemLayout">
+            <a-button type="primary" html-type="submit">
+            确定
+            </a-button>
+        </a-form-item>
+      </a-form>
+    </div>
 </template>
 
 <script>
-  export default {
+export default {
     data() {
       return {
         editorOption: {
@@ -173,11 +171,7 @@
       this.form = this.$form.createForm(this);
 
     },
-    mounted() {
-      this.model = this.$route.params.entity;
-      this.model.bugStatus = this.model.bugStatus == '已解决' ? true : false;
-      console.log(this.model);
-    },
+    mounted() {},
     methods: {
       handleSubmit(e) {
         let flag;
@@ -194,7 +188,7 @@
           params.id = this.model._id;
           params.content = this.model.content;
           params.bugSolution = this.model.bugSolution;
-          this.update(params);
+          this.addBug(params);
         }
       },
       handleConfirmBlur(e) {
@@ -202,9 +196,9 @@
         this.confirmDirty = this.confirmDirty || !!value;
       },
 
-      // 更新表单
-      update: async function (data) {
-        let url = this.api.updateBug;
+      // 新增bug
+      addBug: async function (data) {
+        let url = this.api.addBug;
         const res = await this.$http.post(url, data);
         if (res.data.message == 'success') {
           history.back(-1);

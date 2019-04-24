@@ -1,6 +1,17 @@
-// 
 //bug 
-.edit_form{
-   // width: 500px;
+.edit_form {
+    // width: 500px;
+    background: #fff;
     margin: 0 auto;
+    overflow: hidden;
+}
+
+.add_form {
+    background: #fff;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.ant-layout-content {
+    overflow: auto;
 }
