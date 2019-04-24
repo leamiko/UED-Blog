@@ -57,14 +57,15 @@ router.post('/GetBugList', async (req, res, next) => {
 router.post('/UpdateBugById', async(req, res, next) => {
     var id = req.body.id
     var update = req.body;
-     Bug.findByIdAndUpdate(id, update , function(err, result) {
+     Bug.findByIdAndUpdate(id, update , {new: true},function(err, result) {
         if (err) {
             res.send({
                 message: 'fail'
             })
         } else {
             res.send({
-                entity: result
+                data: result,
+                message: 'success'
             })
         }
     })
