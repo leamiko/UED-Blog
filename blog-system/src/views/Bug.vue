@@ -1,6 +1,7 @@
 <template>
   <div>
-    <a-button type="primary">新增</a-button>
+    <a-button type="primary" @click="addBug()">新增</a-button>
+    <!-- <a-input /> -->
     <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :dataSource="data"
       :columns="columns" :rowKey:="data.key">
       <template slot="operation" slot-scope="text, record">
@@ -123,6 +124,12 @@
           }
         });
 
+      },
+      // 新增bug
+      addBug() {
+        this.$router.push({
+          name: 'add'
+        });
       }
     },
     mounted() {
