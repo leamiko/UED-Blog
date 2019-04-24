@@ -3,13 +3,9 @@ var router = express.Router();
 var user = require('../controller/user');
 
 /* GET users listing. */
-router.get('/login', function (req, res, next) {
+router.post('/login', function (req, res, next) {
   //调用controller方法
-  // user.login(req, res);
-
-  res.send({
-    data: 'ok'
-  })
+  user.login(req, res);
 });
 
 module.exports = router;

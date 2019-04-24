@@ -5,6 +5,7 @@ import router from './router'
 import store from './store'
 import http from './utils/http'
 import api from './utils/api'
+import config from './utils/config'
 // 全局引入antd
 import Antd from 'ant-design-vue'
 import VueQuillEditor from 'vue-quill-editor'
@@ -21,6 +22,7 @@ Vue.use(VueQuillEditor)
 
 Vue.prototype.$http = http
 Vue.prototype.api = api
+Vue.prototype.config = config
 
 Vue.config.productionTip = false
 
