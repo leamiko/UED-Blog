@@ -4,7 +4,7 @@
     <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :dataSource="data"
       :columns="columns" :rowKey:="data.key">
       <template slot="operation" slot-scope="text, record">
-        <a @click="editItems(record.key)">编辑</a>
+        <a @click="editItems(record)">编辑</a>
         <a-popconfirm v-if="data.length" title="Sure to delete?" @confirm="() => onDelete(record.key)">
           <a>删除</a>
         </a-popconfirm>
@@ -14,9 +14,6 @@
   </div>
 
 
-
-
-
 </template>
 
 <script>
@@ -24,6 +21,7 @@
     data() {
       return {
         data: [],
+        status: [],
         searchText: '',
         searchInput: null,
         selectedRowKeys: [],
@@ -76,7 +74,9 @@
         const res = await this.$http.post(url);
         this.data = res.data.Data;
         for (let i = 0; i < this.data.length; i++) {
-          this.data[i].key = this.data[i]._id;
+         this.data[i].key = this.data[i]._id;
+        // this.renderStatus(this.data[i].bugStauts );
+         this.data[i].bugStatus = this.data[i].bugStatus  ? '已解决' : '未解决'
         }
         console.log(this.data);
       },
@@ -93,6 +93,14 @@
         clearFilters()
         this.searchText = ''
       },
+      renderStatus(status){
+        if(status){
+           status = '已解决'
+        } else{
+          status = '未解决'
+        }
+        return status;
+      },
       // 点击删除
       onDelete(record) {
         this.deleteBug(record);
@@ -107,7 +115,13 @@
       },
 
       // 点击编辑
-      editItems(key) {
+      editItems(record) {
+        this.$router.push({
+          name: 'edit',
+          params: {
+            entity: record
+          }
+        });
 
       }
     },

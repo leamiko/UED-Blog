@@ -7,12 +7,17 @@ import http from './utils/http'
 import api from './utils/api'
 // 全局引入antd
 import Antd from 'ant-design-vue'
+import VueQuillEditor from 'vue-quill-editor'
 import 'ant-design-vue/dist/antd.css'
 // 引入全局的样式
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 import './assets/scss/common.scss'
 import './assets/scss/website.scss'
 
 Vue.use(Antd)
+Vue.use(VueQuillEditor)
 
 Vue.prototype.$http = http
 Vue.prototype.api = api

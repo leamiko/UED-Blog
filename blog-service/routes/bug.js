@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var Bug = require('../Models/bugItem');
-var BuKeywords = require('../Models/bugKeywords');
+var Bug = require('../models/bugItem');
+var BuKeywords = require('../models/bugKeywords');
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -57,14 +57,15 @@ router.post('/GetBugList', async (req, res, next) => {
 router.post('/UpdateBugById', async(req, res, next) => {
     var id = req.body.id
     var update = req.body;
-     Bug.findByIdAndUpdate(id, update , function(err, result) {
+     Bug.findByIdAndUpdate(id, update , {new: true},function(err, result) {
         if (err) {
             res.send({
                 message: 'fail'
             })
         } else {
             res.send({
-                data: result
+                data: result,
+                message: 'success'
             })
         }
     })
