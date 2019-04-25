@@ -69,7 +69,7 @@ exports.getBlog = function (req, res) {
     if (err) {
       logger.error(err);
       return res.json({
-        code: 201,
+        status_code: 201,
         message: err,
         data: null
       })
@@ -100,9 +100,8 @@ exports.getBlog = function (req, res) {
 
 //blog列表
 exports.getBlogList = async function (req, res) {
-  console.log(req.body)
-  const page = req.body.paging.page ? req.body.paging.page : 1;
-  const limit = req.body.paging.limit ? req.body.paging.limit : 10;
+  const page = req.body.paging.page;
+  const limit = req.body.paging.limit;
   let filters = {
     title: new RegExp(req.body.filters.title),
     blogType: req.body.filters.blogType,
@@ -117,7 +116,7 @@ exports.getBlogList = async function (req, res) {
     if (err) {
       logger.error(err);
       return res.json({
-        code: 201,
+        status_code: 201,
         message: err,
         data: null
       })
@@ -168,7 +167,7 @@ exports.likeBlog = function (req, res) {
     if (err) {
       logger.error(err);
       return res.json({
-        code: 201,
+        status_code: 201,
         message: err,
         data: null
       })
@@ -193,7 +192,7 @@ exports.commentBlog = function (req, res) {
     if (err) {
       logger.error(err);
       return res.json({
-        code: 201,
+        status_code: 201,
         message: err,
         data: null
       })
@@ -216,7 +215,7 @@ exports.getBlogComment = function (req, res) {
     if (err) {
       logger.error(err);
       return res.json({
-        code: 201,
+        status_code: 201,
         message: err,
         data: null
       })

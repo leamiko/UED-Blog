@@ -77,4 +77,13 @@ logger.error('info');
 app.js中已经引用了cors插件（记得npm install一下）解决跨域问题，不需要单独再去单独解决跨域
 ```
 
+### 返回格式
+```bash
+  return res.json({
+    status_code: 200,  //状态码   200是成功   其他的码是错误
+    message: '获取成功！',  //返回的信息
+    data: blog   ///返回的数据   若没有就是null
+  })
+```
+
 

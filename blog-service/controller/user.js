@@ -15,7 +15,7 @@ exports.login = function(req, res) {
 		if (err) {
 			logger.error(err);
 			return res.json({
-				code: 201,
+				status_code: 201,
 				message: err,
 				data: null,
 			});
@@ -24,13 +24,13 @@ exports.login = function(req, res) {
 			req.session.user = user;
 			if (remember) ctx.session.maxAge = ms('30d');
 			return res.json({
-				code: 200,
+				status_code: 200,
 				message: '登录成功！',
 				data: user,
 			});
 		} else {
 			return res.json({
-				code: 401,
+				status_code: 401,
 				message: '用户名或密码错误！',
 				data: null,
 			});
@@ -41,7 +41,7 @@ exports.login = function(req, res) {
 exports.logOut = function(req, res){
 	req.session.user = null;
 	return res.json({
-		code: 200,
+		status_code: 200,
 		message: '退出成功！',
 		data: user,
 	});
