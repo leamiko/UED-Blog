@@ -5,5 +5,10 @@ export default {
   bugList: `${baseUrl}/bugs/GetBugList`,
   deleteBug: `${baseUrl}/bugs/DeleteBugById`,
   updateBug: `${baseUrl}/bugs/UpdateBugById`,
-  addBug: `${baseUrl}/bugs/AddBugItems`
+  addBug: `${baseUrl}/bugs/AddBugItems`,
+
+  blogList: `${baseUrl}/blogs/getBlogList`,
+  addBlog: `${baseUrl}/blogs/addEditBlog`,
+  updateBlog: `${baseUrl}/blogs/addEditBlog`,
+  deleteBlog: `${baseUrl}/blogs/getBlog`,
 }
