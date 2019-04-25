@@ -31,6 +31,24 @@ export default new Router({
           path: '/bug',
           name: 'bug',
           component: () => import('./views/Bug.vue')
+          // children: [{
+          //   path: '/edit',
+          //   name: 'edit',
+          //   component: () => import('./views/BugEdit.vue')
+          // }]
+        },
+        {
+          path: '/bug/edit',
+          name: 'edit',
+          component: () => import('./views/BugEdit.vue')
+        },
+        {
+          path: '/bug/add',
+          name: 'add',
+          component: () => import('./views/BugAdd.vue'),
+          meta: {
+            title: '新增Bug'
+          }
         },
         {
           path: '/userInfo',

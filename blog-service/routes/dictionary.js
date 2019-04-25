@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var Dictionary = require('../Models/dictionary.js');
+var Dictionary = require('../models/dictionary.js');
 
 /* GET users listing. */
 // 获取字典列表&&查询
