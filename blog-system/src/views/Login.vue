@@ -24,14 +24,14 @@
         <a-input
           v-decorator="[
           'password',
-          {rules: [{ required: checkNick, message: '请输入密码' }]}
+          {rules: [{ required: true, message: '请输入密码' }]}
         ]"
           placeholder="密码"
         />
       </a-form-item>
       <a-form-item class="margin_bottom0">
         <a-checkbox
-          :checked="checkNick"
+          :checked="checked"
           @change="handleChange"
         >
           记住密码
@@ -54,7 +54,7 @@
 export default {
   data() {
     return {
-      checkNick: false,
+      checked: false,
       form: this.$form.createForm(this)
     };
   },
@@ -62,18 +62,16 @@ export default {
     check() {
       this.form.validateFields(async (err, params) => {
         if (!err) {
-          console.log(params)
-          // let url = this.api.login;
-          // const res = await this.$http.post(url, params);
-          // console.log(res);
+          params["checked"] = this.checked;
+          console.log(params);
+          let url = this.api.login;
+          const res = await this.$http.post(url, params);
+          console.log(res);
         }
       });
     },
     handleChange(e) {
-      this.checkNick = e.target.checked;
-      this.$nextTick(() => {
-        this.form.validateFields(["nickname"], { force: true });
-      });
+      this.checked = e.target.checked;
     }
   }
 };
