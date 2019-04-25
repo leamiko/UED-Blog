@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { notification } from 'ant-design-vue'
 // import api from './api.js'
 
 axios.interceptors.request.use(function (config) {
@@ -10,6 +11,13 @@ axios.interceptors.request.use(function (config) {
 // 添加响应拦截器
 axios.interceptors.response.use(function (response) {
   // 对响应数据做点什么
+  console.log(response)
+  if (response.data.code !== 200) {
+    notification.error({
+      placement: 'bottomRight',
+      description: response.data.message
+    })
+  }
   return response
 }, function (error) {
   return Promise.reject(error)

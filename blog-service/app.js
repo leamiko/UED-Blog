@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
+var session = require('express-session');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -32,6 +33,18 @@ var corsOptionsDelegate = function (req, callback) {
 }
 
 app.use(cors(corsOptionsDelegate));
+
+
+// 使用 session 中间件
+app.use(session({
+  secret :  '12345', // 对session id 相关的cookie 进行签名
+  resave : false,
+  name:'nssid',
+  saveUninitialized: true, // 是否保存未初始化的会话
+  cookie : {
+      maxAge : 1000 * 60 * 60, // 设置 session 的有效时间，单位毫秒
+  },
+}));
 
 log.useLogger(app);
 
