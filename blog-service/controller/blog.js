@@ -100,8 +100,9 @@ exports.getBlog = function (req, res) {
 
 //blog列表
 exports.getBlogList = async function (req, res) {
-  const page = req.body.paging.page;
-  const limit = req.body.paging.limit;
+  console.log(req.body)
+  const page = req.body.paging.page ? req.body.paging.page : 1;
+  const limit = req.body.paging.limit ? req.body.paging.limit : 10;
   let filters = {
     title: new RegExp(req.body.filters.title),
     blogType: req.body.filters.blogType,

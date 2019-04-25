@@ -2,6 +2,7 @@ const baseUrl = process.env.VUE_APP_BASEURL
 
 export default {
   login: `${baseUrl}/users/login`,
+  logOut: `${baseUrl}/users/logOut`,
   bugList: `${baseUrl}/bugs/GetBugList`,
   deleteBug: `${baseUrl}/bugs/DeleteBugById`,
   updateBug: `${baseUrl}/bugs/UpdateBugById`,

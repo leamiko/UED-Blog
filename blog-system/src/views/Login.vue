@@ -1,50 +1,34 @@
 <template>
   <div>
-    <a-form
-      :form="form"
-      class="login_form"
-    >
+    <a-form :form="form"
+            class="login_form">
       <div class="logo">
-        <img
-          alt="logo"
-          :src="config.logoPath"
-        />
+        <img alt="logo"
+             :src="config.logoPath">
         <span>{{config.siteName}}</span>
       </div>
       <a-form-item>
-        <a-input
-          v-decorator="[
-          'username',
-          {rules: [{ required: true, message: '请输入用户名' }]}
+        <a-input v-decorator="[
+          'account',
+          {rules: [{ required: true, message: '请输入账号' }]}
         ]"
-          placeholder="用户名"
-        />
+                 placeholder="用户名" />
       </a-form-item>
       <a-form-item>
-        <a-input
-          v-decorator="[
-          'password',
-          {rules: [{ required: checkNick, message: '请输入密码' }]}
+        <a-input v-decorator="[
+          'passWord',
+          {rules: [{ required: true, message: '请输入密码' }]}
         ]"
-          placeholder="密码"
-        />
+                 placeholder="密码" />
       </a-form-item>
       <a-form-item class="margin_bottom0">
-        <a-checkbox
-          :checked="checkNick"
-          @change="handleChange"
-        >
-          记住密码
-        </a-checkbox>
+        <a-checkbox :checked="checked"
+                    @change="handleChange">记住密码</a-checkbox>
       </a-form-item>
       <a-form-item class="margin_bottom0">
-        <a-button
-          type="primary"
-          @click="check"
-          class="log_btn"
-        >
-          登录
-        </a-button>
+        <a-button type="primary"
+                  @click="check"
+                  class="log_btn">登录</a-button>
       </a-form-item>
     </a-form>
   </div>
@@ -52,31 +36,29 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
-      checkNick: false,
+      checked: false,
       form: this.$form.createForm(this)
-    };
+    }
   },
   methods: {
-    check() {
+    check () {
       this.form.validateFields(async (err, params) => {
         if (!err) {
+          params['checked'] = this.checked
           console.log(params)
-          // let url = this.api.login;
-          // const res = await this.$http.post(url, params);
-          // console.log(res);
+          let url = this.api.login
+          const res = await this.$http.post(url, params)
+          console.log(res)
         }
-      });
+      })
     },
-    handleChange(e) {
-      this.checkNick = e.target.checked;
-      this.$nextTick(() => {
-        this.form.validateFields(["nickname"], { force: true });
-      });
+    handleChange (e) {
+      this.checked = e.target.checked
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
