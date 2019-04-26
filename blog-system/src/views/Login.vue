@@ -5,20 +5,20 @@
       <div class="logo">
         <img alt="logo"
              :src="config.logoPath">
-        <span>{{config.siteName}}</span>
+        <span>{{ config.siteName }}</span>
       </div>
       <a-form-item>
         <a-input v-decorator="[
-          'account',
-          {rules: [{ required: true, message: '请输入账号' }]}
-        ]"
+            'account',
+            { rules: [{ required: true, message: '请输入账号' }] }
+          ]"
                  placeholder="用户名" />
       </a-form-item>
       <a-form-item>
         <a-input v-decorator="[
-          'passWord',
-          {rules: [{ required: true, message: '请输入密码' }]}
-        ]"
+            'passWord',
+            { rules: [{ required: true, message: '请输入密码' }] }
+          ]"
                  placeholder="密码" />
       </a-form-item>
       <a-form-item class="margin_bottom0">
@@ -47,10 +47,12 @@ export default {
       this.form.validateFields(async (err, params) => {
         if (!err) {
           params['checked'] = this.checked
-          console.log(params)
           let url = this.api.login
           const res = await this.$http.post(url, params)
           console.log(res)
+          if (res.status_code === 200) {
+            this.$router.push('/')
+          }
         }
       })
     },
