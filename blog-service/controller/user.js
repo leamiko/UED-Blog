@@ -1,6 +1,7 @@
 var User = require('../models/user.js'); //引入user表
 const logger = require('../log'); //引入日志
 var crypto = require('crypto');
+const ms = require('ms');
 
 exports.login = function(req, res) {
 	const { account, passWord, checked } = req.body;
@@ -11,38 +12,47 @@ exports.login = function(req, res) {
 		passWord: end_paw,
 		checked: checked,
 	};
-	User.findOne(params, function(err, user) {
-		if (err) {
-			logger.error(err);
-			return res.json({
-				code: 201,
-				message: err,
-				data: null,
-			});
-		}
-		if (user) {
-			req.session.user = user;
-			if (remember) ctx.session.maxAge = ms('30d');
-			return res.json({
-				code: 200,
-				message: '登录成功！',
-				data: user,
-			});
-		} else {
-			return res.json({
-				code: 401,
-				message: '用户名或密码错误！',
-				data: null,
-			});
-		}
+	req.session.user = params;
+	console.log(req.session)
+	if (checked) req.session.maxAge = ms('30d');
+	return res.json({
+		status_code: 200,
+		message: '登录成功！',
+		data: params,
 	});
+	// User.findOne(params, function(err, user) {
+	// 	if (err) {
+	// 		logger.error(err);
+	// 		return res.json({
+	// 			status_code: 201,
+	// 			message: err,
+	// 			data: null,
+	// 		});
+	// 	}
+	// 	if (user) {
+	// 		req.session.user = user;
+	// 		if (checked) ctx.session.maxAge = ms('30d');
+	// 		return res.json({
+	// 			status_code: 200,
+	// 			message: '登录成功！',
+	// 			data: user,
+	// 		});
+	// 	} else {
+	// 		return res.json({
+	// 			status_code: 401,
+	// 			message: '用户名或密码错误！',
+	// 			data: null,
+	// 		});
+	// 	}
+	// });
 };
 
-exports.logOut = function(req, res){
+exports.logOut = function(req, res) {
+	console.log(req.session)
 	req.session.user = null;
 	return res.json({
-		code: 200,
+		status_code: 200,
 		message: '退出成功！',
 		data: user,
 	});
-}
+};

@@ -112,6 +112,9 @@
         const res = await this.$http.post(url, {
           id: data
         });
+        if(res.message == 'success'){
+          
+        }
         console.log(res);
       },
 

@@ -1,10 +1,10 @@
-var Blog = require("../models/blog.js");   //引入blog表
-var Like = require("../models/like.js");   //引入like表
-var Comment = require("../models/comment.js");   //引入comment表
-const logger = require('../log');   //引入日志
+var Blog = require("../models/blog.js"); //引入blog表
+var Like = require("../models/like.js"); //引入like表
+var Comment = require("../models/comment.js"); //引入comment表
+const logger = require("../log"); //引入日志
 
 //blog新增编辑
-exports.addEditBlog = function (req, res) {
+exports.addEditBlog = function(req, res) {
   if (req.body._id) {
     var whereBlog = {
       _id: req.body._id
@@ -14,217 +14,225 @@ exports.addEditBlog = function (req, res) {
       blogType: req.body.blogType,
       info: req.body.info,
       content: req.body.content,
-      author: 'admin',
-      userId: '123'
-    }
-    Blog.update(whereBlog, updateBlog, function (err, blog) {
+      author: "admin",
+      userId: "123"
+    };
+    Blog.update(whereBlog, updateBlog, function(err, blog) {
       if (err) {
         logger.error(err);
         return res.json({
           code: 201,
           message: err,
           data: null
-        })
-      };
+        });
+      }
       return res.json({
         status_code: 200,
-        message: '修改成功！',
+        message: "修改成功！",
         data: null
-      })
-    })
+      });
+    });
   } else {
     let blog = new Blog({
       title: req.body.title,
       blogType: req.body.blogType,
       info: req.body.info,
       content: req.body.content,
-      author: 'admin',
-      userId: '123'
-    })
-    blog.save(function (err, blog) {
+      author: "admin",
+      userId: "123"
+    });
+    blog.save(function(err, blog) {
       if (err) {
         logger.error(err);
         return res.json({
           code: 201,
           message: err,
           data: null
-        })
-      };
+        });
+      }
       return res.json({
         status_code: 200,
-        message: '添加成功！',
+        message: "添加成功！",
         data: null
-      })
-    })
+      });
+    });
   }
-}
+};
 
 //blog详情
-exports.getBlog = function (req, res) {
+exports.getBlog = function(req, res) {
   const bid = req.query.blogId;
   const whereBlog = {
-    '_id': bid,
-  }
-  Blog.findOne(whereBlog, function (err, blog) {
+    _id: bid
+  };
+  Blog.findOne(whereBlog, function(err, blog) {
     if (err) {
       logger.error(err);
       return res.json({
-        code: 201,
+        status_code: 201,
         message: err,
         data: null
-      })
-    };
+      });
+    }
     const whereLike = {
       userId: blog.userId,
       blogId: blog._id
-    }
-    Like.findOne(whereLike, function (err, like) {
+    };
+    Like.findOne(whereLike, function(err, like) {
       if (like) {
-        blog['isLike'] = true;
+        blog["isLike"] = true;
         return res.json({
           status_code: 200,
-          message: '获取成功！',
+          message: "获取成功！",
           data: blog
-        })
+        });
       } else {
-        blog['isLike'] = false;
+        blog["isLike"] = false;
         return res.json({
           status_code: 200,
-          message: '获取成功！',
+          message: "获取成功！",
           data: blog
-        })
+        });
       }
-    })
-  })
-}
+    });
+  });
+};
 
 //blog列表
-exports.getBlogList = async function (req, res) {
-  console.log(req.body)
-  const page = req.body.paging.page ? req.body.paging.page : 1;
-  const limit = req.body.paging.limit ? req.body.paging.limit : 10;
+exports.getBlogList = async function(req, res) {
+  const page = req.body.paging.page;
+  const limit = req.body.paging.limit;
   let filters = {
-    title: new RegExp(req.body.filters.title),
-    blogType: req.body.filters.blogType,
     deleted: false
   };
+  if (req.body.filters.title) {
+    filters.title = new RegExp(req.body.filters.title);
+  }
+  if (req.body.filters.blogType) {
+    filters.blogType = req.body.filters.blogType;
+  }
   const count = await Blog.count(filters);
-  Blog.find(filters, null, {
-    skip: (page * 1 - 1) * 15,
-    limit: limit,
-    sort: { 'createdAt': -1 }
-  }, function (err, books) {
-    if (err) {
-      logger.error(err);
-      return res.json({
-        code: 201,
-        message: err,
-        data: null
-      })
-    };
-    return res.json({
-      status_code: 200,
-      message: '获取列表成功！',
-      data: {
-        total: count,
-        data: books
+  Blog.find(
+    filters,
+    null,
+    {
+      skip: (page * 1 - 1) * 15,
+      limit: limit,
+      sort: { createdAt: -1 }
+    },
+    function(err, books) {
+      if (err) {
+        logger.error(err);
+        return res.json({
+          status_code: 201,
+          message: err,
+          data: null
+        });
       }
-    })
-  })
-}
+      return res.json({
+        status_code: 200,
+        message: "获取列表成功！",
+        data: {
+          total: count,
+          data: books
+        }
+      });
+    }
+  );
+};
 
 //blog删除
-exports.deleteBlog = function (req, res) {
+exports.deleteBlog = function(req, res) {
   var whereBlog = {
     _id: req.query.blogId
   };
   var updateBlog = {
     deleted: true
-  }
-  Blog.update(whereBlog, updateBlog, function (err, blog) {
+  };
+  Blog.update(whereBlog, updateBlog, function(err, blog) {
     if (err) {
       logger.error(err);
       return res.json({
         code: 201,
         message: err,
         data: null
-      })
-    };
+      });
+    }
     return res.json({
       status_code: 200,
-      message: '删除成功！',
+      message: "删除成功！",
       data: null
-    })
-  })
-}
+    });
+  });
+};
 
 //点赞
-exports.likeBlog = function (req, res) {
+exports.likeBlog = function(req, res) {
   let like = new Like({
     userId: req.query.userId,
     blogId: req.query.blogId
-  })
-  like.save(function (err, blog) {
+  });
+  like.save(function(err, blog) {
     if (err) {
       logger.error(err);
       return res.json({
-        code: 201,
+        status_code: 201,
         message: err,
         data: null
-      })
-    };
+      });
+    }
     return res.json({
       status_code: 200,
-      message: '添加成功！',
+      message: "添加成功！",
       data: null
-    })
-  })
-}
+    });
+  });
+};
 
 //评论
-exports.commentBlog = function (req, res) {
+exports.commentBlog = function(req, res) {
   let comment = new Comment({
     commentName: req.body.commentName,
     commenId: req.body.commenId,
     blogId: req.body.blogId,
     content: req.body.content
-  })
-  comment.save(function (err, blog) {
+  });
+  comment.save(function(err, blog) {
     if (err) {
       logger.error(err);
       return res.json({
-        code: 201,
+        status_code: 201,
         message: err,
         data: null
-      })
-    };
+      });
+    }
     return res.json({
       status_code: 200,
-      message: '添加成功！',
+      message: "添加成功！",
       data: null
-    })
-  })
-}
+    });
+  });
+};
 
 //获取评论评论
-exports.getBlogComment = function (req, res) {
+exports.getBlogComment = function(req, res) {
   const whereComment = {
     blogId: req.query.blogId
-  }
+  };
 
-  Comment.find(whereComment, function (err, comments) {
+  Comment.find(whereComment, function(err, comments) {
     if (err) {
       logger.error(err);
       return res.json({
-        code: 201,
+        status_code: 201,
         message: err,
         data: null
-      })
-    };
+      });
+    }
     return res.json({
       status_code: 200,
-      message: '获取评论成功！',
+      message: "获取评论成功！",
       data: comments
-    })
-  })
-}
+    });
+  });
+};

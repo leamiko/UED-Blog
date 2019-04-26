@@ -48,7 +48,7 @@ router.post('/GetBugList', async (req, res, next) => {
         limit: req.query.pageSize,
     });
     res.json({
-        Data: buglist
+        Data: buglist,
     })
 })
 
@@ -60,11 +60,12 @@ router.post('/UpdateBugById', async(req, res, next) => {
      Bug.findByIdAndUpdate(id, update , {new: true},function(err, result) {
         if (err) {
             res.send({
-                message: 'fail'
+                message: '修改失败'
             })
         } else {
-            res.send({
+            res.json({
                 data: result,
+                status_code:200,
                 message: 'success'
             })
         }
@@ -77,10 +78,11 @@ router.post('/DeleteBugById', async(req, res, next) => {
     Bug.findByIdAndDelete(id , function(err, result) {
         if (err) {
             res.send({
-                message: 'fail'
+                message: '删除失败'
             })
         } else {
-            res.send({
+            res.json({
+                status_code:200,
                 message: 'success'
             })
         }
