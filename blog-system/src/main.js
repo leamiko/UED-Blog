@@ -20,6 +20,11 @@ import './assets/scss/website.scss'
 Vue.use(Antd)
 Vue.use(VueQuillEditor)
 
+import moment from 'moment';
+Vue.filter('formatDateDay', (time) => {
+  return moment(time).format('YYYY-MM-DD');
+});
+
 Vue.prototype.$http = http
 Vue.prototype.api = api
 Vue.prototype.config = config

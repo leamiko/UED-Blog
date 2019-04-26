@@ -1,9 +1,9 @@
 <template>
     <div class="article">
-        <p class="h3">rthrwt</p>
-        <p class="article-info h6"> In：<span class="category">theh</span> on：2017-08-22 by：<span class="author">rbrn</span></p>
+        <p class="h3">{{model.title}}</p>
+        <p class="article-info h6"> In：<span class="category">{{model.blogType}}</span> on：{{model.updateAt | formatDateDay}} by：<span class="author">{{model.author}}</span></p>
         <p class="article-content">
-            ewgeb
+            {{model.blogType}}
         </p>
     </div>
 </template>
@@ -12,7 +12,7 @@
   export default {
     data() {
       return {
-        
+        model:[],
       }
     },
     mounted() {
@@ -26,7 +26,7 @@
             const res = await this.$http.get(url, {
                 blogId: blogId
             });
-            console.log(res);
+            this.model = res.data;
         }
     }
   }
