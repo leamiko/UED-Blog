@@ -159,11 +159,12 @@ export default {
             blogType: ''
         }
       };
-      const blogURL = 'http://ued.lunz.cn/api/blogs/getBlogListss';
-      const res = await this.$http.post(url, params);
-      if(res.status == 200) {
+      const blogURL = 'http://ued.lunz.cn/api//bugs/GetBugList';
+      const res = await this.$http.post(blogURL, params);
+      console.log(res);
+      if(res.Data) {
         this.loading = false;
-        this.data = res.data.Data;
+        this.data = res.Data;
       } else {
         this.loading = false;
         this.$notification['error']({
