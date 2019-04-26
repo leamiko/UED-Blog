@@ -28,6 +28,11 @@ export default new Router({
           component: () => import(/* webpackChunkName: "article" */ './views/Article.vue')
         },
         {
+          path: '/article/articleShow',
+          name: 'articleShow',
+          component: () => import('./views/ArticleShow.vue')
+        },
+        {
           path: '/bug',
           name: 'bug',
           component: () => import('./views/Bug.vue')
