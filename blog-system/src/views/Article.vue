@@ -5,6 +5,7 @@
     <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :dataSource="data"
       :columns="columns" :rowKey:="data.key">
       <template slot="operation" slot-scope="text, record">
+        <a @click="showItems(record.key)">查看</a>
         <a @click="editItems(record)">编辑</a>
         <a-popconfirm v-if="data.length" title="Sure to delete?" @confirm="() => onDelete(record.key)">
           <a>删除</a>
@@ -23,7 +24,7 @@
         searchText: '',
         searchInput: null,
         selectedRowKeys: [],
-        columns: [{
+        columns :  [{
             title: '名称',
             dataIndex: 'title',
           }, {
@@ -47,7 +48,7 @@
               customRender: 'operation'
             },
           },
-        ],
+        ]
       }
     },
     methods: {
@@ -59,13 +60,13 @@
               limit: 10
           },
           filters: {
-              title: '123',
-              blogType: '123'
+              title: '',
+              blogType: ''
           }
         }
         let url = this.api.blogList;
-        const res = await this.$http.post(url, { params: params });
-        this.data = res.data.Data;
+        const res = await this.$http.post(url, params);
+        this.data = res.data.data.data;
         for (let i = 0; i < this.data.length; i++) {
          this.data[i].key = this.data[i]._id;
         }
@@ -75,6 +76,27 @@
         console.log('selectedRowKeys changed: ', selectedRowKeys);
         this.selectedRowKeys = selectedRowKeys
       },
+
+      handleSearch(selectedKeys, confirm) {
+        confirm()
+        this.searchText = selectedKeys[0]
+      },
+
+      handleReset(clearFilters) {
+        clearFilters()
+        this.searchText = ''
+      },
+
+      //查看
+      showItems(record) {
+        this.$router.push({
+          name: 'articleShow',
+          query: {
+            blogId: record,
+          }
+        });
+      },
+
       // 删除
       onDelete(record) {
         this.deleteBlog(record);

@@ -8,7 +8,7 @@
             <a-icon type="user" />iris
           </a>
         </li>
-        <li class="user-item">
+        <li class="user-item" @click="logOut">
           <a>注销</a>
         </li>
       </ul>
