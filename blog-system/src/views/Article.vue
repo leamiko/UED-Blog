@@ -66,7 +66,7 @@
         }
         let url = this.api.blogList;
         const res = await this.$http.post(url, params);
-        this.data = res.data.data.data;
+        this.data = res.data.data;
         for (let i = 0; i < this.data.length; i++) {
          this.data[i].key = this.data[i]._id;
         }

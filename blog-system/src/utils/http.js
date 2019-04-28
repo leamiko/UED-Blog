@@ -10,7 +10,7 @@ axios.interceptors.request.use(function (config) {
 // 添加响应拦截器
 axios.interceptors.response.use(function (response) {
   // 对响应数据做点什么
-  if (response.data.status_code !== 200) {
+  if (response.status !== 200) {
     notification.error({
       placement: 'bottomRight',
       description: response.data.message
@@ -68,6 +68,10 @@ export default {
       (res) => {
         return checkCode(res)
       }
+    ).catch(
+      (error) => {
+        return checkStatus(error)
+      }
     )
   },
   get (url, params) {
@@ -87,6 +91,10 @@ export default {
     ).then(
       (res) => {
         return checkCode(res)
+      }
+    ).catch(
+      (error) => {
+        return checkStatus(error)
       }
     )
   }
