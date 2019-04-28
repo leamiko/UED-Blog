@@ -16,6 +16,9 @@ axios.interceptors.response.use(function (response) {
       description: response.data.message
     })
   }
+  if (response.data.status_code === 403) {
+    window.location.href = '/login'
+  }
   return response
 }, function (error) {
   return Promise.reject(error)
@@ -71,6 +74,7 @@ export default {
     return axios({
       method: 'get',
       url,
+      withCredentials: true,
       params, // get 请求时带的参数
       timeout: 30000,
       headers: {

@@ -1,5 +1,5 @@
-// const baseUrl = process.env.VUE_APP_BASEURL
-const baseUrl = 'http://127.0.0.1:3000'
+const baseUrl = process.env.VUE_APP_BASEURL
+// const baseUrl = 'http://127.0.0.1:3000'
 
 export default {
   login: `${baseUrl}/users/login`,
@@ -13,5 +13,5 @@ export default {
   addBlog: `${baseUrl}/blogs/addEditBlog`,
   updateBlog: `${baseUrl}/blogs/addEditBlog`,
   deleteBlog: `${baseUrl}/blogs/deleteBlog`,
-  showBlog: `${baseUrl}/blogs/getBlog`,
+  showBlog: `${baseUrl}/blogs/getBlog`
 }

@@ -48,11 +48,10 @@ exports.login = function(req, res) {
 };
 
 exports.logOut = function(req, res) {
-	console.log(req.session)
-	req.session.user = null;
+	delete req.session.user;
 	return res.json({
 		status_code: 200,
 		message: '退出成功！',
-		data: user,
+		data: null
 	});
 };

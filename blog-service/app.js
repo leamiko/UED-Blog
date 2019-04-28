@@ -17,16 +17,37 @@ var DictionaryRouter = require("./routes/dictionary");
 var app = express();
 
 // 自定义跨域中间件
-// var allowCors = function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", req.headers.origin);
-//   res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
-//   res.header("Access-Control-Allow-Headers", "Content-Type");
-//   res.header("Access-Control-Allow-Credentials", "true");
-//   next();
-// };
+var allowCors = function(req, res, next) {
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  next();
+};
 
-// // 使用跨域中间件
-// app.use(allowCors);
+// 使用跨域中间件
+app.use(allowCors);
+
+//判断是否登录
+var isLogin = function(req, res, next) {
+  console.log(req.originalUrl);
+  console.log(req.session);
+  // if (req.originalUrl !== "/users/login") {
+  //   if (!req.session.user) {
+  //     return res.json({
+  //       status_code: 403,
+  //       message: "登录过期，请重新登录！",
+  //       data: null
+  //     });
+  //   } else {
+  //     next();
+  //   }
+  // } else {
+  //   next();
+  // }
+};
+
+app.use(isLogin);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -42,7 +63,7 @@ app.use(
       maxAge: 1000 * 60 * 60 // 设置 session 的有效时间，单位毫秒
     },
     store: new MongoStore({
-      url: 'mongodb://127.0.0.1:27017/session',
+      url: "mongodb://127.0.0.1:27017/session",
       collection: "sessions"
     })
   })
@@ -67,7 +88,7 @@ var corsOptionsDelegate = function(req, callback) {
   callback(null, corsOptions); // callback expects two parameters: error and options
 };
 
-app.use(cors(corsOptionsDelegate));
+// app.use(cors(corsOptionsDelegate));
 
 log.useLogger(app);
 
