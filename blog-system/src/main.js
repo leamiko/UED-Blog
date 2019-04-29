@@ -17,10 +17,12 @@ import 'quill/dist/quill.bubble.css'
 import './assets/scss/common.scss'
 import './assets/scss/website.scss'
 
+import moment from 'moment';
+
 Vue.use(Antd)
 Vue.use(VueQuillEditor)
 
-import moment from 'moment';
+// 时间过滤器
 Vue.filter('formatDateDay', (time) => {
   return moment(time).format('YYYY-MM-DD');
 });
