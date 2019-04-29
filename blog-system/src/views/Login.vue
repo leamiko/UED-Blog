@@ -1,34 +1,34 @@
 <template>
   <div>
-    <a-form :form="form"
-            class="login_form">
+    <a-form :form="form" class="login_form">
       <div class="logo">
-        <img alt="logo"
-             :src="config.logoPath">
+        <img alt="logo" :src="config.logoPath">
         <span>{{ config.siteName }}</span>
       </div>
       <a-form-item>
-        <a-input v-decorator="[
+        <a-input
+          v-decorator="[
             'account',
             { rules: [{ required: true, message: '请输入账号' }] }
           ]"
-                 placeholder="用户名" />
+          placeholder="用户名"
+        />
       </a-form-item>
       <a-form-item>
-        <a-input v-decorator="[
+        <a-input
+          v-decorator="[
             'passWord',
             { rules: [{ required: true, message: '请输入密码' }] }
           ]"
-                 placeholder="密码" />
+          type="password"
+          placeholder="密码"
+        />
       </a-form-item>
       <a-form-item class="margin_bottom0">
-        <a-checkbox :checked="checked"
-                    @change="handleChange">记住密码</a-checkbox>
+        <a-checkbox :checked="checked" @change="handleChange">记住密码</a-checkbox>
       </a-form-item>
       <a-form-item class="margin_bottom0">
-        <a-button type="primary"
-                  @click="check"
-                  class="log_btn">登录</a-button>
+        <a-button type="primary" @click="check" class="log_btn">登录</a-button>
       </a-form-item>
     </a-form>
   </div>
@@ -49,8 +49,8 @@ export default {
           params['checked'] = this.checked
           let url = this.api.login
           const res = await this.$http.post(url, params)
-          console.log(res)
           if (res.status_code === 200) {
+            this.localEvent.StorageSetter('user', res.data)
             this.$router.push('/')
           }
         }

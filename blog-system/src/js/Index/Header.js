@@ -2,8 +2,12 @@ import Bus from '../../Share/Bus.js'
 export default {
   data () {
     return {
+      nickName: '',
       collapsed: false
     }
+  },
+  mounted () {
+    this.nickName = this.localEvent.StorageGetter('user').account
   },
   methods: {
     toggleCollapse () {

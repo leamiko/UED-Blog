@@ -1,4 +1,5 @@
 import axios from 'axios'
+import router from '../router'
 import { notification } from 'ant-design-vue'
 
 axios.interceptors.request.use(function (config) {
@@ -17,7 +18,7 @@ axios.interceptors.response.use(function (response) {
     })
   }
   if (response.data.status_code === 403) {
-    window.location.href = '/login'
+    router.push('/login')
   }
   return response
 }, function (error) {
