@@ -35,7 +35,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
   session({
     secret: "12345", // 对session id 相关的cookie 进行签名
-    resave: false,
+    resave: true,
     name: "nssid",
     saveUninitialized: true, // 是否保存未初始化的会话
     cookie: {

@@ -11,8 +11,9 @@
             'account',
             { rules: [{ required: true, message: '请输入账号' }] }
           ]"
-          placeholder="用户名"
-        />
+          placeholder="用户名">
+          <a-icon slot="prefix" type="user" />
+        </a-input>
       </a-form-item>
       <a-form-item>
         <a-input
@@ -21,8 +22,9 @@
             { rules: [{ required: true, message: '请输入密码' }] }
           ]"
           type="password"
-          placeholder="密码"
-        />
+          placeholder="密码">
+          <a-icon slot="prefix" type="lock" />
+        </a-input>
       </a-form-item>
       <a-form-item class="margin_bottom0">
         <a-checkbox :checked="checked" @change="handleChange">记住密码</a-checkbox>
