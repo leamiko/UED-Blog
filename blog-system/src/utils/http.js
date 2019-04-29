@@ -1,4 +1,5 @@
 import axios from 'axios'
+import router from '../router'
 import { notification } from 'ant-design-vue'
 
 axios.interceptors.request.use(function (config) {
@@ -15,6 +16,9 @@ axios.interceptors.response.use(function (response) {
       placement: 'bottomRight',
       description: response.data.message
     })
+  }
+  if (response.data.status_code === 403) {
+    router.push('/login')
   }
   return response
 }, function (error) {
@@ -75,6 +79,7 @@ export default {
     return axios({
       method: 'get',
       url,
+      withCredentials: true,
       params, // get 请求时带的参数
       timeout: 30000,
       headers: {

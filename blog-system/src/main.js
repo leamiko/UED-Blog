@@ -6,6 +6,7 @@ import store from './store'
 import http from './utils/http'
 import api from './utils/api'
 import config from './utils/config'
+import localEvent from './utils/local'
 // 全局引入antd
 import Antd from 'ant-design-vue'
 import VueQuillEditor from 'vue-quill-editor'
@@ -24,12 +25,13 @@ Vue.use(VueQuillEditor)
 
 // 时间过滤器
 Vue.filter('formatDateDay', (time) => {
-  return moment(time).format('YYYY-MM-DD');
-});
+  return moment(time).format('YYYY-MM-DD')
+})
 
 Vue.prototype.$http = http
 Vue.prototype.api = api
 Vue.prototype.config = config
+Vue.prototype.localEvent = localEvent
 
 Vue.config.productionTip = false
 

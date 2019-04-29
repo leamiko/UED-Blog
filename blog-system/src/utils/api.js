@@ -13,5 +13,5 @@ export default {
   addBlog: `${baseUrl}/blogs/addEditBlog`,
   updateBlog: `${baseUrl}/blogs/addEditBlog`,
   deleteBlog: `${baseUrl}/blogs/deleteBlog`,
-  showBlog: `${baseUrl}/blogs/getBlog`,
+  showBlog: `${baseUrl}/blogs/getBlog`
 }
