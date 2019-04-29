@@ -22,7 +22,7 @@
                     @change="handleChange"
                     :filterOption="filterOption"
                   >
-                    <a-select-option  v-for="i in 25" :key="i">{{i}}</a-select-option>
+                    <a-select-option  v-for="i in blogTypeArr" :key="i">{{i}}</a-select-option>
                   </a-select>
               </a-form-item>
             </a-col>
@@ -82,6 +82,7 @@
           },
         },
         data: [],
+        blogTypeArr: ['CSS','TS','VUE','JS','HTML','前端'],
         blogType:'',
         placeholder:'Select a blogType',
         status: [],
