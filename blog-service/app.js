@@ -41,10 +41,10 @@ app.use(
     cookie: {
       maxAge: 1000 * 60 * 60 // 设置 session 的有效时间，单位毫秒
     },
-    store: new MongoStore({
-      url: "mongodb://127.0.0.1:27017/session",
-      collection: "sessions"
-    })
+    // store: new MongoStore({
+    //   url: "mongodb://session:session@localhost:27017/session",
+    //   collection: "sessions"
+    // })
   })
 );
 
@@ -81,7 +81,7 @@ var isLogin = function(req, res, next) {
   }
 };
 
-app.use(isLogin);
+// app.use(isLogin);
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
