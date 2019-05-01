@@ -57,39 +57,18 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
   session({
     secret: "12345", // 对session id 相关的cookie 进行签名
-    resave: false,
+    resave: true,
     name: "nssid",
     saveUninitialized: true, // 是否保存未初始化的会话
     cookie: {
       maxAge: 1000 * 60 * 60 // 设置 session 的有效时间，单位毫秒
     },
-    store: new MongoStore({
-      url: "mongodb://127.0.0.1:27017/session",
-      collection: "sessions"
-    })
+    // store: new MongoStore({
+    //   url: "mongodb://session:session@localhost:27017/session",
+    //   collection: "sessions"
+    // })
   })
 );
-
-var whitelist = ["http://localhost:8080"]; // 添加前端地址
-// cors 跨域配置
-var corsOptionsDelegate = function(req, callback) {
-  var corsOptions;
-
-  if (whitelist.indexOf(req.header("Origin")) !== -1) {
-    corsOptions = {
-      credentials: true,
-      origin: true
-    }; // reflect (enable) the requested origin in the CORS response
-  } else {
-    corsOptions = {
-      credentials: true,
-      origin: false
-    }; // disable CORS for this request
-  }
-  callback(null, corsOptions); // callback expects two parameters: error and options
-};
-
-// app.use(cors(corsOptionsDelegate));
 
 log.useLogger(app);
 
@@ -106,6 +85,25 @@ app.use(
 );
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+
+//判断是否登录
+var isLogin = function(req, res, next) {
+  if (req.originalUrl !== "/users/login") {
+    if (!req.session.user) {
+      return res.json({
+        status_code: 403,
+        message: "登录过期，请重新登录！",
+        data: null
+      });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+};
+
+// app.use(isLogin);
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
@@ -130,4 +128,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render("error");
 });
+
 module.exports = app;

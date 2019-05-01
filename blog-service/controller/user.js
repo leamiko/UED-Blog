@@ -9,12 +9,10 @@ exports.login = function(req, res) {
 	const end_paw = md5.update(passWord).digest('hex');
 	const params = {
 		account: account,
-		passWord: end_paw,
-		checked: checked,
+		passWord: end_paw
 	};
 	req.session.user = params;
-	console.log(req.session)
-	if (checked) req.session.maxAge = ms('30d');
+	if (checked) req.session.cookie.maxAge = ms('30d');
 	return res.json({
 		status_code: 200,
 		message: '登录成功！',
@@ -31,7 +29,7 @@ exports.login = function(req, res) {
 	// 	}
 	// 	if (user) {
 	// 		req.session.user = user;
-	// 		if (checked) ctx.session.maxAge = ms('30d');
+	// 		if (checked) req.session.cookie.maxAge = ms('30d');
 	// 		return res.json({
 	// 			status_code: 200,
 	// 			message: '登录成功！',
