@@ -32,6 +32,7 @@ app.use(allowCors);
 var isLogin = function(req, res, next) {
   console.log(req.originalUrl);
   console.log(req.session);
+  next();
   // if (req.originalUrl !== "/users/login") {
   //   if (!req.session.user) {
   //     return res.json({
