@@ -13,6 +13,7 @@ var usersRouter = require("./routes/users");
 var bugsRouter = require("./routes/bug");
 var blogsRouter = require("./routes/blog");
 var DictionaryRouter = require("./routes/dictionary");
+var RegisterRouter = require("./routes/register");
 
 var app = express();
 
@@ -110,6 +111,7 @@ app.use("/users", usersRouter);
 app.use("/bugs", bugsRouter);
 app.use("/blogs", blogsRouter);
 app.use("/dictionary", DictionaryRouter);
+app.use("/register", RegisterRouter);
 
 // catch 404 and forward to error handler
 // app.use(function (req, res, next) {
