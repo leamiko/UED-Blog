@@ -28,9 +28,32 @@ export default new Router({
           component: () => import(/* webpackChunkName: "article" */ './views/Article.vue')
         },
         {
+          path: '/article/articleShow',
+          name: 'articleShow',
+          component: () => import('./views/ArticleShow.vue')
+        },
+        {
           path: '/bug',
           name: 'bug',
           component: () => import('./views/Bug.vue')
+          // children: [{
+          //   path: '/edit',
+          //   name: 'edit',
+          //   component: () => import('./views/BugEdit.vue')
+          // }]
+        },
+        {
+          path: '/bug/edit',
+          name: 'edit',
+          component: () => import('./views/BugEdit.vue')
+        },
+        {
+          path: '/bug/add',
+          name: 'add',
+          component: () => import('./views/BugAdd.vue'),
+          meta: {
+            title: '新增Bug'
+          }
         },
         {
           path: '/userInfo',

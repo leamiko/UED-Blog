@@ -38,7 +38,7 @@ var BugSchema = new Schema({
     timestamps: {
         createdAt: 'createAt',
         updatedAt: 'updateAt'
-    }
+    },
 });
 
 module.exports = db.model('Bug', BugSchema);

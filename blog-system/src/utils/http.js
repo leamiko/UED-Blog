@@ -1,5 +1,6 @@
 import axios from 'axios'
-// import api from './api.js'
+import router from '../router'
+import { notification } from 'ant-design-vue'
 
 axios.interceptors.request.use(function (config) {
   return config
@@ -10,6 +11,15 @@ axios.interceptors.request.use(function (config) {
 // 添加响应拦截器
 axios.interceptors.response.use(function (response) {
   // 对响应数据做点什么
+  if (response.status !== 200) {
+    notification.error({
+      placement: 'bottomRight',
+      description: response.data.message
+    })
+  }
+  if (response.data.status_code === 403) {
+    router.push('/login')
+  }
   return response
 }, function (error) {
   return Promise.reject(error)
@@ -19,7 +29,7 @@ function checkStatus (response) {
   // loading
   // 如果http状态码正常，则直接返回数据
   if (response && (response.status === 200 || response.status === 304 || response.status === 400)) {
-    return response
+    return response.data
     // 如果不需要除了data之外的数据，可以直接 return response.data
   }
   // 异常状态下，把错误信息返回去
@@ -42,24 +52,50 @@ function checkCode (res) {
 export default {
   post (url, data) {
     // let encryptData = jse.encrypt(data);
-    return axios.post(url, data).then(
+    return axios({
+      method: 'post',
+      url,
+      withCredentials: true,
+      data: data,
+      timeout: 10000,
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8'
+      }
+    }).then(
       (response) => {
         return checkStatus(response)
       }
     ).then(
       (res) => {
         return checkCode(res)
+      }
+    ).catch(
+      (error) => {
+        return checkStatus(error)
       }
     )
   },
   get (url, params) {
-    return axios.get(url, params).then(
+    return axios({
+      method: 'get',
+      url,
+      withCredentials: true,
+      params, // get 请求时带的参数
+      timeout: 30000,
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8'
+      }
+    }).then(
       (response) => {
         return checkStatus(response)
       }
     ).then(
       (res) => {
         return checkCode(res)
+      }
+    ).catch(
+      (error) => {
+        return checkStatus(error)
       }
     )
   }

@@ -5,10 +5,10 @@
       <ul>
         <li class="user-item">
           <a>
-            <a-icon type="user" />iris
+            <a-icon type="user" />{{ nickName }}
           </a>
         </li>
-        <li class="user-item">
+        <li class="user-item" @click="logOut">
           <a>注销</a>
         </li>
       </ul>
