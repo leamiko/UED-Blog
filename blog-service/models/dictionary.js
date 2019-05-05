@@ -9,6 +9,9 @@ var DictionarySchema = new Schema({
 	parentId: {
 		type: String //父级id
 	},
+	parentName:{
+		type: String //父级id
+	},
 	name: {
 		type: String //分类名称
 	},
