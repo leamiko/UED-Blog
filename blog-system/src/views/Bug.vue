@@ -73,7 +73,9 @@
       getList: async function () {
         let url = this.api.bugList;
         const res = await this.$http.post(url);
-        this.data = res.data.Data;
+        if(res.data.Data){
+          this.data = res.data.Data;          
+        }
         for (let i = 0; i < this.data.length; i++) {
          this.data[i].key = this.data[i]._id;
         // this.renderStatus(this.data[i].bugStauts );
