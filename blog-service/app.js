@@ -28,29 +28,6 @@ var allowCors = function(req, res, next) {
 
 // 使用跨域中间件
 app.use(allowCors);
-
-//判断是否登录
-var isLogin = function(req, res, next) {
-  console.log(req.originalUrl);
-  console.log(req.session);
-  next();
-  // if (req.originalUrl !== "/users/login") {
-  //   if (!req.session.user) {
-  //     return res.json({
-  //       status_code: 403,
-  //       message: "登录过期，请重新登录！",
-  //       data: null
-  //     });
-  //   } else {
-  //     next();
-  //   }
-  // } else {
-  //   next();
-  // }
-};
-
-app.use(isLogin);
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
