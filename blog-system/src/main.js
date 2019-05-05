@@ -17,13 +17,13 @@ import 'quill/dist/quill.bubble.css'
 import './assets/scss/common.scss'
 import './assets/scss/website.scss'
 
+import moment from 'moment'
+
 Vue.use(Antd)
 Vue.use(VueQuillEditor)
-
-import moment from 'moment';
 Vue.filter('formatDateDay', (time) => {
-  return moment(time).format('YYYY-MM-DD');
-});
+  return moment(time).format('YYYY-MM-DD')
+})
 
 Vue.prototype.$http = http
 Vue.prototype.api = api
