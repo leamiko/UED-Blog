@@ -1,10 +1,11 @@
 <template>
     <div class="article">
-        <p class="h3">{{model.title}}</p>
-        <p class="article-info h6"> In：<span class="category">{{model.blogType}}</span> on：{{model.updateAt | formatDateDay}} by：<span class="author">{{model.author}}</span></p>
-        <p class="article-content">
-            {{model.blogType}}
+        <p class="h3">{{model.title}} &nbsp;<a-icon type="heart" theme="twoTone" class="icon_size" twoToneColor='#eb2f96'/></p>
+        <p class="article-info h6"> In：<span class="category">{{model.blogType}}</span> on：{{model.updateAt | formatDateDay}} by：<span class="author">{{model.author}}</span>    &nbsp;&nbsp;<a-icon type="like" theme="twoTone" twoToneColor='#52c41a' class="icon_size"/>12</p>
+        <p class="article-content" v-html="model.info">
         </p>
+        <div v-html="model.content">
+        </div>
     </div>
 </template>
 
@@ -33,6 +34,10 @@
 </script>
 
 <style>
+.icon_size {
+    font-size: 20px;
+}
+
 .article {
     padding-right: 200px;
     padding-left: 200px;
@@ -60,5 +65,9 @@
 .article .article-content {
     color: #333;
     line-height: 1.8;
+}
+
+img {
+    max-width: 100%;
 }
 </style>
