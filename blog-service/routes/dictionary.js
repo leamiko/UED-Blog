@@ -11,18 +11,18 @@ router.post('/GetDictionaryList', (req, res, next) => {
   let pageIndex = req.body.paging.pageIndex; //当前页码
   //条件查询参数
   let filters = {
-    deleted: false,
-    parentId: ''
+    deleted: false
   };
   if (req.body.filter.name) {
     filters.name = new RegExp(req.body.filter.name);
   }
-  Dictionary.find(
-    filters,
-    null, {
-      skip: (pageIndex * 1 - 1) * pagesize,
-      limit: pagesize
+  if (req.body.filter.parentId) {
+    filters.parentId = new RegExp(req.body.filter.parentId);
+  }
+  Dictionary.find({
+      parentId: ''
     },
+    null,
     async function (err, newdata) {
       if (err) {
         logger.error(err);
@@ -32,17 +32,45 @@ router.post('/GetDictionaryList', (req, res, next) => {
           data: null
         });
       }
-      const count = await Dictionary.count(filters);
+      console.log(newdata)
+      console.log(filters)
+      let secondData = [];
+
+      for (var i = 0; i < newdata.length; i++) {
+        var aa = JSON.parse(JSON.stringify(newdata[i]));
+        // console.log(aa)
+        var secondClass = await Dictionary.find({
+          $and: [{
+              parentId: aa._id
+            },
+            filters
+          ]
+        }, null, {
+          skip: (pageIndex * 1 - 1) * pagesize,
+          limit: pagesize
+        })
+        if (secondClass != null) {
+          for (a of secondClass) {
+            a.parentName = aa.name;
+            secondData.push(a);
+          }
+
+        }
+      }
+      // console.log(secondData.length)
+      const count = secondData.length;
       return res.json({
         status_code: 200,
         message: "获取列表成功！",
         data: {
           total: count,
-          data: newdata
+          data: secondData
         }
       });
     }
   );
+
+
 });
 // 新增编辑字典分类
 router.post('/CreateOrEditDictionary', function (req, res, next) {
@@ -51,10 +79,10 @@ router.post('/CreateOrEditDictionary', function (req, res, next) {
     res.send("分类名称不能为空");
     return
   }
-  if (req.body.parentId === '' || req.body.parentId === undefined) {
-    res.send("上级分类不能为空！");
-    return
-  }
+  // if (req.body.parentId === '' || req.body.parentId === undefined) {
+  //   res.send("上级分类不能为空！");
+  //   return
+  // }
   if (req.body._id) {
     var id = {
       _id: req.body._id
