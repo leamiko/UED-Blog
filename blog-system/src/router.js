@@ -5,7 +5,7 @@ import Login from './views/Login.vue'
 
 Vue.use(Router)
 
-export default new Router({
+const router =  new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -58,13 +58,47 @@ export default new Router({
         {
           path: '/userInfo',
           name: 'userInfo',
-          component: () => import('./views/UserInfo.vue')
-        }, {
+          component: () => import('./views/UserInfo.vue'),
+        },
+        {
           path: '/dictionary',
-          name: 'dictionary',
-          component: () => import('./views/Dictionary.vue')
-        }
+          name: 'Dictionary',
+          component: () => import('./views/dictionary-management/Dictionary.vue'),
+          meta: {
+            title: '字典管理'
+          }
+        },
+        {
+          path: '/dictionary/add',
+          name: 'DictionaryUpdate',
+          component: () => import('./views/dictionary-management/Update.vue'),
+          alias: ['/dictionary/edit', 'DictionaryEdit'],
+          meta: {
+            title: '字典管理'
+          }
+        },
+        {
+          path: '/dictionary/show',
+          name: 'DictionaryShow',
+          component: () => import('./views/dictionary-management/Show.vue'),
+          meta: {
+            title: '查看字典管理'
+          }
+        },
       ]
     }
   ]
 })
+
+// 全局路由守卫
+router.beforeEach((to, from, next) => {
+  if (to.meta.title) {
+    document.title = to.meta.title
+  } else {
+    document.title = 'UED-Blog'
+  }
+  next()
+})
+
+
+export default router

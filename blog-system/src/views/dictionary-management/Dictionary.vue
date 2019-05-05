@@ -26,7 +26,7 @@
           </a-row>
           <a-row :gutter="24">
             <a-col :span="12" :style="{ textAlign: 'left' }">
-              <a-button type="primary" icon="plus"> 新建 </a-button> &emsp;
+              <a-button type="primary" icon="plus" @click="pathRedirect('add')"> 新建 </a-button> &emsp;
               <a-button> 批量操作 </a-button> &emsp;
               <a-dropdown :trigger="['click']">
                 <a-menu slot="overlay" @click="handleMenuClick">
@@ -48,7 +48,8 @@
         <div class="search-result-list scroll-content">
           <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :dataSource="data" :columns="columns" :rowKey:="data.key" :loading="loading">
             <template slot="operation" slot-scope="text, record">
-              <a @click="editItems(record)">编辑</a>
+              <a @click="pathRedirect('edit', record)"> 编辑 </a>
+              <a @click="pathRedirect('show', record)"> 查看 </a>
               <a-popconfirm v-if="data.length" title="Sure to delete?" @confirm="() => onDelete(record.key)">
                 <a>删除</a>
               </a-popconfirm>
@@ -149,6 +150,16 @@ export default {
     async getList() {
       this.loading = true;
       const url = this.api.bugList;
+      // const params = {
+      //   paging: {
+      //       pageIndex: 1,
+      //       pagesize: 10
+      //   },
+      //   filters: {
+      //       name: '',
+      //   }
+      // };
+      // const blogURL = 'http://ued.lunz.cn/api/dictionary/GetModelList';
       const params = {
         paging: {
             page: 1,
@@ -195,15 +206,14 @@ export default {
       }
       console.log(res);
     },
-    // 点击编辑
-    editItems(record) {
+    pathRedirect(type, data) {
+      if (data) {
+        this.localEvent.StorageSetter('editDictionarydata', data);
+      }
       this.$router.push({
-        name: 'edit',
-        params: {
-          entity: record
-        }
-      });
-    },
+        path: `/dictionary/${type}`
+      })
+    }
   },
   mounted() {
     this.getList();

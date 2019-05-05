@@ -13,6 +13,7 @@ var usersRouter = require("./routes/users");
 var bugsRouter = require("./routes/bug");
 var blogsRouter = require("./routes/blog");
 var DictionaryRouter = require("./routes/dictionary");
+var RegisterRouter = require("./routes/register");
 
 var app = express();
 
@@ -27,29 +28,6 @@ var allowCors = function(req, res, next) {
 
 // 使用跨域中间件
 app.use(allowCors);
-
-//判断是否登录
-var isLogin = function(req, res, next) {
-  console.log(req.originalUrl);
-  console.log(req.session);
-  next();
-  // if (req.originalUrl !== "/users/login") {
-  //   if (!req.session.user) {
-  //     return res.json({
-  //       status_code: 403,
-  //       message: "登录过期，请重新登录！",
-  //       data: null
-  //     });
-  //   } else {
-  //     next();
-  //   }
-  // } else {
-  //   next();
-  // }
-};
-
-app.use(isLogin);
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -110,6 +88,7 @@ app.use("/users", usersRouter);
 app.use("/bugs", bugsRouter);
 app.use("/blogs", blogsRouter);
 app.use("/dictionary", DictionaryRouter);
+app.use("/register", RegisterRouter);
 
 // catch 404 and forward to error handler
 // app.use(function (req, res, next) {
