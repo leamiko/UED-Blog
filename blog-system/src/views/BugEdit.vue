@@ -206,7 +206,7 @@
       update: async function (data) {
         let url = this.api.updateBug;
         const res = await this.$http.post(url, data);
-        if (res.data.message == 'success') {
+        if (res.message == 'success') {
           history.back(-1);
         }
       }
