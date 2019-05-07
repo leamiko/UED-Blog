@@ -5,6 +5,7 @@
     <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :dataSource="data"
       :columns="columns" :rowKey:="data.key">
       <template slot="operation" slot-scope="text, record">
+        <a @click="showItems(record)">查看</a>
         <a @click="editItems(record)">编辑</a>
         <a-popconfirm v-if="data.length" title="Sure to delete?" @confirm="() => onDelete(record.key)">
           <a>删除</a>
@@ -134,6 +135,15 @@
         this.$router.push({
           name: 'add'
         });
+      },
+      // 查看bug
+      showItems(record) {
+        this.$router.push({
+          name: 'bugShow',
+          params: {
+            entity: record
+          }
+        })
       }
     },
     mounted() {
