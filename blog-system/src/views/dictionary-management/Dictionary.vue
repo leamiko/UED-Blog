@@ -4,11 +4,11 @@
         <a-form class="ant-advanced-search-form" :form="form" @submit="handleSearch">
           <a-row :gutter="24">
             <a-col :span="12">
-              <a-form-item v-bind="formItemLayout" :label="`名称:`">
-                <a-input v-decorator="[ `title`, { rules: [{ required: false, message: 'Input something!', }], } ]" placeholder="请输入"/>
+              <a-form-item v-bind="formItemLayout" :label="`字典名称:`">
+                <a-input v-decorator="[ `name`, { rules: [{ required: false, message: '请输入字典名称!', }], } ]" placeholder="请输入字典名称"/>
               </a-form-item>
             </a-col>
-            <a-col :span="12">
+            <!-- <a-col :span="12">
               <a-form-item v-bind="formItemLayout" :label="`关键词：`">
                 <a-input v-decorator="[ `keyword`, { rules: [{ required: false, message: 'Input something!', }], } ]" placeholder="请输入"/>
               </a-form-item>
@@ -22,7 +22,7 @@
               <a-form-item v-bind="formItemLayout" :label="`作者：`">
                 <a-input v-decorator="[ `author`, { rules: [{ required: false, message: 'Input something!', }], } ]" placeholder="请输入"/>
               </a-form-item>
-            </a-col>
+            </a-col> -->
           </a-row>
           <a-row :gutter="24">
             <a-col :span="12" :style="{ textAlign: 'left' }">
@@ -41,16 +41,16 @@
             <a-col :span="12" :style="{ textAlign: 'right' }">
               <a-button type="primary" html-type="submit"> 查询 </a-button>
               <a-button :style="{ marginLeft: '8px' }" @click="handleReset" > 重置 </a-button>
-              <a :style="{ marginLeft: '8px', fontSize: '12px' }" @click="toggle" > {{expand ? '收起' : '展开'}} <a-icon :type="expand ? 'up' : 'down'" /></a>
+              <!-- <a :style="{ marginLeft: '8px', fontSize: '12px' }" @click="toggle" > {{expand ? '收起' : '展开'}} <a-icon :type="expand ? 'up' : 'down'" /></a> -->
             </a-col>
           </a-row>
         </a-form>
         <div class="search-result-list scroll-content">
-          <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :dataSource="data" :columns="columns" :rowKey:="data.key" :loading="loading">
+          <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :dataSource="data" :columns="columns" :rowKey:="columns.key" :loading="loading">
             <template slot="operation" slot-scope="text, record">
               <a @click="pathRedirect('edit', record)"> 编辑 </a>
               <a @click="pathRedirect('show', record)"> 查看 </a>
-              <a-popconfirm v-if="data.length" title="Sure to delete?" @confirm="() => onDelete(record.key)">
+              <a-popconfirm v-if="data.length" title="确定删除该项字典库?" @confirm="() => onDelete(record.key)">
                 <a>删除</a>
               </a-popconfirm>
             </template>
@@ -61,22 +61,23 @@
 </template>
 
 <script>
+const BASE_URL = 'http://ued.lunz.cn/api/'
 export default {
-  data() {
+  data () {
     return {
       loading: false,
-      expand: false,
-      count: 3,
+      // expand: false,
+      // count: 3,
       form: this.$form.createForm(this),
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
-          sm: { span: 4 },
+          sm: { span: 4 }
         },
         wrapperCol: {
           xs: { span: 24 },
-          sm: { span: 12 },
-        },
+          sm: { span: 12 }
+        }
       },
       data: [],
       status: [],
@@ -85,32 +86,16 @@ export default {
       selectedRowKeys: [],
       columns: [
         {
-          title: '名称',
-          dataIndex: 'title',
+          title: 'KEY',
+          dataIndex: 'key'
         },
         {
-          title: '关键词',
-          dataIndex: 'keyword',
+          title: '字典名称',
+          dataIndex: 'name'
         },
         {
-          title: '内容',
-          dataIndex: 'content',
-        },
-        {
-          title: '状态',
-          dataIndex: 'bugStatus'
-        },
-        {
-          title: '解决方案',
-          dataIndex: 'bugSolution'
-        },
-        {
-          title: '作者',
-          dataIndex: 'author'
-        },
-        {
-          title: '采用数',
-          dataIndex: 'useNum'
+          title: '父级ID',
+          dataIndex: 'parentId'
         },
         {
           title: '操作',
@@ -120,105 +105,101 @@ export default {
           }
         }
       ]
-    };
+    }
   },
   methods: {
-    handleMenuClick(e) {
-      console.log('click', e);
+    handleMenuClick (e) {
+      console.log('click', e)
     },
-    handleSearch  (e) {
-      e.preventDefault();
-      this.form.validateFields((error, values) => {
-        console.log('error', error);
-        console.log('Received values of form: ', values);
-      });
+    handleSearch (e) {
+      e.preventDefault()
+      this.getList()
+      // this.form.validateFields((error, values) => {
+      //   console.log('Received values of form: ', values)
+      // })
     },
-
-    handleReset() {
-      this.form.resetFields();
+    handleReset () {
+      this.form.resetFields()
     },
-
-    toggle() {
-      if (this.expand) {
-        this.count = 3;
-      } else {
-        this.count = 5;
-      }
-      this.expand = !this.expand;
-    },
+    // toggle () {
+    //   if (this.expand) {
+    //     this.count = 3
+    //   } else {
+    //     this.count = 5
+    //   }
+    //   this.expand = !this.expand
+    // },
     // 获得列表
-    async getList() {
-      this.loading = true;
-      const url = this.api.bugList;
-      // const params = {
-      //   paging: {
-      //       pageIndex: 1,
-      //       pagesize: 10
-      //   },
-      //   filters: {
-      //       name: '',
-      //   }
-      // };
-      // const blogURL = 'http://ued.lunz.cn/api/dictionary/GetModelList';
+    async getList () {
+      this.loading = true
       const params = {
         paging: {
-            page: 1,
-            limit: 10
+          pageIndex: 1,
+          pagesize: 10
         },
         filters: {
-            title: '',
-            blogType: ''
+          name: this.form.getFieldValue('name')
         }
-      };
-      const blogURL = 'http://ued.lunz.cn/api//bugs/GetBugList';
-      const res = await this.$http.post(blogURL, params);
-      console.log(res);
-      if(res.Data) {
-        this.loading = false;
-        this.data = res.Data;
-      } else {
-        this.loading = false;
-        this.$notification['error']({
-          message: '错误',
-          placement: 'bottomRight',
-          description: res.msg,
-        });
-        return;
       }
-      if (this.data && this.data.length && this.data.length > 0) {
-        for(let item of this.data){
-          item['key'] = item['_id'];
-          item['bugStatus'] = item['bugStatus'] ? '已解决' : '未解决';
+      const blogURL = BASE_URL + 'dictionary/GetModelList'
+      const res = await this.$http.post(blogURL, params)
+      if (res.status_code === 200) {
+        this.loading = false
+        if (res.data && res.data.length && res.data.length > 0) {
+          this.data = res.data.map(item => {
+            item['key'] = item['_id']
+            return item
+          })
         }
+      } else {
+        this.loading = false
+        this.$notification['error']({
+          message: '字典管理',
+          placement: 'bottomRight',
+          description: res.message
+        })
       }
     },
-    onSelectChange(selectedRowKeys) {
-      console.log('selectedRowKeys changed: ', selectedRowKeys);
-      this.selectedRowKeys = selectedRowKeys;
+    onSelectChange (selectedRowKeys) {
+      console.log('selectedRowKeys changed: ', selectedRowKeys)
+      this.selectedRowKeys = selectedRowKeys
     },
     // 点击删除
-    async onDelete(record) {
-      let url = this.api.deleteBug;
-      const res = await this.$http.post(url, {
-        id: record
-      });
-      if (res.message == 'success') {
+    async onDelete (key) {
+      const blogURL = BASE_URL + 'dictionary/DeleteDictionaryById?_id=' + key
+      const res = await this.$http.get(blogURL)
+      if (res.status_code === 200) {
+        this.loading = false
+        this.$notification['success']({
+          message: '字典管理',
+          placement: 'bottomRight',
+          description: res.message
+        })
+        this.getList()
+      } else {
+        this.loading = false
+        this.$notification['error']({
+          message: '字典管理',
+          placement: 'bottomRight',
+          description: res.message
+        })
       }
-      console.log(res);
     },
-    pathRedirect(type, data) {
-      if (data) {
-        this.localEvent.StorageSetter('editDictionarydata', data);
-      }
+    pathRedirect (type, data) {
       this.$router.push({
-        path: `/dictionary/${type}`
+        path: `/dictionary/${type}`,
+        query: data ? {
+          key: data._id,
+          name: data.name,
+          parentId: data.parentId
+        } : null
       })
     }
   },
-  mounted() {
-    this.getList();
+  mounted () {
+    this.getList()
   }
-};
+}
 </script>
 
 <style lang='scss' scoped>

@@ -75,7 +75,7 @@
         let url = this.api.bugList;
         const res = await this.$http.post(url);
         console.log(res);
-        this.data = res.Data; 
+        this.data = res.Data;
         for (let i = 0; i < this.data.length; i++) {
          this.data[i].key = this.data[i]._id;
         // this.renderStatus(this.data[i].bugStauts );
@@ -115,7 +115,7 @@
           id: data
         });
         if(res.message == 'success'){
-          
+
         }
         console.log(res);
       },
@@ -182,7 +182,7 @@
     //       id: id,
     //       title: '我是修改后的title',
     //       content: '我是修改后的content'
-    //     }; 
+    //     };
     //     const res = await this.$http.post(url, params);
     //   }
     // }
