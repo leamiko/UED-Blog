@@ -30,16 +30,6 @@
           <a-row :gutter="24">
             <a-col :span="12" :style="{ textAlign: 'left' }">
               <a-button type="primary" icon="plus"> 新建 </a-button> &emsp;
-              <a-button> 批量操作 </a-button> &emsp;
-              <a-dropdown :trigger="['click']">
-                <a-menu slot="overlay" @click="handleMenuClick">
-                  <a-menu-item key="1"> 操作1 </a-menu-item>
-                  <a-menu-item key="2"> 操作2 </a-menu-item>
-                  <a-menu-item key="3"> 操作3 </a-menu-item>
-                </a-menu>
-                <a-button> 更多操作 <a-icon type="down" />
-                </a-button>
-              </a-dropdown>
             </a-col>
             <a-col :span="12" :style="{ textAlign: 'right' }">
               <a-button type="primary" html-type="submit"> 查询 </a-button>
@@ -51,8 +41,8 @@
         <div class="search-result-list scroll-content">
           <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :dataSource="data" :columns="columns" :rowKey:="data.key" :loading="loading">
             <template slot="operation" slot-scope="text, record">
-              <a @click="showItems(record.key)">查看</a>
-              <a @click="editItems(record)">编辑</a>
+              <a @click="showItems(record.key)">查看 </a>
+              <a @click="editItems(record)">编辑 </a>
               <a-popconfirm v-if="data.length" title="Sure to delete?" @confirm="() => onDelete(record.key)">
                 <a>删除</a>
               </a-popconfirm>
@@ -64,6 +54,7 @@
 </template>
 
 <script>
+import moment from 'moment';
   export default {
     data() {
       return {
@@ -98,14 +89,29 @@
             dataIndex: 'blogType',
             width: 100
           }, {
-            title: '简介',
-            dataIndex: 'info',
-            width: 200
+            title: '作者',
+            dataIndex: 'author',
+            width: 100
           },
           {
-            title: '内容',
-            dataIndex: 'content',
-            width: 200,
+            title: '点赞数',
+            dataIndex: 'likeNum',
+            width: 100,
+          },
+          {
+            title: '精选',
+            dataIndex: 'isGood',
+            width: 100,
+          },
+          {
+            title: '审核通过',
+            dataIndex: 'isAudit',
+            width: 100,
+          },
+          {
+            title: '创建时间',
+            dataIndex: 'createAt',
+            width: 100,
           },
           {
             title: '操作',
@@ -132,11 +138,6 @@
       },
       filterOption(input, option) {
         return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
-      },
-
-      //更多操作
-      handleMenuClick(e) {
-        console.log('click', e);
       },
 
       // 查询
@@ -197,13 +198,18 @@
         }
         for (let i = 0; i < this.data.length; i++) {
          this.data[i].key = this.data[i]._id;
-         // 简介、内容显示字数处理
-         if (this.data[i].info.length >= 25){
-            this.data[i].info = this.data[i].info.substring(0,25) + '...';
+         // 数据显示形式的转换
+         if (this.data[i].isGood === false){
+            this.data[i].isGood = '否';
+         } else {
+           this.data[i].isGood = '是';
          }
-         if (this.data[i].content.length >= 25){
-            this.data[i].content = this.data[i].content.substring(0,25) + '...';
+         if (this.data[i].isAudit === false){
+            this.data[i].isAudit = '否';
+         } else {
+           this.data[i].isAudit = '是';
          }
+         this.data[i].createAt = moment('2019-04-28T06:54:31.914Z').format('YYYY-MM-DD');
         }
       },
       onSelectChange(selectedRowKeys) {
