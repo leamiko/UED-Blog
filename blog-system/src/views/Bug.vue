@@ -5,6 +5,7 @@
     <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :dataSource="data"
       :columns="columns" :rowKey:="data.key">
       <template slot="operation" slot-scope="text, record">
+        <a @click="showItems(record)">查看</a>
         <a @click="editItems(record)">编辑</a>
         <a-popconfirm v-if="data.length" title="Sure to delete?" @confirm="() => onDelete(record.key)">
           <a>删除</a>
@@ -74,7 +75,7 @@
         let url = this.api.bugList;
         const res = await this.$http.post(url);
         console.log(res);
-        this.data = res.Data; 
+        this.data = res.Data;
         for (let i = 0; i < this.data.length; i++) {
          this.data[i].key = this.data[i]._id;
         // this.renderStatus(this.data[i].bugStauts );
@@ -114,7 +115,7 @@
           id: data
         });
         if(res.message == 'success'){
-          
+
         }
         console.log(res);
       },
@@ -134,6 +135,15 @@
         this.$router.push({
           name: 'add'
         });
+      },
+      // 查看bug
+      showItems(record) {
+        this.$router.push({
+          name: 'bugShow',
+          params: {
+            entity: record
+          }
+        })
       }
     },
     mounted() {
@@ -172,7 +182,7 @@
     //       id: id,
     //       title: '我是修改后的title',
     //       content: '我是修改后的content'
-    //     }; 
+    //     };
     //     const res = await this.$http.post(url, params);
     //   }
     // }
