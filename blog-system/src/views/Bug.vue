@@ -1,12 +1,12 @@
 <template>
   <div>
-    <a-button type="primary" @click="addBug()">新增</a-button>
+    <a-button type="primary" icon="plus" @click="addBug()">新增</a-button>
     <!-- <a-input /> -->
     <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :dataSource="data"
       :columns="columns" :rowKey:="data.key">
       <template slot="operation" slot-scope="text, record">
-        <a @click="showItems(record)">查看</a>
-        <a @click="editItems(record)">编辑</a>
+        <a class="right_gap" @click="showItems(record)">查看</a>
+        <a class="right_gap" @click="editItems(record)">编辑</a>
         <a-popconfirm v-if="data.length" title="Sure to delete?" @confirm="() => onDelete(record.key)">
           <a>删除</a>
         </a-popconfirm>
@@ -14,8 +14,6 @@
       </template>
     </a-table>
   </div>
-
-
 </template>
 
 <script>
@@ -38,19 +36,20 @@
               customRender: 'customRender',
             },
             onFilter: (value, record) => record.age.toLowerCase().includes(value.toLowerCase()),
-          }, {
-            title: '内容',
-            dataIndex: 'content',
-            onFilter: (value, record) => record.address.toLowerCase().includes(value.toLowerCase()),
           },
+          //  {
+          //   title: '内容',
+          //   dataIndex: 'content',
+          //   onFilter: (value, record) => record.address.toLowerCase().includes(value.toLowerCase()),
+          // },
           {
             title: '状态',
             dataIndex: 'bugStatus'
           },
-          {
-            title: '解决方案',
-            dataIndex: 'bugSolution'
-          },
+          // {
+          //   title: '解决方案',
+          //   dataIndex: 'bugSolution'
+          // },
           {
             title: '作者',
             dataIndex: 'author'
