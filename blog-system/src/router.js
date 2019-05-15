@@ -5,7 +5,7 @@ import Login from './views/Login.vue'
 
 Vue.use(Router)
 
-const router =  new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -25,12 +25,12 @@ const router =  new Router({
           // route level code-splitting
           // this generates a separate chunk (article.[hash].js) for this route
           // which is lazy-loaded when the route is visited.
-          component: () => import(/* webpackChunkName: "article" */ './views/Article.vue')
+          component: () => import(/* webpackChunkName: "article" */ './views/Article-management/Article.vue')
         },
         {
           path: '/article/articleShow',
           name: 'articleShow',
-          component: () => import('./views/ArticleShow.vue')
+          component: () => import('./views/Article-management/ArticleShow.vue')
         },
         {
           path: '/bug',
@@ -58,7 +58,7 @@ const router =  new Router({
         {
           path: '/userInfo',
           name: 'userInfo',
-          component: () => import('./views/UserInfo.vue'),
+          component: () => import('./views/UserInfo.vue')
         },
         {
           path: '/dictionary',
@@ -85,6 +85,14 @@ const router =  new Router({
             title: '查看字典管理'
           }
         },
+        {
+          path: '/bug/bugShow',
+          name: 'bugShow',
+          component: () => import('./views/BugShow.vue'),
+          meta: {
+            title: '查看Bug详情'
+          }
+        }
       ]
     }
   ]
@@ -99,6 +107,5 @@ router.beforeEach((to, from, next) => {
   }
   next()
 })
-
 
 export default router

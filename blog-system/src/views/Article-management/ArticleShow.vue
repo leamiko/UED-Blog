@@ -1,7 +1,8 @@
 <template>
     <div class="article">
         <p class="h3">{{model.title}} &nbsp;<a-icon type="heart" theme="twoTone" class="icon_size" twoToneColor='#eb2f96'/></p>
-        <p class="article-info h6"> In：<span class="category">{{model.blogType}}</span> on：{{model.updateAt | formatDateDay}} by：<span class="author">{{model.author}}</span>    &nbsp;&nbsp;<a-icon type="like" theme="twoTone" twoToneColor='#52c41a' class="icon_size"/>12</p>
+        <p class="article-info h6"> In：<span class="category">{{model.blogType}}</span> on：<span class="category">{{model.updateAt | formatDateDay}}</span> 
+            by：<span class="author">{{model.author}}</span>    &nbsp;&nbsp;<a-icon type="like" theme="twoTone" twoToneColor='#52c41a' class="icon_size"/>12</p>
         <p class="article-content" v-html="model.info">
         </p>
         <div v-html="model.content">
@@ -60,6 +61,7 @@
 .article .article-info .category,
 .article .article-info .author {
     color: #5747d9;
+    padding-right: 2rem;
 }
 
 .article .article-content {
