@@ -145,17 +145,17 @@
 }
 
 .buglist_content_item_wrapper .bugItem_title {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 500;
     color: rgba(48, 49, 51, 1);
-    margin: 0 0 5px;
+    margin: 0 0 10px;
 }
 
 .buglist_content_item_wrapper .bugItem_content {
     font-size: 13px;
     color: rgba(153, 153, 153, 1);
     line-height: 17px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .buglist_content_item_wrapper .bugItem_ortherInfo {
@@ -163,6 +163,11 @@
     justify-content: space-between;
     align-items: center;
     font-size: 12px;
+}
+
+.bugItem_ortherInfo_authorInfo {
+    font-size: 12px;
+    font-weight: 600;
 }
 
 .bugItem_ortherInfo_keyword {
