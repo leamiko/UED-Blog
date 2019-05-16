@@ -63,26 +63,9 @@ const router = new Router({
         {
           path: '/dictionary',
           name: 'Dictionary',
-          component: () => import('./views/dictionary-management/Dictionary.vue'),
+          component: () => import('./views/Dictionary.vue'),
           meta: {
             title: '字典管理'
-          }
-        },
-        {
-          path: '/dictionary/add',
-          name: 'DictionaryUpdate',
-          component: () => import('./views/dictionary-management/Update.vue'),
-          alias: ['/dictionary/edit', 'DictionaryEdit'],
-          meta: {
-            title: '字典管理'
-          }
-        },
-        {
-          path: '/dictionary/show',
-          name: 'DictionaryShow',
-          component: () => import('./views/dictionary-management/Show.vue'),
-          meta: {
-            title: '查看字典管理'
           }
         },
         {
