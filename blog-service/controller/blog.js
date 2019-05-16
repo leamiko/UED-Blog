@@ -111,6 +111,15 @@ exports.getBlogList = async function(req, res) {
   if (req.body.filters.blogType) {
     filters.blogType = req.body.filters.blogType;
   }
+  if (req.body.filters.author) {
+    filters.author = req.body.filters.author;
+  }
+  if (req.body.filters.isGood) {
+    filters.isGood = req.body.filters.isGood;
+  }
+  if (req.body.filters.isAudit) {
+    filters.isAudit = req.body.filters.isAudit;
+  }
   const count = await Blog.count(filters);
   Blog.find(
     filters,

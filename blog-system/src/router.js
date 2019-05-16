@@ -25,12 +25,12 @@ const router = new Router({
           // route level code-splitting
           // this generates a separate chunk (article.[hash].js) for this route
           // which is lazy-loaded when the route is visited.
-          component: () => import(/* webpackChunkName: "article" */ './views/Article.vue')
+          component: () => import(/* webpackChunkName: "article" */ './views/Article-management/Article.vue')
         },
         {
           path: '/article/articleShow',
           name: 'articleShow',
-          component: () => import('./views/ArticleShow.vue')
+          component: () => import('./views/Article-management/ArticleShow.vue')
         },
         {
           path: '/bug',
@@ -63,26 +63,9 @@ const router = new Router({
         {
           path: '/dictionary',
           name: 'Dictionary',
-          component: () => import('./views/dictionary-management/Dictionary.vue'),
+          component: () => import('./views/Dictionary.vue'),
           meta: {
             title: '字典管理'
-          }
-        },
-        {
-          path: '/dictionary/add',
-          name: 'DictionaryUpdate',
-          component: () => import('./views/dictionary-management/Update.vue'),
-          alias: ['/dictionary/edit', 'DictionaryEdit'],
-          meta: {
-            title: '字典管理'
-          }
-        },
-        {
-          path: '/dictionary/show',
-          name: 'DictionaryShow',
-          component: () => import('./views/dictionary-management/Show.vue'),
-          meta: {
-            title: '查看字典管理'
           }
         },
         {
