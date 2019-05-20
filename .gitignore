@@ -1,2 +1,4 @@
 
 blog-system/package-lock.json
+blog-public/node_modules
+blog-public/.vscode

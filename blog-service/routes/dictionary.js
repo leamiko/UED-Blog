@@ -32,16 +32,14 @@ router.post('/GetDictionaryList', (req, res, next) => {
           data: null
         });
       }
-      console.log(newdata)
-      console.log(filters)
       let secondData = [];
 
       for (var i = 0; i < newdata.length; i++) {
-        var aa = JSON.parse(JSON.stringify(newdata[i]));
+        var dicNew = JSON.parse(JSON.stringify(newdata[i]));
         // console.log(aa)
         var secondClass = await Dictionary.find({
           $and: [{
-              parentId: aa._id
+              parentId: dicNew._id
             },
             filters
           ]
@@ -50,14 +48,13 @@ router.post('/GetDictionaryList', (req, res, next) => {
           limit: pagesize
         })
         if (secondClass != null) {
-          for (a of secondClass) {
-            a.parentName = aa.name;
-            secondData.push(a);
+          for (dicClass of secondClass) {
+            dicClass.parentName = dicNew.name;
+            secondData.push(dicClass);
           }
 
         }
       }
-      // console.log(secondData.length)
       const count = secondData.length;
       return res.json({
         status_code: 200,
@@ -76,13 +73,12 @@ router.post('/GetDictionaryList', (req, res, next) => {
 router.post('/CreateOrEditDictionary', function (req, res, next) {
   console.log(req.body);
   if (req.body.name === '' || req.body.name.length === 0) {
-    res.send("分类名称不能为空");
-    return
+    return res.json({
+      status_code: 201,
+      message: err,
+      data: '分类名称不能为空'
+    });
   }
-  // if (req.body.parentId === '' || req.body.parentId === undefined) {
-  //   res.send("上级分类不能为空！");
-  //   return
-  // }
   if (req.body._id) {
     var id = {
       _id: req.body._id
@@ -91,30 +87,46 @@ router.post('/CreateOrEditDictionary', function (req, res, next) {
       name: req.body.name
     };
     Dictionary.findOne({
-      name: postData.name
+      $and: [{
+          parentId: req.body.parentId
+        },
+        {
+          name: req.body.name
+        }
+      ]
     }, function (err, data) {
+      if (err) {
+        return res.json({
+          data: null,
+          code: 201,
+          message: err
+        });
+      }
+      console.log(data);
       if (data) {
         return res.json({
           data: null,
           code: 201,
-          message: '该分类下已存在该分类名称！'
+          message: '同级分类下已存在该分类名称！'
         });
-      }
-      Dictionary.update(id, postData, function (err, dic) {
-        if (err) {
-          logger.error(err);
+      } else {
+        Dictionary.update(id, postData, function (err, dic) {
+          if (err) {
+            logger.error(err);
+            return res.json({
+              code: 201,
+              message: err,
+              data: null
+            });
+          }
           return res.json({
-            code: 201,
-            message: err,
+            status_code: 200,
+            message: "修改成功！",
             data: null
           });
-        }
-        return res.json({
-          status_code: 200,
-          message: "修改成功！",
-          data: null
         });
-      });
+      }
+
     })
 
   } else {
@@ -123,29 +135,43 @@ router.post('/CreateOrEditDictionary', function (req, res, next) {
       parentId: req.body.parentId
     };
     Dictionary.findOne({
-      name: postData.name
+      $and: [{
+          parentId: req.body.parentId
+        },
+        {
+          name: req.body.name
+        }
+      ]
     }, function (err, data) {
+      if (err) {
+        return res.json({
+          data: null,
+          code: 201,
+          message: err
+        });
+      }
       if (data) {
         return res.json({
           data: null,
           code: 201,
           message: '该分类下已存在该分类名称！'
         });
-      }
-      Dictionary.create(postData, function (err, data) {
-        if (err) {
+      } else {
+        Dictionary.create(postData, function (err, data) {
+          if (err) {
+            return res.json({
+              code: 201,
+              message: err,
+              data: null
+            })
+          };
           return res.json({
-            code: 201,
-            message: err,
+            status_code: 200,
+            message: '添加成功！',
             data: null
           })
-        };
-        return res.json({
-          status_code: 200,
-          message: '添加成功！',
-          data: null
         })
-      })
+      }
     })
   }
 });
@@ -161,7 +187,7 @@ router.get('/DeleteDictionaryById', async (req, res, next) => {
   var updateDic = {
     deleted: true
   }
-  Dictionary.findOne(filter, function (err, dicData) {
+  Dictionary.find(filter, function (err, dicData) {
     console.log(dicData);
     if (dicData) {
       return res.json({
