@@ -8,10 +8,10 @@
     <div class="select_block" id="ant-advanced-search-form">
       <a-form class="ant-advanced-search-form" :form="form" @submit="handleSearch">
         <a-row :gutter="24">
-          <a-col v-for="i in 6" :key="i" :span="8" :style="{ display: i < count ? 'block' : 'none' }">
-            <a-form-item :label="`Field ${i}`">
+          <a-col v-for="i in fiedls" :key="i.id" :span="7" :style="{ display: i.id < count ? 'block' : 'none' }">
+            <a-form-item :label="`${i.name}`">
               <a-input v-decorator="[
-                  `field-${i}`,
+                  `${i.name}`,
                   {
                     rules: [
                       {
@@ -20,7 +20,7 @@
                       }
                     ]
                   }
-                ]" placeholder="placeholder" />
+                ]" v-bind:placeholder="'请输入' + i.name"/>
             </a-form-item>
           </a-col>
         </a-row>
@@ -64,6 +64,13 @@
     data() {
       return {
         expand: false,
+        fiedls:[
+          {id:1 , name: '名称'},
+          {id:2 , name: '关键词'},
+          {id:3 , name: '状态'},
+          {id:4 , name: '作者'},
+          {id:5 , name: '采用数'},
+          ],
         data: [],
         status: [],
         searchText: '',
@@ -100,7 +107,8 @@
           },
           {
             title: '采用数',
-            dataIndex: 'useNum'
+            dataIndex: 'useNum',
+           sorter: true,
           },
           {
             title: '操作',
@@ -114,7 +122,7 @@
     },
     computed: {
       count() {
-        return this.expand ? 7 : 4;
+        return this.expand ? 6 : 4;
       }
     },
     methods: {

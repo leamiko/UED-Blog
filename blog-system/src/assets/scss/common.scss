@@ -15,6 +15,12 @@
     overflow: auto;
 }
 
+.ant-checkbox-inner:after{
+    left: 3.571429px;
+    top: 1.142857px;  
+}
+
+
 .margin_bottom0 {
     margin-bottom: 0 !important;
 }
@@ -52,7 +58,13 @@
     background: rgba(255, 255, 255, 1);
     border-radius: 4px;
     .ant-form-item-label{
-        width: 70px;
+        width: 100px;
+        margin-right: 20px;
+    }
+    .ant-col-7{
+        .ant-form-item-control{
+            width: 232px;
+        }
     }
 }
 
