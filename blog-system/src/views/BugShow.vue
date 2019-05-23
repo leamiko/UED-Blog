@@ -17,19 +17,19 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       model: []
-    };
+    }
   },
-  mounted() {
-    this.model = this.$route.params.entity;
+  mounted () {
+    this.model = this.$route.params.entity
     console.log(this.model)
   },
   methods: {
-    
+
   }
-};
+}
 </script>
 
 <style scoped>
@@ -40,4 +40,3 @@ h2, p{
     margin-right: 18px;
 }
 </style>
-

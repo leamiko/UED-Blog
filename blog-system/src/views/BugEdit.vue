@@ -1,18 +1,27 @@
 <template>
   <div class="edit_form">
-    <a-form :form="form" @submit="handleSubmit">
-      <a-form-item v-bind="formItemLayout" label="名称">
+    <a-form
+      :form="form"
+      @submit="handleSubmit"
+    >
+      <a-form-item
+        v-bind="formItemLayout"
+        label="名称"
+      >
         <a-input v-decorator="[
           'model.title',
           {
             rules: [{
-              required: true, message: '请输入bug名称!', 
+              required: true, message: '请输入bug名称!',
             }],
             initialValue:model.title
           }
         ]" />
       </a-form-item>
-      <a-form-item v-bind="formItemLayout" label="关键词">
+      <a-form-item
+        v-bind="formItemLayout"
+        label="关键词"
+      >
         <a-input v-decorator="[
           'model.keyword',
           {
@@ -23,8 +32,15 @@
           }
         ]" />
       </a-form-item>
-      <a-form-item v-bind="formItemLayout" label="内容">
-        <quill-editor  v-model="model.content" ref="myTextEditor"  :options="editorOption">
+      <a-form-item
+        v-bind="formItemLayout"
+        label="内容"
+      >
+        <quill-editor
+          v-model="model.content"
+          ref="myTextEditor"
+          :options="editorOption"
+        >
         </quill-editor>
         <!-- <a-input v-decorator="[
           'model.content',
@@ -36,19 +52,32 @@
           }
         ]" @blur="handleConfirmBlur" /> -->
       </a-form-item>
-      <a-form-item v-bind="formItemLayout" label="状态">
-        <a-radio-group name="radioGroup" v-decorator="[
+      <a-form-item
+        v-bind="formItemLayout"
+        label="状态"
+      >
+        <a-radio-group
+          name="radioGroup"
+          v-decorator="[
         'model.bugStatus',{
             rules: [{ required: true, message: '请选择状态!' }],
             initialValue:model.bugStatus
         }
-        ]">
+        ]"
+        >
           <a-radio :value="true">已解决</a-radio>
           <a-radio :value="false">未解决</a-radio>
         </a-radio-group>
       </a-form-item>
-      <a-form-item v-bind="formItemLayout" label="解决方案">
-        <quill-editor  v-model="model.bugSolution" ref="myTextEditor"  :options="editorOption">
+      <a-form-item
+        v-bind="formItemLayout"
+        label="解决方案"
+      >
+        <quill-editor
+          v-model="model.bugSolution"
+          ref="myTextEditor"
+          :options="editorOption"
+        >
         </quill-editor>
         <!-- <a-textarea v-decorator="[
           'model.bugSolution',
@@ -57,7 +86,10 @@
           }
         ]" :autosize="{ minRows: 2, maxRows: 6 }" /> -->
       </a-form-item>
-      <a-form-item v-bind="formItemLayout" label="作者">
+      <a-form-item
+        v-bind="formItemLayout"
+        label="作者"
+      >
         <a-input v-decorator="[
           'model.author',
           {
@@ -68,7 +100,10 @@
         </a-input>
       </a-form-item>
       <a-form-item v-bind="tailFormItemLayout">
-        <a-button type="primary" html-type="submit">
+        <a-button
+          type="primary"
+          html-type="submit"
+        >
           确定
         </a-button>
       </a-form-item>
@@ -78,10 +113,10 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        editorOption: {
+export default {
+  data () {
+    return {
+      editorOption: {
         //   modules: {
         //     toolbar: [
         //       ['bold', 'italic', 'underline', 'strike'],
@@ -133,84 +168,83 @@
         //       highlight: text => hljs.highlightAuto(text).value
         //     }
         //   }
-        },
-        confirmDirty: false,
-        model: {},
-        autoCompleteResult: [],
-        formItemLayout: {
-          labelCol: {
-            xs: {
-              span: 24
-            },
-            sm: {
-              span: 5
-            },
+      },
+      confirmDirty: false,
+      model: {},
+      autoCompleteResult: [],
+      formItemLayout: {
+        labelCol: {
+          xs: {
+            span: 24
           },
-          wrapperCol: {
-            xs: {
-              span: 24
-            },
-            sm: {
-              span: 13
-            },
-          },
-        },
-        tailFormItemLayout: {
-          wrapperCol: {
-            xs: {
-              span: 24,
-              offset: 0,
-            },
-            sm: {
-              span: 16,
-              offset: 8,
-            },
-          },
-        },
-      };
-    },
-    beforeCreate() {
-      this.form = this.$form.createForm(this);
-
-    },
-    mounted() {
-      this.model = this.$route.params.entity;
-      this.model.bugStatus = this.model.bugStatus == '已解决' ? true : false;
-      console.log(this.model);
-    },
-    methods: {
-      handleSubmit(e) {
-        let flag;
-        let params;
-        e.preventDefault();
-        this.form.validateFieldsAndScroll((err, values) => {
-          if (!err) {
-            flag = true;
-            console.log('Received values of form: ', values);
-            params = values.model;
+          sm: {
+            span: 5
           }
-        });
-        if (flag) {
-          params.id = this.model._id;
-          params.content = this.model.content;
-          params.bugSolution = this.model.bugSolution;
-          this.update(params);
+        },
+        wrapperCol: {
+          xs: {
+            span: 24
+          },
+          sm: {
+            span: 13
+          }
         }
       },
-      handleConfirmBlur(e) {
-        const value = e.target.value;
-        this.confirmDirty = this.confirmDirty || !!value;
-      },
-
-      // 更新表单
-      update: async function (data) {
-        let url = this.api.updateBug;
-        const res = await this.$http.post(url, data);
-        if (res.message == 'success') {
-          history.back(-1);
+      tailFormItemLayout: {
+        wrapperCol: {
+          xs: {
+            span: 24,
+            offset: 0
+          },
+          sm: {
+            span: 16,
+            offset: 8
+          }
         }
       }
-
+    }
+  },
+  beforeCreate () {
+    this.form = this.$form.createForm(this)
+  },
+  mounted () {
+    this.model = this.$route.params.entity
+    this.model.bugStatus = this.model.bugStatus === '已解决'
+    console.log(this.model)
+  },
+  methods: {
+    handleSubmit (e) {
+      let flag
+      let params
+      e.preventDefault()
+      this.form.validateFieldsAndScroll((err, values) => {
+        if (!err) {
+          flag = true
+          console.log('Received values of form: ', values)
+          params = values.model
+        }
+      })
+      if (flag) {
+        params.id = this.model._id
+        params.content = this.model.content
+        params.bugSolution = this.model.bugSolution
+        this.update(params)
+      }
     },
-  };
+    handleConfirmBlur (e) {
+      const value = e.target.value
+      this.confirmDirty = this.confirmDirty || !!value
+    },
+
+    // 更新表单
+    update: async function (data) {
+      let url = this.api.updateBug
+      const res = await this.$http.post(url, data)
+      if (res.message === 'success') {
+        history.back(-1)
+      }
+    }
+
+  }
+}
 </script>
