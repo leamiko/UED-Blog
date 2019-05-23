@@ -1,9 +1,13 @@
 <template>
-  <div class="ant-page scroll-content">
-    <div id="components-form-demo-advanced-search">
+  <div>
+    <div class="add_row">
+      <span>字典管理</span>
+      <a-button type="primary" icon="plus" @click="AddModal = true" >新增</a-button>
+    </div>
+    <div class="select_block" id="components-form-demo-advanced-search">
       <a-form class="ant-advanced-search-form" :form="searchform" @submit="handleSearch">
         <a-row :gutter="24">
-          <a-col :span="12">
+          <a-col :span="7">
             <a-form-item v-bind="searchformItemLayout" :label="`字典名称:`">
               <a-input v-decorator="[ `name`, { rules: [{ required: false, message: '请输入字典名称!', }], } ]" placeholder="请输入字典名称"/>
             </a-form-item>
@@ -24,10 +28,10 @@
             </a-form-item>
           </a-col> -->
         </a-row>
-        <a-row :gutter="24">
+        <!-- <a-row :gutter="24">
           <a-col :span="12" :style="{ textAlign: 'left' }">
             <a-button type="primary" icon="plus" @click="AddModal = true"> 新建 </a-button> &emsp;
-            <!-- <a-button> 批量操作 </a-button> &emsp;
+            <a-button> 批量操作 </a-button> &emsp;
             <a-dropdown :trigger="['click']">
               <a-menu slot="overlay" @click="handleMenuClick">
                 <a-menu-item key="1"> 操作1 </a-menu-item>
@@ -36,27 +40,32 @@
               </a-menu>
               <a-button> 更多操作 <a-icon type="down" />
               </a-button>
-            </a-dropdown> -->
+            </a-dropdown>
           </a-col>
-          <a-col :span="12" :style="{ textAlign: 'right' }">
-            <a-button type="primary" html-type="submit"> 查询 </a-button>
-            <a-button :style="{ marginLeft: '8px' }" @click="handleReset" > 重置 </a-button>
-            <!-- <a :style="{ marginLeft: '8px', fontSize: '12px' }" @click="toggle" > {{expand ? '收起' : '展开'}} <a-icon :type="expand ? 'up' : 'down'" /></a> -->
+        </a-row> -->
+        <a-row>
+          <a-col :span="24" :style="{ textAlign: 'right' }" >
+            <a-button type="primary" html-type="submit" > 查询 </a-button>
+            <a-button :style="{ marginLeft: '8px' }" @click="handleReset" > 清空 </a-button>
+            <!-- <a :style="{ marginLeft: '8px', fontSize: '12px' }" @click="toggle" > 折叠
+              <a-icon :type="expand ? 'up' : 'down'" />
+            </a> -->
           </a-col>
         </a-row>
       </a-form>
-      <div class="search-result-list scroll-content">
-        <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :dataSource="data" :columns="columns" :rowKey:="columns.key" :loading="loading">
-          <template slot="operation" slot-scope="text, record">
-            <a @click="editDictionary(record)"> 编辑 </a>
-            <a @click="showDictionary(record)"> 查看 </a>
-            <a @click="delDictionary(record.key)"> 删除 </a>
-            <!-- <a-popconfirm v-if="data.length" title="确定删除该项字典库?" cancelText="取消" okText="确定" @confirm="() => onDelete(record.key)">
-              <a>删除</a>
-            </a-popconfirm> -->
-          </template>
-        </a-table>
-      </div>
+    </div>
+
+    <div class="tables">
+      <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :dataSource="data" :columns="columns" :rowKey:="columns.key" :loading="loading">
+        <template slot="operation" slot-scope="text, record">
+          <a @click="editDictionary(record)" class="right_gap"> 编辑 </a>
+          <a @click="showDictionary(record)" class="right_gap"> 查看 </a>
+          <a @click="delDictionary(record.key)"> 删除 </a>
+          <!-- <a-popconfirm v-if="data.length" title="确定删除该项字典库?" cancelText="取消" okText="确定" @confirm="() => onDelete(record.key)">
+            <a>删除</a>
+          </a-popconfirm> -->
+        </template>
+      </a-table>
     </div>
 
     <!-- 模态框 -->
@@ -141,10 +150,6 @@ export default {
       searchInput: null,
       selectedRowKeys: [],
       columns: [
-        // {
-        //   title: 'KEY',
-        //   dataIndex: 'key'
-        // },
         {
           title: '字典名称',
           dataIndex: 'name'
@@ -397,46 +402,46 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-::-webkit-scrollbar {
-  width: 6px;
-  height: 2px;
-  background: white;
-  border-radius: 10px;
-}
+// ::-webkit-scrollbar {
+//   width: 6px;
+//   height: 2px;
+//   background: white;
+//   border-radius: 10px;
+// }
 
-::-webkit-scrollbar-thumb {
-  display: block;
-  width: 6px;
-  margin: 0 auto;
-  border-radius: 10px;
-  background: #ccc;
-}
+// ::-webkit-scrollbar-thumb {
+//   display: block;
+//   width: 6px;
+//   margin: 0 auto;
+//   border-radius: 10px;
+//   background: #ccc;
+// }
 
-.scroll-content {
-  overflow-y: auto;
-}
+// .scroll-content {
+//   overflow-y: auto;
+// }
 
-.ant-page {
-  height: 100%;
+// .ant-page {
+//   height: 100%;
 
-  > div {
-    @extend .ant-page;
-  }
+//   > div {
+//     @extend .ant-page;
+//   }
 
-  .search-result-list {
-    height: calc( 100% - 175px );
-  }
-}
+//   .search-result-list {
+//     height: calc( 100% - 175px );
+//   }
+// }
 
-.ant-advanced-search-form {
-  padding: 24px;
-}
+// .ant-advanced-search-form {
+//   padding: 24px;
+// }
 
-.ant-advanced-search-form .ant-form-item {
-  display: flex;
-}
+// .ant-advanced-search-form .ant-form-item {
+//   display: flex;
+// }
 
-.ant-advanced-search-form .ant-form-item-control-wrapper {
-  flex: 1;
-}
+// .ant-advanced-search-form .ant-form-item-control-wrapper {
+//   flex: 1;
+// }
 </style>
