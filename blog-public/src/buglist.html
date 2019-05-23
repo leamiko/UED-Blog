@@ -74,23 +74,21 @@
             </div>
         </div>
         <div class="container_custom buglist_content row">
-            <div class="buglist_content_item col-md-4" v-for="(item, index) in bugListData" :key="index">
-                <div class="buglist_content_item_wrapper">
-                    <h5 class="bugItem_title">这是一个bug的标题{{item.name}} </h5>
+            <div v-if="!bugListData.length" style="text-align:center;">空空如也</div>
+            <div class="buglist_content_item col-md-4" v-for="(item, index) in bugListData" :key="index"
+                @click="goDetail(item)">
+                <div class="buglist_content_item_wrapper" v-if="bugListData.length">
+                    <h5 class="bugItem_title">{{item.title}}</h5>
                     <div class="bugItem_content">
-                        zdsajlfjklajskldjfljljwebug的内容
-                        zdsajlfjklajskldjfljljwebug的内容zdsajlfjklajskldjfljljwebug的内容
+                        {{item.content}}
                     </div>
                     <div class="bugItem_ortherInfo">
                         <div>
-                            <div class="bugItem_ortherInfo_authorInfo">杜明亮</div>
-                            <div class="bugItem_ortherInfo_timeInfo">2019-03-05</div>
+                            <div class="bugItem_ortherInfo_authorInfo">{{item.author}}</div>
+                            <div class="bugItem_ortherInfo_timeInfo">{{item.createAt | datetimeFormat}}</div>
                         </div>
                         <div style="max-width:220px;">
-                            <span class="bugItem_ortherInfo_keyword">JS</span>
-                            <span class="bugItem_ortherInfo_keyword">CSS</span>
-                            <span class="bugItem_ortherInfo_keyword">CSS</span>
-                            <span class="bugItem_ortherInfo_keyword">CSS</span>
+                            <span class="bugItem_ortherInfo_keyword">{{item.keyword}}</span>
                         </div>
                     </div>
                 </div>
@@ -122,31 +120,66 @@
     <script src="./js/backtop.js"></script>
     <script src="./js/article.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="./js/axios.min.js"></script>
     <script>
-        $(function () {
-            $(".v-d > div").eq(0).on('click', () => {
-                window.location.href = "./detail-3.html"
-            })
-        })
+        // $(function () {
+        //     $(".v-d > div").eq(0).on('click', () => {
+        //         window.location.href = "./detail-3.html"
+        //     })
+        // })
         var app = new Vue({
             el: '#app',
             data: {
                 message: 'Hello Vue!',
-                bugListData: [{
-                    name: 1
-                }, {
-                    name: 2
-                }, {
-                    name: 3
-                }, {
-                    name: 4
-                }, {
-                    name: 5
-                }]
+                bugListData: []
+            },
+            mounted() {
+                this.getBugLis();
+            },
+            filters: {
+                datetimeFormat: function (value) {
+                    if (!value) return ''
+                    value = value.toString()
+                    let date = value.split('T')[0];
+                    let time = value.split('T')[1].split('.')[0];
+                    return date + ' ' + time;
+                }
             },
             methods: {
-
-            },
+                getBugLis() {
+                    let params = {
+                        query: {
+                            pageIndex: 1,
+                            pageSize: 10
+                        }
+                    }
+                    axios.post(`http://localhost:3000/bugs/GetBugList`, params)
+                        .then((res) => {
+                            console.log(res.data.data);
+                            if (res.data.data) {
+                                this.bugListData = res.data.data;
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        })
+                },
+                goDetail(row) {
+                    console.log(row._id);
+                    axios.get(`http://localhost:3000/bugs/GetBugDetail`, {
+                            id: row._id
+                        })
+                        .then((res) => {
+                            console.log(res.data.data);
+                            if (res.data.data) {
+                                // this.bugListData = res.data.data;
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        })
+                }
+            }
         })
     </script>
 </body>

@@ -122,6 +122,7 @@
 }
 
 .buglist_content {
+    min-height: 500px;
     padding: 30px 0;
 }
 
