@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="ant-page">
     <div class="add_row">
       <span>字典管理</span>
       <a-button type="primary" icon="plus" @click="AddModal = true" >新增</a-button>
@@ -12,58 +12,23 @@
               <a-input v-decorator="[ `name`, { rules: [{ required: false, message: '请输入字典名称!', }], } ]" placeholder="请输入字典名称"/>
             </a-form-item>
           </a-col>
-          <!-- <a-col :span="12">
-            <a-form-item v-bind="searchformItemLayout" :label="`关键词：`">
-              <a-input v-decorator="[ `keyword`, { rules: [{ required: false, message: 'Input something!', }], } ]" placeholder="请输入"/>
-            </a-form-item>
-          </a-col>
-          <a-col :span="12" :style="{'display': count == 3 ? 'none' : 'block'}">
-            <a-form-item v-bind="searchformItemLayout" :label="`状态：`">
-              <a-input v-decorator="[ `bugStatus`, { rules: [{ required: false, message: 'Input something!', }], } ]" placeholder="请输入"/>
-            </a-form-item>
-          </a-col>
-          <a-col :span="12" :style="{'display': count == 3 ? 'none' : 'block'}">
-            <a-form-item v-bind="searchformItemLayout" :label="`作者：`">
-              <a-input v-decorator="[ `author`, { rules: [{ required: false, message: 'Input something!', }], } ]" placeholder="请输入"/>
-            </a-form-item>
-          </a-col> -->
         </a-row>
-        <!-- <a-row :gutter="24">
-          <a-col :span="12" :style="{ textAlign: 'left' }">
-            <a-button type="primary" icon="plus" @click="AddModal = true"> 新建 </a-button> &emsp;
-            <a-button> 批量操作 </a-button> &emsp;
-            <a-dropdown :trigger="['click']">
-              <a-menu slot="overlay" @click="handleMenuClick">
-                <a-menu-item key="1"> 操作1 </a-menu-item>
-                <a-menu-item key="2"> 操作2 </a-menu-item>
-                <a-menu-item key="3"> 操作3 </a-menu-item>
-              </a-menu>
-              <a-button> 更多操作 <a-icon type="down" />
-              </a-button>
-            </a-dropdown>
-          </a-col>
-        </a-row> -->
         <a-row>
           <a-col :span="24" :style="{ textAlign: 'right' }" >
             <a-button type="primary" html-type="submit" > 查询 </a-button>
             <a-button :style="{ marginLeft: '8px' }" @click="handleReset" > 清空 </a-button>
-            <!-- <a :style="{ marginLeft: '8px', fontSize: '12px' }" @click="toggle" > 折叠
-              <a-icon :type="expand ? 'up' : 'down'" />
-            </a> -->
           </a-col>
         </a-row>
       </a-form>
     </div>
 
+    <!-- 表格 -->
     <div class="tables">
       <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :dataSource="data" :columns="columns" :rowKey:="columns.key" :loading="loading">
         <template slot="operation" slot-scope="text, record">
           <a @click="editDictionary(record)" class="right_gap"> 编辑 </a>
           <a @click="showDictionary(record)" class="right_gap"> 查看 </a>
           <a @click="delDictionary(record.key)"> 删除 </a>
-          <!-- <a-popconfirm v-if="data.length" title="确定删除该项字典库?" cancelText="取消" okText="确定" @confirm="() => onDelete(record.key)">
-            <a>删除</a>
-          </a-popconfirm> -->
         </template>
       </a-table>
     </div>
@@ -75,9 +40,7 @@
         <div class="spin-content">
           <a-form :form="addform">
             <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="所属模块">
-              <a-tree-select :value="addValue" :dropdownStyle="treeConfig" placeholder='请选择' allowClear treeDefaultExpandAll @change="addBelong">
-                <a-tree-select-node :value='tree._id' :title='tree.name' :key='tree._id' v-for="tree in treeData">
-                </a-tree-select-node>
+              <a-tree-select v-model="addValue" :dropdownStyle="treeConfig" placeholder='请选择' allowClear treeDefaultExpandAll :treeData="treeData">
               </a-tree-select>
             </a-form-item>
             <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="字典名称">
@@ -94,9 +57,7 @@
         <div class="spin-content">
           <a-form :form="editform">
             <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="所属模块">
-              <a-tree-select :value="editValue" :dropdownStyle="treeConfig" placeholder='请选择' allowClear treeDefaultExpandAll @change="editBelong">
-                <a-tree-select-node :value='tree._id' :title='tree.name' :key='tree._id' v-for="tree in treeData">
-                </a-tree-select-node>
+              <a-tree-select v-model="editValue" :dropdownStyle="treeConfig" placeholder='请选择' allowClear treeDefaultExpandAll @change="editBelong" :treeData="treeData">
               </a-tree-select>
             </a-form-item>
             <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="字典名称">
@@ -110,14 +71,7 @@
     <!-- 查看 -->
     <a-modal title="查看字典库" v-model="ShowModal" :footer="null">
       <a-spin :spinning="modalloading">
-        <a-tree showLine :defaultExpandedKeys="['0-0-0']" @select="onSelect" v-if="showtreeData && showtreeData.length > 0">
-          <a-tree-node :key="showtreeData[0]._id">
-            <span slot="title" style="color: #1890ff">{{showtreeData[0].name}}</span>
-            <a-tree-node :title="item.name" :key="item._id" v-for="item in showtreeData[0].children">
-              <a-tree-node :title="items.name" :key="items._id" v-for="items in item.children"/>
-            </a-tree-node>
-          </a-tree-node>
-        </a-tree>
+        <a-tree showLine :defaultExpandedKeys="['0-0-0']" @select="onSelect" :treeData="showtreeData"></a-tree>
       </a-spin>
     </a-modal>
   </div>
@@ -126,13 +80,12 @@
 <script>
 import { setTimeout } from 'timers'
 import moment from 'moment'
+import { log } from 'util';
 const BASE_URL = 'http://ued.lunz.cn/api/'
 export default {
   data () {
     return {
       loading: false,
-      // expand: false,
-      // count: 3,
       searchform: this.$form.createForm(this),
       searchformItemLayout: {
         labelCol: {
@@ -232,6 +185,7 @@ export default {
           description: res.message
         })
         this.getDictionaryList()
+        this.getAddList()
       } else {
         this.modalloading = false
         this.error(res.message)
@@ -267,38 +221,24 @@ export default {
       }
     },
     async getAddList () {
-      const blogURL = BASE_URL + 'dictionary/GetModelList'
+      // const blogURL = BASE_URL + 'dictionary/GetModelList'
+      const blogURL = BASE_URL + 'dictionary/GetDictionaryTree'
       const res = await this.$http.post(blogURL)
       if (res.status_code === 200) {
-        this.treeData = res.data
+        this.treeData = this.changeTreeNodeData(res.data)
       } else {
         this.error(res.message)
       }
     },
-    // 检索栏
-    // handleMenuClick (e) {
-    //   console.log('click', e)
-    // },
     handleSearch (e) {
       // 阻止事件冒泡
       e.preventDefault()
       this.getDictionaryList()
-      // this.form.validateFields((error, values) => {
-      //   console.log('Received values of form: ', values)
-      // })
     },
     // 搜索栏重置
     handleReset () {
       this.searchform.resetFields()
     },
-    // toggle () {
-    //   if (this.expand) {
-    //     this.count = 3
-    //   } else {
-    //     this.count = 5
-    //   }
-    //   this.expand = !this.expand
-    // },
     // 选中
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
@@ -315,6 +255,7 @@ export default {
           description: res.message
         })
         this.getDictionaryList()
+        this.getAddList()
       } else {
         this.loading = false
         this.error(res.message)
@@ -337,9 +278,6 @@ export default {
       })
     },
     // 新增
-    addBelong (value) {
-      this.addValue = value
-    },
     addTreeNode () {
       this.addform.validateFields(
         (err) => {
@@ -361,9 +299,6 @@ export default {
         this.modalloading = false
       }, 300)
     },
-    editBelong (value) {
-      this.editValue = value
-    },
     editTreeNode () {
       this.editform.validateFields(
         (err) => {
@@ -383,15 +318,26 @@ export default {
       const blogURL = BASE_URL + 'dictionary/GetDictionaryTree'
       const res = await this.$http.post(blogURL, params)
       if (res.status_code === 200) {
-        this.showtreeData = res.data
+        this.showtreeData = this.changeTreeNodeData(res.data)
         this.modalloading = false
       } else {
         this.modalloading = false
         this.error(res.message)
       }
     },
+    changeTreeNodeData (data) {
+      data.forEach(element => {
+        element['title'] = element.name
+        element['value'] = element._id
+        element['key'] = element.name
+        if (element.children && element.children.length > 0) {
+          this.changeTreeNodeData(element.children)
+        }
+      })
+      return data
+    },
     onSelect (selectedKeys, info) {
-      console.log('selected', selectedKeys, info)
+      // console.log('selected', selectedKeys, info)
     }
   },
   mounted () {
@@ -402,46 +348,4 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-// ::-webkit-scrollbar {
-//   width: 6px;
-//   height: 2px;
-//   background: white;
-//   border-radius: 10px;
-// }
-
-// ::-webkit-scrollbar-thumb {
-//   display: block;
-//   width: 6px;
-//   margin: 0 auto;
-//   border-radius: 10px;
-//   background: #ccc;
-// }
-
-// .scroll-content {
-//   overflow-y: auto;
-// }
-
-// .ant-page {
-//   height: 100%;
-
-//   > div {
-//     @extend .ant-page;
-//   }
-
-//   .search-result-list {
-//     height: calc( 100% - 175px );
-//   }
-// }
-
-// .ant-advanced-search-form {
-//   padding: 24px;
-// }
-
-// .ant-advanced-search-form .ant-form-item {
-//   display: flex;
-// }
-
-// .ant-advanced-search-form .ant-form-item-control-wrapper {
-//   flex: 1;
-// }
 </style>
