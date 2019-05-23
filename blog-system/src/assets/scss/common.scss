@@ -1,8 +1,7 @@
 //bug 
 .edit_form {
-    // width: 500px;
     background: #fff;
-    margin: 0 auto;
+    padding: 24px 0;
     overflow: hidden;
 }
 
@@ -16,9 +15,75 @@
     overflow: auto;
 }
 
+.ant-checkbox-inner:after{
+    left: 3.571429px;
+    top: 1.142857px;  
+}
+
+
 .margin_bottom0 {
     margin-bottom: 0 !important;
 }
-.right_gap{
-    margin-right: 15px;
+
+.right_gap {
+    margin-right: 8px;
+    border-right: 1px solid #E9E9E9;
+    padding-right: 8px;
+}
+
+// add-row
+.add_row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    margin-bottom: 16px;
+
+    span:first-child {
+        font-size: 22px;
+        color: #000000;
+        opacity: 0.85;
+    }
+}
+
+// table
+.tables {
+    background-color: #fff;
+}
+
+// select
+.select_block {
+    margin-bottom: 14px;
+    padding: 25px 16px 20px 16px;
+    background: rgba(255, 255, 255, 1);
+    border-radius: 4px;
+    .ant-form-item-label{
+        width: 100px;
+        margin-right: 20px;
+    }
+    .ant-col-7{
+        .ant-form-item-control{
+            width: 232px;
+        }
+    }
+}
+
+.ant-advanced-search-form .ant-form-item {
+    display: flex;
+}
+
+.ant-advanced-search-form .ant-form-item-control-wrapper {
+    flex: 1;
+}
+
+#components-form-demo-advanced-search .ant-form {
+    max-width: none;
+}
+
+
+
+
+// pagination
+.ant-table-pagination {
+    margin-right: 15px !important;
 }
