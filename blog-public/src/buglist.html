@@ -76,7 +76,7 @@
         <div class="container_custom buglist_content row">
             <div v-if="!bugListData.length" style="text-align:center;">空空如也</div>
             <div class="buglist_content_item col-md-4" v-for="(item, index) in bugListData" :key="index"
-                @click="goDetail(item)">
+                @click="goDetail(item,index)">
                 <div class="buglist_content_item_wrapper" v-if="bugListData.length">
                     <h5 class="bugItem_title">{{item.title}}</h5>
                     <div class="bugItem_content">
@@ -164,20 +164,24 @@
                             console.log(err);
                         })
                 },
-                goDetail(row) {
+                goDetail(row, index) {
                     console.log(row._id);
-                    axios.get(`http://localhost:3000/bugs/GetBugDetail`, {
-                            id: row._id
-                        })
-                        .then((res) => {
-                            console.log(res.data.data);
-                            if (res.data.data) {
-                                // this.bugListData = res.data.data;
-                            }
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                        })
+                    window.open(`bugdetail.html?id=${row._id}`);
+
+                    // axios.get(`http://localhost:3000/bugs/GetBugDetail`, {
+                    //         params: {
+                    //             bugId: row._id
+                    //         }
+                    //     })
+                    //     .then((res) => {
+                    //         console.log(res.data.data);
+                    //         if (res.data.data) {
+                    //             window.open(`bugdetail.html?id=${}`);
+                    //         }
+                    //     })
+                    //     .catch((err) => {
+                    //         console.log(err);
+                    //     })
                 }
             }
         })

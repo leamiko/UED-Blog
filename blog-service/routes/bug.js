@@ -46,17 +46,19 @@ router.post('/AddBugItems', (req, res, next) => {
   )
 })
 // 根据bug条目id查看bug详情
-router.get('/GetBugDetail', async (req, res) => {
+router.get('/GetBugDetail', (req, res) => {
+  let bid = req.query.bugId
   Bug.findOne(
     {
-      _id: req.body.id
+      _id: bid
     },
     (err, data) => {
       if (data) {
+        console.log(data)
         return res.json({
           status_code: 200,
           message: '获取成功！',
-          data: blog
+          data: data
         })
       }
       if (err) {
