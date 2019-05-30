@@ -151,7 +151,11 @@
     <script src="./js/index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="./js/axios.min.js"></script>
-    <script>
+    <script type="module">
+        import {
+            axiosGet,
+            axiosPost
+        } from '../src/js/api.js'
         var app = new Vue({
             el: '#app',
             data: {
@@ -176,18 +180,16 @@
                     let _id = urlParam.split('id=')[1];
                     console.log(_id);
                     if (!_id) return;
-                    axios.get(`http://localhost:3000/bugs/GetBugDetail`, {
+                    axiosGet(`bugs/GetBugDetail`, {
                             params: {
                                 bugId: _id
                             }
-                        })
-                        .then((res) => {
-                            console.log(res.data.data);
-                            if (res.data.data) {
-                                this.bugDetailData = res.data.data;
+                        },(res) => {
+                            console.log(res.data);
+                            if (res.data) {
+                                this.bugDetailData = res.data;
                             }
-                        })
-                        .catch((err) => {
+                        },(err) => {
                             console.log(err);
                         })
                 }

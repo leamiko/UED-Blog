@@ -121,12 +121,12 @@
     <script src="./js/article.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="./js/axios.min.js"></script>
-    <script>
-        // $(function () {
-        //     $(".v-d > div").eq(0).on('click', () => {
-        //         window.location.href = "./detail-3.html"
-        //     })
-        // })
+    <!-- <script type="module" src="./js/api.js"></script> -->
+    <script type="module">
+        import {
+            axiosGet,
+            axiosPost
+        } from '../src/js/api.js'
         var app = new Vue({
             el: '#app',
             data: {
@@ -134,7 +134,7 @@
                 bugListData: []
             },
             mounted() {
-                this.getBugLis();
+                this.getBugList();
             },
             filters: {
                 datetimeFormat: function (value) {
@@ -146,42 +146,24 @@
                 }
             },
             methods: {
-                getBugLis() {
+                getBugList() {
                     let params = {
                         query: {
                             pageIndex: 1,
                             pageSize: 10
                         }
                     }
-                    axios.post(`http://localhost:3000/bugs/GetBugList`, params)
-                        .then((res) => {
-                            console.log(res.data.data);
-                            if (res.data.data) {
-                                this.bugListData = res.data.data;
-                            }
-                        })
-                        .catch((err) => {
+                    axiosPost(`bugs/GetBugList`, params,(res) => {
+                        if(res.data){
+                            this.bugListData=res.data;
+                        }
+                        },(err) => {
                             console.log(err);
                         })
                 },
                 goDetail(row, index) {
                     console.log(row._id);
                     window.open(`bugdetail.html?id=${row._id}`);
-
-                    // axios.get(`http://localhost:3000/bugs/GetBugDetail`, {
-                    //         params: {
-                    //             bugId: row._id
-                    //         }
-                    //     })
-                    //     .then((res) => {
-                    //         console.log(res.data.data);
-                    //         if (res.data.data) {
-                    //             window.open(`bugdetail.html?id=${}`);
-                    //         }
-                    //     })
-                    //     .catch((err) => {
-                    //         console.log(err);
-                    //     })
                 }
             }
         })
