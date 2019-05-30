@@ -1,3 +1,11 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+}
+
 .public-header .navbar {
     background-image: none;
 }
@@ -179,4 +187,122 @@
     padding: 2.5px 10px;
     margin-bottom: 5px;
     user-select: none;
+}
+
+.bugDetailContainer {
+    position: absolute;
+    height: 867px;
+    top: 75px;
+    left: 50%;
+    transform: translateX(-50%);
+    overflow-y: auto;
+    border-radius: 4px;
+}
+
+.bugDetail {
+    position: relative;
+    /* top: 78px;
+    left: 50%;
+    transform: translateX(-50%); */
+}
+
+.bugDetail_content {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    background-color: #fff;
+    border-radius: 4px;
+    padding: 30px 0;
+}
+
+.bugDetail_content_top {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid #E4E4E4;
+}
+
+.bugDetail_content_top .bugTitle {
+    /* height: 28px; */
+    font-size: 20px;
+    font-family: HelveticaNeue-Medium;
+    font-weight: 500;
+    color: rgba(48, 49, 51, 1);
+    line-height: 25px;
+    margin-bottom: 10px;
+}
+
+.bugDetail_content_top .bugUserInfoWrap {
+    /* height: 16px; */
+    font-size: 14px;
+    font-family: HelveticaNeue;
+    color: rgba(102, 102, 102, 1);
+    line-height: 16px;
+}
+
+.bugDetail_content_top .bugUserInfoWrap .keywordsWrap {
+    display: inline-flex;
+}
+
+.bugDetail_content_top .bugUserInfoWrap .keywordsWrap span {
+    display: inline-flex;
+    border: 1px solid #CCCCCC;
+    padding: 0 10px;
+    border-radius: 25px;
+    margin-right: 5px;
+}
+
+.bugDetail_content_top .bugUserInfoWrap img.img_userHeader {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.bugDetail_content_top .bugUserInfoWrap .text_userName {
+    font-weight: 600;
+}
+
+.bugDetail_content_top .bugUserInfoWrap .text_time {
+    font-weight: 500;
+    font-size: 12px;
+    margin-right: 10px;
+}
+
+
+.bugDetail_content_center {
+    padding: 20px 0;
+}
+
+.bugDetail_content_center .bugdetail_bugContent {
+    padding-bottom: 30px;
+}
+
+.bugDetail_content_center .content_titleItem {
+    position: relative;
+    display: inline-flex;
+    justify-items: center;
+    height: 30px;
+    padding: 3px 23px 5px 10px;
+    background-color: #EAEEFF;
+    font-size: 14px;
+    font-family: PingFangSC-Medium;
+    font-weight: 500;
+    color: rgba(86, 71, 218, 1);
+}
+
+.bugDetail_content_center .content_titleItem:after {
+    content: '';
+    position: absolute;
+    left: 10px;
+    bottom: 5px;
+    display: inline-flex;
+    width: 40px;
+    height: 1px;
+    background: linear-gradient(114deg, rgba(74, 97, 220, 1) 0%, rgba(111, 25, 215, 1) 100%);
+}
+
+.bugDetail_content_center .bugdetail_bugContent .bugdetail_bugContent_contentText,
+.bugDetail_content_center .bugdetail_resolveContent .bugdetail_resolveContent_contentText {
+    padding: 15px 70px 0;
+    word-wrap: break-word;
 }
