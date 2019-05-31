@@ -18,7 +18,7 @@ import 'quill/dist/quill.bubble.css'
 import './assets/scss/common.scss'
 import './assets/scss/website.scss'
 
-import moment from 'moment';
+import moment from 'moment'
 
 Vue.use(Antd)
 Vue.use(VueQuillEditor)
