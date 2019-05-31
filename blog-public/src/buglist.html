@@ -79,7 +79,7 @@
                 @click="goDetail(item,index)">
                 <div class="buglist_content_item_wrapper" v-if="bugListData.length">
                     <h5 class="bugItem_title">{{item.title}}</h5>
-                    <div class="bugItem_content">
+                    <div class="bugItem_content ellipsis3line">
                         {{item.content}}
                     </div>
                     <div class="bugItem_ortherInfo">
@@ -92,6 +92,15 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="pagenationWrap col-md-12">
+                <ul class="pagenation">
+                    <li><a>《</a></li>
+                    <li v-for="(el, ind) in pagenationData" :key="ind">
+                        <a @click="pageTo(ind)">{{ind+1}}</a>
+                    </li>
+                    <li><a>》</a></li>
+                </ul>
             </div>
         </div>
     </div>
@@ -134,6 +143,17 @@
             },
             mounted() {
                 this.getBugList();
+            },
+            computed: {
+                pagenationData(){
+                    let arr=[];
+                    let pageNum=Math.ceil((this.bugListData.length+1)/9);
+                    for(let i=0;i<pageNum;i++){
+                        arr.push(i);
+                    }
+                    console.log(arr);
+                    return arr;
+                }
             },
             filters: {
                 datetimeFormat: function (value) {

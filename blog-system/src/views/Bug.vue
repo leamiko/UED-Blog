@@ -2,32 +2,23 @@
   <div>
     <div class="add_row">
       <span>Bug管理</span>
-      <a-button
-        type="primary"
-        icon="plus"
-        @click="addBug()"
-      >新增</a-button>
+      <a-button type="primary"
+                icon="plus"
+                @click="addBug()">新增</a-button>
     </div>
     <!-- 筛选 -->
-    <div
-      class="select_block"
-      id="ant-advanced-search-form"
-    >
-      <a-form
-        class="ant-advanced-search-form"
-        :form="form"
-        @submit="handleSearch"
-      >
+    <div class="select_block"
+         id="ant-advanced-search-form">
+      <a-form class="ant-advanced-search-form"
+              :form="form"
+              @submit="handleSearch">
         <a-row :gutter="24">
-          <a-col
-            v-for="i in fiedls"
-            :key="i.id"
-            :span="7"
-            :style="{ display: i.id < count ? 'block' : 'none' }"
-          >
+          <a-col v-for="i in fiedls"
+                 :key="i.id"
+                 :span="7"
+                 :style="{ display: i.id < count ? 'block' : 'none' }">
             <a-form-item :label="`${i.name}`">
-              <a-input
-                v-decorator="[
+              <a-input v-decorator="[
                   `${i.name}`,
                   {
                     rules: [
@@ -38,32 +29,23 @@
                     ]
                   }
                 ]"
-                v-bind:placeholder="'请输入' + i.name"
-              />
+                       v-bind:placeholder="'请输入' + i.name" />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
-          <a-col
-            :span="24"
-            :style="{ textAlign: 'right' }"
-          >
-            <a-button
-              type="primary"
-              html-type="submit"
-            >
+          <a-col :span="24"
+                 :style="{ textAlign: 'right' }">
+            <a-button type="primary"
+                      html-type="submit">
               查询
             </a-button>
-            <a-button
-              :style="{ marginLeft: '8px' }"
-              @click="handleReset"
-            >
+            <a-button :style="{ marginLeft: '8px' }"
+                      @click="handleReset">
               清空
             </a-button>
-            <a
-              :style="{ marginLeft: '8px', fontSize: '12px' }"
-              @click="toggle"
-            >
+            <a :style="{ marginLeft: '8px', fontSize: '12px' }"
+               @click="toggle">
               折叠
               <a-icon :type="expand ? 'up' : 'down'" />
             </a>
@@ -73,29 +55,19 @@
     </div>
     <div class="tables">
       <!-- <a-input /> -->
-      <a-table
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-        :dataSource="data"
-        :columns="columns"
-        :rowKey:="data.key"
-      >
-        <template
-          slot="operation"
-          slot-scope="text, record"
-        >
-          <a
-            class="right_gap"
-            @click="showItems(record)"
-          >查看</a>
-          <a
-            class="right_gap"
-            @click="editItems(record)"
-          >编辑</a>
-          <a-popconfirm
-            v-if="data.length"
-            title="Sure to delete?"
-            @confirm="() => onDelete(record.key)"
-          >
+      <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+               :dataSource="data"
+               :columns="columns"
+               :rowKey:="data.key">
+        <template slot="operation"
+                  slot-scope="text, record">
+          <a class="right_gap"
+             @click="showItems(record)">查看</a>
+          <a class="right_gap"
+             @click="editItems(record)">编辑</a>
+          <a-popconfirm v-if="data.length"
+                        title="Sure to delete?"
+                        @confirm="() => onDelete(record.key)">
             <a>删除</a>
           </a-popconfirm>
 
@@ -179,7 +151,8 @@ export default {
       let url = this.api.bugList
       const res = await this.$http.post(url)
       console.log(res)
-      this.data = res.Data
+      // this.data = res.Data
+      this.data = res.data
       for (let i = 0; i < this.data.length; i++) {
         this.data[i].key = this.data[i]._id
         // this.renderStatus(this.data[i].bugStauts );

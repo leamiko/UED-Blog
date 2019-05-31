@@ -107,16 +107,14 @@
                         <div>
                             <span class="content_titleItem">bug内容</span>
                         </div>
-                        <div class="bugdetail_bugContent_contentText">
-                            {{bugDetailData.content}}
+                        <div v-html="bugDetailData.content" class="bugdetail_bugContent_contentText">
                         </div>
                     </div>
                     <div v-if="bugDetailData.bugSolution" class="bugdetail_resolveContent">
                         <div>
                             <span class="content_titleItem">解决方案</span>
                         </div>
-                        <div class="bugdetail_resolveContent_contentText">
-                            {{bugDetailData.bugSolution}}
+                        <div v-html="bugDetailData.bugSolution" class="bugdetail_resolveContent_contentText">
                         </div>
                     </div>
                 </div>

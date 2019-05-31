@@ -2,9 +2,9 @@
     box-sizing: border-box;
 }
 
-body {
-    overflow: hidden;
-}
+/* body {
+    overflow: scroll;
+} */
 
 .public-header .navbar {
     background-image: none;
@@ -147,6 +147,7 @@ body {
     border: 1px solid rgba(221, 221, 221, 1);
     transition: all .3s ease-in-out;
     padding: 19px 15px;
+    height: 167px;
 }
 
 .buglist_content_item_wrapper:hover {
@@ -305,4 +306,49 @@ body {
 .bugDetail_content_center .bugdetail_resolveContent .bugdetail_resolveContent_contentText {
     padding: 15px 70px 0;
     word-wrap: break-word;
+}
+
+.ellipsis3line {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.pagenationWrap {
+    text-align: right;
+}
+
+ul.pagenation {
+    padding: 0;
+    margin: 0;
+}
+
+ul.pagenation li {
+    display: inline-flex;
+    align-items: center;
+    list-style: none;
+}
+
+ul.pagenation li>a {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    width: 32px;
+    height: 32px;
+    transition: all 0.3s;
+    border: 1px solid #d9d9d9;
+    color: #000;
+    border-radius: 4px;
+    font-family: Arial;
+    margin-right: 8px;
+}
+
+ul.pagenation li>a:hover,
+ul.pagenation li>a.focused {
+    transition: all 0.3s;
+    border-color: #1890ff;
+    color: #1890ff;
 }
