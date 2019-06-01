@@ -51,6 +51,7 @@
             <a-button
               type="primary"
               icon="plus"
+              @click="addArticle()"
             > 新建 </a-button> &emsp;
           </a-col>
           <a-col
@@ -184,6 +185,13 @@ export default {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
     },
 
+    // 新建
+    addArticle (record) {
+      this.$router.push({
+        name: 'articleAdd'
+      })
+    },
+
     // 查询
     handleSearch (e) {
       e.preventDefault()
@@ -266,6 +274,16 @@ export default {
         name: 'articleShow',
         query: {
           blogId: record
+        }
+      })
+    },
+
+    // 编辑
+    editItems (record) {
+      this.$router.push({
+        name: 'articleAdd',
+        query: {
+          articleInfo: record
         }
       })
     },

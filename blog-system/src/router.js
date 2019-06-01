@@ -33,6 +33,11 @@ const router = new Router({
           component: () => import('./views/Article-management/ArticleShow.vue')
         },
         {
+          path: '/article/articleAdd',
+          name: 'articleAdd',
+          component: () => import('./views/Article-management/ArticleAdd.vue')
+        },
+        {
           path: '/bug',
           name: 'bug',
           component: () => import('./views/Bug.vue')
