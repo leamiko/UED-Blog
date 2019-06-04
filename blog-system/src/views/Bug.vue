@@ -17,19 +17,56 @@
                  :key="i.id"
                  :span="7"
                  :style="{ display: i.id < count ? 'block' : 'none' }">
-            <a-form-item :label="`${i.name}`">
+            <a-form-item v-if="i.name!=='状态' && i.name!=='关键词'"
+                         :label="`${i.name}`">
               <a-input v-decorator="[
-                  `${i.name}`,
-                  {
-                    rules: [
-                      {
-                        required: true,
-                        message: 'Input something!'
-                      }
-                    ]
-                  }
-                ]"
+                `${i.field}`,
+                {
+                  rules: [{
+                    required: false,
+                    message: 'Input something!',
+                  }],
+                }
+              ]"
                        v-bind:placeholder="'请输入' + i.name" />
+            </a-form-item>
+            <a-form-item v-if="i.name==='关键词'"
+                         :label="`${i.name}`">
+              <a-select mode="multiple"
+                        notFoundContent="无匹配项"
+                        v-bind:placeholder="'请选择' + i.name"
+                        :tokenSeparators="[',']"
+                        @change="handleChange"
+                        v-decorator="[
+            `${i.field}`,
+            {
+                rules: [{
+                required: false, message: '请输入关键词!',
+                }]
+            }
+            ]">
+                <a-select-option v-for="item in keywordsData"
+                                 :key="item">
+                  {{item}}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+            <a-form-item v-if="i.name==='状态'"
+                         :label="`${i.name}`">
+              <a-select v-decorator="[
+                `${i.field}`,
+                {
+                  rules: [{
+                    required: false,
+                    message: 'Input something!',
+                  }],
+                }
+              ]"
+                        style='width: 120px'
+                        v-bind:placeholder="'请选择' + i.name">
+                <a-select-option value="false">未解决</a-select-option>
+                <a-select-option value="true">已解决</a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
         </a-row>
@@ -46,7 +83,7 @@
             </a-button>
             <a :style="{ marginLeft: '8px', fontSize: '12px' }"
                @click="toggle">
-              折叠
+              {{expand?'折叠':'展开'}}
               <a-icon :type="expand ? 'up' : 'down'" />
             </a>
           </a-col>
@@ -59,6 +96,17 @@
                :dataSource="data"
                :columns="columns"
                :rowKey:="data.key">
+        <span slot="keyword"
+              slot-scope="keyword">
+          <a-tag v-for="tag in keyword"
+                 color="blue"
+                 :key="tag">{{tag}}</a-tag>
+        </span>
+        <span slot="bugStatus"
+              slot-scope="bugStatus"
+              :class="{'statusTrue':bugStatus=='已解决','statusFalse':bugStatus=='未解决'}">
+          {{bugStatus}}
+        </span>
         <template slot="operation"
                   slot-scope="text, record">
           <a class="right_gap"
@@ -84,14 +132,15 @@ export default {
   data () {
     return {
       expand: false,
+      form: this.$form.createForm(this),
       fiedls: [
-        { id: 1, name: '名称' },
-        { id: 2, name: '关键词' },
-        { id: 3, name: '状态' },
-        { id: 4, name: '作者' },
-        { id: 5, name: '采用数' }
+        { id: 1, name: '名称', field: 'title' },
+        { id: 2, name: '关键词', field: 'keyword' },
+        { id: 3, name: '状态', field: 'bugStatus' },
+        { id: 4, name: '作者', field: 'author' }
       ],
       data: [],
+      queryParams: {},
       status: [],
       searchText: '',
       searchInput: null,
@@ -104,23 +153,16 @@ export default {
         title: '关键词',
         dataIndex: 'keyword',
         scopedSlots: {
-          customRender: 'customRender'
-        },
-        onFilter: (value, record) => record.age.toLowerCase().includes(value.toLowerCase())
+          customRender: 'keyword'
+        }
       },
-      //  {
-      //   title: '内容',
-      //   dataIndex: 'content',
-      //   onFilter: (value, record) => record.address.toLowerCase().includes(value.toLowerCase()),
-      // },
       {
         title: '状态',
-        dataIndex: 'bugStatus'
+        dataIndex: 'bugStatus',
+        scopedSlots: {
+          customRender: 'bugStatus'
+        }
       },
-      // {
-      //   title: '解决方案',
-      //   dataIndex: 'bugSolution'
-      // },
       {
         title: '作者',
         dataIndex: 'author'
@@ -137,8 +179,13 @@ export default {
           customRender: 'operation'
         }
       }
-      ]
+      ],
+      keywordsData: []
     }
+  },
+  mounted () {
+    this.getList();
+    this.getBugKeywords();
   },
   computed: {
     count () {
@@ -149,7 +196,7 @@ export default {
     // 获得bug列表
     getList: async function () {
       let url = this.api.bugList
-      const res = await this.$http.post(url)
+      const res = await this.$http.post(url, this.queryParams)
       console.log(res)
       // this.data = res.Data
       this.data = res.data
@@ -164,14 +211,34 @@ export default {
       console.log('selectedRowKeys changed: ', selectedRowKeys)
       this.selectedRowKeys = selectedRowKeys
     },
-    handleSearch (selectedKeys, confirm) {
-      confirm()
-      this.searchText = selectedKeys[0]
+    handleSearch (e) {
+      e.preventDefault();
+      this.form.validateFields((error, values) => {
+        console.log('error', error);
+        console.log('Received values of form: ', values);
+        this.queryParams.filters = values;
+      });
+      this.getList();
     },
-
     handleReset (clearFilters) {
-      clearFilters()
-      this.searchText = ''
+      this.form.resetFields();
+      this.queryParams.filters = {};
+      this.getList();
+    },
+    // 获取bug的关键词
+    getBugKeywords: async function (data) {
+      const res = await this.$http.get(this.api.getBugKeywords);
+      if (res.message == 'success') {
+        console.log(res);
+        let managedData = res.data.map((el) => {
+          return el.label;
+        })
+        this.keywordsData = managedData
+      }
+    },
+    handleChange (e) {
+      console.log(e);
+      this.cacheKeywords = e;
     },
     renderStatus (status) {
       if (status) {
@@ -200,10 +267,7 @@ export default {
     // 点击编辑
     editItems (record) {
       this.$router.push({
-        name: 'edit',
-        params: {
-          entity: record
-        }
+        path: `/bug/edit/${record._id}`
       })
     },
     // 新增bug
@@ -215,58 +279,22 @@ export default {
     // 查看bug
     showItems (record) {
       this.$router.push({
-        name: 'bugShow',
-        params: {
-          entity: record
-        }
+        path: `/bug/bugShow/${record._id}`
       })
     },
     toggle () {
       this.expand = !this.expand
     }
   },
-  mounted () {
-    this.getList()
-  }
-  // data() {
-  //   return {
-  //     sites: [{
-  //       title: '',
-  //       content: ''
-  //     }, ]
-  //   }
-  // },
-  // methods: {
-  //    getList() {
-  //   this.$ajax.post('/bugs/GetBugList').then((res) => {
-  //     console.log('data', res.data.Data);
-  //     this.data = res.data.Data;
-  //   })
-  // },
-
-  //   deleteBug: async function (data) {
-  //     let id = '5cb3e10d65b60425a44005c6'
-  //     let url = this.api.deleteBug;
-  //     const res = await this.$http.post(url, {
-  //       id: id
-  //     });
-  //     console.log(res);
-  //   },
-
-  //   updateBug: async function(){
-  //     let id = this.sites[0]._id;
-  //     let url = this.api.updateBug;
-  //     let params = {
-  //       id: id,
-  //       title: '我是修改后的title',
-  //       content: '我是修改后的content'
-  //     };
-  //     const res = await this.$http.post(url, params);
-  //   }
-  // }
 
 }
 </script>
 
-<style>
+<style scoped>
+.statusTrue {
+  color: #30cc45;
+}
+.statusFalse {
+  color: #fe3401;
+}
 </style>

@@ -97,8 +97,8 @@
                         <span>发布于 </span>
                         <span class="text_time">{{bugDetailData.createAt | datetimeFormat}}</span>
                         <div class="keywordsWrap">
-                            <span>JS</span>
-                            <span>JS</span>
+                            <span class="bugDetail_keyword" style="margin-right: 5px;"
+                                v-for="(word, index) in bugDetailData.keyword" :key="index">{{word}}</span>
                         </div>
                     </div>
                 </div>

@@ -88,7 +88,8 @@
                             <div class="bugItem_ortherInfo_timeInfo">{{item.createAt | datetimeFormat}}</div>
                         </div>
                         <div style="max-width:220px;">
-                            <span class="bugItem_ortherInfo_keyword">{{item.keyword}}</span>
+                            <span class="bugItem_ortherInfo_keyword" style="margin-right: 5px;"
+                                v-for="(word, index) in item.keyword" :key="index">{{word}}</span>
                         </div>
                     </div>
                 </div>
@@ -167,12 +168,11 @@
             methods: {
                 getBugList() {
                     let params = {
-                        query: {
-                            pageIndex: 1,
-                            pageSize: 10
-                        }
+                        pageIndex: 1,
+                        pageSize: 9
                     }
                     axiosPost(`bugs/GetBugList`, params,(res) => {
+                        console.log(res.data);
                         if(res.data){
                             this.bugListData=res.data;
                         }
