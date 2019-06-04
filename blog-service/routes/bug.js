@@ -57,7 +57,7 @@ router.get('/GetBugDetail', (req, res) => {
         console.log(data)
         return res.json({
           status_code: 200,
-          message: '获取成功！',
+          message: 'success',
           data: data
         })
       }
@@ -73,12 +73,31 @@ router.get('/GetBugDetail', (req, res) => {
 })
 // 获取bug列表
 router.post('/GetBugList', async (req, res, next) => {
+  let filters = {
+    deleted: false
+  }
+  if (req.body.filters) {
+    if (req.body.filters.title) {
+      filters.title = new RegExp(req.body.filters.title)
+    }
+    if (req.body.filters.keyword && req.body.filters.keyword.length > 0) {
+      filters.keyword = { $in: req.body.filters.keyword }
+    }
+    if (req.body.filters.bugStatus) {
+      filters.bugStatus = req.body.filters.bugStatus
+    }
+    if (req.body.filters.author) {
+      filters.author = req.body.filters.author
+    }
+  }
+  const count = await Bug.count(filters)
   Bug.find(
-    {},
+    filters,
     null,
     {
-      skip: (req.query.pageIndex - 1) * req.query.pageSize,
-      limit: req.query.pageSize
+      skip: (req.body.pageIndex - 1) * req.body.pageSize,
+      limit: req.body.pageSize,
+      sort: { createdAt: -1 }
     },
     (err, data) => {
       if (err) {
@@ -89,7 +108,8 @@ router.post('/GetBugList', async (req, res, next) => {
         res.json({
           status_code: 200, //状态码   200是成功   其他的码是错误
           message: '获取成功！', //返回的信息
-          data: data ///返回的数据   若没有就是null
+          data: data, ///返回的数据   若没有就是null
+          count: count
         })
       }
     }
@@ -134,6 +154,7 @@ router.post('/DeleteBugById', async (req, res, next) => {
 
 // 新增关键词
 router.post('/AddBugKeywords', async (req, res, next) => {
+  console.log('zou')
   var dataCache = req.body
   // 保存到数据库
   BuKeywords.findOne(
@@ -147,11 +168,10 @@ router.post('/AddBugKeywords', async (req, res, next) => {
       } else {
         BuKeywords.create(dataCache, (err, data) => {
           if (err) throw err
-          res.send({
-            success: true,
-            message: '关键词添加成功！'
+          res.json({
+            status_code: 200,
+            message: 'success'
           })
-          console.log('关键词添加成功！')
         })
       }
     }
@@ -161,7 +181,11 @@ router.post('/AddBugKeywords', async (req, res, next) => {
 router.get('/GetAllBugKeywords', async (req, res, next) => {
   BuKeywords.find({}, (err, data) => {
     if (err) throw err
-    res.json(data)
+    res.json({
+      data: data,
+      status_code: 200,
+      message: 'success'
+    })
     console.log('获取所有关键词成功')
   })
 })
