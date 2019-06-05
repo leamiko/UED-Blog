@@ -4,22 +4,25 @@
     <h2>{{model.title}}</h2>
     <p class="bug-info h6">
       <span class="labels">作者：</span> <span>{{model.author}}</span>
-      <span class="labels">关键词：</span> <span>{{model.keyword}}</span>
+      <span class="labels">关键词：</span>
+      <a-tag v-for="(item, index) in model.keyword"
+             :key="index"
+             :color="colorArr[index]">{{item}}</a-tag>
       <span class="labels">时间：</span> <span>{{model.updateAt | formatDateDay}}</span>
-      <span class="labels">状态：</span> <span>{{model.bugStatus}}</span>
-      <span class="labels">采用数：</span> <span>{{model.useNum}}</span>
+      <!-- <span class="labels">状态：</span> <span>{{model.bugStatus?'已解决':'未解决'}}</span> -->
+      <!-- <span class="labels">采用数：</span> <span>{{model.useNum}}</span> -->
     </p>
     <a-row>
       <a-col class="contentWrap"
              :span="20"
              :offset="2">
         <div>
-          <h3>bug描述</h3>
+          <h3><span class="content-title">内容</span></h3>
           <div class="codeWrap"
                v-html="model.content"></div>
         </div>
         <div v-if="model.bugSolution">
-          <h3>bug解决方案</h3>
+          <h3><span class="content-title">解决方案</span></h3>
           <div class="codeWrap"
                v-html="model.bugSolution"></div>
         </div>
@@ -32,7 +35,8 @@
 export default {
   data () {
     return {
-      model: {}
+      model: {},
+      colorArr: ['pink', 'orange', 'blue', 'red', 'green', 'cyan', 'purple']
     }
   },
   mounted () {
@@ -69,5 +73,22 @@ span.labels {
 }
 .codeWrap {
   padding-left: 30px;
+}
+.contentWrap h3 {
+  margin-bottom: 30px;
+}
+.content-title {
+  font-weight: 600;
+  position: relative;
+  margin-bottom: 30px;
+}
+.content-title:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 100%;
+  height: 3px;
+  background-color: #1890ff;
 }
 </style>

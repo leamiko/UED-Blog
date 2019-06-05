@@ -97,7 +97,7 @@ router.post('/GetBugList', async (req, res, next) => {
     {
       skip: (req.body.pageIndex - 1) * req.body.pageSize,
       limit: req.body.pageSize,
-      sort: { createdAt: -1 }
+      sort: { createAt: -1 }
     },
     (err, data) => {
       if (err) {
