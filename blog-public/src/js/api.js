@@ -9,8 +9,8 @@
 //
 // 需在该引用前引用axios
 
-// const baseUrl = 'http://' // 正式
-const baseUrl = 'http://localhost:3000/' // 本地
+const baseUrl = 'http://ued.lunz.cn/api' // 正式
+// const baseUrl = 'http://localhost:3000/' // 本地
 
 // 参数过滤
 function filterNull(o) {
@@ -57,11 +57,7 @@ function handleAxios(method, url, params, success, failure) {
       }
     })
     .catch(function(err) {
-      //   let res = err.response
-      //   console.log('+++' + err)
-      //   if (err) {
-      //     // window.alert("api error,HTTP CODE: " + err);
-      //   }
+      console.error(err)
     })
 }
 

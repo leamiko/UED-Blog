@@ -8,7 +8,11 @@
             'model.title',
             {
                 rules: [{
-                required: true, message: '请输入bug名称!', 
+                  required: true, 
+                  message: '请输入bug名称!', 
+                },{
+                  max:40,
+                  message: '名称不能超过40个字!', 
                 }],
             }
           ]" />
@@ -24,6 +28,8 @@
             {
                 rules: [{
                 required: true, message: '请输入关键词!',
+                },{
+                  validator:validatorKeywordsLength
                 }],
                 initialValue:model.keyword
             }
@@ -158,6 +164,14 @@ export default {
         this.addBugKeywords();
       }
     },
+    // 自定义表单验证keyword
+    validatorKeywordsLength (rule, value, callback) {
+      if (value.length > 3) {
+        callback('关键词最多选择3个')
+      } else {
+        callback()
+      }
+    },
     handleConfirmBlur (e) {
       const value = e.target.value;
       this.confirmDirty = this.confirmDirty || !!value;
@@ -168,7 +182,10 @@ export default {
       let url = this.api.addBug;
       const res = await this.$http.post(url, data);
       if (res.message == 'success') {
+        this.$message.success('添加成功！');
         history.back(-1);
+      } else {
+        this.$message.error(res.message);
       }
     },
     // 获取bug的关键词

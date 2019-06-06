@@ -49,7 +49,7 @@
     <!-- article -->
     <div id="app" class="buglist">
         <div class="buglist_header_panel">
-            <div class="container_custom">
+            <div class="container_custom bgcolor">
                 <h3 class="buglist_header_panel_title">前端避坑指南</h3>
                 <div class="row form-group">
                     <div class="buglist_header_panel_searchGroup col-md-8">
@@ -90,7 +90,7 @@
             </div>
         </div>
         <div class="container_custom buglist_content row">
-            <div v-if="!bugListData.length" style="text-align:center;">空空如也</div>
+            <div v-if="!bugListData.length" style="text-align:center;font-weight: bold">空空如也</div>
             <div class="buglist_content_item col-md-4" v-for="(item, index) in bugListData" :key="index">
                 <div class="buglist_content_item_wrapper" v-if="bugListData.length" @click="goDetail(item,index)">
                     <img class="bugItemMark"
@@ -99,19 +99,20 @@
                     <div v-html="item.content" class="bugItem_content ellipsis3line">
                         <!-- {{item.content}} -->
                     </div>
+                    <div class="butItem_keywordsInfo">
+                        <span class="bugItem_ortherInfo_keyword"
+                            :style="{color:colorBox[getKwOriIndex(word)].color,background:colorBox[getKwOriIndex(word)].background,borderColor:colorBox[getKwOriIndex(word)].borderColor}"
+                            v-for="(word, index) in item.keyword" :key="index">{{word}}</span>
+                    </div>
                     <div class="bugItem_ortherInfo">
                         <div>
-                            <div class="bugItem_ortherInfo_authorInfo">{{item.author}}</div>
-                            <div class="bugItem_ortherInfo_timeInfo">{{item.createAt | datetimeFormat}}</div>
-                        </div>
-                        <div style="max-width:220px;">
-                            <span class="bugItem_ortherInfo_keyword" style="margin-right: 5px;"
-                                v-for="(word, index) in item.keyword" :key="index">{{word}}</span>
+                            <span class="bugItem_ortherInfo_authorInfo">{{item.author}} </span>
+                            <span class="bugItem_ortherInfo_timeInfo"> {{item.createAt | datetimeFormat}}</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="pagenationWrap col-md-12">
+            <div v-if="bugListData.length" class="pagenationWrap col-md-12">
                 <ul class="pagenation">
                     <li><a @click="prePage" :class="{'disabled':currentPageIndex==1}"><i
                                 class="fa fa-angle-left fa-lg"></i></a>
@@ -166,6 +167,42 @@
                 params: {},
                 activeCondition:'',
                 openTagsStatus:false,
+                colorBox:[{
+                    // pink
+                    color: '#eb2f96',
+                    background: '#fff0f6',
+                    borderColor:' #ffadd2'
+                },{
+                    //green
+                    color: '#52c41a',
+                    background: '#f6ffed',
+                    borderColor: '#b7eb8f',
+                },{
+                    // orange
+                    color: '#fa8c16',
+                    background: '#fff7e6',
+                    borderColor: '#ffd591',
+                },{
+                    // red
+                    color: '#f5222d',
+                    background: '#fff1f0',
+                    borderColor: '#ffa39e',
+                },{
+                    // cyan
+                    color: '#13c2c2',
+                    background: '#e6fffb',
+                    borderColor: '#87e8de',
+                },{
+                    // blue
+                    color: '#1890ff',
+                    background: '#e6f7ff',
+                    borderColor: '#91d5ff',
+                },{
+                    // purple
+                    color: '#722ed1',
+                    background: '#f9f0ff',
+                    borderColor: '#d3adf7',
+                }],
                 keywordsResData:[],
                 kwSearchArr:[],
                 currentPageIndex:'', // 分页器当前页
@@ -284,6 +321,21 @@
                         this.keywordsResData=res.data;
                     })
                 },
+                getKwOriIndex(kw){
+                    let cacheArr=this.keywordsResData.map(el=>{
+                        return el.label;
+                    })
+                    let index=cacheArr.indexOf(kw);
+                    if(index>6){
+                        index=index%6;
+                    }
+                    console.log(index);
+                    if(index==-1){
+                        return 0;
+                    }
+                    return index;
+                },
+                // 筛选条件添加关键词条件
                 addkwToParams(k,i){
                     console.log(i);
                     if(!this.params.filters.keyword){
@@ -310,6 +362,7 @@
                     this.params.pageIndex=pageI+1;
                     this.getBugList();
                 },
+                // 上一页
                 prePage(){
                     if(this.params.pageIndex>1){
                         this.params.pageIndex=this.params.pageIndex-1;
@@ -318,6 +371,7 @@
                     }
                     this.getBugList();
                 },
+                // 下一页
                 nextPage(){
                     if(this.currentPageIndex<this.pagenationData.length){
                         this.params.pageIndex=this.params.pageIndex+1;

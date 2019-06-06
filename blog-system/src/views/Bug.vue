@@ -95,7 +95,8 @@
       <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                :dataSource="data"
                :columns="columns"
-               :rowKey:="data.key">
+               :rowKey="data.key"
+               :locale="{emptyText: '暂无数据'}">
         <span slot="keyword"
               slot-scope="keyword">
           <a-tag v-for="tag in keyword"
@@ -114,7 +115,9 @@
           <a class="right_gap"
              @click="editItems(record)">编辑</a>
           <a-popconfirm v-if="data.length"
-                        title="Sure to delete?"
+                        title="确定删除这条bug吗？"
+                        okText="确定"
+                        cancelText="取消"
                         @confirm="() => onDelete(record.key)">
             <a>删除</a>
           </a-popconfirm>
@@ -167,11 +170,11 @@ export default {
         title: '作者',
         dataIndex: 'author'
       },
-      {
-        title: '采用数',
-        dataIndex: 'useNum',
-        sorter: true
-      },
+      // {
+      //   title: '采用数',
+      //   dataIndex: 'useNum',
+      //   sorter: true
+      // },
       {
         title: '操作',
         dataIndex: 'operation',
@@ -250,7 +253,7 @@ export default {
     },
     // 点击删除
     onDelete (record) {
-      this.deleteBug(record)
+      this.deleteBug(record);
     },
     // 删除方法
     deleteBug: async function (data) {
@@ -259,7 +262,10 @@ export default {
         id: data
       })
       if (res.message === 'success') {
-
+        this.$message.success('删除成功！');
+        this.getList();
+      } else {
+        this.$message.error(res.message);
       }
       console.log(res)
     },
