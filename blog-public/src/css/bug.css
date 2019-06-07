@@ -5,6 +5,9 @@
 /* body {
     overflow: scroll;
 } */
+#canvas {
+    margin-bottom: -5px;
+}
 
 .public-header .navbar {
     background-image: none;
@@ -18,7 +21,8 @@
     padding-right: 15px;
     padding-left: 15px;
     margin-right: auto;
-    margin-left: auto
+    margin-left: auto;
+    transition: all .3s ease;
 }
 
 @media (min-width: 768px) {
@@ -114,6 +118,17 @@
     transition: all .3s ease-in-out;
 }
 
+.link_active {
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-image: linear-gradient(to left, #ffff00, #ffb400);
+    transition: all .3s ease-in-out;
+    width: 100% !important;
+}
+
 .buglist_header_panel_links .linksItem span:hover i.line {
     width: 100%;
 }
@@ -130,7 +145,7 @@
 }
 
 .buglist_content {
-    min-height: 500px;
+    min-height: 683px;
     padding: 30px 0;
 }
 
@@ -141,13 +156,21 @@
 }
 
 .buglist_content_item_wrapper {
+    position: relative;
     cursor: pointer;
     background: rgba(255, 255, 255, 1);
     border-radius: 4px;
     border: 1px solid rgba(221, 221, 221, 1);
     transition: all .3s ease-in-out;
     padding: 19px 15px;
-    height: 167px;
+    min-height: 167px;
+}
+
+.buglist_content_item_wrapper .bugItemMark {
+    position: absolute;
+    width: 80px;
+    top: 0;
+    right: 20px;
 }
 
 .buglist_content_item_wrapper:hover {
@@ -156,9 +179,10 @@
 
 .buglist_content_item_wrapper .bugItem_title {
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 600;
     color: rgba(48, 49, 51, 1);
     margin: 0 0 10px;
+    height: 34px;
 }
 
 .buglist_content_item_wrapper .bugItem_content {
@@ -166,6 +190,11 @@
     color: rgba(153, 153, 153, 1);
     line-height: 17px;
     margin-bottom: 15px;
+    height: 55px;
+}
+
+.buglist_content_item_wrapper .bugItem_content * {
+    margin-top: 0 !important;
 }
 
 .buglist_content_item_wrapper .bugItem_ortherInfo {
@@ -175,18 +204,55 @@
     font-size: 12px;
 }
 
+.keywordsDepository {
+    padding: 0 0 10px 224.63px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.keywordsDepository .tagItem {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    height: 30px;
+    color: #fff;
+    font-size: 12px;
+    padding: 5px 15px;
+    border: 2px solid #fff;
+    border-radius: 25px;
+    margin: 0 10px 10px 0;
+    user-select: none;
+}
+
+.keywordsDepository .tagItemActive {
+    /* color: #ffb400;
+    border: 1px solid #ffb400; */
+    color: #f4c774;
+    border: 2px solid #f4c774;
+}
+
 .bugItem_ortherInfo_authorInfo {
     font-size: 12px;
     font-weight: 600;
 }
 
+.buglist_content_item_wrapper .butItem_keywordsInfo {
+    margin-bottom: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
 .bugItem_ortherInfo_keyword {
+    display: inline-flex;
+    align-items: center;
     background: rgba(255, 255, 255, 1);
-    border-radius: 11px;
+    border-radius: 25px;
     border: 1px solid rgba(204, 204, 204, 1);
     font-size: 14px;
     padding: 2.5px 10px;
     margin-bottom: 5px;
+    margin-left: 5px;
     user-select: none;
 }
 
@@ -248,7 +314,7 @@
 .bugDetail_content_top .bugUserInfoWrap .keywordsWrap span {
     display: inline-flex;
     border: 1px solid #CCCCCC;
-    padding: 0 10px;
+    padding: 3px 10px;
     border-radius: 25px;
     margin-right: 5px;
 }
@@ -267,6 +333,7 @@
     font-weight: 500;
     font-size: 12px;
     margin-right: 10px;
+    color: #0570d4;
 }
 
 
@@ -287,7 +354,7 @@
     background-color: #EAEEFF;
     font-size: 14px;
     font-family: PingFangSC-Medium;
-    font-weight: 500;
+    font-weight: 600;
     color: rgba(86, 71, 218, 1);
 }
 
@@ -328,10 +395,12 @@ ul.pagenation li {
     display: inline-flex;
     align-items: center;
     list-style: none;
+    user-select: none;
 }
 
 ul.pagenation li>a {
     cursor: pointer;
+    user-select: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -351,4 +420,20 @@ ul.pagenation li>a.focused {
     transition: all 0.3s;
     border-color: #1890ff;
     color: #1890ff;
+    user-select: none;
+}
+
+.topAni {
+    height: 182px;
+}
+
+.currentPage {
+    border-color: #1890ff !important;
+    color: #1890ff !important;
+}
+
+.disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.3;
 }

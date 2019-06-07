@@ -25,21 +25,30 @@ router.post('/AddBugItems', (req, res, next) => {
     (err, data) => {
       if (data) {
         res.send({
-          success: false,
+          status_code: 200,
           message: '添加失败，该bug条目已存在！'
         })
-        console.log('添加失败，该bug条目已存在！')
       } else {
         // 保存到数据库
-        Bug.create([postData], (err, data) => {
-          if (data) {
+        Bug.create([postData], (err2, data2) => {
+          if (data2) {
             res.send({
-              success: true,
-              message: '添加成功！'
+              status_code: 200,
+              message: 'success'
             })
-            console.log('添加成功！')
           }
-          // if (err) throw err;
+          if (err) {
+            return res.json({
+              status_code: 201,
+              message: err2
+            })
+          }
+        })
+      }
+      if (err) {
+        return res.json({
+          status_code: 201,
+          message: err
         })
       }
     }
@@ -54,7 +63,6 @@ router.get('/GetBugDetail', (req, res) => {
     },
     (err, data) => {
       if (data) {
-        console.log(data)
         return res.json({
           status_code: 200,
           message: 'success',
@@ -97,17 +105,19 @@ router.post('/GetBugList', async (req, res, next) => {
     {
       skip: (req.body.pageIndex - 1) * req.body.pageSize,
       limit: req.body.pageSize,
-      sort: { createdAt: -1 }
+      sort: { createAt: -1 }
     },
     (err, data) => {
       if (err) {
         res.send({
-          message: '获取bug列表失败！'
+          status_code: 201,
+          message: err,
+          data: null
         })
       } else {
         res.json({
           status_code: 200, //状态码   200是成功   其他的码是错误
-          message: '获取成功！', //返回的信息
+          message: 'success', //返回的信息
           data: data, ///返回的数据   若没有就是null
           count: count
         })
@@ -123,7 +133,9 @@ router.post('/UpdateBugById', async (req, res, next) => {
   Bug.findByIdAndUpdate(id, update, { new: true }, function(err, result) {
     if (err) {
       res.send({
-        message: '修改失败'
+        status_code: 201,
+        message: err,
+        data: null
       })
     } else {
       res.json({
@@ -141,7 +153,8 @@ router.post('/DeleteBugById', async (req, res, next) => {
   Bug.findByIdAndDelete(id, function(err, result) {
     if (err) {
       res.send({
-        message: '删除失败'
+        status_code: 201,
+        message: err
       })
     } else {
       res.json({
@@ -154,7 +167,6 @@ router.post('/DeleteBugById', async (req, res, next) => {
 
 // 新增关键词
 router.post('/AddBugKeywords', async (req, res, next) => {
-  console.log('zou')
   var dataCache = req.body
   // 保存到数据库
   BuKeywords.findOne(
@@ -164,7 +176,6 @@ router.post('/AddBugKeywords', async (req, res, next) => {
     (err, data) => {
       if (err) throw err
       if (data) {
-        console.log('关键词添加失败！')
       } else {
         BuKeywords.create(dataCache, (err, data) => {
           if (err) throw err
@@ -186,7 +197,6 @@ router.get('/GetAllBugKeywords', async (req, res, next) => {
       status_code: 200,
       message: 'success'
     })
-    console.log('获取所有关键词成功')
   })
 })
 module.exports = router
