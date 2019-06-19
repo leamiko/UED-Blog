@@ -343,7 +343,10 @@ export default {
         blogId: record
       });
       if (res.status_code === 200) {
-        this.$notification.success("删除成功！");
+        this.$notification.success({
+          placement: "bottomRight",
+          description: "删除成功！"
+        });
         this.getList();
       }
     },
