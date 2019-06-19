@@ -14,8 +14,8 @@ router.get("/logOut", function(req, res, next) {
 });
 
 //注册超级账号
-router.get("/register", function(req, res) {
-  user.insert(req, res);
-});
+// router.get("/register", function(req, res) {
+//   user.insert(req, res);
+// });
 
 module.exports = router;

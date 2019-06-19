@@ -55,45 +55,45 @@ exports.logOut = function(req, res) {
 };
 
 //超级账号
-exports.insert = function(req, res) {
-  let username = "root";
-  let pwd = "root123456";
-  var md5 = crypto.createHash("md5");
-  const end_paw = md5.update(pwd).digest("hex");
-  var user = new User({
-    nickName: "root",
-    account: username, //用户账号
-    passWord: end_paw, //密码
-    authorization: 0
-  });
-  User.find({ account: username }, function(err, users) {
-    if (err) {
-      console.log(err);
-    } else {
-      if (users.length == 0) {
-        user.save(function(err, users) {
-          if (err) {
-            return res.json({
-              status_code: 401,
-							message: "创建失败！",
-							data: null
-            });
-          } else {
-            // res.redirect('/users/registerok');
-            return res.json({
-              status_code: 200,
-							message: "新建成功！",
-							data: null
-            });
-          }
-        });
-      } else {
-        return res.json({
-          status_code: 402,
-          message: "用户名已存在！",
-					data: null
-        });
-      }
-    }
-  });
-};
+// exports.insert = function(req, res) {
+//   let username = "root";
+//   let pwd = "root123456";
+//   var md5 = crypto.createHash("md5");
+//   const end_paw = md5.update(pwd).digest("hex");
+//   var user = new User({
+//     nickName: "root",
+//     account: username, //用户账号
+//     passWord: end_paw, //密码
+//     authorization: 0
+//   });
+//   User.find({ account: username }, function(err, users) {
+//     if (err) {
+//       console.log(err);
+//     } else {
+//       if (users.length == 0) {
+//         user.save(function(err, users) {
+//           if (err) {
+//             return res.json({
+//               status_code: 401,
+// 							message: "创建失败！",
+// 							data: null
+//             });
+//           } else {
+//             // res.redirect('/users/registerok');
+//             return res.json({
+//               status_code: 200,
+// 							message: "新建成功！",
+// 							data: null
+//             });
+//           }
+//         });
+//       } else {
+//         return res.json({
+//           status_code: 402,
+//           message: "用户名已存在！",
+// 					data: null
+//         });
+//       }
+//     }
+//   });
+// };
