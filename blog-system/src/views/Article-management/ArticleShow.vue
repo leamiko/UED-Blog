@@ -40,8 +40,7 @@ export default {
   },
   methods: {
     getBlog: async function (blogId) {
-      let url = this.api.showBlog
-      console.log(blogId)
+      let url = this.api.getBlog
       const res = await this.$http.get(url, {
         blogId: blogId
       })

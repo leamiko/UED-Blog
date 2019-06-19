@@ -2,26 +2,32 @@
   <div class="page">
     <a-form :form="form" @submit="handleSubmit">
       <a-form-item label="名称" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
-        <a-input v-decorator="[
+        <a-input
+          v-decorator="[
           'model.title',
-          {rules: [{ required: true, message: '名称不能为空！' }]}
-        ]" placeholder="请输入文章名称" />
+          {
+            rules: [{ required: true, message: '名称不能为空！' }],
+            initialValue:model.title
+          }
+        ]"
+          placeholder="请输入文章名称"
+        />
       </a-form-item>
       <a-form-item label="分类" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
-        <a-select v-decorator="[
+        <a-select
+          v-decorator="[
           'model.blogType',
-          {rules: [{ required: true, message: '分类不能为空!' }]}
-        ]" placeholder="请选择文章分类">
-        <!-- 需要所有文章分类 -->
-          <a-select-option value="CSS">
-            CSS
-          </a-select-option>
-          <a-select-option value="VUE">
-            VUE
-          </a-select-option>
+          {rules: [{ required: true, message: '分类不能为空!' }],
+                initialValue:model.blogType}
+        ]"
+          placeholder="请选择文章分类"
+        >
+          <!-- 需要所有文章分类 -->
+          <a-select-option value="CSS">CSS</a-select-option>
+          <a-select-option value="VUE">VUE</a-select-option>
         </a-select>
       </a-form-item>
-      <a-form-item label="作者" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
+      <!-- <a-form-item label="作者" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
         <a-input v-decorator="[
           'model.author',
           {rules: [{ required: true, message: '作者不能为空！' }]}
@@ -58,27 +64,25 @@
             否
           </a-select-option>
         </a-select>
-      </a-form-item>
+      </a-form-item>-->
       <a-form-item label="文章简介" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
-        <a-textarea v-decorator="[
+        <a-textarea
+          v-decorator="[
           'model.info',
-          {rules: [{ required: true, message: '文章简介不能为空！' }]}
-        ]" placeholder="请输入文章简介" :autosize="{ minRows: 1, maxRows: 3 }" />
+          {rules: [{ required: true, message: '文章简介不能为空！' }],
+                initialValue:model.info}
+        ]"
+          placeholder="请输入文章简介"
+          :autosize="{ minRows: 1, maxRows: 3 }"
+        />
       </a-form-item>
       <a-form-item label="文章内容" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
-        <a-textarea v-decorator="[
-          'model.content',
-          {rules: [{ required: true, message: '文章内容不能为空！' }]}
-        ]" placeholder="请输入文章内容" :autosize="{ minRows: 3, maxRows: 10 }" />
+        <quill-editor v-model="model.content" ref="myTextEditor" :options="editorOption"></quill-editor>
       </a-form-item>
       <!-- 新建按钮 -->
       <a-form-item :wrapper-col="{ span: 12, offset: 7 }">
-        <a-button type="primary" html-type="submit" @click="save()">
-          保存
-        </a-button>
-        <a-button :style="{ marginLeft: '30px', marginTop: '40px' }" @click="cancel()">
-          取消
-        </a-button>
+        <a-button type="primary" html-type="submit" @click="save()">保存</a-button>
+        <a-button :style="{ marginLeft: '30px', marginTop: '40px' }" @click="goBack()">返回</a-button>
       </a-form-item>
     </a-form>
   </div>
@@ -86,89 +90,75 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
-      formLayout: 'horizontal',
+      editorOption: {},
+      formLayout: "horizontal",
       form: this.$form.createForm(this),
-      model: {}
-    }
+      model: {},
+      blogId: ""
+    };
   },
-  mounted () {
-    const blogId = this.$route.query.articleInfo.key
-    this.getArticleInfo(blogId)
+  mounted() {
+    this.blogId = this.$route.query.blogId ? this.$route.query.blogId : "";
+    if (this.blogId) {
+      this.getArticleInfo();
+    }
   },
   methods: {
     // 获取文章信息（编辑用）
-    getArticleInfo: async function (blogId) {
-      let url = 'http://ued.lunz.cn/api/blogs/getBlog?blogId=' + blogId
-      const res = await this.$http.get(url, {
-        blogId: blogId
-      })
-      if (res.data && res.data != null) {
-        this.model = res.data
-      } else {
-        this.$error({
-          title: '错误信息',
-          content: res.msg || res.message
-        })
+    getArticleInfo: async function() {
+      const url = this.api.getBlog;
+      let params = {
+        blogId: this.blogId
+      };
+      const res = await this.$http.get(url, params);
+      if (res.status_code === 200) {
+        this.model = res.data;
       }
     },
     // 组件校验
-    handleSubmit (e) {
-      e.preventDefault()
+    handleSubmit(e) {
+      e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log('校验的值: ', values)
+          console.log("校验的值: ", values);
         }
-      })
+      });
     },
     // 保存
-    save () {
-      this.form.validateFields((err, values) => {
+    save() {
+      this.form.validateFields(async (err, values) => {
         if (!err) {
-          this.$confirm({
-            title: '提示信息',
-            content: '文章信息编辑完成，是否保存？',
-            okText: '确定',
-            cancelText: '取消',
-            onOk () {
-              let url = 'http://ued.lunz.cn/api/blogs/addEditBlog'
-              const params = {
-                title: this.model.title,
-                blogType: this.model.blogType,
-                info: this.model.info,
-                content: this.model.content
-              }
-              const res = this.$http.post(url, params)
-              if (res.status_code === 200) {
-                this.$success({
-                  title: '成功信息',
-                  content: '保存成功!'
-                })
-                this.$router.push({
-                  name: 'article'
-                })
-              } else {
-                this.$error({
-                  title: '错误信息',
-                  content: res.message
-                })
-              }
-            },
-            onCancel () {
-            }
-          })
+          const url = this.api.addEditBlog;
+          const params = {
+            _id: this.blogId,
+            title: values.model.title,
+            blogType: values.model.blogType,
+            info: values.model.info,
+            content: this.model.content
+          };
+          const res = await this.$http.post(url, params);
+          if (res.status_code === 200) {
+            this.$notification.success({
+              placement: "bottomRight",
+              description: "保存成功！"
+            });
+            this.$router.push({
+              name: "article"
+            });
+          }
         }
-      })
+      });
     },
-    // 取消
-    cancel () {
+    // 返回
+    goBack() {
       this.$router.push({
-        name: 'article'
-      })
+        name: "article"
+      });
     }
   }
-}
+};
 </script>
 
 <style>

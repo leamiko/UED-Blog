@@ -11,14 +11,20 @@ axios.interceptors.request.use(function (config) {
 // 添加响应拦截器
 axios.interceptors.response.use(function (response) {
   // 对响应数据做点什么
-  if (response.status !== 200) {
+  if (response.data.status_code !== 200) {
     notification.error({
       placement: 'bottomRight',
       description: response.data.message
     })
   }
   if (response.data.status_code === 403) {
-    router.push('/login')
+    console.log(router.currentRoute)
+    router.replace({
+      name: 'login',
+      query: {
+        redirect: router.currentRoute.fullPath
+      }
+    })
   }
   return response
 }, function (error) {
