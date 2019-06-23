@@ -25,12 +25,18 @@ const router = new Router({
           // route level code-splitting
           // this generates a separate chunk (article.[hash].js) for this route
           // which is lazy-loaded when the route is visited.
-          component: () => import(/* webpackChunkName: "article" */ './views/Article-management/Article.vue')
+          component: () =>
+            import(/* webpackChunkName: "article" */ './views/Article-management/Article.vue')
         },
         {
           path: '/article/articleShow',
           name: 'articleShow',
           component: () => import('./views/Article-management/ArticleShow.vue')
+        },
+        {
+          path: '/article/articleAdd',
+          name: 'articleAdd',
+          component: () => import('./views/Article-management/ArticleAdd.vue')
         },
         {
           path: '/bug',
@@ -43,7 +49,7 @@ const router = new Router({
           // }]
         },
         {
-          path: '/bug/edit',
+          path: '/bug/edit/:id',
           name: 'edit',
           component: () => import('./views/BugEdit.vue')
         },
@@ -69,7 +75,7 @@ const router = new Router({
           }
         },
         {
-          path: '/bug/bugShow',
+          path: '/bug/bugShow/:id',
           name: 'bugShow',
           component: () => import('./views/BugShow.vue'),
           meta: {

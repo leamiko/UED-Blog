@@ -28,8 +28,8 @@ var allowCors = function(req, res, next) {
 
 // 使用跨域中间件
 app.use(allowCors);
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 // 使用 session 中间件
 app.use(
@@ -81,7 +81,7 @@ var isLogin = function(req, res, next) {
   }
 };
 
-// app.use(isLogin);
+app.use(isLogin);
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);

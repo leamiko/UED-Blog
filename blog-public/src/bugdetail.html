@@ -50,6 +50,13 @@
                             </a>
                         </li>
                         <li>
+                            <a href="./buglist.html">
+                                <span>BUG
+                                    <i class="line"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
                             <a href="./about.html">
                                 <span>关于
                                     <i class="line"></i>
@@ -97,8 +104,9 @@
                         <span>发布于 </span>
                         <span class="text_time">{{bugDetailData.createAt | datetimeFormat}}</span>
                         <div class="keywordsWrap">
-                            <span>JS</span>
-                            <span>JS</span>
+                            <span class="bugDetail_keyword"
+                                :style="{color:colorBox[getKwOriIndex(word)].color,background:colorBox[getKwOriIndex(word)].background,borderColor:colorBox[getKwOriIndex(word)].borderColor}"
+                                v-for="(word, index) in bugDetailData.keyword" :key="index">{{word}}</span>
                         </div>
                     </div>
                 </div>
@@ -107,37 +115,17 @@
                         <div>
                             <span class="content_titleItem">bug内容</span>
                         </div>
-                        <div class="bugdetail_bugContent_contentText">
-                            {{bugDetailData.content}}
+                        <div v-html="bugDetailData.content" class="bugdetail_bugContent_contentText">
                         </div>
                     </div>
                     <div v-if="bugDetailData.bugSolution" class="bugdetail_resolveContent">
                         <div>
                             <span class="content_titleItem">解决方案</span>
                         </div>
-                        <div class="bugdetail_resolveContent_contentText">
-                            {{bugDetailData.bugSolution}}
+                        <div v-html="bugDetailData.bugSolution" class="bugdetail_resolveContent_contentText">
                         </div>
                     </div>
                 </div>
-                <!-- <div class="bugDetail_content_bottom">
-                            <div>
-                                <textarea name="" id="" cols="30" rows="10"></textarea>
-                            </div>
-                            <div class="commentWrap">
-                                <div class="commentItem">
-                                    <div class="commentBaseInfo">
-                                        <img src="./images/touxiang.png" alt="">
-                                        <span class="name">杜明亮</span>
-                                        /
-                                        <span class="time">2019-05-22 14:43</span>
-                                    </div>
-                                    <div class="commentContentText">
-                                        是大家看了JFK猎杀飞机上的解放立刻撒旦记录卡发就立刻是多久啊付款了
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
             </div>
         </div>
     </div>
@@ -155,15 +143,53 @@
         import {
             axiosGet,
             axiosPost
-        } from '../src/js/api.js'
+        } from './js/api.js'
         var app = new Vue({
             el: '#app',
             data: {
                 message: 'Hello Vue!',
-                bugDetailData: []
+                bugDetailData: [],
+                colorBox:[{
+                    // pink
+                    color: '#eb2f96',
+                    background: '#fff0f6',
+                    borderColor:' #ffadd2'
+                },{
+                    //green
+                    color: '#52c41a',
+                    background: '#f6ffed',
+                    borderColor: '#b7eb8f',
+                },{
+                    // orange
+                    color: '#fa8c16',
+                    background: '#fff7e6',
+                    borderColor: '#ffd591',
+                },{
+                    // red
+                    color: '#f5222d',
+                    background: '#fff1f0',
+                    borderColor: '#ffa39e',
+                },{
+                    // cyan
+                    color: '#13c2c2',
+                    background: '#e6fffb',
+                    borderColor: '#87e8de',
+                },{
+                    // blue
+                    color: '#1890ff',
+                    background: '#e6f7ff',
+                    borderColor: '#91d5ff',
+                },{
+                    // purple
+                    color: '#722ed1',
+                    background: '#f9f0ff',
+                    borderColor: '#d3adf7',
+                }],
+                keywordsResData:[]
             },
             mounted() {
                 this.getDetail();
+                this.getKeywords();                
             },
             filters: {
                 datetimeFormat: function (value) {
@@ -190,7 +216,29 @@
                         },(err) => {
                             console.log(err);
                         })
-                }
+                },
+                // 获取关键词列表
+                getKeywords(){
+                    console.log('zou');
+                    axiosGet('bugs/GetAllBugKeywords',{},(res)=>{
+                        console.log(res);
+                        this.keywordsResData=res.data;
+                    })
+                },
+                getKwOriIndex(kw){
+                    let cacheArr=this.keywordsResData.map(el=>{
+                        return el.label;
+                    })
+                    let index=cacheArr.indexOf(kw);
+                    if(index>6){
+                        index=index%6;
+                    }
+                    console.log(index);
+                    if(index==-1){
+                        return 0;
+                    }
+                    return index;
+                },
             }
         })
     </script>

@@ -13,9 +13,7 @@ exports.addEditBlog = function(req, res) {
       title: req.body.title,
       blogType: req.body.blogType,
       info: req.body.info,
-      content: req.body.content,
-      author: "admin",
-      userId: "123"
+      content: req.body.content
     };
     Blog.update(whereBlog, updateBlog, function(err, blog) {
       if (err) {
@@ -38,8 +36,8 @@ exports.addEditBlog = function(req, res) {
       blogType: req.body.blogType,
       info: req.body.info,
       content: req.body.content,
-      author: "admin",
-      userId: "123"
+      author: req.session.user.nickName,
+      userId: req.session.user._id
     });
     blog.save(function(err, blog) {
       if (err) {

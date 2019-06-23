@@ -53,7 +53,7 @@ export default {
           const res = await this.$http.post(url, params)
           if (res.status_code === 200) {
             this.localEvent.StorageSetter('user', res.data)
-            this.$router.push('/')
+            this.$router.push({path:decodeURIComponent(this.$route.query.redirect ? this.$route.query.redirect : '/')})
           }
         }
       })

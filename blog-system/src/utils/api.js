@@ -5,13 +5,15 @@ export default {
   login: `${baseUrl}/users/login`,
   logOut: `${baseUrl}/users/logOut`,
   bugList: `${baseUrl}/bugs/GetBugList`,
+  getBugDetail: `${baseUrl}/bugs/GetBugDetail`,
   deleteBug: `${baseUrl}/bugs/DeleteBugById`,
   updateBug: `${baseUrl}/bugs/UpdateBugById`,
   addBug: `${baseUrl}/bugs/AddBugItems`,
+  getBugKeywords: `${baseUrl}/bugs/GetAllBugKeywords`,
+  addBugKeywords: `${baseUrl}/bugs/AddBugKeywords`,
 
   blogList: `${baseUrl}/blogs/getBlogList`,
-  addBlog: `${baseUrl}/blogs/addEditBlog`,
-  updateBlog: `${baseUrl}/blogs/addEditBlog`,
+  addEditBlog: `${baseUrl}/blogs/addEditBlog`,
   deleteBlog: `${baseUrl}/blogs/deleteBlog`,
-  showBlog: `${baseUrl}/blogs/getBlog`
+  getBlog: `${baseUrl}/blogs/getBlog`
 }

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="zh-Hans-CN">
 
@@ -97,26 +98,241 @@
                 window.location.href = "./detail-3.html"
             })
         })
+=======
+<!DOCTYPE html><html lang="zh-Hans-CN"><head><meta charset="UTF-8"><title>bug管理</title><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="X-UA-Compatible" content="ie=edge"><link rel="stylesheet" href="font/css/font-awesome.min.css"><link rel="stylesheet" href="./lib/bootstrap/bootstrap.min.css"><link rel="stylesheet" href="./css/public-header.css"><link rel="stylesheet" href="./css/article.css"><link rel="stylesheet" href="./css/public-info.css"><link rel="stylesheet" href="./css/public-bottom.css"><link rel="stylesheet" href="./css/bug.css"><link rel="stylesheet" href="./css/aniamte.css"></head><body><div class="public-header"><nav class="navbar navbar-default navbar-fixed-top"><div class="container_custom"><div class="navbar-header"><button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false"><span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span></button> <a class="navbar-brand" href="./index.html"><img src="./images/logo.png" alt="logo" width="16"></a></div><div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1"><ul class="nav navbar-nav navbar-right"><li><a href="./index.html"><span>首页<i class="line"></i></span></a></li><li><a href="./article.html"><span>文章<i class="line"></i></span></a></li><li><a href="./about.html"><span>关于<i class="line"></i></span></a></li><li><a href="./brand.html"><span>品牌<i class="line"></i></span></a></li><li><a href="./recruit.html"><span>招聘<i class="line"></i></span></a></li><li><a href="./login.html"><span>登录<i class="line"></i></span></a></li></ul></div></div></nav></div><div id="app" class="buglist"><div class="buglist_header_panel"><div class="container_custom bgcolor"><h3 class="buglist_header_panel_title">前端避坑指南</h3><div class="row form-group"><div class="buglist_header_panel_searchGroup col-md-8"><input class="searchIpt" v-model="searchContent" @keyup.enter="handleSearch" type="text" placeholder="请输入标题"> <span class="searchBtn" @click="handleSearch">搜索</span></div></div><div class="buglist_header_panel_links"><div class="linksItem"><span @click="handleSearchAll">全部 <i class="line" :class="{'link_active':activeCondition==='all'}"></i></span></div><div class="linksItem"><span @click="handleSearchSolved">已解决<i class="line" :class="{'link_active':activeCondition=='solved'}"></i></span> <span @click="handleSearchUnsolved">未解决<i class="line" :class="{'link_active':activeCondition=='unsolved'}"></i></span></div><div class="linksItem"><span @click="openTags"><i class="fa" :class="{'fa-chevron-up':openTagsStatus,'fa-chevron-down':!openTagsStatus}"></i></span> <span v-for="(tos, tosI) in kwSearchArr" :key="tosI"><i class="link_active"></i>{{tos}}</span></div></div><transition name="custom-classes-transition" style="animation-direction: .001s" enter-active-class="animated fadeIn"><div v-if="openTagsStatus" class="keywordsDepository"><span v-for="(kw, kwi) in keywordsResData" :key="kwi" class="tagItem" :class="{'tagItemActive':filtersHas(kw)}" @click="addkwToParams(kw,kwi)">{{kw.label}}</span></div></transition></div></div><div class="container_custom buglist_content row"><div v-if="!bugListData.length" style="text-align:center;font-weight: bold">空空如也</div><div class="buglist_content_item col-md-4" v-for="(item, index) in bugListData" :key="index"><div class="buglist_content_item_wrapper" v-if="bugListData.length" @click="goDetail(item,index)"><img class="bugItemMark" :src="item.bugStatus==true?'images/mark_solved.png':'images/mark_unSolved.png'" alt=""><h5 class="bugItem_title">{{item.title}}</h5><div v-html="item.content" class="bugItem_content ellipsis3line"></div><div class="butItem_keywordsInfo"><span class="bugItem_ortherInfo_keyword" :style="{color:colorBox[getKwOriIndex(word)].color,background:colorBox[getKwOriIndex(word)].background,borderColor:colorBox[getKwOriIndex(word)].borderColor}" v-for="(word, index) in item.keyword" :key="index">{{word}}</span></div><div class="bugItem_ortherInfo"><div><span class="bugItem_ortherInfo_authorInfo">{{item.author}} </span><span class="bugItem_ortherInfo_timeInfo">{{item.createAt | datetimeFormat}}</span></div></div></div></div><div v-if="bugListData.length" class="pagenationWrap col-md-12"><ul class="pagenation"><li><a @click="prePage" :class="{'disabled':currentPageIndex==1}"><i class="fa fa-angle-left fa-lg"></i></a></li><li v-for="(el, ind) in pagenationData" :key="ind"><a @click="pageTo(ind)" :class="{'currentPage':currentPageIndex==ind+1}">{{ind+1}}</a></li><li><a @click="nextPage" :class="{'disabled':currentPageIndex==pagenationData.length}"><i class="fa fa-angle-right fa-lg"></i></a></li></ul></div></div></div><div class="bottom"><ul class="bottom-tab hidden-xs"><li><a href="./index.html" class="h6"><span class="text-uppercase">home</span><br>首页</a></li><li><a href="./article.html" class="h6"><span class="text-uppercase">article</span><br>文章</a></li><li><a href="./about.html" class="h6"><span class="text-uppercase">about</span><br>关于</a></li><li><a href="./brand.html" class="h6"><span class="text-uppercase">source</span><br>资源</a></li><li><a href="./recruit.html" class="h6"><span class="text-uppercase">recruit</span><br>招聘</a></li><li><a href="./login.html" class="h6"><span class="text-uppercase">login</span><br>登录</a></li></ul><div class="back-top"><a href="#" class="btn btn-default glyphicon glyphicon-menu-up"></a></div><p class="copyright h6 text-center">2014 All rights reserved. 青岛轮子软件科技有限公司 版权所有 法律声明 鲁ICP备14035434号-1</p></div><script src="./lib/jquery/jquery.min.js"></script><script src="./lib/bootstrap/bootstrap.min.js"></script><script src="./js/tab-toggle.js"></script><script src="./js/border-slide.js"></script><script src="./js/backtop.js"></script><script src="./js/article.js"></script><script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script><script src="./js/axios.min.js"></script><script type="module">import {
+            axiosGet,
+            axiosPost
+        } from './js/api.js'
+>>>>>>> 9a298b3a70f3b761e3a3e6f60ef5a26e8335698a
         var app = new Vue({
             el: '#app',
             data: {
                 message: 'Hello Vue!',
-                bugListData: [{
-                    name: 1
-                }, {
-                    name: 2
-                }, {
-                    name: 3
-                }, {
-                    name: 4
-                }, {
-                    name: 5
-                }]
+                bugListData: [],
+                bugListDataCount:0,
+                searchContent:'',
+                params: {},
+                activeCondition:'',
+                openTagsStatus:false,
+                colorBox:[{
+                    // pink
+                    color: '#eb2f96',
+                    background: '#fff0f6',
+                    borderColor:' #ffadd2'
+                },{
+                    //green
+                    color: '#52c41a',
+                    background: '#f6ffed',
+                    borderColor: '#b7eb8f',
+                },{
+                    // orange
+                    color: '#fa8c16',
+                    background: '#fff7e6',
+                    borderColor: '#ffd591',
+                },{
+                    // red
+                    color: '#f5222d',
+                    background: '#fff1f0',
+                    borderColor: '#ffa39e',
+                },{
+                    // cyan
+                    color: '#13c2c2',
+                    background: '#e6fffb',
+                    borderColor: '#87e8de',
+                },{
+                    // blue
+                    color: '#1890ff',
+                    background: '#e6f7ff',
+                    borderColor: '#91d5ff',
+                },{
+                    // purple
+                    color: '#722ed1',
+                    background: '#f9f0ff',
+                    borderColor: '#d3adf7',
+                }],
+                keywordsResData:[],
+                kwSearchArr:[],
+                currentPageIndex:'', // 分页器当前页
             },
-            methods: {
-
+            mounted () {
+                this.getKeywords();
+                this.params = {
+                        pageIndex: 1,
+                        pageSize: 9,
+                        filters:{}
+                    }
+                this.currentPageIndex=this.params.pageIndex;
+                this.getBugList();
             },
+            computed: {
+                pagenationData(){
+                    let arr=[];
+                    let pageNum=Math.ceil((this.bugListDataCount)/9);
+                    for(let i=0;i<pageNum;i++){
+                        arr.push(i);
+                    }
+                    console.log(arr);
+                    return arr;
+                }
+            },
+<<<<<<< HEAD
         })</script>
 </body>
 
 </html>
+=======
+            filters: {
+                datetimeFormat: function (value) {
+                    if (!value) return ''
+                    value = value.toString()
+                    let date = value.split('T')[0];
+                    let time = value.split('T')[1].split('.')[0];
+                    return date + ' ' + time;
+                }
+            },
+            methods: {
+                // 获取列表
+                getBugList() {
+                    this.bugListData=[]
+                    console.log('params',this.params);
+                    axiosPost(`bugs/GetBugList`, this.params,(res) => {
+                        console.log(res);
+                        if(res.data){
+                            this.currentPageIndex=this.params.pageIndex;
+                            this.bugListData=res.data;
+                            this.calActiveCondition();
+                        }
+                        if(res.count){
+                            this.bugListDataCount=res.count;
+                        }
+                        },(err) => {
+                            console.log(err);
+                        })
+                },
+                // 跳转详情
+                goDetail(row, index) {
+                    window.open(`bugdetail.html?id=${row._id}`);
+                },
+                // 搜索
+                handleSearch(){
+                    this.params.filters.title=this.searchContent;
+                    this.getBugList();
+                },
+                // 全部搜索
+                handleSearchAll(){
+                    this.searchContent='';
+                    this.kwSearchArr=[];
+                    this.openTagsStatus=false;
+                    this.params = {
+                        pageIndex: 1,
+                        pageSize: 9,
+                        filters:{}
+                    };
+                    this.getBugList();
+                },
+                // 已解决搜索
+                handleSearchSolved(){
+                    this.params.filters.bugStatus = 'true';
+                    this.getBugList();
+                    console.log('solved',this.activeCondition);
+                },
+                // 未解决搜索
+                handleSearchUnsolved(){
+                    this.params.filters.bugStatus = 'false';
+                    this.getBugList();
+                    console.log('unsolved',this.activeCondition);
+                },
+                // 关键词搜索
+                handleSearchKeywords(){
+                    this.params.filters.bugStatus=false;
+                    this.getBugList();
+                    console.log('unsolved',this.activeCondition);
+                },
+                // 状态判断
+                calActiveCondition(){
+                    if(Object.keys(this.params.filters).length==0 || (Object.keys(this.params.filters).length==1 && this.params.filters.title=='')){
+                        this.activeCondition='all';
+                    }else {
+                        // this.activeCondition='other';
+                        if(this.params.filters.hasOwnProperty('bugStatus') && this.params.filters.bugStatus=='true'){
+                            this.activeCondition='solved';
+                        }else if(this.params.filters.hasOwnProperty('bugStatus') && this.params.filters.bugStatus=='false'){
+                            this.activeCondition='unsolved';
+                        }else{
+                            this.activeCondition='other'
+                        }
+                    }
+                },
+                openTags(){
+                    this.openTagsStatus=!this.openTagsStatus;
+                },
+                // 获取关键词列表
+                getKeywords(){
+                    console.log('zou');
+                    axiosGet('bugs/GetAllBugKeywords',{},(res)=>{
+                        console.log(res);
+                        this.keywordsResData=res.data;
+                    })
+                },
+                getKwOriIndex(kw){
+                    let cacheArr=this.keywordsResData.map(el=>{
+                        return el.label;
+                    })
+                    let index=cacheArr.indexOf(kw);
+                    if(index>6){
+                        index=index%6;
+                    }
+                    console.log(index);
+                    if(index==-1){
+                        return 0;
+                    }
+                    return index;
+                },
+                // 筛选条件添加关键词条件
+                addkwToParams(k,i){
+                    console.log(i);
+                    if(!this.params.filters.keyword){
+                        this.params.filters.keyword=[];
+                    }
+                    let curri=this.kwSearchArr.indexOf(k.label)
+                    if(curri==-1){
+                        this.params.filters.keyword.push(k.label);
+                        this.kwSearchArr.push(k.label);
+                    }else{
+                        this.kwSearchArr.splice(curri,1);
+                        this.params.filters.keyword.splice(curri,1);
+                    }
+                    console.log(this.params.filters.keyword);
+                    this.getBugList();
+                },
+                filtersHas(it){
+                    let st=this.kwSearchArr.indexOf(it.label)==-1?false:true;
+                    return st;
+                },
+                // 分页器功能
+                pageTo(pageI){
+                    console.log(pageI);
+                    this.params.pageIndex=pageI+1;
+                    this.getBugList();
+                },
+                // 上一页
+                prePage(){
+                    if(this.params.pageIndex>1){
+                        this.params.pageIndex=this.params.pageIndex-1;
+                    }else{
+                        return;
+                    }
+                    this.getBugList();
+                },
+                // 下一页
+                nextPage(){
+                    if(this.currentPageIndex<this.pagenationData.length){
+                        this.params.pageIndex=this.params.pageIndex+1;
+                    }else{
+                        return;
+                    }
+                    this.getBugList();
+                }
+            }
+        })</script></body></html>
+>>>>>>> 9a298b3a70f3b761e3a3e6f60ef5a26e8335698a

@@ -1,28 +1,29 @@
 <template>
-  <div class="article">
-    <p class="h3">{{model.title}} &nbsp;
-      <a-icon
-        type="heart"
-        theme="twoTone"
-        class="icon_size"
-        twoToneColor='#eb2f96'
-      />
+  <div class="show">
+    <h2>{{model.title}}</h2>
+    <p class="bug-info h6">
+      <span class="labels">作者：</span> <span>{{model.author}}</span>
+      <span class="labels">分类：</span><span>{{model.blogType}}</span>
+      <span class="labels">时间：</span> <span>{{model.updateAt | formatDateDay}}</span>
+      <span class="labels">精选：</span> <span>{{model.isGood?'是':'否'}}</span>
+      <span class="labels">采用数：</span> <span>{{model.likeNum}}</span>
     </p>
-    <p class="article-info h6"> In：<span class="category">{{model.blogType}}</span> on：<span class="category">{{model.updateAt | formatDateDay}}</span>
-      by：<span class="author">{{model.author}}</span> &nbsp;&nbsp;
-      <a-icon
-        type="like"
-        theme="twoTone"
-        twoToneColor='#52c41a'
-        class="icon_size"
-      />12</p>
-    <p
-      class="article-content"
-      v-html="model.info"
-    >
-    </p>
-    <div v-html="model.content">
-    </div>
+    <a-row>
+      <a-col class="contentWrap"
+             :span="20"
+             :offset="2">
+        <div>
+          <h3><span class="content-title">文章简介</span></h3>
+          <div class="codeWrap"
+               v-html="model.info"></div>
+        </div>
+        <div>
+          <h3><span class="content-title">文章内容</span></h3>
+          <div class="codeWrap"
+               v-html="model.content"></div>
+        </div>
+      </a-col>
+    </a-row>
   </div>
 </template>
 
@@ -30,7 +31,7 @@
 export default {
   data () {
     return {
-      model: []
+      model: {}
     }
   },
   mounted () {
@@ -39,8 +40,7 @@ export default {
   },
   methods: {
     getBlog: async function (blogId) {
-      let url = this.api.showBlog
-      console.log(blogId)
+      let url = this.api.getBlog
       const res = await this.$http.get(url, {
         blogId: blogId
       })
@@ -50,42 +50,42 @@ export default {
 }
 </script>
 
-<style>
-.icon_size {
-  font-size: 20px;
+<style scoped>
+.show {
+  background-color: #fff;
+  padding: 50px 30px;
+  min-height: 800px;
 }
-
-.article {
-  padding-right: 200px;
-  padding-left: 200px;
-  margin-right: auto;
-  margin-left: auto;
-}
-
-.article .h3 {
-  color: #333;
+h2,
+p {
   text-align: center;
-  font-size: 24px;
 }
-
-.article .article-info {
-  text-align: center;
-  padding-bottom: 20px;
-  color: #999;
+.bug-info span {
+  margin-right: 18px;
 }
-
-.article .article-info .category,
-.article .article-info .author {
-  color: #5747d9;
-  padding-right: 2rem;
+span.labels {
+  font-weight: 600;
+  margin-right: 0;
 }
-
-.article .article-content {
-  color: #333;
-  line-height: 1.8;
+.codeWrap {
+  padding-left: 30px;
 }
-
-img {
-  max-width: 100%;
+.contentWrap h3 {
+  margin-bottom: 30px;
+  margin-top: 30px;
+}
+.content-title {
+  font-weight: 600;
+  position: relative;
+  margin-bottom: 30px;
+}
+.content-title:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 100%;
+  height: 3px;
+  background-color: #1890ff;
 }
 </style>

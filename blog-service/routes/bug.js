@@ -25,21 +25,30 @@ router.post('/AddBugItems', (req, res, next) => {
     (err, data) => {
       if (data) {
         res.send({
-          success: false,
+          status_code: 200,
           message: '添加失败，该bug条目已存在！'
         })
-        console.log('添加失败，该bug条目已存在！')
       } else {
         // 保存到数据库
-        Bug.create([postData], (err, data) => {
-          if (data) {
+        Bug.create([postData], (err2, data2) => {
+          if (data2) {
             res.send({
-              success: true,
-              message: '添加成功！'
+              status_code: 200,
+              message: 'success'
             })
-            console.log('添加成功！')
           }
-          // if (err) throw err;
+          if (err) {
+            return res.json({
+              status_code: 201,
+              message: err2
+            })
+          }
+        })
+      }
+      if (err) {
+        return res.json({
+          status_code: 201,
+          message: err
         })
       }
     }
@@ -54,10 +63,9 @@ router.get('/GetBugDetail', (req, res) => {
     },
     (err, data) => {
       if (data) {
-        console.log(data)
         return res.json({
           status_code: 200,
-          message: '获取成功！',
+          message: 'success',
           data: data
         })
       }
@@ -73,23 +81,45 @@ router.get('/GetBugDetail', (req, res) => {
 })
 // 获取bug列表
 router.post('/GetBugList', async (req, res, next) => {
+  let filters = {
+    deleted: false
+  }
+  if (req.body.filters) {
+    if (req.body.filters.title) {
+      filters.title = new RegExp(req.body.filters.title)
+    }
+    if (req.body.filters.keyword && req.body.filters.keyword.length > 0) {
+      filters.keyword = { $in: req.body.filters.keyword }
+    }
+    if (req.body.filters.bugStatus) {
+      filters.bugStatus = req.body.filters.bugStatus
+    }
+    if (req.body.filters.author) {
+      filters.author = req.body.filters.author
+    }
+  }
+  const count = await Bug.count(filters)
   Bug.find(
-    {},
+    filters,
     null,
     {
-      skip: (req.query.pageIndex - 1) * req.query.pageSize,
-      limit: req.query.pageSize
+      skip: (req.body.pageIndex - 1) * req.body.pageSize,
+      limit: req.body.pageSize,
+      sort: { createAt: -1 }
     },
     (err, data) => {
       if (err) {
         res.send({
-          message: '获取bug列表失败！'
+          status_code: 201,
+          message: err,
+          data: null
         })
       } else {
         res.json({
           status_code: 200, //状态码   200是成功   其他的码是错误
-          message: '获取成功！', //返回的信息
-          data: data ///返回的数据   若没有就是null
+          message: 'success', //返回的信息
+          data: data, ///返回的数据   若没有就是null
+          count: count
         })
       }
     }
@@ -103,7 +133,9 @@ router.post('/UpdateBugById', async (req, res, next) => {
   Bug.findByIdAndUpdate(id, update, { new: true }, function(err, result) {
     if (err) {
       res.send({
-        message: '修改失败'
+        status_code: 201,
+        message: err,
+        data: null
       })
     } else {
       res.json({
@@ -121,7 +153,8 @@ router.post('/DeleteBugById', async (req, res, next) => {
   Bug.findByIdAndDelete(id, function(err, result) {
     if (err) {
       res.send({
-        message: '删除失败'
+        status_code: 201,
+        message: err
       })
     } else {
       res.json({
@@ -143,15 +176,13 @@ router.post('/AddBugKeywords', async (req, res, next) => {
     (err, data) => {
       if (err) throw err
       if (data) {
-        console.log('关键词添加失败！')
       } else {
         BuKeywords.create(dataCache, (err, data) => {
           if (err) throw err
-          res.send({
-            success: true,
-            message: '关键词添加成功！'
+          res.json({
+            status_code: 200,
+            message: 'success'
           })
-          console.log('关键词添加成功！')
         })
       }
     }
@@ -161,8 +192,11 @@ router.post('/AddBugKeywords', async (req, res, next) => {
 router.get('/GetAllBugKeywords', async (req, res, next) => {
   BuKeywords.find({}, (err, data) => {
     if (err) throw err
-    res.json(data)
-    console.log('获取所有关键词成功')
+    res.json({
+      data: data,
+      status_code: 200,
+      message: 'success'
+    })
   })
 })
 module.exports = router
