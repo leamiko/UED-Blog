@@ -81,7 +81,7 @@ var isLogin = function(req, res, next) {
   }
 };
 
-app.use(isLogin);
+// app.use(isLogin);
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
