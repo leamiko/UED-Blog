@@ -66,22 +66,24 @@ app.use(express.static(path.join(__dirname, "public")));
 
 //判断是否登录
 var isLogin = function(req, res, next) {
-  if (req.originalUrl !== "/users/login") {
-    if (!req.session.user) {
-      return res.json({
-        status_code: 403,
-        message: "登录过期，请重新登录！",
-        data: null
-      });
+  if(req.headers.referer.split('/')[3] == 'system'){
+    if (req.originalUrl !== "/users/login") {
+      if (!req.session.user) {
+        return res.json({
+          status_code: 403,
+          message: "登录过期，请重新登录！",
+          data: null
+        });
+      } else {
+        next();
+      }
     } else {
       next();
     }
-  } else {
-    next();
   }
 };
 
-// app.use(isLogin);
+app.use(isLogin);
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
