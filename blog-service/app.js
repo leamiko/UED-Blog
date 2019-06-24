@@ -28,8 +28,8 @@ var allowCors = function(req, res, next) {
 
 // 使用跨域中间件
 app.use(allowCors);
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
 // 使用 session 中间件
 app.use(
@@ -40,7 +40,7 @@ app.use(
     saveUninitialized: true, // 是否保存未初始化的会话
     cookie: {
       maxAge: 1000 * 60 * 60 // 设置 session 的有效时间，单位毫秒
-    },
+    }
     // store: new MongoStore({
     //   url: "mongodb://session:session@localhost:27017/session",
     //   collection: "sessions"
@@ -66,7 +66,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 //判断是否登录
 var isLogin = function(req, res, next) {
-  if(req.headers.referer.split('/')[3] == 'system'){
+  if (req.headers.referer.split("/")[3] == "system") {
     if (req.originalUrl !== "/users/login") {
       if (!req.session.user) {
         return res.json({
@@ -80,6 +80,8 @@ var isLogin = function(req, res, next) {
     } else {
       next();
     }
+  } else {
+    next();
   }
 };
 
