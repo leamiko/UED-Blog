@@ -90,75 +90,75 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       editorOption: {},
-      formLayout: "horizontal",
+      formLayout: 'horizontal',
       form: this.$form.createForm(this),
       model: {},
-      blogId: ""
-    };
+      blogId: ''
+    }
   },
-  mounted() {
-    this.blogId = this.$route.query.blogId ? this.$route.query.blogId : "";
+  mounted () {
+    this.blogId = this.$route.query.blogId ? this.$route.query.blogId : ''
     if (this.blogId) {
-      this.getArticleInfo();
+      this.getArticleInfo()
     }
   },
   methods: {
     // 获取文章信息（编辑用）
-    getArticleInfo: async function() {
-      const url = this.api.getBlog;
+    getArticleInfo: async function () {
+      const url = this.api.getBlog
       let params = {
         blogId: this.blogId
-      };
-      const res = await this.$http.get(url, params);
+      }
+      const res = await this.$http.get(url, params)
       if (res.status_code === 200) {
-        this.model = res.data;
+        this.model = res.data
       }
     },
     // 组件校验
-    handleSubmit(e) {
-      e.preventDefault();
+    handleSubmit (e) {
+      e.preventDefault()
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log("校验的值: ", values);
+          console.log('校验的值: ', values)
         }
-      });
+      })
     },
     // 保存
-    save() {
+    save () {
       this.form.validateFields(async (err, values) => {
         if (!err) {
-          const url = this.api.addEditBlog;
+          const url = this.api.addEditBlog
           const params = {
             _id: this.blogId,
             title: values.model.title,
             blogType: values.model.blogType,
             info: values.model.info,
             content: this.model.content
-          };
-          const res = await this.$http.post(url, params);
+          }
+          const res = await this.$http.post(url, params)
           if (res.status_code === 200) {
             this.$notification.success({
-              placement: "bottomRight",
-              description: "保存成功！"
-            });
+              placement: 'bottomRight',
+              description: '保存成功！'
+            })
             this.$router.push({
-              name: "article"
-            });
+              name: 'article'
+            })
           }
         }
-      });
+      })
     },
     // 返回
-    goBack() {
+    goBack () {
       this.$router.push({
-        name: "article"
-      });
+        name: 'article'
+      })
     }
   }
-};
+}
 </script>
 
 <style>
