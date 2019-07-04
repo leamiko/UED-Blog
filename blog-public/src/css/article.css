@@ -96,6 +96,10 @@ body {
     margin-left: 30px;
 }
 
+.content_block{
+   height: 380px; 
+}
+
 
 .content .content-tab .content-tab-active,
 .content .content-tab li:hover {
