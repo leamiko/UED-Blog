@@ -2,109 +2,80 @@
 <html lang="zh-Hans-CN">
 
 <head>
-    <meta charset="UTF-8" />
-    <title>登录</title>
-    <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="stylesheet" href="./lib/bootstrap/bootstrap.min.css" />
-    <link rel="stylesheet" href="./css/login.css" />
+  <meta charset="UTF-8" />
+  <title>登录</title>
+  <meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="./lib/bootstrap/bootstrap.min.css" />
+  <link rel="stylesheet" href="./css/login.css" />
 </head>
 
 <body>
-    <div class="content" id="app">
-        <div class="content-slogan">
-            <h1 class="logo">
-                <a href="./index.html" title="中瑞-UED">中瑞-UED</a>
-            </h1>
-            <p class="text-uppercase">we are</p>
-            <p class="text-uppercase">designing</p>
-            <p class="text-capitalize">and we are doing it well</p>
-        </div>
-        <div class="content-login">
-            <p class="login-title h2">
-                <span @click="changeTab(1)" :class="{'notCurrent_sapn':!IsLoginOrRegister}">登录</span>
-                <span class="line"></span>
-                <span @click="changeTab(2)" :class="{'notCurrent_sapn':IsLoginOrRegister}">注册</span>
-            </p>
-            <div v-if="IsLoginOrRegister" class="login_box">
-                <div class="field_wrap">
-                    <div class="mu-text-field-label float" :class="{'focus_filed_label':InputIndex===1}">
-                        账号
-                    </div>
-                    <input type="text" class="tel" @click="focusInput(1)" v-model="registerInfo.account"
-                        @blur="loseFocus()" />
-                </div>
-                <div class="field_wrap">
-                    <div class="mu-text-field-label float" :class="{'focus_filed_label':InputIndex===2}">
-                        账号
-                    </div>
-                    <input type="text" class="tel" @click="focusInput(2)" v-model="registerInfo.account"
-                        @blur="loseFocus()" />
-                </div>
-                <button role="button" class="register_btn" @click="register()">
-                    登录
-                </button>
-            </div>
-            <div v-if="!IsLoginOrRegister">
-                <p class="headPictuer_box">
-                    <input type="file" name="files" id="choose" @change="upload($event)" />
-                    <span class="headPictuer">
-                        <img src="./images/register_add_pic.png" alt="" />
-                        <img src="./images//register_pictuer.png" alt="" />
-                    </span>
-                </p>
-                <div class="field_wrap">
-                    <div class="mu-text-field-label float"
-                        :class="{'focus_filed_label':InputIndex===1||registerInfo.account}">
-                        账号
-                    </div>
-                    <input type="text" class="tel" @focus="focusInput(1)" v-model="registerInfo.account"
-                        @blur="loseFocus()" />
-                </div>
-                <div class="field_wrap">
-                    <div class="mu-text-field-label float"
-                        :class="{'focus_filed_label':InputIndex===2||registerInfo.nickName}">
-                        昵称
-                    </div>
-                    <input type="text" class="tel" @focus="focusInput(2)" v-model="registerInfo.nickName"
-                        @blur="loseFocus()" />
-                </div>
-                <div class="field_wrap">
-                    <div class="mu-text-field-label float"
-                        :class="{'focus_filed_label':InputIndex===3||registerInfo.passWord}">
-                        密码
-                    </div>
-                    <input type="password" class="tel" @focus="focusInput(3)" v-model="registerInfo.passWord"
-                        @blur="loseFocus()" />
-                </div>
-                <div class="field_wrap">
-                    <div class="mu-text-field-label float"
-                        :class="{'focus_filed_label':InputIndex===4||registerInfo.RepassWord}">
-                        确认密码
-                    </div>
-                    <input type="password" class="password" @focus="focusInput(4)" v-model="registerInfo.RepassWord"
-                        @blur="loseFocus()" />
-                </div>
-                <button role="button" class="register_btn" @click="register()">
-                    注册
-                </button>
-            </div>
-        </div>
+  <div class="content" id="app">
+    <div class="content-slogan">
+      <h1 class="logo">
+        <a href="./index.html" title="中瑞-UED">中瑞-UED</a>
+      </h1>
+      <p class="text-uppercase">we are</p>
+      <p class="text-uppercase">designing</p>
+      <p class="text-capitalize">and we are doing it well</p>
     </div>
-    <script src="./lib/jquery/jquery.min.js"></script>
-    <script src="./lib/bootstrap/bootstrap.min.js"></script>
-    <!-- <script src="./js/login.js"></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="./js/axios.min.js"></script>
-    <script type="module">
-        import { axiosGet, axiosPost } from './js/api.js';
+    <div class="content-login">
+      <p class="login-title h2">
+        <span @click="changeTab(1)" :class="{'notCurrent_sapn':!IsLoginOrRegister}">登录</span>
+        <span class="line"></span>
+        <span @click="changeTab(2)" :class="{'notCurrent_sapn':IsLoginOrRegister}">注册</span>
+      </p>
+      <div v-if="IsLoginOrRegister" class="login_box">
+        <div class="field_wrap">
+          <input type="text" class="tel" v-model="registerInfo.account" placeholder="请输入账号" />
+        </div>
+        <div class="field_wrap">
+          <input type="text" class="tel" v-model="registerInfo.account" placeholder="请输入密码" />
+        </div>
+        <button role="button" class="register_btn" @click="register()">
+          登录
+        </button>
+      </div>
+      <div v-if="!IsLoginOrRegister">
+        <p class="headPictuer_box">
+          <input type="file" name="files" id="choose" @change="upload($event)" />
+          <span class="headPictuer">
+            <img src="./images/register_add_pic.png" alt="" />
+            <img src="./images//register_pictuer.png" alt="" />
+          </span>
+        </p>
+        <div class="field_wrap">
+          <input type="text" class="tel" v-model="registerInfo.account" placeholder="请输入账号" />
+        </div>
+        <div class="field_wrap">
+          <input type="text" class="tel" v-model="registerInfo.nickName" placeholder="请输入昵称" />
+        </div>
+        <div class="field_wrap">
+          <input type="password" class="tel" v-model="registerInfo.passWord" placeholder="请输入密码" />
+        </div>
+        <div class="field_wrap">
+          <input type="password" class="password" v-model="registerInfo.RepassWord" placeholder="再次确认密码" />
+        </div>
+        <button role="button" class="register_btn" @click="register()">
+          注册
+        </button>
+      </div>
+    </div>
+  </div>
+  <script src="./lib/jquery/jquery.min.js"></script>
+  <script src="./lib/bootstrap/bootstrap.min.js"></script>
+  <!-- <script src="./js/login.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="./js/axios.min.js"></script>
+  <script type="module">
+    import { axiosGet, axiosPost } from './js/api.js';
       var app = new Vue({
         el: '#app',
         data: {
           message: 'Hello Vue!',
           IsLoginOrRegister: true, // 默认是登录
-          InputIndex: 0,
           registerInfo: {
             nickName: '',
             account: '',
@@ -168,14 +139,6 @@
               }
             );
           },
-          // 点击input
-          focusInput(num) {
-            this.InputIndex = num;
-          },
-          loseFocus() {
-            this.InputIndex = 0;
-            console.log(34343);
-          }
         }
       });
     </script>
