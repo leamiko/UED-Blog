@@ -1,16 +1,22 @@
 /*body*/
 
-html,body {
+html,
+body {
     overflow-x: hidden;
     height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 
 /*content-slogan*/
 
 .content {
-    display: flex;  
-    height: 100%;
+    display: flex;
+    /* height: 100%; */
+    flex: 1;
+    display: flex;
+    flex-direction: row;
 }
 
 
@@ -19,7 +25,7 @@ html,body {
     width: 65%;
     padding-left: 4%;
     background: url(../images/login.png) no-repeat top center;
-    background-size: cover;
+    background-size: 100% 100%;
     font-size: 10px;
 }
 
@@ -30,12 +36,15 @@ html,body {
     .content-slogan {
         width: 30%;
     }
+
     .content-slogan p {
-        font-size: 16px!important;
+        font-size: 16px !important;
     }
+
     .content-slogan p:last-of-type {
-        font-size: 10px!important;
+        font-size: 10px !important;
     }
+
     .content-login {
         width: 70%;
     }
@@ -43,9 +52,9 @@ html,body {
 
 
 .content-slogan .logo {
-    margin-bottom: 160px;
+    margin-bottom: 261px;
     background: url(../images/logo.png) no-repeat;
-    background-size: 16px;
+    background-size: 32px;
     /*clear default style*/
     font-weight: normal;
     font-style: normal;
@@ -53,7 +62,7 @@ html,body {
 
 .content-slogan .logo a {
     display: block;
-    width: 16px;
+    width: 32px;
     text-indent: -9999px;
 }
 
@@ -64,7 +73,8 @@ html,body {
 }
 
 .content-slogan .text-uppercase {
-    font-size: 400%;
+    /* font-size: 400%; */
+    font-size: 685%;
     font-family: BebasNeue;
 }
 
@@ -88,30 +98,115 @@ html,body {
 
 
 /*content-login*/
+.login_box .field_wrap:first-child {
+    margin-top: 109px
+}
 
 .content-login {
     width: 35%;
-    padding: 200px 4% 0 4%;
+    padding: 190px 94px 67px;
+    display: table;
+}
+
+.content-login form {
+    display: table-row;
 }
 
 .content-login .login-title {
     padding-bottom: 20px;
-    color: #333;
+    color: #674AF4;
+    font-size: 32px;
+    font-weight: bold;
+    display: table-row;
 }
 
-.content-login input {
+.content-login .login-title span:first-child {
+    margin-right: 24px;
+}
+
+.content-login .login-title span:nth-child(3) {
+    margin-left: 24px;
+}
+
+.content-login .notCurrent_sapn {
+    color: #E8E3FF !important;
+}
+
+.content-login .line {
+    display: inline-block;
+    background-color: #DFE7F5;
+    height: 24px;
+    width: 1px;
+}
+
+.content-login .login-title:hover {
+    cursor: pointer;
+}
+
+/* 头像 */
+.content-login .headPictuer_box {
+    margin-bottom: 37px;
+    margin-top: 38px;
+}
+
+.headPictuer {
+    position: relative;
+    display: inline-block;
+}
+
+.headPictuer img:first-child {
+    position: absolute;
+    left: 7px;
+    top: 8px;
+}
+
+.headPictuer img:first-child:hover {
+    cursor: pointer;
+}
+
+#choose {
+    opacity: 0;
+    position: relative;
+    top: 35px;
+    z-index: 999;
+    left: 10px;
+    width: 37px;
+    height: 25px;
+    border-radius: 50%;
+}
+
+/* 注册按钮 */
+.register_btn {
+    background-color: #6E5FE8;
+    color: white;
+    padding: 17px 76px;
+    outline: none;
+    border: 1px solid #674AF4;
+    font-size: 20px;
+}
+
+.content-login .field_wrap input {
     display: block;
     width: 100%;
-    height: 34px;
-    padding: 6px 12px 6px 0;
-    margin-bottom: 20px;
-    font-size: 14px;
-    line-height: 1.5;
+    margin-bottom: 48px;
+    padding-bottom: 15px;
+    font-size: 18px;
     color: #555;
+    line-height: normal;
     background-color: #fff;
     outline: none;
     border: none;
     border-bottom: 1px solid #ddd;
+    z-index: 999;
+    zoom: 1;
+}
+
+.content-login .field_wrap input:focus {
+    border-bottom: 1px solid #674AF4 !important;
+}
+
+.content-login #choose {
+    height: auto !important;
 }
 
 .content-login form input:first-child {
@@ -122,6 +217,49 @@ html,body {
     color: #bbb;
 }
 
+.mu-text-field-label {
+    font-size: 20px;
+    color: #DADADA;
+    /* position: absolute;
+    margin-top: -8px; */
+    -webkit-transform: translate3d(0, 28px, 0) scale(1);
+    transform: translate3d(0, 28px, 0) scale(1);
+    color: rgba(0, 0, 0, .38);
+    line-height: 20px;
+    -webkit-transition: all .45s cubic-bezier(.23, 1, .32, 1);
+    transition: all .45s cubic-bezier(.23, 1, .32, 1);
+    z-index: 1;
+    cursor: text;
+    -webkit-transform: translateZ(0) translateY(0px) scale(1);
+    transform: translateZ(0) translateY(0) scale(1);
+}
+
+/* .field_wrap {
+    position: relative;
+} */
+
+.focus_filed_label {
+    -webkit-transform: translate3d(0, 28px, 0) scale(1);
+    transform: translate3d(0, 28px, 0) scale(1);
+    color: rgba(0, 0, 0, .38);
+    line-height: 20px;
+    -webkit-transition: all .45s cubic-bezier(.23, 1, .32, 1);
+    transition: all .45s cubic-bezier(.23, 1, .32, 1);
+    z-index: 1;
+    cursor: text;
+    -webkit-transform: translateZ(0) translateY(-20px) scale(.75);
+    transform: translateZ(0) translateY(-20px) scale(.75);
+    -webkit-transform-origin: left top;
+    -ms-transform-origin: left top;
+    transform-origin: left top;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: none;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
 
 /*@media screen and (max-width: 768px) {
 	.content-login input::placeholder{

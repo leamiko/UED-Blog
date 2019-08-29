@@ -19,15 +19,16 @@
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
                     <a class="navbar-brand" href="./index.html">
-                <img src="./images/logo.png" alt="logo" width="16">
-              </a>
+                        <img src="./images/logo.png" alt="logo" width="16">
+                    </a>
                 </div>
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav navbar-right">
@@ -50,8 +51,8 @@
                 <div class="col-xs-12 col-md-6 pull-left article-panel">
                     <div class="detail-wrap">
                         <a href="./detail-1.html" class="thumbnail">
-                        <img src="./images/a1.png" alt="a1" class="img-responsive">
-                      </a>
+                            <img src="./images/a1.png" alt="a1" class="img-responsive">
+                        </a>
                         <div class="article-detail">
                             <h4 class="h5">从实现购物车案例轻松入门vue</h4>
                             <p class="h6">真实电商案例帮助你快速了解vue开发模式</p>
@@ -61,8 +62,8 @@
                 <div class="col-xs-12 col-md-6 pull-left article-panel">
                     <div class="detail-wrap">
                         <a href="./detail-2.html" class="thumbnail">
-                        <img src="./images/a2.png" alt="a2" class="img-responsive">
-                      </a>
+                            <img src="./images/a2.png" alt="a2" class="img-responsive">
+                        </a>
                         <div class="article-detail">
                             <h4 class="h5">event loop带你深入JavaScript世界</h4>
                             <p class="h6">JavaScript设计当初为什么是单线程？优点有哪些，缺点有哪些，这些你都知道吗？</p>
@@ -73,7 +74,7 @@
         </div>
     </div>
     <!-- content -->
-    <div class="content">
+    <div class="content" id="app">
         <div class="container">
             <ul class="content-tab">
                 <li class="content-tab-active">视觉设计</li>
@@ -84,98 +85,24 @@
             <!-- info -->
             <div class="row info">
                 <div class="v-d">
-                    <div class="col-xs-6 col-sm-6 col-md-4">
-                        <div class="thumbnail">
+                    <div class="col-xs-6 col-sm-6 col-md-4" v-for="(item,index) in list" :key="index">
+                        <div class="thumbnail content_block">
                             <i class="thumbnail-left"></i><i class="thumbnail-top"></i>
                             <img src="./images/p1.png" alt="p1" class="img-responsive">
                             <div class="caption">
                                 <p class="clearfix">
-                                    <span class="h6 pull-left">Decouvrir - 2017.08.22</span>
-                                    <button class="btn btn-default pull-right hidden-xs">交互</button>
+                                    <span class="h6 pull-left">{{item.author}} -
+                                        {{item.updateAt | datetimeFormat}}</span>
+                                    <button class="btn btn-default pull-right hidden-xs">{{item.blogType}}</button>
                                 </p>
-                                <h4 class="h5">打造优质色板的11个小窍门</h4>
-                                <p class="h6 detail">打造优质色板的11个小窍门打造优质色板的11个小窍门打造优质色板的11个小窍门...</p>
+                                <h4 class="h5">{{item.title}}</h4>
+                                <p class="h6 detail" v-html="$options.filters.intercept(item.info,20)"></p>
                             </div>
-                            <i class="thumbnail-right"></i><i class="thumbnail-bottom"></i>
+                            <i class=" thumbnail-right"></i><i class="thumbnail-bottom"></i>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-xs-6 col-sm-6 col-md-4">
-                        <div class="thumbnail">
-                            <i class="thumbnail-left"></i><i class="thumbnail-top"></i>
-                            <img src="./images/p2.png" alt="p2" class="img-responsive">
-                            <div class="caption">
-                                <p class="clearfix">
-                                    <span class="h6 pull-left">Decouvrir - 2017.08.22</span>
-                                    <button class="btn btn-default pull-right hidden-xs">交互</button>
-                                </p>
-                                <h4 class="h5">骨骼动画在H5使用攻略</h4>
-                                <p class="h6 detail">骨骼动画有诸多优点在游戏，动画制作，动漫都有非常多的运用。跟帧动画比较来说，帧动画的每...</p>
-                            </div>
-                            <i class="thumbnail-right"></i><i class="thumbnail-bottom"></i>
-                        </div>
-                    </div>
-                    <div class="col-xs-6 col-sm-6 col-md-4">
-                        <div class="thumbnail">
-                            <i class="thumbnail-left"></i><i class="thumbnail-top"></i>
-                            <img src="./images/p3.png" alt="p3" class="img-responsive">
-                            <div class="caption">
-                                <p class="clearfix">
-                                    <span class="h6 pull-left">Decouvrir - 2017.08.22</span>
-                                    <button class="btn btn-default pull-right hidden-xs">交互</button>
-                                </p>
-                                <h4 class="h5">骨骼动画在H5使用攻略</h4>
-                                <p class="h6 detail">骨骼动画有诸多优点在游戏，动画制作，动漫都有非常多的运用。跟帧动画比较来说，帧动画的每...</p>
-                            </div>
-                            <i class="thumbnail-right"></i><i class="thumbnail-bottom"></i>
-                        </div>
-                    </div>
-                    <div class="col-xs-6 col-sm-6 col-md-4">
-                        <div class="thumbnail">
-                            <i class="thumbnail-left"></i><i class="thumbnail-top"></i>
-                            <img src="./images/p4.png" alt="p4" class="img-responsive">
-                            <div class="caption">
-                                <p class="clearfix">
-                                    <span class="h6 pull-left">Decouvrir - 2017.08.22</span>
-                                    <button class="btn btn-default pull-right hidden-xs">交互</button>
-                                </p>
-                                <h4 class="h5">骨骼动画在H5使用攻略</h4>
-                                <p class="h6 detail">骨骼动画有诸多优点在游戏，动画制作，动漫都有非常多的运用。跟帧动画比较来说，帧动画的每...</p>
-                            </div>
-                            <i class="thumbnail-right"></i><i class="thumbnail-bottom"></i>
-                        </div>
-                    </div>
-                    <div class="col-xs-6 col-sm-6 col-md-4">
-                        <div class="thumbnail">
-                            <i class="thumbnail-left"></i><i class="thumbnail-top"></i>
-                            <img src="./images/p5.png" alt="p5" class="img-responsive">
-                            <div class="caption">
-                                <p class="clearfix">
-                                    <span class="h6 pull-left">Decouvrir - 2017.08.22</span>
-                                    <button class="btn btn-default pull-right hidden-xs">交互</button>
-                                </p>
-                                <h4 class="h5">骨骼动画在H5使用攻略</h4>
-                                <p class="h6 detail">骨骼动画有诸多优点在游戏，动画制作，动漫都有非常多的运用。跟帧动画比较来说，帧动画的每...</p>
-                            </div>
-                            <i class="thumbnail-right"></i><i class="thumbnail-bottom"></i>
-                        </div>
-                    </div>
-                    <div class="col-xs-6 col-sm-6 col-md-4">
-                        <div class="thumbnail">
-                            <i class="thumbnail-left"></i><i class="thumbnail-top"></i>
-                            <img src="./images/p6.png" alt="p6" class="img-responsive">
-                            <div class="caption">
-                                <p class="clearfix">
-                                    <span class="h6 pull-left">Decouvrir - 2017.08.22</span>
-                                    <button class="btn btn-default pull-right hidden-xs">交互</button>
-                                </p>
-                                <h4 class="h5">骨骼动画在H5使用攻略</h4>
-                                <p class="h6 detail">骨骼动画有诸多优点在游戏，动画制作，动漫都有非常多的运用。跟帧动画比较来说，帧动画的每...</p>
-                            </div>
-                            <i class="thumbnail-right"></i><i class="thumbnail-bottom"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="i-d">
+                    <!-- <div class="i-d">
                     <div class="col-xs-6 col-sm-6 col-md-4">
                         <div class="thumbnail">
                             <i class="thumbnail-left"></i><i class="thumbnail-top"></i>
@@ -450,48 +377,134 @@
                             <i class="thumbnail-right"></i><i class="thumbnail-bottom"></i>
                         </div>
                     </div>
+                </div> -->
                 </div>
-            </div>
-            <!-- more -->
-            <div class="panel panel-default more">
-                <div class="panel-body text-center">
-                    <a href="#" class="h6">查看更多...</a>
+                <!-- more -->
+                <div class="panel panel-default more" v-if="loading">
+                    <div class="panel-body text-center" v-if="loading" @click="getList">
+                        <a href="#" class="h6">查看更多...</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- public-bottom -->
-    <div class="bottom">
-        <!-- bottom-tab -->
-        <ul class="bottom-tab hidden-xs">
-            <li><a href="./index.html" class="h6"><span class="text-uppercase">home</span><br>首页</a></li>
-            <li><a href="./article.html" class="h6"><span class="text-uppercase">article</span><br>文章</a></li>
-            <li><a href="./buglist.html" class="h6"><span class="text-uppercase">bug</span><br>避坑</a></li>
-            <li><a href="./about.html" class="h6"><span class="text-uppercase">about</span><br>关于</a></li>
-            <li><a href="./brand.html" class="h6"><span class="text-uppercase">source</span><br>资源</a></li>
-            <li><a href="./recruit.html" class="h6"><span class="text-uppercase">recruit</span><br>招聘</a></li>
-            <li><a href="./login.html" class="h6"><span class="text-uppercase">login</span><br>登录</a></li>
-        </ul>
-        <!-- back to top -->
-        <div class="back-top">
-            <a href="#" class="btn btn-default glyphicon glyphicon-menu-up"></a>
+        <!-- public-bottom -->
+        <div class="bottom">
+            <!-- bottom-tab -->
+            <ul class="bottom-tab hidden-xs">
+                <li><a href="./index.html" class="h6"><span class="text-uppercase">home</span><br>首页</a></li>
+                <li><a href="./article.html" class="h6"><span class="text-uppercase">article</span><br>文章</a></li>
+                <li><a href="./buglist.html" class="h6"><span class="text-uppercase">bug</span><br>避坑</a></li>
+                <li><a href="./about.html" class="h6"><span class="text-uppercase">about</span><br>关于</a></li>
+                <li><a href="./brand.html" class="h6"><span class="text-uppercase">source</span><br>资源</a></li>
+                <li><a href="./recruit.html" class="h6"><span class="text-uppercase">recruit</span><br>招聘</a></li>
+                <li><a href="./login.html" class="h6"><span class="text-uppercase">login</span><br>登录</a></li>
+            </ul>
+            <!-- back to top -->
+            <div class="back-top">
+                <a href="#" class="btn btn-default glyphicon glyphicon-menu-up"></a>
+            </div>
+            <!-- copyright -->
+            <p class="copyright h6 text-center">2014 All rights reserved. 青岛轮子软件科技有限公司 版权所有 法律声明 鲁ICP备14035434号-1</p>
         </div>
-        <!-- copyright -->
-        <p class="copyright h6 text-center">2014 All rights reserved. 青岛轮子软件科技有限公司 版权所有 法律声明 鲁ICP备14035434号-1</p>
-    </div>
-    <script src="./lib/jquery/jquery.min.js"></script>
-    <script src="./lib/bootstrap/bootstrap.min.js"></script>
-    <script src="./js/tab-toggle.js"></script>
-    <script src="./js/border-slide.js"></script>
-    <script src="./js/backtop.js"></script>
-    <script src="./js/article.js"></script>
-    <script>
+        <script src="./lib/jquery/jquery.min.js"></script>
+        <script src="./lib/bootstrap/bootstrap.min.js"></script>
+        <script src="./js/tab-toggle.js"></script>
+        <script src="./js/border-slide.js"></script>
+        <script src="./js/backtop.js"></script>
+        <script src="./js/article.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="./js/axios.min.js"></script>
+        <script type="module">
+            import {
+            axiosGet,
+            axiosPost
+        } from './js/api.js'
+        var app = new Vue({
+            el: '#app',
+            data: {
+                searchContent:'',
+                params: {},
+                list:[],
+                currentPageIndex: 0, // 分页器当前页
+                loading: false
+            },
+            mounted () {
+                this.getList();
+            },
+            computed: {
+  
+            },
+
+            filters: {
+            datetimeFormat: function (value) {
+            if (!value) return ''
+            value = value.toString()
+            let date = value.split('T')[0];
+            let time = value.split('T')[1].split('.')[0];
+            return date + ' ' + time;
+            },
+            intercept :function(value, number){
+            if (value) {
+            if (value.length > number) {
+            return value.substr(0, number) + '...';
+            }
+            else {
+            return value;
+            }
+            } else {
+            return '';
+            }
+            }
+        },
+            methods: {
+                // 获取列表
+                getList() {
+                    this.params = {
+                        paging:{
+                            limit: 10,
+                            page: ++this.currentPageIndex
+                        },
+                        filters:{}
+                    }
+                    axiosPost(`blogs/getBlogList`, this.params,(res) => {
+                        if(res.data){
+                            this.loading = true
+                            this.list = this.list.concat(res.data.data)
+                            console.log('lists', this.list);
+                        }
+                        if(res.data.total == this.list.length){
+                            this.loading = false;
+                        }
+                        },(err) => {
+                            console.log(err);
+                        })
+                },
+
+                // 搜索
+                // handleSearch(){
+                //     this.params.filters.title=this.searchContent;
+                //     this.getBugList();
+                // },
+            
+        
+         
+
+            
+              
+         
+       
+              
+             
+            }
+        })
+    </script>
+        <!-- <script>
         $(function(){
             $(".v-d > div").eq(0).on('click',()=>{
                 window.location.href = "./detail-3.html"
             })
         })
-    </script>
+    </script> -->
 </body>
 
 </html>
