@@ -5,7 +5,7 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: process.env.npm_package_name || '',
+    title: '用户体验中心',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -24,13 +24,22 @@ module.exports = {
   ** Global CSS
   */
   css: [
-    'element-ui/lib/theme-chalk/index.css'
+    'element-ui/lib/theme-chalk/index.css',
+    {
+      src: '~/assets/style/reset.scss',
+      lang: 'scss'
+    },
+    {
+      src: '~/assets/style/element-variables.scss',
+      lang: 'scss'
+    }
   ],
   /*
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@/plugins/element-ui'
+    '@/plugins/element-ui',
+    '~/plugins/common.js',
   ],
   /*
   ** Nuxt.js dev-modules
@@ -41,7 +50,21 @@ module.exports = {
   ** Nuxt.js modules
   */
   modules: [
+    '@nuxtjs/axios',
+    '@nuxtjs/proxy'
   ],
+  /*
+  ** Nuxt.js proxy
+  */
+  proxy: {
+    // '/api': {
+    //   target: 'http://www.xxx.com',
+    //   changeOrigin: true,
+    //   pathRewrite: {
+    //     '^/api ': ''
+    //   }
+    // }
+  },
   /*
   ** 环境配置
   */

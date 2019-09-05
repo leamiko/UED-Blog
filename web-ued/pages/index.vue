@@ -1,21 +1,31 @@
 <template>
-  <div class="container">
-    {{title}}
+  <div class="">
+    {{title}}<br>
+    <el-button type="primary" @click="haha">主要按钮</el-button>
+
+    {{time | formatDateYear}}
+
+    <Logo></Logo>
   </div>
 </template>
 
 <script>
-
+import Logo from '../components/Logo';
 export default {
   components: {
+    Logo
   },
   data() {
     return {
-      title: 'OHMA ZI-O'
+      title: 'Hello World',
+      time: '2019-09-05 17:08:22'
     }
   },
-  methods() {
-
+  methods: {
+    haha() {
+      console.log(this.title);
+      console.log(this.$op.moment().format('YYYY-MM-DD HH:mm:ss'));
+    }
   },
   created() {
     this.$message({

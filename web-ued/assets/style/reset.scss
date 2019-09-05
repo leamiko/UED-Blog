@@ -1,0 +1,30 @@
+html,
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+  word-spacing: 1px;
+  margin: 0;
+  font-variant: tabular-nums;
+  box-sizing: border-box;
+  -webkit-font-feature-settings: "tnum";
+  font-feature-settings: "tnum";
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  margin: 0;
+}

@@ -1,7 +1,7 @@
 # ASSETS
 
-**This directory is not required, you can delete it if you don't want to use it.**
+**此目录不是必需的，如果不想使用，可以将其删除。**
 
-This directory contains your un-compiled assets such as LESS, SASS, or JavaScript.
+此目录包含未编译的静态资源，如less、sass或javascript。
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/guide/assets#webpacked).
+- `element-variables.scss` 文件可以定义 `element ui` 主题色
