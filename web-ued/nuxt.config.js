@@ -32,7 +32,11 @@ module.exports = {
     {
       src: '~/assets/style/element-variables.scss',
       lang: 'scss'
-    }
+    },
+    {
+      src: '~/assets/style/base.scss',
+      lang: 'scss'
+    },
   ],
   /*
   ** Plugins to load before mounting the App

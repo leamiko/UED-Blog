@@ -21,6 +21,14 @@ export default {
       time: '2019-09-05 17:08:22'
     }
   },
+  head() {
+    return {
+      title: '首页',
+      meta: [
+        { hid: 'description', name: 'description', content: 'My custom description' }
+      ]
+    }
+  },
   methods: {
     haha() {
       console.log(this.title);
