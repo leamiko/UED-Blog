@@ -9,3 +9,29 @@ body,
     height: 100%;
   }
 }
+
+.cus-relative {
+  position: relative;
+}
+
+.cus-absolute {
+  position: absolute;
+}
+
+.cus-fixed {
+  position: fixed;
+}
+
+.cus-fix-center {
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}
+
+.cus-box-center {
+  margin: 0 auto;
+}
+
+.cus-full-width {
+  width: 100%;
+}

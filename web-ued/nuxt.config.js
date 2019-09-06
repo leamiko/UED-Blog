@@ -45,6 +45,9 @@ module.exports = {
     '@/plugins/element-ui',
     '~/plugins/common.js',
   ],
+  router: {
+    middleware: 'auth'
+  },
   /*
   ** Nuxt.js dev-modules
   */

@@ -17,7 +17,8 @@
     "element-ui": "^2.4.11",
     "express": "^4.16.4",
     "moment": "^2.24.0",
-    "nuxt": "^2.0.0"
+    "nuxt": "^2.0.0",
+    "vue-cookies": "^1.5.13"
   },
   "devDependencies": {
     "node-sass": "^4.12.0",
