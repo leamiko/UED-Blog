@@ -1,9 +1,5 @@
 <template>
-  <div class="">
-    {{title}}<br>
-
-    {{time | formatDateSec}}
-
+  <div>
     <Logo></Logo>
   </div>
 </template>
@@ -22,8 +18,7 @@ export default {
   },
   data() {
     return {
-      title: 'Hello World',
-      time: '2019-09-05T17:08:22'
+      title: 'Hello World'
     }
   },
   head() {

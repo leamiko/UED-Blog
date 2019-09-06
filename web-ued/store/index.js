@@ -13,11 +13,11 @@ export const mutations = {
 
 export const actions = {
   // nuxtServerInit is called by Nuxt.js before server-rendering every page
-  nuxtServerInit ({ commit }, { req }) {
-    // if (req.session && req.session.authToken) {
-    //   commit('SET_TOKEN', req.session.authToken)
-    // }
-  },
+  // nuxtServerInit ({ commit }, { req }) {
+  //   if (req.session && req.session.authToken) {
+  //     commit('SET_TOKEN', req.session.authToken)
+  //   }
+  // },
   async login ({ commit }, data) {
     // try {
       // const { data } = await axios.post('/api/login', data)

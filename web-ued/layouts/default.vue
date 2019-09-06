@@ -1,9 +1,26 @@
 <template>
   <el-container>
-    <el-header>Header</el-header>
+    <el-header>
+      <Header></Header>
+    </el-header>
     <el-main>
-      <nuxt />
+      <transition name="el-zoom-in-center">
+        <nuxt />
+      </transition>
     </el-main>
-    <el-footer>Footer</el-footer>
+    <el-footer>
+      <Footer></Footer>
+    </el-footer>
   </el-container>
 </template>
+
+<script>
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+export default {
+  components: {
+    Header,
+    Footer
+  }
+}
+</script>

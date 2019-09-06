@@ -50,7 +50,7 @@ export default {
   },
   head() {
     return {
-      title: '用户登录'
+      title: '登录'
     }
   },
   methods: {
@@ -69,7 +69,6 @@ export default {
           })
 
         } else {
-          console.log('error submit!!');
           this.$message.error('登录失败！');
           return false;
         }
@@ -98,8 +97,5 @@ export default {
   min-width: 320px;
   width: 480px;
   top: calc(50% - 93px);
-  left: 0;
-  right: 0;
-  margin: 0 auto;
 }
 </style>
