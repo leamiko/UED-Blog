@@ -7,12 +7,12 @@
 <script>
 import Logo from '../components/Logo';
 export default {
-  mimiddleware: 'auth',
-  // fetch ({redirect, store}) {
-  //   if (!store.state.authToken) {
-  //     redirect('/login');
-  //   }
-  // },
+  // mimiddleware: 'auth',
+  fetch ({redirect, store}) {
+    if (!store.state.authToken) {
+      redirect('/login');
+    }
+  },
   components: {
     Logo
   },

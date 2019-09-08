@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import * as VueCookie from 'vue-cookies';
 export default {
   data() {
     var checkName = (rule, value, callback) => {
@@ -79,15 +78,7 @@ export default {
       this.$refs[formName].resetFields();
     }
   },
-  mounted() {
-    // 自动登录
-    if (VueCookie.isKey('AUTHTOKEN')) {
-      this.$store.dispatch('login', VueCookie.get('AUTHTOKEN'))
-      .then(() => {
-        this.$router.replace('/');
-      })
-    }
-  }
+  mounted() { }
 }
 </script>
 

@@ -14,6 +14,9 @@ module.exports = {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+    ],
+    script: [
+      { src: 'https://cdn.staticfile.org/clipboard.js/2.0.4/clipboard.min.js', type: 'text/javascript' }
     ]
   },
   /*
@@ -44,9 +47,22 @@ module.exports = {
   plugins: [
     '@/plugins/element-ui',
     '~/plugins/common.js',
+    // '~/plugins/axios.js'
   ],
   router: {
-    middleware: 'auth'
+    // 路由中间件
+    // middleware: 'auth',
+    extendRoutes(routes) {
+      // 捕获未知路由，然后统一跳转到404
+      routes.push({
+        path: '*',
+        redirect: '/404'
+      })
+    },
+    scrollBehavior() {
+      // 路由跳转，滚动条置顶
+      return { x: 0, y: 0 }
+    }
   },
   /*
   ** Nuxt.js dev-modules
@@ -58,7 +74,8 @@ module.exports = {
   */
   modules: [
     '@nuxtjs/axios',
-    '@nuxtjs/proxy'
+    '@nuxtjs/proxy',
+    ['@nuxtjs/dotenv', { filename: '.env.prod' }]
   ],
   /*
   ** Nuxt.js proxy
@@ -76,21 +93,32 @@ module.exports = {
   ** 环境配置
   */
   env: {
-    baseUrl: process.env.BASE_URL || 'http://localhost:8400'
+    baseUrl: process.env.BASE_URL || 'http://localhost:3000'
   },
   server: {
-    port: 8400, // default: 3000
+    port: 3000, // default: 3000
     host: 'localhost', // default: localhost,
   },
   /*
   ** Build configuration
   */
   build: {
+    // 提取css
+    extractCSS: true,
     transpile: [/^element-ui/],
     /*
     ** You can extend webpack config here
     */
     extend (config, ctx) {
+      // Run ESLint on save
+      // if (ctx.isDev && ctx.isClient) {
+      //   config.module.rules.push({
+      //     enforce: 'pre',
+      //     test: /\.(js|vue)$/,
+      //     loader: 'eslint-loader',
+      //     exclude: /(node_modules)/
+      //   })
+      // }
     },
     analyze: {
       analyzerMode: 'static'
