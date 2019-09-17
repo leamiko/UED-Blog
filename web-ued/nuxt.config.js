@@ -51,7 +51,7 @@ module.exports = {
   ],
   router: {
     // 路由中间件
-    // middleware: 'auth',
+    middleware: 'auth',
     extendRoutes(routes) {
       // 捕获未知路由，然后统一跳转到404
       routes.push({

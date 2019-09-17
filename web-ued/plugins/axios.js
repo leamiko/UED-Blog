@@ -1,16 +1,24 @@
 import * as axios from 'axios'
-import sha256 from 'crypto-js/sha256'
-import Base64 from 'crypto-js/enc-base64'
-
-// 加密算法，需安装crypto-js
-function crypto (str) {
-  const _sign = sha256(str)
-  return encodeURIComponent(Base64.stringify(_sign))
+import * as CryptoJS from 'crypto-js'
+// 获取密钥/偏移量
+const KEY = CryptoJS.enc.Utf8.parse(process.env.SECRET_KEY)
+const IV = CryptoJS.enc.Utf8.parse(process.env.KEY_OFFSET)
+// 加密算法
+function Encrypt(word) {
+  let srcs = CryptoJS.enc.Utf8.parse(word);
+  let encrypted = CryptoJS.AES.encrypt(srcs, KEY, { iv: IV, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 });
+  return encrypted.ciphertext.toString().toUpperCase();
+}
+// 解密算法
+function Decrypt(word) {
+  let encryptedHexStr = CryptoJS.enc.Hex.parse(word);
+  let srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
+  let decrypt = CryptoJS.AES.decrypt(srcs, KEY, { iv: IV, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 });
+  let decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
+  return decryptedStr.toString();
 }
 
 const SECRET = process.env.SECRET
-
-console.log(process.env.APIHOST)
 
 const options = {
   headers: { 'X-Requested-With': 'XMLHttpRequest' },
@@ -31,7 +39,7 @@ instance.interceptors.request.use(
   config => {
     const timestamp = new Date().getTime()
     const param = `timestamp=${timestamp}&secret=${SECRET}`
-    const sign = crypto(param)
+    const sign = Encrypt(param)
     config.params = Object.assign({}, config.params, { timestamp, sign })
     return config
   }

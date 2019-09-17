@@ -38,7 +38,9 @@ export default {
       },
       rules2: {
         username: [
-          { validator: checkName, trigger: 'blur' }
+          { validator: checkName, trigger: 'blur' },
+          { min: 10, max: 20, message: '长度在 10 到 20 个字符', trigger: 'blur' },
+
         ],
         password: [
           { validator: validatePass, trigger: 'blur' }

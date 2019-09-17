@@ -1,5 +1,6 @@
 <template>
   <div>
+    <el-button type="primary" @click="reload()">刷新测试</el-button>
     <Logo></Logo>
   </div>
 </template>
@@ -7,12 +8,12 @@
 <script>
 import Logo from '../components/Logo';
 export default {
-  // mimiddleware: 'auth',
-  fetch ({redirect, store}) {
-    if (!store.state.authToken) {
-      redirect('/login');
-    }
-  },
+  inject: ['reload'],
+  // fetch ({redirect, store}) {
+  //   if (!store.state.authToken) {
+  //     redirect('/login');
+  //   }
+  // },
   components: {
     Logo
   },
