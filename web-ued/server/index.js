@@ -2,6 +2,7 @@ const express = require('express')
 const consola = require('consola')
 const { Nuxt, Builder } = require('nuxt')
 const app = express()
+var indexRouter = require('./routes/index')
 
 app.use('/static', express.static('static'))
 
@@ -11,16 +12,9 @@ config.dev = process.env.NODE_ENV !== 'production'
 
 require('dotenv').config()
 
-const { Router } = require('express')
-const { verifyMiddleware } = require('./middleware/verify.js')
-const router = Router()
+app.use('/api', indexRouter)
 
-// 在需要鉴权的路由加上
-router.get('/test', verifyMiddleware, function (req, res, next) {
-    res.json({name: 'test'})
-})
-
-async function start () {
+async function start() {
   // Init Nuxt.js
   const nuxt = new Nuxt(config)
 
