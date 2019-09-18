@@ -55,28 +55,21 @@ exports.logOut = function(req, res) {
 
 exports.register = function(req, res) {
   var md5 = crypto.createHash('md5')
-  if (req.body.nickName === '' && req.body.nickName.length === 0) {
-    res.send('昵称不能为空')
+  if (req.body.account === '' && req.body.account.length === 0) {
+    res.send('账号不能为空')
     return
   }
   if (req.body.passWord === '' && req.body.passWord.length === 0) {
     res.send('密码不能为空')
     return
   }
-  if (req.body.account === '' && req.body.account.length === 0) {
-    res.send('账号不能为空')
-    return
-  }
   // 密码加密
   md5.update(req.body.passWord)
   const pwd = md5.digest('base64') //将加密后的md5密码使用base64加密
   var postData = {
-    nickName: req.body.nickName,
-    passWord: pwd,
     account: req.body.account,
-    avatar: req.body.avatar
+    passWord: pwd
   }
-  console.log(postData)
   User.findOne(
     {
       account: postData.account
@@ -90,10 +83,8 @@ exports.register = function(req, res) {
         })
       } else {
         var user_1 = new User({
-          nickName: postData.nickName,
-          passWord: postData.passWord,
           account: postData.account,
-          avatar: postData.avatar
+          passWord: postData.passWord
         })
         user_1.save(function(err) {
           if (err) {
