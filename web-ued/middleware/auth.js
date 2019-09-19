@@ -1,6 +1,6 @@
 import * as VueCookie from 'vue-cookies'
 
-export default function ({ store, redirect, error }) {
+export default function({ store, redirect, route, error }) {
   if (!store.state.authToken) {
     return redirect('/login')
     // error({

@@ -1,14 +1,27 @@
 <template>
   <div class="el-form cus-absolute cus-fix-center">
-    <el-form :model="loginForm" status-icon :rules="rules2" ref="loginForm" label-width="100px">
-      <el-form-item prop="username">
-        <el-input v-model="loginForm.username" placeholder="请输入账号" prefix-icon="el-icon-user"></el-input>
+    <el-form :model="loginForm"
+             status-icon
+             :rules="rules2"
+             ref="loginForm"
+             label-width="100px">
+      <el-form-item prop="account">
+        <el-input v-model="loginForm.account"
+                  placeholder="请输入账号"
+                  prefix-icon="el-icon-user"></el-input>
       </el-form-item>
-      <el-form-item prop="password">
-        <el-input type="password" v-model="loginForm.password" placeholder="请输入密码" auto-complete="off" prefix-icon="el-icon-lock"></el-input>
+      <el-form-item prop="passWord">
+        <el-input type="passWord"
+                  v-model="loginForm.passWord"
+                  placeholder="请输入密码"
+                  auto-complete="off"
+                  prefix-icon="el-icon-lock"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('loginForm')" class="cus-full-width" :loading="submitLoading">登录</el-button>
+        <el-button type="primary"
+                   @click="submitForm('loginForm')"
+                   class="cus-full-width"
+                   :loading="submitLoading">登录</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -16,7 +29,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     var checkName = (rule, value, callback) => {
       if (!value) {
         return callback(new Error('账号不能为空'));
@@ -33,54 +46,51 @@ export default {
     };
     return {
       loginForm: {
-        username: '',
-        password: ''
+        account: '',
+        passWord: ''
       },
       rules2: {
-        username: [
+        account: [
           { validator: checkName, trigger: 'blur' },
-          { min: 10, max: 20, message: '长度在 10 到 20 个字符', trigger: 'blur' },
+          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' },
 
         ],
-        password: [
+        passWord: [
           { validator: validatePass, trigger: 'blur' }
         ]
       },
       submitLoading: false
     };
   },
-  head() {
+  head () {
     return {
       title: '登录'
     }
   },
   methods: {
-    submitForm(formName) {
+    submitForm (formName) {
       this.submitLoading = true;
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(async (valid) => {
         this.submitLoading = false;
         if (valid) {
-          this.$store.dispatch('login', this.loginForm)
-          .then(() => {
-            this.$message({
-              message: '登录成功！',
-              type: 'success'
-            });
-            this.$router.replace('/');
-          })
-
-        } else {
-          this.$message.error('登录失败！');
-          return false;
+          const { data } = await this.$axios.post('/api/login', this.loginForm)
+          if (data.status_code == 200) {
+            this.$store.dispatch('login', data.user)
+              .then(() => {
+                this.$router.replace('/');
+              })
+          } else {
+            alert(data.message)
+          }
         }
       });
     },
     // 清空数据
-    resetForm(formName) {
+    resetForm (formName) {
       this.$refs[formName].resetFields();
     }
   },
-  mounted() { }
+  mounted () { }
 }
 </script>
 
