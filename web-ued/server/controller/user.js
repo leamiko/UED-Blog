@@ -3,20 +3,13 @@ var crypto = require('crypto')
 const ms = require('ms')
 
 exports.login = function(req, res) {
-  const { account, passWord, checked } = req.body
+  const { account, passWord } = req.body
   var md5 = crypto.createHash('md5')
   const end_paw = md5.update(passWord).digest('hex')
   const params = {
     account: account,
     passWord: end_paw
   }
-  // req.session.user = params;
-  // if (checked) req.session.cookie.maxAge = ms("30d");
-  // return res.json({
-  //   status_code: 200,
-  //   message: "登录成功！",
-  //   data: params
-  // });
   User.findOne(params, function(err, user) {
     if (err) {
       console.log(err)
@@ -28,11 +21,10 @@ exports.login = function(req, res) {
     }
     if (user) {
       req.session.user = user
-      if (checked) req.session.cookie.maxAge = ms('30d')
       return res.json({
         status_code: 200,
         message: '登录成功！',
-        data: user
+        user: user
       })
     } else {
       return res.json({
@@ -64,8 +56,7 @@ exports.register = function(req, res) {
     return
   }
   // 密码加密
-  md5.update(req.body.passWord)
-  const pwd = md5.digest('base64') //将加密后的md5密码使用base64加密
+  const pwd = md5.update(req.body.passWord).digest('hex')
   var postData = {
     account: req.body.account,
     passWord: pwd
@@ -77,7 +68,7 @@ exports.register = function(req, res) {
     function(err, data) {
       if (data) {
         return res.json({
-          code: 201,
+          status_code: 201,
           message: '用户已被注册',
           data: null
         })
@@ -89,7 +80,7 @@ exports.register = function(req, res) {
         user_1.save(function(err) {
           if (err) {
             return res.json({
-              code: 201,
+              status_code: 201,
               message: err,
               data: null
             })
@@ -97,7 +88,7 @@ exports.register = function(req, res) {
             return res.json({
               status_code: 200,
               message: '注册成功！',
-              data: null
+              user: postData
             })
           }
         })

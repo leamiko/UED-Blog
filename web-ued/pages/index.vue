@@ -1,6 +1,7 @@
 <template>
   <div>
-    <el-button type="primary" @click="reload()">刷新测试</el-button>
+    <el-button type="primary"
+               @click="reload()">刷新测试</el-button>
     <Logo></Logo>
   </div>
 </template>
@@ -9,20 +10,20 @@
 import Logo from '../components/Logo';
 export default {
   inject: ['reload'],
-  // fetch ({redirect, store}) {
-  //   if (!store.state.authToken) {
-  //     redirect('/login');
-  //   }
-  // },
+  fetch ({ redirect, store }) {
+    if (!store.state.authToken) {
+      redirect('/login');
+    }
+  },
   components: {
     Logo
   },
-  data() {
+  data () {
     return {
       title: 'Hello World'
     }
   },
-  head() {
+  head () {
     return {
       title: '首页',
       meta: [
@@ -30,8 +31,8 @@ export default {
       ]
     }
   },
-  methods: { },
-  created() { }
+  methods: {},
+  created () { }
 }
 </script>
 
