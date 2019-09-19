@@ -50,7 +50,6 @@ export const mutations = {
 export const actions = {
   // nuxtServerInit is called by Nuxt.js before server-rendering every page
   nuxtServerInit({ commit }, { req }) {
-    console.log(req.session.user)
     if (req.session.user) {
       commit('SET_TOKEN', Encrypt(req.session.user.account))
     }

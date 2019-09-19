@@ -67,13 +67,17 @@ export default {
       title: '登录'
     }
   },
+  mounted () {
+
+    console.log(process.env.BASE_URL)
+  },
   methods: {
     submitForm (formName) {
       this.submitLoading = true;
       this.$refs[formName].validate(async (valid) => {
         this.submitLoading = false;
         if (valid) {
-          const { data } = await this.$axios.post('/api_nuxt/login', this.loginForm)
+          const { data } = await this.$axios.post(`${process.env.BASE_URL}/api_nuxt/login`, this.loginForm)
           if (data.status_code == 200) {
             this.$store.dispatch('login', data.user)
               .then(() => {
@@ -89,8 +93,7 @@ export default {
     resetForm (formName) {
       this.$refs[formName].resetFields();
     }
-  },
-  mounted () { }
+  }
 }
 </script>
 

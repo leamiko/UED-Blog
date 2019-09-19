@@ -88,20 +88,18 @@ module.exports = {
    ** Nuxt.js proxy
    */
   proxy: {
-    '/api_nuxt': {
-      target: process.env.BASE_URL || 'http://127.0.0.1:3002',
-      changeOrigin: true,
-      pathRewrite: {
-        '^/api_nuxt ': '/api_nuxt'
-      }
-    }
+    // '/api_nuxt': {
+    //   target: process.env.BASE_URL,
+    //   changeOrigin: true,
+    //   pathRewrite: {
+    //     '^/api_nuxt': '/api_nuxt'
+    //   }
+    // }
   },
   /*
    ** 环境配置
    */
-  env: {
-    baseUrl: process.env.BASE_URL || 'http://127.0.0.1:3002'
-  },
+  env: {},
   server: {
     port: 3002, // default: 3000
     host: '127.0.0.1' // default: localhost,
