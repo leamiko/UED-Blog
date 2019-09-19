@@ -100,11 +100,11 @@ module.exports = {
    ** 环境配置
    */
   env: {
-    baseUrl: process.env.BASE_URL || 'http://localhost:3000'
+    baseUrl: process.env.BASE_URL || 'http://127.0.0.1:3002'
   },
   server: {
-    port: 3000, // default: 3000
-    host: 'localhost' // default: localhost,
+    port: 3002, // default: 3000
+    host: '127.0.0.1' // default: localhost,
   },
   /*
    ** Build configuration
