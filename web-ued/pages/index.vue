@@ -10,11 +10,12 @@
 import Logo from '../components/Logo';
 export default {
   inject: ['reload'],
-  fetch ({ redirect, store }) {
-    if (!store.state.authToken) {
-      redirect('/login');
-    }
-  },
+  // fetch ({ redirect, store }) {
+  //   console.log(store.state)
+  //   if (!store.state.authToken) {
+  //     redirect('/login');
+  //   }
+  // },
   components: {
     Logo
   },
