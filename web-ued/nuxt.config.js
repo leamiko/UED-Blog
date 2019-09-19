@@ -88,13 +88,13 @@ module.exports = {
    ** Nuxt.js proxy
    */
   proxy: {
-    // '/api': {
-    //   target: 'http://www.xxx.com',
-    //   changeOrigin: true,
-    //   pathRewrite: {
-    //     '^/api ': ''
-    //   }
-    // }
+    '/api_nuxt': {
+      target: process.env.BASE_URL || 'http://127.0.0.1:3002',
+      changeOrigin: true,
+      pathRewrite: {
+        '^/api_nuxt ': '/api_nuxt'
+      }
+    }
   },
   /*
    ** 环境配置
