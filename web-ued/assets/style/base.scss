@@ -6,6 +6,22 @@ body,
   height: 100%;
 }
 
+.cus-flex {
+  display: flex;
+}
+
+.cus-flex-center {
+  justify-content: center;
+}
+
+.cus-flex-between {
+  justify-content: space-between;
+}
+
+.cus-align-center {
+  align-items: center;
+}
+
 .cus-relative {
   position: relative;
 }
@@ -30,4 +46,16 @@ body,
 
 .cus-full-width {
   width: 100%;
+}
+
+.inline {
+  display: inline-block;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
 }

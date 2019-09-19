@@ -1,12 +1,19 @@
 <template>
   <div>
-    <el-button type="primary" @click="reload()">刷新测试</el-button>
-    <Logo></Logo>
+    <my-header></my-header>
+    <div>
+      <el-button type="primary" @click="reload()">刷新测试</el-button>
+      <Logo></Logo>
+    </div>
+    <my-footer></my-footer>
   </div>
 </template>
 
 <script>
-import Logo from '../components/Logo';
+import Logo from '@/components/Logo';
+import MyHeader from '@/components/Header';
+import MyFooter from '@/components/Footer';
+
 export default {
   inject: ['reload'],
   // fetch ({redirect, store}) {
@@ -15,7 +22,9 @@ export default {
   //   }
   // },
   components: {
-    Logo
+    Logo,
+    MyHeader,
+    MyFooter
   },
   data() {
     return {
@@ -36,12 +45,4 @@ export default {
 </script>
 
 <style>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
 </style>
