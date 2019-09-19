@@ -20,6 +20,10 @@ module.exports = {
       {
         src: 'https://cdn.staticfile.org/clipboard.js/2.0.4/clipboard.min.js',
         type: 'text/javascript'
+      },
+      {
+        src: 'https://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js',
+        type: 'text/javascript'
       }
     ]
   },

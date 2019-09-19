@@ -20,6 +20,9 @@ router.get('/logOut', function(req, res, next) {
 router.post('/register', function(req, res, next) {
   user.register(req, res)
 })
+router.get('/callback', (req, res) => {
+  user.wxLogin(req, res)
+})
 
 /* 文章API */
 //新增删除blog

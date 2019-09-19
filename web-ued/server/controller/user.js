@@ -1,6 +1,7 @@
 var User = require('../models/user.js') //引入user表
 var crypto = require('crypto')
-const ms = require('ms')
+const OAuth = require('wechat-oauth')
+const wxPcClient = new OAuth(process.env.WX_APP_ID, process.env.WX_APP_SECRET)
 
 exports.login = function(req, res) {
   const { account, passWord } = req.body
@@ -95,4 +96,20 @@ exports.register = function(req, res) {
       }
     }
   )
+}
+
+exports.wxLogin = function(req, res) {
+  // 这里接收前端的 redirect_url 传递的 code
+  const { code } = req.query
+  wxPcClient.getAccessToken(code, (err, result) => {
+    console.log(rsult)
+    if (!err) {
+      const openId = result.data.openid
+      wxPcClient.getUser(openId, (err, result) => {
+        console.log(result)
+        // 这里获取到了用户的信息, 可以存储在数据库中
+        const { nickname, sex, city, province, country, headimgurl } = result
+      })
+    }
+  })
 }
