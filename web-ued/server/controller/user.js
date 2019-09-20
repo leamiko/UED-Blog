@@ -86,6 +86,7 @@ exports.register = function(req, res) {
               data: null
             })
           } else {
+            req.session.user = user
             return res.json({
               status_code: 200,
               message: '注册成功！',
@@ -109,6 +110,38 @@ exports.wxLogin = function(req, res) {
         console.log(result)
         // 这里获取到了用户的信息, 可以存储在数据库中
         const { nickname, sex, city, province, country, headimgurl } = result
+        User.findOne({ wxOpenId: openId }, function(err, user) {
+          if (user) {
+            // 登录
+            req.session.user = user
+            return res.json({
+              status_code: 200,
+              message: '登录成功！',
+              user: user
+            })
+          } else {
+            // 绑定
+            User.findByIdAndUpdate(
+              req.session.user._id,
+              { wxOpenId: openId },
+              function(err, user) {
+                if (user) {
+                  return res.json({
+                    status_code: 200,
+                    message: '绑定成功！',
+                    user: user
+                  })
+                } else {
+                  return res.json({
+                    status_code: 401,
+                    message: '请先注册账号！',
+                    data: null
+                  })
+                }
+              }
+            )
+          }
+        })
       })
     }
   })

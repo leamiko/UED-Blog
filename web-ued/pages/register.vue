@@ -77,9 +77,8 @@ export default {
           if (data.status_code == 200) {
             this.$store.dispatch('login', data.user)
               .then(() => {
-                this.$router.replace('/');
+                this.$router.replace('/wxLogin');
               })
-            this.$router.replace('/');
           } else {
             alert(data.message)
           }
