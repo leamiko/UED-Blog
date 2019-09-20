@@ -53,18 +53,17 @@ exports.GetBugDetail = function (req, res) {
             _id: bid
         },
         (err, data) => {
-            if (data) {
-                return res.json({
-                    status_code: 200,
-                    message: 'success',
-                    data: data
-                })
-            }
             if (err) {
                 return res.json({
                     status_code: 201,
                     message: err,
                     data: null
+                })
+            } else {
+                return res.json({
+                    status_code: 200,
+                    message: 'success',
+                    data: data
                 })
             }
         }
