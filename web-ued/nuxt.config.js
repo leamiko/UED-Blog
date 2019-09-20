@@ -79,11 +79,7 @@ module.exports = {
   /*
    ** Nuxt.js modules
    */
-  modules: [
-    '@nuxtjs/axios',
-    '@nuxtjs/proxy',
-    ['@nuxtjs/dotenv', { filename: '.env.prod' }]
-  ],
+  modules: ['@nuxtjs/axios', '@nuxtjs/proxy'],
   /*
    ** Nuxt.js proxy
    */
