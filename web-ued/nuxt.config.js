@@ -67,8 +67,7 @@ module.exports = {
         redirect: '/404'
       })
     },
-    scrollBehavior() {
-      // 路由跳转，滚动条置顶
+    scrollBehavior: function(to, from, savedPosition) {
       return { x: 0, y: 0 }
     }
   },
@@ -79,7 +78,7 @@ module.exports = {
   /*
    ** Nuxt.js modules
    */
-  modules: ['@nuxtjs/axios', '@nuxtjs/proxy'],
+  modules: ['@nuxtjs/axios', '@nuxtjs/proxy', '@nuxtjs/dotenv'],
   /*
    ** Nuxt.js proxy
    */
@@ -95,7 +94,13 @@ module.exports = {
   /*
    ** 环境配置
    */
-  env: {},
+  env: {
+    NODE_ENV: process.env.NODE_ENV,
+    WX_APP_ID: process.env.WX_APP_ID,
+    WX_APP_SECRET: process.env.WX_APP_SECRET,
+    BASE_URL: process.env.BASE_URL,
+    DB_URL: process.env.DB_URL
+  },
   server: {
     port: 3002, // default: 3000
     host: '127.0.0.1' // default: localhost,
