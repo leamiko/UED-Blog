@@ -1,10 +1,10 @@
 var Bug = require('../models/bugItem');
 
 // 新增bug条目
-async function AddBugItems(req, res) {
+exports.AddBugItems = function (req, res) {
     var postData = {
         title: req.body.title,
-        keyword: req.body.keyword,
+        // keyword: req.body.keyword,
         content: req.body.content,
         bugStatus: req.body.bugStatus,
         bugSolution: req.body.bugSolution,
@@ -47,7 +47,7 @@ async function AddBugItems(req, res) {
     )
 }
 // 根据bug条目id查看bug详情
-async function GetBugDetail(req, res) {
+exports.GetBugDetail = function (req, res) {
     let bid = req.query.bugId
     Bug.findOne({
             _id: bid
@@ -71,18 +71,13 @@ async function GetBugDetail(req, res) {
     )
 }
 // 获取bug列表
-async function GetBugList(req, res) {
-    let filters = {
+exports.GetBugList = function (req, res) {
+    var filters = {
         deleted: false
     }
     if (req.body.filters) {
         if (req.body.filters.title) {
             filters.title = new RegExp(req.body.filters.title)
-        }
-        if (req.body.filters.keyword && req.body.filters.keyword.length > 0) {
-            filters.keyword = {
-                $in: req.body.filters.keyword
-            }
         }
         if (req.body.filters.bugStatus) {
             filters.bugStatus = req.body.filters.bugStatus
@@ -91,10 +86,8 @@ async function GetBugList(req, res) {
             filters.author = req.body.filters.author
         }
     }
-    const count = await Bug.count(filters)
-    Bug.find(
-        filters,
-        null, {
+    // const count = Bug.count(filters)
+    Bug.find(filters, null, {
             skip: (req.body.pageIndex - 1) * req.body.pageSize,
             limit: req.body.pageSize,
             sort: {
@@ -113,14 +106,14 @@ async function GetBugList(req, res) {
                     status_code: 200, //状态码   200是成功   其他的码是错误
                     message: 'success', //返回的信息
                     data: data, ///返回的数据   若没有就是null
-                    count: count
+                    // count: count
                 })
             }
         }
     )
 }
 // bug条目更新
-async function UpdateBugById(req, res) {
+exports.UpdateBugById = async function (req, res) {
     var id = req.body.id
     var update = req.body
     Bug.findByIdAndUpdate(id, update, {
@@ -142,7 +135,7 @@ async function UpdateBugById(req, res) {
     })
 }
 // bug条目删除
-async function DeleteBugById(req, res, next) {
+exports.DeleteBugById = async function (req, res) {
     var id = req.body.id
     Bug.findByIdAndDelete(id, function (err, result) {
         if (err) {
@@ -157,12 +150,4 @@ async function DeleteBugById(req, res, next) {
             })
         }
     })
-}
-
-exports = {
-    AddBugItems: AddBugItems(),
-    GetBugDetail: GetBugDetail(),
-    GetBugList: GetBugList(),
-    UpdateBugById: UpdateBugById(),
-    DeleteBugById: DeleteBugById()
 }

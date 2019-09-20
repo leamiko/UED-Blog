@@ -10,11 +10,12 @@ var BugSchema = new Schema({
     type: Array //Bug关键词--旧版本
   },
   tags: { // bug标签
-    type: Array
+    type: Array,
+    default: []
   },
   content: {
     type: String, //Bug内容
-    default: []
+    default: ''
   },
   bugStatus: {
     type: Boolean //bug是否解决

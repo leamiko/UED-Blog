@@ -72,21 +72,21 @@ router.post('/AddBugItems', (req, res, next) => {
   bugCtrler.AddBugItems(req, res);
 })
 // 根据bug条目id查看bug详情
-router.get('/GetBugDetail', (req, res) => {
+router.get('/GetBugDetail', (req, res, next) => {
   bugCtrler.GetBugDetail(req, res);
 })
 // 获取bug列表
-router.post('/GetBugList', async (req, res, next) => {
+router.post('/GetBugList', (req, res, next) => {
   bugCtrler.GetBugList(req, res);
 })
 
 // bug条目更新
-router.post('/UpdateBugById', async (req, res, next) => {
+router.post('/UpdateBugById', (req, res, next) => {
   bugCtrler.UpdateBugById(req, res);
 })
 
 // bug条目删除
-router.post('/DeleteBugById', async (req, res, next) => {
+router.post('/DeleteBugById', (req, res, next) => {
   bugCtrler.DeleteBugById(req, res);
 })
 
