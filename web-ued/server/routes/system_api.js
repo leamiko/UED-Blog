@@ -10,6 +10,13 @@ var Bug = require('../models/bugItem')
 var BuKeywords = require('../models/bugKeywords')
 var blog = require('../controller/system/blog')
 
+/* GET home page. */
+router.get('/index', function(req, res, next) {
+  res.json({
+    name: 'hello world!'
+  })
+})
+
 /* GET users listing. */
 router.post('/login', function(req, res, next) {
   //调用controller方法
