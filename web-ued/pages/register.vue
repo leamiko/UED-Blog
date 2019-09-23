@@ -80,6 +80,7 @@ export default {
                 this.$router.replace('/wxLogin');
               })
           } else {
+            //注册失败
             alert(data.message)
           }
         }
