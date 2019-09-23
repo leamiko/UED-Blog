@@ -38,7 +38,7 @@ config.dev = process.env.NODE_ENV !== 'production'
 require('dotenv').config()
 
 app.use('/web_api', web_api)
-app.use('/system_api', system_api)
+app.use('/api', system_api)
 
 async function start() {
   // Init Nuxt.js
