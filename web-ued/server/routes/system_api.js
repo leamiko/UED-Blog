@@ -1,35 +1,36 @@
 var express = require('express')
 const router = express.Router()
-const { verifyMiddleware } = require('../middleware/verify.js')
+const {
+  verifyMiddleware
+} = require('../middleware/verify.js')
 
 var user = require('../controller/system/user')
 var register = require('../controller/system/register.js')
 var dictionary = require('../controller/system/dictionary')
 var Dictionary = require('../models/dictionary.js')
-var Bug = require('../models/bugItem')
-var BuKeywords = require('../models/bugKeywords')
 var blog = require('../controller/system/blog')
+var bugCtrler = require('../controller/system/bug')
 
 /* GET home page. */
-router.get('/index', function(req, res, next) {
+router.get('/index', function (req, res, next) {
   res.json({
     name: 'hello world!'
   })
 })
 
 /* GET users listing. */
-router.post('/login', function(req, res, next) {
+router.post('/login', function (req, res, next) {
   //调用controller方法
   user.login(req, res)
 })
 
-router.get('/logOut', function(req, res, next) {
+router.get('/logOut', function (req, res, next) {
   //调用controller方法
   user.logOut(req, res)
 })
 
 /* GET users listing. */
-router.post('/registerAccount', function(req, res, next) {
+router.post('/registerAccount', function (req, res, next) {
   //调用controller方法
   register.registerAccount(req, res)
 })
@@ -50,12 +51,11 @@ router.post('/GetDictionaryList', (req, res, next) => {
   if (req.body.filter.parentId) {
     filters.parentId = new RegExp(req.body.filter.parentId)
   }
-  Dictionary.find(
-    {
+  Dictionary.find({
       parentId: ''
     },
     null,
-    async function(err, newdata) {
+    async function (err, newdata) {
       if (err) {
         logger.error(err)
         return res.json({
@@ -69,17 +69,14 @@ router.post('/GetDictionaryList', (req, res, next) => {
       for (var i = 0; i < newdata.length; i++) {
         var dicNew = JSON.parse(JSON.stringify(newdata[i]))
         // console.log(aa)
-        var secondClass = await Dictionary.find(
-          {
-            $and: [
-              {
+        var secondClass = await Dictionary.find({
+            $and: [{
                 parentId: dicNew._id
               },
               filters
             ]
           },
-          null,
-          {
+          null, {
             skip: (pageIndex * 1 - 1) * pagesize,
             limit: pagesize
           }
@@ -104,7 +101,7 @@ router.post('/GetDictionaryList', (req, res, next) => {
   )
 })
 // 新增编辑字典分类
-router.post('/CreateOrEditDictionary', function(req, res, next) {
+router.post('/CreateOrEditDictionary', function (req, res, next) {
   console.log(req.body)
   if (req.body.name === '' || req.body.name.length === 0) {
     return res.json({
@@ -120,10 +117,8 @@ router.post('/CreateOrEditDictionary', function(req, res, next) {
     var postData = {
       name: req.body.name
     }
-    Dictionary.findOne(
-      {
-        $and: [
-          {
+    Dictionary.findOne({
+        $and: [{
             parentId: req.body.parentId
           },
           {
@@ -131,7 +126,7 @@ router.post('/CreateOrEditDictionary', function(req, res, next) {
           }
         ]
       },
-      function(err, data) {
+      function (err, data) {
         if (err) {
           return res.json({
             data: null,
@@ -147,7 +142,7 @@ router.post('/CreateOrEditDictionary', function(req, res, next) {
             message: '同级分类下已存在该分类名称！'
           })
         } else {
-          Dictionary.update(id, postData, function(err, dic) {
+          Dictionary.update(id, postData, function (err, dic) {
             if (err) {
               logger.error(err)
               return res.json({
@@ -170,10 +165,8 @@ router.post('/CreateOrEditDictionary', function(req, res, next) {
       name: req.body.name,
       parentId: req.body.parentId
     }
-    Dictionary.findOne(
-      {
-        $and: [
-          {
+    Dictionary.findOne({
+        $and: [{
             parentId: req.body.parentId
           },
           {
@@ -181,7 +174,7 @@ router.post('/CreateOrEditDictionary', function(req, res, next) {
           }
         ]
       },
-      function(err, data) {
+      function (err, data) {
         if (err) {
           return res.json({
             data: null,
@@ -196,7 +189,7 @@ router.post('/CreateOrEditDictionary', function(req, res, next) {
             message: '该分类下已存在该分类名称！'
           })
         } else {
-          Dictionary.create(postData, function(err, data) {
+          Dictionary.create(postData, function (err, data) {
             if (err) {
               return res.json({
                 code: 201,
@@ -227,7 +220,7 @@ router.get('/DeleteDictionaryById', async (req, res, next) => {
   var updateDic = {
     deleted: true
   }
-  Dictionary.find(filter, function(err, dicData) {
+  Dictionary.find(filter, function (err, dicData) {
     console.log(dicData)
     if (dicData) {
       return res.json({
@@ -236,7 +229,7 @@ router.get('/DeleteDictionaryById', async (req, res, next) => {
         data: null
       })
     }
-    Dictionary.update(id, updateDic, function(err, Dic) {
+    Dictionary.update(id, updateDic, function (err, Dic) {
       if (err) {
         logger.error(err)
         return res.json({
@@ -259,7 +252,7 @@ router.post('/GetDictionaryTree', (req, res, next) => {
   var filter = {
     deleted: false
   }
-  Dictionary.find(filter, null, function(err, TreeData) {
+  Dictionary.find(filter, null, function (err, TreeData) {
     if (err) {
       return res.json({
         code: 201,
@@ -277,12 +270,11 @@ router.post('/GetDictionaryTree', (req, res, next) => {
 })
 // 获取模块
 router.post('/GetModelList', async (req, res, next) => {
-  Dictionary.find(
-    {
+  Dictionary.find({
       parentId: ''
     },
     null,
-    function(err, modelList) {
+    function (err, modelList) {
       if (err) {
         return res.json({
           code: 201,
@@ -299,240 +291,79 @@ router.post('/GetModelList', async (req, res, next) => {
   )
 })
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource')
-})
+/* bug管理--Start */
+
 // 新增bug条目
 router.post('/AddBugItems', (req, res, next) => {
-  var postData = {
-    title: req.body.title,
-    keyword: req.body.keyword,
-    content: req.body.content,
-    bugStatus: req.body.bugStatus,
-    bugSolution: req.body.bugSolution,
-    author: req.body.author,
-    userId: req.body.userId
-  }
-  Bug.findOne(
-    {
-      title: postData.title
-    },
-    (err, data) => {
-      if (data) {
-        res.send({
-          status_code: 200,
-          message: '添加失败，该bug条目已存在！'
-        })
-      } else {
-        // 保存到数据库
-        Bug.create([postData], (err2, data2) => {
-          if (data2) {
-            res.send({
-              status_code: 200,
-              message: 'success'
-            })
-          }
-          if (err) {
-            return res.json({
-              status_code: 201,
-              message: err2
-            })
-          }
-        })
-      }
-      if (err) {
-        return res.json({
-          status_code: 201,
-          message: err
-        })
-      }
-    }
-  )
+  bugCtrler.AddBugItems(req, res, next);
 })
 // 根据bug条目id查看bug详情
-router.get('/GetBugDetail', (req, res) => {
-  let bid = req.query.bugId
-  Bug.findOne(
-    {
-      _id: bid
-    },
-    (err, data) => {
-      if (data) {
-        return res.json({
-          status_code: 200,
-          message: 'success',
-          data: data
-        })
-      }
-      if (err) {
-        return res.json({
-          status_code: 201,
-          message: err,
-          data: null
-        })
-      }
-    }
-  )
+router.get('/GetBugDetail', (req, res, next) => {
+  bugCtrler.GetBugDetail(req, res, next);
 })
 // 获取bug列表
 router.post('/GetBugList', async (req, res, next) => {
-  let filters = {
-    deleted: false
-  }
-  if (req.body.filters) {
-    if (req.body.filters.title) {
-      filters.title = new RegExp(req.body.filters.title)
-    }
-    if (req.body.filters.keyword && req.body.filters.keyword.length > 0) {
-      filters.keyword = { $in: req.body.filters.keyword }
-    }
-    if (req.body.filters.bugStatus) {
-      filters.bugStatus = req.body.filters.bugStatus
-    }
-    if (req.body.filters.author) {
-      filters.author = req.body.filters.author
-    }
-  }
-  const count = await Bug.count(filters)
-  Bug.find(
-    filters,
-    null,
-    {
-      skip: (req.body.pageIndex - 1) * req.body.pageSize,
-      limit: req.body.pageSize,
-      sort: { createAt: -1 }
-    },
-    (err, data) => {
-      if (err) {
-        res.send({
-          status_code: 201,
-          message: err,
-          data: null
-        })
-      } else {
-        res.json({
-          status_code: 200, //状态码   200是成功   其他的码是错误
-          message: 'success', //返回的信息
-          data: data, ///返回的数据   若没有就是null
-          count: count
-        })
-      }
-    }
-  )
+  bugCtrler.GetBugList(req, res, next)
 })
 
 // bug条目更新
 router.post('/UpdateBugById', async (req, res, next) => {
-  var id = req.body.id
-  var update = req.body
-  Bug.findByIdAndUpdate(id, update, { new: true }, function(err, result) {
-    if (err) {
-      res.send({
-        status_code: 201,
-        message: err,
-        data: null
-      })
-    } else {
-      res.json({
-        data: result,
-        status_code: 200,
-        message: 'success'
-      })
-    }
-  })
+  bugCtrler.UpdateBugById(req, res, next);
 })
 
 // bug条目删除
 router.post('/DeleteBugById', async (req, res, next) => {
-  var id = req.body.id
-  Bug.findByIdAndDelete(id, function(err, result) {
-    if (err) {
-      res.send({
-        status_code: 201,
-        message: err
-      })
-    } else {
-      res.json({
-        status_code: 200,
-        message: 'success'
-      })
-    }
-  })
+  bugCtrler.DeleteBugById(req, res, next);
 })
 
 // 新增关键词
 router.post('/AddBugKeywords', async (req, res, next) => {
-  var dataCache = req.body
-  // 保存到数据库
-  BuKeywords.findOne(
-    {
-      label: dataCache.label
-    },
-    (err, data) => {
-      if (err) throw err
-      if (data) {
-      } else {
-        BuKeywords.create(dataCache, (err, data) => {
-          if (err) throw err
-          res.json({
-            status_code: 200,
-            message: 'success'
-          })
-        })
-      }
-    }
-  )
+  bugCtrler.AddBugKeywords(req, res, next);
 })
 // 获取所有关键词
 router.get('/GetAllBugKeywords', async (req, res, next) => {
-  BuKeywords.find({}, (err, data) => {
-    if (err) throw err
-    res.json({
-      data: data,
-      status_code: 200,
-      message: 'success'
-    })
-  })
+  bugCtrler.GetAllBugKeywords(req, res, next);
 })
 
+/* bug管理--End */
+
 //新增删除blog
-router.post('/addEditBlog', function(req, res, next) {
+router.post('/addEditBlog', function (req, res, next) {
   //调用controller方法
   blog.addEditBlog(req, res)
 })
 
 //获取blog详情
-router.get('/getBlog', function(req, res, next) {
+router.get('/getBlog', function (req, res, next) {
   blog.getBlog(req, res)
 })
 
 //blog列表
-router.post('/getBlogList', function(req, res, next) {
+router.post('/getBlogList', function (req, res, next) {
   //调用controller方法
   blog.getBlogList(req, res)
 })
 
 //blog删除
-router.get('/deleteBlog', function(req, res, next) {
+router.get('/deleteBlog', function (req, res, next) {
   //调用controller方法
   blog.deleteBlog(req, res)
 })
 
 //blog点赞
-router.get('/likeBlog', function(req, res, next) {
+router.get('/likeBlog', function (req, res, next) {
   //调用controller方法
   blog.likeBlog(req, res)
 })
 
 //blog评论
-router.post('/commentBlog', function(req, res, next) {
+router.post('/commentBlog', function (req, res, next) {
   //调用controller方法
   blog.commentBlog(req, res)
 })
 
 //获取blog评论
-router.get('/getBlogComment', function(req, res, next) {
+router.get('/getBlogComment', function (req, res, next) {
   //调用controller方法
   blog.getBlogComment(req, res)
 })
