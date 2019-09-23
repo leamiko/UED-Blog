@@ -69,25 +69,25 @@ router.get('/getBlogComment', function (req, res, next) {
 /* 打码API */
 // 新增bug条目
 router.post('/AddBugItems', (req, res, next) => {
-  bugCtrler.AddBugItems(req, res);
+  bugCtrler.AddBugItems(req, res, next);
 })
 // 根据bug条目id查看bug详情
 router.get('/GetBugDetail', (req, res, next) => {
-  bugCtrler.GetBugDetail(req, res);
+  bugCtrler.GetBugDetail(req, res, next);
 })
 // 获取bug列表
 router.post('/GetBugList', (req, res, next) => {
-  bugCtrler.GetBugList(req, res);
+  bugCtrler.GetBugList(req, res, next);
 })
 
 // bug条目更新
 router.post('/UpdateBugById', (req, res, next) => {
-  bugCtrler.UpdateBugById(req, res);
+  bugCtrler.UpdateBugById(req, res, next);
 })
 
 // bug条目删除
 router.post('/DeleteBugById', (req, res, next) => {
-  bugCtrler.DeleteBugById(req, res);
+  bugCtrler.DeleteBugById(req, res, next);
 })
 
 module.exports = router

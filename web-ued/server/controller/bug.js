@@ -1,7 +1,7 @@
 var Bug = require('../models/bugItem');
 
 // 新增bug条目
-exports.AddBugItems = function (req, res) {
+exports.AddBugItems = function (req, res, next) {
     var postData = {
         title: req.body.title,
         // keyword: req.body.keyword,
@@ -15,52 +15,55 @@ exports.AddBugItems = function (req, res) {
             title: postData.title
         },
         (err, data) => {
-            if (data) {
-                res.send({
-                    status_code: 200,
-                    message: '添加失败，该bug条目已存在！'
-                })
-            } else {
-                // 保存到数据库
-                Bug.create([postData], (err2, data2) => {
-                    if (data2) {
-                        res.send({
-                            status_code: 200,
-                            message: 'success'
-                        })
-                    }
-                    if (err) {
-                        return res.json({
-                            status_code: 201,
-                            message: err2
-                        })
-                    }
-                })
-            }
             if (err) {
-                return res.json({
+                res.json({
                     status_code: 201,
                     message: err
                 })
+                next();
+            } else {
+                if (data) {
+                    res.send({
+                        status_code: 200,
+                        message: '添加失败，该bug条目已存在！'
+                    })
+                } else {
+                    // 保存到数据库
+                    Bug.create([postData], (err2, data2) => {
+                        if (err2) {
+                            res.json({
+                                status_code: 201,
+                                message: err2
+                            })
+                            next();
+                        } else {
+                            res.send({
+                                status_code: 200,
+                                message: 'success'
+                            })
+                        }
+                    })
+                }
             }
         }
     )
 }
 // 根据bug条目id查看bug详情
-exports.GetBugDetail = function (req, res) {
+exports.GetBugDetail = function (req, res, next) {
     let bid = req.query.bugId
     Bug.findOne({
             _id: bid
         },
         (err, data) => {
             if (err) {
-                return res.json({
+                res.json({
                     status_code: 201,
                     message: err,
                     data: null
                 })
+                next();
             } else {
-                return res.json({
+                res.json({
                     status_code: 200,
                     message: 'success',
                     data: data
@@ -70,7 +73,7 @@ exports.GetBugDetail = function (req, res) {
     )
 }
 // 获取bug列表
-exports.GetBugList = function (req, res) {
+exports.GetBugList = function (req, res, next) {
     var filters = {
         deleted: false
     }
@@ -100,6 +103,7 @@ exports.GetBugList = function (req, res) {
                     message: err,
                     data: null
                 })
+                next();
             } else {
                 res.json({
                     status_code: 200, //状态码   200是成功   其他的码是错误
@@ -112,7 +116,7 @@ exports.GetBugList = function (req, res) {
     )
 }
 // bug条目更新
-exports.UpdateBugById = async function (req, res) {
+exports.UpdateBugById = async function (req, res, next) {
     var id = req.body.id
     var update = req.body
     Bug.findByIdAndUpdate(id, update, {
@@ -123,7 +127,8 @@ exports.UpdateBugById = async function (req, res) {
                 status_code: 201,
                 message: err,
                 data: null
-            })
+            });
+            next();
         } else {
             res.json({
                 data: result,
@@ -134,7 +139,7 @@ exports.UpdateBugById = async function (req, res) {
     })
 }
 // bug条目删除
-exports.DeleteBugById = async function (req, res) {
+exports.DeleteBugById = async function (req, res, next) {
     var id = req.body.id
     Bug.findByIdAndDelete(id, function (err, result) {
         if (err) {
@@ -142,6 +147,7 @@ exports.DeleteBugById = async function (req, res) {
                 status_code: 201,
                 message: err
             })
+            next();
         } else {
             res.json({
                 status_code: 200,
