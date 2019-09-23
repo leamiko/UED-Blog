@@ -3,7 +3,7 @@
     <button @click="testGetListApi()">get</button>
     <button @click="testAddApi()">add</button>
     <button @click="testDetailApi()">detail</button>
-
+    <button @click="testDelApi()">delate</button>
   </div>
 </template>
 <script>
@@ -39,6 +39,13 @@ export default {
     async testDetailApi () {
       const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/GetBugDetail?bugId=5cf8b075c26c2f18a0cb4fa7`);
       console.log(res);
+    },
+    async testDelApi () {
+      let params = {
+        id: '5cf8b075c26c2f18a0cb4fa7'
+      }
+      const { data } = await this.$axios.post('/api_nuxt/DeleteBugById', params);
+      console.log(data);
     }
   },
 }
