@@ -7,7 +7,17 @@ var system_api = require('./routes/system_api')
 const bodyParser = require('body-parser')
 
 const app = express()
+// 自定义跨域中间件
+var allowCors = function(req, res, next) {
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  next();
+};
 
+// 使用跨域中间件
+app.use(allowCors);
 // 使用 session 中间件
 app.use(
   session({
