@@ -1,4 +1,4 @@
-var User = require('../models/user.js') //引入user表
+var User = require('../../models/user.js') //引入user表
 var crypto = require('crypto')
 const OAuth = require('wechat-oauth')
 const wxPcClient = new OAuth(process.env.WX_APP_ID, process.env.WX_APP_SECRET)

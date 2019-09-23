@@ -25,7 +25,7 @@ export default {
         bugSolution: 'req.body.bugSolution',
         author: 'req.body.author'
       }
-      const { data } = await this.$axios.post('/api_nuxt/AddBugItems', params);
+      const { data } = await this.$axios.post(`${process.env.BASE_URL}/web_api/AddBugItems`, params);
       console.log(data);
     },
     async testGetListApi () {
@@ -33,11 +33,11 @@ export default {
         pageIndex: 1,
         pageSize: 10
       }
-      const { data } = await this.$axios.post('/api_nuxt/GetBugList', params);
+      const { data } = await this.$axios.post(`${process.env.BASE_URL}/web_api/GetBugList`, params);
       console.log(data);
     },
     async testDetailApi () {
-      const res = await this.$axios.get(`/api_nuxt/GetBugDetail?bugId=5cf8b075c26c2f18a0cb4fa7`);
+      const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/GetBugDetail?bugId=5cf8b075c26c2f18a0cb4fa7`);
       console.log(res);
     }
   },

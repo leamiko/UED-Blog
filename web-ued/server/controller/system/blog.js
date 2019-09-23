@@ -1,6 +1,6 @@
-var Blog = require('../models/blog.js') //引入blog表
-var Like = require('../models/like.js') //引入like表
-var Comment = require('../models/comment.js') //引入comment表
+var Blog = require('../../models/blog.js') //引入blog表
+var Like = require('../../models/like.js') //引入like表
+var Comment = require('../../models/comment.js') //引入comment表
 
 //blog新增编辑
 exports.addEditBlog = function(req, res) {

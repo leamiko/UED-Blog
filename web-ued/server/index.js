@@ -2,7 +2,8 @@ const express = require('express')
 var session = require('express-session')
 const consola = require('consola')
 const { Nuxt, Builder } = require('nuxt')
-var indexRouter = require('./routes/index')
+var web_api = require('./routes/web_api')
+var system_api = require('./routes/system_api')
 const bodyParser = require('body-parser')
 
 const app = express()
@@ -36,7 +37,8 @@ config.dev = process.env.NODE_ENV !== 'production'
 
 require('dotenv').config()
 
-app.use('/api_nuxt', indexRouter)
+app.use('/web_api', web_api)
+app.use('/system_api', system_api)
 
 async function start() {
   // Init Nuxt.js

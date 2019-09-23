@@ -41,7 +41,7 @@ export default {
         id: "wxLoginQrcode",
         appid: process.env.WX_APP_ID,
         scope: "snsapi_login",
-        redirect_uri: "http://ued.lunz.cn/api_nuxt/wxLogin",
+        redirect_uri: "http://ued.lunz.cn/web_api/wxLogin",
         state: "",
         style: "",
         href: ""

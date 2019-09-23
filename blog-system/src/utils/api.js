@@ -2,18 +2,18 @@ const baseUrl = process.env.VUE_APP_BASEURL
 // const baseUrl = 'http://127.0.0.1:3000'
 
 export default {
-  login: `${baseUrl}/users/login`,
-  logOut: `${baseUrl}/users/logOut`,
-  bugList: `${baseUrl}/bugs/GetBugList`,
-  getBugDetail: `${baseUrl}/bugs/GetBugDetail`,
-  deleteBug: `${baseUrl}/bugs/DeleteBugById`,
-  updateBug: `${baseUrl}/bugs/UpdateBugById`,
-  addBug: `${baseUrl}/bugs/AddBugItems`,
-  getBugKeywords: `${baseUrl}/bugs/GetAllBugKeywords`,
-  addBugKeywords: `${baseUrl}/bugs/AddBugKeywords`,
+  login: `${baseUrl}/login`,
+  logOut: `${baseUrl}/logOut`,
+  bugList: `${baseUrl}/GetBugList`,
+  getBugDetail: `${baseUrl}/GetBugDetail`,
+  deleteBug: `${baseUrl}/DeleteBugById`,
+  updateBug: `${baseUrl}/UpdateBugById`,
+  addBug: `${baseUrl}/AddBugItems`,
+  getBugKeywords: `${baseUrl}/GetAllBugKeywords`,
+  addBugKeywords: `${baseUrl}/AddBugKeywords`,
 
-  blogList: `${baseUrl}/blogs/getBlogList`,
-  addEditBlog: `${baseUrl}/blogs/addEditBlog`,
-  deleteBlog: `${baseUrl}/blogs/deleteBlog`,
-  getBlog: `${baseUrl}/blogs/getBlog`
+  blogList: `${baseUrl}/getBlogList`,
+  addEditBlog: `${baseUrl}/addEditBlog`,
+  deleteBlog: `${baseUrl}/deleteBlog`,
+  getBlog: `${baseUrl}/getBlog`
 }
