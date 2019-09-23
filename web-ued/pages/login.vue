@@ -77,7 +77,7 @@ export default {
       this.$refs[formName].validate(async (valid) => {
         this.submitLoading = false;
         if (valid) {
-          const { data } = await this.$axios.post(`${process.env.BASE_URL}/api_nuxt/login`, this.loginForm)
+          const { data } = await this.$axios.post(`/api_nuxt/login`, this.loginForm)
           if (data.status_code == 200) {
             this.$store.dispatch('login', data.user)
               .then(() => {
