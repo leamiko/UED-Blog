@@ -1,5 +1,5 @@
-const baseUrl = process.env.VUE_APP_BASEURL
-// const baseUrl = 'http://127.0.0.1:3002'
+// const baseUrl = process.env.VUE_APP_BASEURL
+const baseUrl = 'http://127.0.0.1:3002/api'
 
 export default {
   login: `${baseUrl}/login`,
@@ -15,5 +15,11 @@ export default {
   blogList: `${baseUrl}/getBlogList`,
   addEditBlog: `${baseUrl}/addEditBlog`,
   deleteBlog: `${baseUrl}/deleteBlog`,
-  getBlog: `${baseUrl}/getBlog`
+  getBlog: `${baseUrl}/getBlog`,
+
+  // 字典管理
+  CreateOrEditDictionary: `${baseUrl}/CreateOrEditDictionary`,
+  GetDictionaryList: `${baseUrl}/GetDictionaryList`,
+  GetDictionaryTree: `${baseUrl}/GetDictionaryTree`,
+  DeleteDictionaryById: `${baseUrl}/DeleteDictionaryById`,
 }

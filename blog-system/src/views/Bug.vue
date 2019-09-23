@@ -2,23 +2,14 @@
   <div>
     <div class="add_row">
       <span>Bug管理</span>
-      <a-button type="primary"
-                icon="plus"
-                @click="addBug()">新增</a-button>
+      <a-button type="primary" icon="plus" @click="addBug()">新增</a-button>
     </div>
     <!-- 筛选 -->
-    <div class="select_block"
-         id="ant-advanced-search-form">
-      <a-form class="ant-advanced-search-form"
-              :form="form"
-              @submit="handleSearch">
+    <div class="select_block" id="ant-advanced-search-form">
+      <a-form class="ant-advanced-search-form" :form="form" @submit="handleSearch">
         <a-row :gutter="24">
-          <a-col v-for="i in fiedls"
-                 :key="i.id"
-                 :span="7"
-                 :style="{ display: i.id < count ? 'block' : 'none' }">
-            <a-form-item v-if="i.name!=='状态' && i.name!=='关键词'"
-                         :label="`${i.name}`">
+          <a-col v-for="i in fiedls" :key="i.id" :span="7" :style="{ display: i.id < count ? 'block' : 'none' }">
+            <a-form-item v-if="i.name!=='状态' && i.name!=='关键词'" :label="`${i.name}`">
               <a-input v-decorator="[
                 `${i.field}`,
                 {
@@ -27,17 +18,10 @@
                     message: 'Input something!',
                   }],
                 }
-              ]"
-                       v-bind:placeholder="'请输入' + i.name" />
+              ]" v-bind:placeholder="'请输入' + i.name" />
             </a-form-item>
-            <a-form-item v-if="i.name==='关键词'"
-                         :label="`${i.name}`">
-              <a-select mode="multiple"
-                        notFoundContent="无匹配项"
-                        v-bind:placeholder="'请选择' + i.name"
-                        :tokenSeparators="[',']"
-                        @change="handleChange"
-                        v-decorator="[
+            <a-form-item v-if="i.name==='关键词'" :label="`${i.name}`">
+              <a-select mode="multiple" notFoundContent="无匹配项" v-bind:placeholder="'请选择' + i.name" :tokenSeparators="[',']" @change="handleChange" v-decorator="[
             `${i.field}`,
             {
                 rules: [{
@@ -45,14 +29,12 @@
                 }]
             }
             ]">
-                <a-select-option v-for="item in keywordsData"
-                                 :key="item">
+                <a-select-option v-for="item in keywordsData" :key="item">
                   {{item}}
                 </a-select-option>
               </a-select>
             </a-form-item>
-            <a-form-item v-if="i.name==='状态'"
-                         :label="`${i.name}`">
+            <a-form-item v-if="i.name==='状态'" :label="`${i.name}`">
               <a-select v-decorator="[
                 `${i.field}`,
                 {
@@ -61,9 +43,7 @@
                     message: 'Input something!',
                   }],
                 }
-              ]"
-                        style='width: 120px'
-                        v-bind:placeholder="'请选择' + i.name">
+              ]" style='width: 120px' v-bind:placeholder="'请选择' + i.name">
                 <a-select-option value="false">未解决</a-select-option>
                 <a-select-option value="true">已解决</a-select-option>
               </a-select>
@@ -71,18 +51,14 @@
           </a-col>
         </a-row>
         <a-row>
-          <a-col :span="24"
-                 :style="{ textAlign: 'right' }">
-            <a-button type="primary"
-                      html-type="submit">
+          <a-col :span="24" :style="{ textAlign: 'right' }">
+            <a-button type="primary" html-type="submit">
               查询
             </a-button>
-            <a-button :style="{ marginLeft: '8px' }"
-                      @click="handleReset">
+            <a-button :style="{ marginLeft: '8px' }" @click="handleReset">
               清空
             </a-button>
-            <a :style="{ marginLeft: '8px', fontSize: '12px' }"
-               @click="toggle">
+            <a :style="{ marginLeft: '8px', fontSize: '12px' }" @click="toggle">
               {{expand?'折叠':'展开'}}
               <a-icon :type="expand ? 'up' : 'down'" />
             </a>
@@ -92,33 +68,17 @@
     </div>
     <div class="tables">
       <!-- <a-input /> -->
-      <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-               :dataSource="data"
-               :columns="columns"
-               :rowKey="data.key"
-               :locale="{emptyText: '暂无数据'}">
-        <span slot="keyword"
-              slot-scope="keyword">
-          <a-tag v-for="tag in keyword"
-                 color="blue"
-                 :key="tag">{{tag}}</a-tag>
+      <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :dataSource="data" :columns="columns" :rowKey="data.key" :locale="{emptyText: '暂无数据'}">
+        <span slot="keyword" slot-scope="keyword">
+          <a-tag v-for="tag in keyword" color="blue" :key="tag">{{tag}}</a-tag>
         </span>
-        <span slot="bugStatus"
-              slot-scope="bugStatus"
-              :class="{'statusTrue':bugStatus=='已解决','statusFalse':bugStatus=='未解决'}">
+        <span slot="bugStatus" slot-scope="bugStatus" :class="{'statusTrue':bugStatus=='已解决','statusFalse':bugStatus=='未解决'}">
           {{bugStatus}}
         </span>
-        <template slot="operation"
-                  slot-scope="text, record">
-          <a class="right_gap"
-             @click="showItems(record)">查看</a>
-          <a class="right_gap"
-             @click="editItems(record)">编辑</a>
-          <a-popconfirm v-if="data.length"
-                        title="确定删除这条bug吗？"
-                        okText="确定"
-                        cancelText="取消"
-                        @confirm="() => onDelete(record.key)">
+        <template slot="operation" slot-scope="text, record">
+          <a class="right_gap" @click="showItems(record)">查看</a>
+          <a class="right_gap" @click="editItems(record)">编辑</a>
+          <a-popconfirm v-if="data.length" title="确定删除这条bug吗？" okText="确定" cancelText="取消" @confirm="() => onDelete(record.key)">
             <a>删除</a>
           </a-popconfirm>
 

@@ -301,7 +301,7 @@ router.get('/GetBugDetail', (req, res, next) => {
   bugCtrler.GetBugDetail(req, res, next);
 })
 // 获取bug列表
-router.post('/GetBugList', async (req, res, next) => {
+router.post('/GetBugList', (req, res, next) => {
   bugCtrler.GetBugList(req, res, next)
 })
 

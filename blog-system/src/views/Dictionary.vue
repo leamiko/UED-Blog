@@ -2,21 +2,21 @@
   <div class="ant-page">
     <div class="add_row">
       <span>字典管理</span>
-      <a-button type="primary" icon="plus" @click="AddModal = true" >新增</a-button>
+      <a-button type="primary" icon="plus" @click="AddModal = true">新增</a-button>
     </div>
     <div class="select_block" id="components-form-demo-advanced-search">
       <a-form class="ant-advanced-search-form" :form="searchform" @submit="handleSearch">
         <a-row :gutter="24">
           <a-col :span="7">
             <a-form-item v-bind="searchformItemLayout" :label="`字典名称:`">
-              <a-input v-decorator="[ `name`, { rules: [{ required: false, message: '请输入字典名称!', }], } ]" placeholder="请输入字典名称"/>
+              <a-input v-decorator="[ `name`, { rules: [{ required: false, message: '请输入字典名称!', }], } ]" placeholder="请输入字典名称" />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
-          <a-col :span="24" :style="{ textAlign: 'right' }" >
-            <a-button type="primary" html-type="submit" > 查询 </a-button>
-            <a-button :style="{ marginLeft: '8px' }" @click="handleReset" > 清空 </a-button>
+          <a-col :span="24" :style="{ textAlign: 'right' }">
+            <a-button type="primary" html-type="submit"> 查询 </a-button>
+            <a-button :style="{ marginLeft: '8px' }" @click="handleReset"> 清空 </a-button>
           </a-col>
         </a-row>
       </a-form>
@@ -44,7 +44,7 @@
               </a-tree-select>
             </a-form-item>
             <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="字典名称">
-              <a-input v-decorator="['name', {rules: [{ required: true, message: '请填写字典名称' }]}]" placeholder="请填写字典名称"/>
+              <a-input v-decorator="['name', {rules: [{ required: true, message: '请填写字典名称' }]}]" placeholder="请填写字典名称" />
             </a-form-item>
           </a-form>
         </div>
@@ -61,7 +61,7 @@
               </a-tree-select>
             </a-form-item>
             <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="字典名称">
-              <a-input v-decorator="['name', {rules: [{ required: true, message: '请填写字典名称' }]}]" placeholder="请填写字典名称"/>
+              <a-input v-decorator="['name', {rules: [{ required: true, message: '请填写字典名称' }]}]" placeholder="请填写字典名称" />
             </a-form-item>
           </a-form>
         </div>
@@ -81,7 +81,6 @@
 import { setTimeout } from 'timers'
 import moment from 'moment'
 import { log } from 'util';
-const BASE_URL = 'http://ued.lunz.cn/api/'
 export default {
   data () {
     return {
@@ -170,7 +169,7 @@ export default {
         parentId: parentId,
         id: id
       }
-      const blogURL = BASE_URL + 'dictionary/CreateOrEditDictionary'
+      const blogURL = this.api.CreateOrEditDictionary;
       const res = await this.$http.post(blogURL, params)
       if (res.status_code === 200) {
         this.modalloading = false
@@ -203,7 +202,7 @@ export default {
           name: this.searchform.getFieldValue('name') ? this.searchform.getFieldValue('name') : ''
         }
       }
-      const blogURL = BASE_URL + 'dictionary/GetDictionaryList'
+      const blogURL = this.api.GetDictionaryList;
       const res = await this.$http.post(blogURL, params)
       if (res.status_code === 200) {
         this.loading = false
@@ -222,7 +221,7 @@ export default {
     },
     async getAddList () {
       // const blogURL = BASE_URL + 'dictionary/GetModelList'
-      const blogURL = BASE_URL + 'dictionary/GetDictionaryTree'
+      const blogURL = this.api.GetDictionaryTree;
       const res = await this.$http.post(blogURL)
       if (res.status_code === 200) {
         this.treeData = this.changeTreeNodeData(res.data)
@@ -245,8 +244,8 @@ export default {
     },
     // 删除字典库
     async onDelete (key) {
-      const blogURL = BASE_URL + 'dictionary/DeleteDictionaryById?_id=' + key
-      const res = await this.$http.get(blogURL)
+      const blogURL = this.api.DeleteDictionaryById;
+      const res = await this.$http.get(`${blogURL}?_id=${key}`)
       if (res.status_code === 200) {
         this.loading = false
         this.$notification['success']({
@@ -315,7 +314,7 @@ export default {
       const params = {
         _id: data.key
       }
-      const blogURL = BASE_URL + 'dictionary/GetDictionaryTree'
+      const blogURL = this.api.GetDictionaryTree;
       const res = await this.$http.post(blogURL, params)
       if (res.status_code === 200) {
         this.showtreeData = this.changeTreeNodeData(res.data)
@@ -338,6 +337,9 @@ export default {
     },
     onSelect (selectedKeys, info) {
       // console.log('selected', selectedKeys, info)
+    },
+    editBelong () {
+
     }
   },
   mounted () {
