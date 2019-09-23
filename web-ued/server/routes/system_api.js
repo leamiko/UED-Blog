@@ -3,7 +3,6 @@ const router = express.Router()
 const { verifyMiddleware } = require('../middleware/verify.js')
 
 var user = require('../controller/system/user')
-var register = require('../controller/system/register.js')
 var dictionary = require('../controller/system/dictionary')
 var Dictionary = require('../models/dictionary.js')
 var Bug = require('../models/bugItem')
@@ -31,7 +30,7 @@ router.get('/logOut', function(req, res, next) {
 /* GET users listing. */
 router.post('/registerAccount', function(req, res, next) {
   //调用controller方法
-  register.registerAccount(req, res)
+  user.register(req, res)
 })
 
 /* GET users listing. */
