@@ -15,5 +15,11 @@ export default {
   blogList: `${baseUrl}/getBlogList`,
   addEditBlog: `${baseUrl}/addEditBlog`,
   deleteBlog: `${baseUrl}/deleteBlog`,
-  getBlog: `${baseUrl}/getBlog`
+  getBlog: `${baseUrl}/getBlog`,
+
+  // 字典管理
+  CreateOrEditDictionary: `${baseUrl}/CreateOrEditDictionary`,
+  GetDictionaryList: `${baseUrl}/GetDictionaryList`,
+  GetDictionaryTree: `${baseUrl}/GetDictionaryTree`,
+  DeleteDictionaryById: `${baseUrl}/DeleteDictionaryById`,
 }

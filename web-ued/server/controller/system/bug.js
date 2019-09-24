@@ -75,7 +75,7 @@ exports.GetBugDetail = function (req, res, next) {
 }
 
 // 获取bug列表
-exports.GetBugList = function (req, res, next) {
+exports.GetBugList = async function (req, res, next) {
     let filters = {
         deleted: false
     }
@@ -95,7 +95,7 @@ exports.GetBugList = function (req, res, next) {
             filters.author = req.body.filters.author
         }
     }
-    const count = Bug.count(filters)
+    const count = await Bug.countDocuments(filters)
     Bug.find(
         filters,
         null, {
