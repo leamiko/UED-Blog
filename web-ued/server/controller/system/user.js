@@ -104,7 +104,7 @@ exports.register = function(req, res) {
 //超级账号
 exports.superAdmin = function(req, res) {
   var md5 = crypto.createHash('md5')
-  var admin = new User({
+  var admin = new Admin({
     passWord: md5.update('admin').digest('hex'),
     account: 'admin'
   })
