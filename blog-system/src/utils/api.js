@@ -21,5 +21,5 @@ export default {
   CreateOrEditDictionary: `${baseUrl}/CreateOrEditDictionary`,
   GetDictionaryList: `${baseUrl}/GetDictionaryList`,
   GetDictionaryTree: `${baseUrl}/GetDictionaryTree`,
-  DeleteDictionaryById: `${baseUrl}/DeleteDictionaryById`,
+  DeleteDictionaryById: `${baseUrl}/DeleteDictionaryById`
 }

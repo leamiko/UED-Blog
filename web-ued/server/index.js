@@ -29,7 +29,7 @@ app.use(
     rolling: false,
     saveUninitialized: true,
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24 * 30 // 设置 session 的有效时间，单位毫秒
+      maxAge: 1000 * 60 * 60 * 24 * 30 // 设置 session 的有效时间，单位毫秒  30天
     }
     // store: new MongoStore({
     //   url: "mongodb://session:session@localhost:27017/session",
@@ -49,7 +49,32 @@ config.dev = process.env.NODE_ENV !== 'production'
 
 require('dotenv').config()
 
+// 前端API
 app.use('/web_api', web_api)
+
+//判断系统是否登录
+var isLogin = function(req, res, next) {
+  if (req.headers.referer.split('/')[3] == 'system') {
+    if (req.originalUrl !== '/api/login') {
+      if (!req.session.admin) {
+        return res.json({
+          status_code: 403,
+          message: '登录过期，请重新登录！',
+          data: null
+        })
+      } else {
+        next()
+      }
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
+}
+app.use(isLogin)
+
+// 系统API
 app.use('/api', system_api)
 
 async function start() {

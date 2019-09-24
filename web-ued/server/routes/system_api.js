@@ -25,9 +25,9 @@ router.get('/logOut', function(req, res, next) {
 router.post('/registerAccount', function(req, res, next) {
   user.register(req, res)
 })
-// router.get('/superAdmin', function(req, res, next) {
-//   user.superAdmin(req, res)
-// })
+router.get('/superAdmin', function(req, res, next) {
+  user.superAdmin(req, res)
+})
 
 /* GET users listing. */
 // 获取字典列表&&查询
