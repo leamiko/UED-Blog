@@ -54,14 +54,18 @@ app.use('/web_api', web_api)
 
 //判断系统是否登录
 var isLogin = function(req, res, next) {
-  if (req.headers.referer.split('/')[3] == 'system') {
-    if (req.originalUrl !== '/api/login') {
-      if (!req.session.admin) {
-        return res.json({
-          status_code: 403,
-          message: '登录过期，请重新登录！',
-          data: null
-        })
+  if (req.headers.referer) {
+    if (req.headers.referer.split('/')[3] == 'system') {
+      if (req.originalUrl !== '/api/login') {
+        if (!req.session.admin) {
+          return res.json({
+            status_code: 403,
+            message: '登录过期，请重新登录！',
+            data: null
+          })
+        } else {
+          next()
+        }
       } else {
         next()
       }
