@@ -2,39 +2,49 @@ import axios from 'axios'
 import router from '../router'
 import { notification } from 'ant-design-vue'
 
-axios.interceptors.request.use(function (config) {
-  return config
-}, function (error) {
-  return Promise.reject(error)
-})
+axios.interceptors.request.use(
+  function (config) {
+    return config
+  },
+  function (error) {
+    return Promise.reject(error)
+  }
+)
 
 // 添加响应拦截器
-axios.interceptors.response.use(function (response) {
-  // 对响应数据做点什么
-  if (response.data.status_code !== 200) {
-    notification.error({
-      placement: 'bottomRight',
-      description: response.data.message
-    })
+axios.interceptors.response.use(
+  function (response) {
+    // 对响应数据做点什么
+    if (response.data.status_code !== 200) {
+      notification.error({
+        placement: 'bottomRight',
+        description: response.data.message
+      })
+    }
+    if (response.data.status_code === 403) {
+      router.replace({
+        name: 'login',
+        query: {
+          redirect: router.currentRoute.fullPath
+        }
+      })
+    }
+    return response
+  },
+  function (error) {
+    return Promise.reject(error)
   }
-  if (response.data.status_code === 403) {
-    console.log(router.currentRoute)
-    router.replace({
-      name: 'login',
-      query: {
-        redirect: router.currentRoute.fullPath
-      }
-    })
-  }
-  return response
-}, function (error) {
-  return Promise.reject(error)
-})
+)
 
 function checkStatus (response) {
   // loading
   // 如果http状态码正常，则直接返回数据
-  if (response && (response.status === 200 || response.status === 304 || response.status === 400)) {
+  if (
+    response &&
+    (response.status === 200 ||
+      response.status === 304 ||
+      response.status === 400)
+  ) {
     return response.data
     // 如果不需要除了data之外的数据，可以直接 return response.data
   }
@@ -67,19 +77,16 @@ export default {
       headers: {
         'Content-Type': 'application/json; charset=utf-8'
       }
-    }).then(
-      (response) => {
+    })
+      .then(response => {
         return checkStatus(response)
-      }
-    ).then(
-      (res) => {
+      })
+      .then(res => {
         return checkCode(res)
-      }
-    ).catch(
-      (error) => {
+      })
+      .catch(error => {
         return checkStatus(error)
-      }
-    )
+      })
   },
   get (url, params) {
     return axios({
@@ -91,18 +98,15 @@ export default {
       headers: {
         'Content-Type': 'application/json; charset=utf-8'
       }
-    }).then(
-      (response) => {
+    })
+      .then(response => {
         return checkStatus(response)
-      }
-    ).then(
-      (res) => {
+      })
+      .then(res => {
         return checkCode(res)
-      }
-    ).catch(
-      (error) => {
+      })
+      .catch(error => {
         return checkStatus(error)
-      }
-    )
+      })
   }
 }

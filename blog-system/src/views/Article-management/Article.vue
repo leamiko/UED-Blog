@@ -269,11 +269,11 @@ export default {
           limit: 10
         },
         filters: {
-          title: this.queryParams !== {} ? this.queryParams.title : '',
-          author: this.queryParams !== {} ? this.queryParams.author : '',
-          blogType: this.queryParams !== {} ? this.queryParams.blogType : '',
-          isGood: this.queryParams !== {} ? this.queryParams.isGood : '',
-          isAudit: this.queryParams !== {} ? this.queryParams.isAudit : ''
+          title: JSON.stringify(this.queryParams) !== '{}' ? this.queryParams.title : '',
+          author: JSON.stringify(this.queryParams) !== '{}' ? this.queryParams.author : '',
+          blogType: JSON.stringify(this.queryParams) !== '{}' ? this.queryParams.blogType : '',
+          isGood: JSON.stringify(this.queryParams) !== '{}' ? this.queryParams.isGood : '',
+          isAudit: JSON.stringify(this.queryParams) !== '{}' ? this.queryParams.isAudit : ''
         }
       }
       let url = this.api.blogList

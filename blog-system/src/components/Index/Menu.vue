@@ -1,8 +1,14 @@
 <template>
-  <a-layout-sider :trigger="null" collapsible v-model="IsOpen">
+  <a-layout-sider :trigger="null"
+                  collapsible
+                  v-model="IsOpen">
     <div class="logo" />
-    <a-menu theme="dark" :selectedKeys="[initKey]" mode="inline">
-      <a-menu-item v-for="item in menuList" :key="item.code" @click="selectItem(item.code)">
+    <a-menu theme="dark"
+            :selectedKeys="[initKey]"
+            mode="inline">
+      <a-menu-item v-for="item in menuList"
+                   :key="item.code"
+                   @click="selectItem(item.code)">
         <router-link :to="item.linkUrl">
           <a-icon :type="item.iconName" />
           <span>{{item.name}}</span>

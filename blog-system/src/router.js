@@ -64,7 +64,7 @@ const router = new Router({
         {
           path: '/userInfo',
           name: 'userInfo',
-          component: () => import('./views/UserInfo.vue')
+          component: () => import('./views/Admin-management/UserInfo.vue')
         },
         {
           path: '/dictionary',

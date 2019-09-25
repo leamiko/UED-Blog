@@ -11,13 +11,15 @@ var AdminSchema = new Schema(
       type: String //密码
     },
     createdId: {
-      type: String //创建人
+      type: String, //创建人
+      default: ''
     },
     changeId: {
-      type: String //修改人
+      type: String, //修改人
+      default: ''
     },
     authorization: {
-      type: Number //权限
+      type: Array //权限
     }
   },
   { timestamps: { createdAt: 'createAt', updatedAt: 'updateAt' } }

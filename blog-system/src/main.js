@@ -18,14 +18,25 @@ import 'quill/dist/quill.bubble.css'
 import './assets/scss/common.scss'
 import './assets/scss/website.scss'
 
-import moment from 'moment'
+import { formatDate } from '@/assets/js/date.js'
 
 Vue.use(Antd)
 Vue.use(VueQuillEditor)
 
 // 时间过滤器
-Vue.filter('formatDateDay', (time) => {
-  return moment(time).format('YYYY-MM-DD')
+Vue.filter('formatDateMinSec', function (time) {
+  var date = new Date(time)
+  return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
+})
+
+Vue.filter('formatDateMin', function (time) {
+  var date = new Date(time)
+  return formatDate(date, 'yyyy-MM-dd hh:mm')
+})
+
+Vue.filter('formatDateDay', function (time) {
+  var date = new Date(time)
+  return formatDate(date, 'yyyy-MM-dd')
 })
 
 Vue.prototype.$http = http
@@ -35,9 +46,10 @@ Vue.prototype.localEvent = localEvent
 
 Vue.config.productionTip = false
 
-axios.defaults.timeout = 5000// 在超时前，所有请求都会等待 5 秒
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
-axios.defaults.baseURL = 'http://localhost:3000'// 配置接口地址
+axios.defaults.timeout = 5000 // 在超时前，所有请求都会等待 5 秒
+axios.defaults.headers.post['Content-Type'] =
+  'application/x-www-form-urlencoded;charset=UTF-8'
+axios.defaults.baseURL = 'http://localhost:3000' // 配置接口地址
 axios.defaults.withCredentials = false
 
 new Vue({

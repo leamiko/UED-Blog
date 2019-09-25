@@ -1,6 +1,6 @@
 var express = require('express')
 const router = express.Router()
-const { verifyMiddleware } = require('../middleware/verify.js')
+const { authorizationMiddleware } = require('../middleware/authorization.js')
 
 var user = require('../controller/system/user')
 var dictionary = require('../controller/system/dictionary')
@@ -22,9 +22,6 @@ router.post('/login', function(req, res, next) {
 router.get('/logOut', function(req, res, next) {
   user.logOut(req, res)
 })
-router.post('/registerAccount', function(req, res, next) {
-  user.register(req, res)
-})
 router.get('/superAdmin', function(req, res, next) {
   user.superAdmin(req, res)
 })
@@ -32,7 +29,6 @@ router.get('/superAdmin', function(req, res, next) {
 /* GET users listing. */
 // 获取字典列表&&查询
 router.post('/GetDictionaryList', (req, res, next) => {
-  console.log(req)
   let pagesize = req.body.paging.pagesize //分页参数
   let pageIndex = req.body.paging.pageIndex //当前页码
   //条件查询参数
@@ -63,7 +59,6 @@ router.post('/GetDictionaryList', (req, res, next) => {
 
       for (var i = 0; i < newdata.length; i++) {
         var dicNew = JSON.parse(JSON.stringify(newdata[i]))
-        // console.log(aa)
         var secondClass = await Dictionary.find(
           {
             $and: [
@@ -100,7 +95,6 @@ router.post('/GetDictionaryList', (req, res, next) => {
 })
 // 新增编辑字典分类
 router.post('/CreateOrEditDictionary', function(req, res, next) {
-  console.log(req.body)
   if (req.body.name === '' || req.body.name.length === 0) {
     return res.json({
       status_code: 201,
@@ -134,7 +128,6 @@ router.post('/CreateOrEditDictionary', function(req, res, next) {
             message: err
           })
         }
-        console.log(data)
         if (data) {
           return res.json({
             data: null,
@@ -223,7 +216,6 @@ router.get('/DeleteDictionaryById', async (req, res, next) => {
     deleted: true
   }
   Dictionary.find(filter, function(err, dicData) {
-    console.log(dicData)
     if (dicData) {
       return res.json({
         status_code: 200,
@@ -330,45 +322,58 @@ router.get('/GetAllBugKeywords', async (req, res, next) => {
 
 /* bug管理--End */
 
+/**
+ * 文章管理
+ */
 //新增删除blog
 router.post('/addEditBlog', function(req, res, next) {
   //调用controller方法
   blog.addEditBlog(req, res)
 })
-
 //获取blog详情
 router.get('/getBlog', function(req, res, next) {
   blog.getBlog(req, res)
 })
-
 //blog列表
 router.post('/getBlogList', function(req, res, next) {
   //调用controller方法
   blog.getBlogList(req, res)
 })
-
 //blog删除
 router.get('/deleteBlog', function(req, res, next) {
   //调用controller方法
   blog.deleteBlog(req, res)
 })
-
 //blog点赞
 router.get('/likeBlog', function(req, res, next) {
   //调用controller方法
   blog.likeBlog(req, res)
 })
-
 //blog评论
 router.post('/commentBlog', function(req, res, next) {
   //调用controller方法
   blog.commentBlog(req, res)
 })
-
 //获取blog评论
 router.get('/getBlogComment', function(req, res, next) {
   //调用controller方法
   blog.getBlogComment(req, res)
+})
+
+/**
+ * 用户管理
+ */
+// 注册账号
+router.post('/registerAdmin', function(req, res, next) {
+  user.register(req, res)
+})
+//账号列表
+router.post('/adminList', authorizationMiddleware, function(req, res, next) {
+  user.adminList(req, res)
+})
+//删除账号
+router.get('/deleteAdmin', function(req, res, next) {
+  user.deleteAdmin(req, res)
 })
 
 module.exports = router
