@@ -6,6 +6,7 @@ import store from './store'
 import http from './utils/http'
 import api from './utils/api'
 import config from './utils/config'
+import formatDate from './utils/date'
 import localEvent from './utils/local'
 // 全局引入antd
 import Antd from 'ant-design-vue'
@@ -17,8 +18,6 @@ import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import './assets/scss/common.scss'
 import './assets/scss/website.scss'
-
-import { formatDate } from '@/assets/js/date.js'
 
 Vue.use(Antd)
 Vue.use(VueQuillEditor)
