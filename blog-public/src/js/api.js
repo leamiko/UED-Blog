@@ -9,7 +9,7 @@
 //
 // 需在该引用前引用axios
 
-const baseUrl = 'http://ued.lunz.cn/api' // 正式
+const baseUrl = 'http://ued.lunz.cn/api/' // 正式
 // const baseUrl = 'http://localhost:3000/' // 本地
 
 // 参数过滤
