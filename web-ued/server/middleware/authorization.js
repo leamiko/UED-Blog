@@ -10,15 +10,15 @@ function authorizationMiddleware(req, res, next) {
         code = apiList[i].code
       }
     }
-    Admin.findById(req.session.admin._id, function(err, admin) {
-      if (err) {
-        return res.json({
-          status_code: 403,
-          message: '无权限，请向管理员申请权限！',
-          data: null
-        })
-      }
-      if (code) {
+    if (code) {
+      Admin.findById(req.session.admin._id, function(err, admin) {
+        if (err) {
+          return res.json({
+            status_code: 403,
+            message: '无权限，请向管理员申请权限！',
+            data: null
+          })
+        }
         if (admin.authorization.indexOf(code) > -1) {
           next()
         } else {
@@ -28,10 +28,10 @@ function authorizationMiddleware(req, res, next) {
             data: null
           })
         }
-      } else {
-        next()
-      }
-    })
+      })
+    } else {
+      next()
+    }
   } else {
     next()
   }
