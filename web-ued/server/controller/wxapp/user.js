@@ -1,4 +1,5 @@
 var User = require('../../models/user.js') //引入user表
+var request = require('request')
 
 exports.wxLogin = function(req, res) {
   var code = req.query.code
