@@ -2,9 +2,7 @@ var User = require('../../models/user.js') //引入user表
 
 exports.wxLogin = function(req, res) {
   var code = req.query.code
-  var cookies = req.cookies
-  //生成当前服务器时间
-  var curTime = moment().format('YYYY-MM-DD HH:mm:ss')
+  console.log(code)
   // 向微信服务器请求sesion_key
   request.get(
     {
