@@ -1,5 +1,4 @@
-// const baseUrl = process.env.VUE_APP_BASEURL
-const baseUrl = 'http://127.0.0.1:3002/api'
+const baseUrl = process.env.VUE_APP_BASEURL
 
 export default {
   login: `${baseUrl}/login`,

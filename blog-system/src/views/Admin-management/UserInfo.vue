@@ -174,7 +174,7 @@ export default {
           limit: 10
         },
         filters: {
-          account: JSON.stringify(this.queryParams) !== '{}' ? this.queryParams.account : ''
+          account: this.queryParams ? JSON.stringify(this.queryParams) !== '{}' ? this.queryParams.account : '' : ''
         }
       }
       let url = this.api.adminList

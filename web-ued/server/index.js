@@ -4,6 +4,7 @@ const consola = require('consola')
 const { Nuxt, Builder } = require('nuxt')
 var web_api = require('./routes/web_api')
 var system_api = require('./routes/system_api')
+var wxapp_api = require('./routes/wxapp_api')
 const bodyParser = require('body-parser')
 
 const app = express()
@@ -51,6 +52,9 @@ require('dotenv').config()
 
 // 前端API
 app.use('/web_api', web_api)
+
+// 小程序
+app.use('/wxapp_api', wxapp_api)
 
 //判断系统是否登录
 var isLogin = function(req, res, next) {

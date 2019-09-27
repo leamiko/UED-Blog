@@ -28,7 +28,7 @@ router.get('/superAdmin', function(req, res, next) {
 
 /* GET users listing. */
 // 获取字典列表&&查询
-router.post('/GetDictionaryList', (req, res, next) => {
+router.post('/GetDictionaryList', authorizationMiddleware, (req, res, next) => {
   let pagesize = req.body.paging.pagesize //分页参数
   let pageIndex = req.body.paging.pageIndex //当前页码
   //条件查询参数
@@ -94,7 +94,11 @@ router.post('/GetDictionaryList', (req, res, next) => {
   )
 })
 // 新增编辑字典分类
-router.post('/CreateOrEditDictionary', function(req, res, next) {
+router.post('/CreateOrEditDictionary', authorizationMiddleware, function(
+  req,
+  res,
+  next
+) {
   if (req.body.name === '' || req.body.name.length === 0) {
     return res.json({
       status_code: 201,
@@ -204,44 +208,48 @@ router.post('/CreateOrEditDictionary', function(req, res, next) {
   }
 })
 // 删除某个分类
-router.get('/DeleteDictionaryById', async (req, res, next) => {
-  const filter = {
-    parentId: req.query._id,
-    deleted: false
-  }
-  const id = {
-    _id: req.query._id
-  }
-  var updateDic = {
-    deleted: true
-  }
-  Dictionary.find(filter, function(err, dicData) {
-    if (dicData) {
-      return res.json({
-        status_code: 200,
-        message: '该分类下存在子级分类！',
-        data: null
-      })
+router.get(
+  '/DeleteDictionaryById',
+  authorizationMiddleware,
+  async (req, res, next) => {
+    const filter = {
+      parentId: req.query._id,
+      deleted: false
     }
-    Dictionary.update(id, updateDic, function(err, Dic) {
-      if (err) {
-        logger.error(err)
+    const id = {
+      _id: req.query._id
+    }
+    var updateDic = {
+      deleted: true
+    }
+    Dictionary.find(filter, function(err, dicData) {
+      if (dicData) {
         return res.json({
-          code: 201,
-          message: err,
+          status_code: 200,
+          message: '该分类下存在子级分类！',
           data: null
         })
       }
-      return res.json({
-        status_code: 200,
-        message: '删除成功！',
-        data: null
+      Dictionary.update(id, updateDic, function(err, Dic) {
+        if (err) {
+          logger.error(err)
+          return res.json({
+            code: 201,
+            message: err,
+            data: null
+          })
+        }
+        return res.json({
+          status_code: 200,
+          message: '删除成功！',
+          data: null
+        })
       })
     })
-  })
-})
+  }
+)
 // 树形
-router.post('/GetDictionaryTree', (req, res, next) => {
+router.post('/GetDictionaryTree', authorizationMiddleware, (req, res, next) => {
   var id = req.body._id
   var filter = {
     deleted: false
@@ -263,62 +271,82 @@ router.post('/GetDictionaryTree', (req, res, next) => {
   })
 })
 // 获取模块
-router.post('/GetModelList', async (req, res, next) => {
-  Dictionary.find(
-    {
-      parentId: ''
-    },
-    null,
-    function(err, modelList) {
-      if (err) {
-        return res.json({
-          code: 201,
-          message: err,
-          data: null
+router.post(
+  '/GetModelList',
+  authorizationMiddleware,
+  async (req, res, next) => {
+    Dictionary.find(
+      {
+        parentId: ''
+      },
+      null,
+      function(err, modelList) {
+        if (err) {
+          return res.json({
+            code: 201,
+            message: err,
+            data: null
+          })
+        }
+        res.json({
+          status_code: 200,
+          message: '获取成功！', //返回的信息
+          data: modelList
         })
       }
-      res.json({
-        status_code: 200,
-        message: '获取成功！', //返回的信息
-        data: modelList
-      })
-    }
-  )
-})
+    )
+  }
+)
 
 /* bug管理--Start */
 
 // 新增bug条目
-router.post('/AddBugItems', (req, res, next) => {
+router.post('/AddBugItems', authorizationMiddleware, (req, res, next) => {
   bugCtrler.AddBugItems(req, res, next)
 })
 // 根据bug条目id查看bug详情
-router.get('/GetBugDetail', (req, res, next) => {
+router.get('/GetBugDetail', authorizationMiddleware, (req, res, next) => {
   bugCtrler.GetBugDetail(req, res, next)
 })
 // 获取bug列表
-router.post('/GetBugList', (req, res, next) => {
+router.post('/GetBugList', authorizationMiddleware, (req, res, next) => {
   bugCtrler.GetBugList(req, res, next)
 })
 
 // bug条目更新
-router.post('/UpdateBugById', async (req, res, next) => {
-  bugCtrler.UpdateBugById(req, res, next)
-})
+router.post(
+  '/UpdateBugById',
+  authorizationMiddleware,
+  async (req, res, next) => {
+    bugCtrler.UpdateBugById(req, res, next)
+  }
+)
 
 // bug条目删除
-router.post('/DeleteBugById', async (req, res, next) => {
-  bugCtrler.DeleteBugById(req, res, next)
-})
+router.post(
+  '/DeleteBugById',
+  authorizationMiddleware,
+  async (req, res, next) => {
+    bugCtrler.DeleteBugById(req, res, next)
+  }
+)
 
 // 新增关键词
-router.post('/AddBugKeywords', async (req, res, next) => {
-  bugCtrler.AddBugKeywords(req, res, next)
-})
+router.post(
+  '/AddBugKeywords',
+  authorizationMiddleware,
+  async (req, res, next) => {
+    bugCtrler.AddBugKeywords(req, res, next)
+  }
+)
 // 获取所有关键词
-router.get('/GetAllBugKeywords', async (req, res, next) => {
-  bugCtrler.GetAllBugKeywords(req, res, next)
-})
+router.get(
+  '/GetAllBugKeywords',
+  authorizationMiddleware,
+  async (req, res, next) => {
+    bugCtrler.GetAllBugKeywords(req, res, next)
+  }
+)
 
 /* bug管理--End */
 
@@ -326,36 +354,40 @@ router.get('/GetAllBugKeywords', async (req, res, next) => {
  * 文章管理
  */
 //新增删除blog
-router.post('/addEditBlog', function(req, res, next) {
+router.post('/addEditBlog', authorizationMiddleware, function(req, res, next) {
   //调用controller方法
   blog.addEditBlog(req, res)
 })
 //获取blog详情
-router.get('/getBlog', function(req, res, next) {
+router.get('/getBlog', authorizationMiddleware, function(req, res, next) {
   blog.getBlog(req, res)
 })
 //blog列表
-router.post('/getBlogList', function(req, res, next) {
+router.post('/getBlogList', authorizationMiddleware, function(req, res, next) {
   //调用controller方法
   blog.getBlogList(req, res)
 })
 //blog删除
-router.get('/deleteBlog', function(req, res, next) {
+router.get('/deleteBlog', authorizationMiddleware, function(req, res, next) {
   //调用controller方法
   blog.deleteBlog(req, res)
 })
 //blog点赞
-router.get('/likeBlog', function(req, res, next) {
+router.get('/likeBlog', authorizationMiddleware, function(req, res, next) {
   //调用controller方法
   blog.likeBlog(req, res)
 })
 //blog评论
-router.post('/commentBlog', function(req, res, next) {
+router.post('/commentBlog', authorizationMiddleware, function(req, res, next) {
   //调用controller方法
   blog.commentBlog(req, res)
 })
 //获取blog评论
-router.get('/getBlogComment', function(req, res, next) {
+router.get('/getBlogComment', authorizationMiddleware, function(
+  req,
+  res,
+  next
+) {
   //调用controller方法
   blog.getBlogComment(req, res)
 })
@@ -364,7 +396,11 @@ router.get('/getBlogComment', function(req, res, next) {
  * 用户管理
  */
 // 注册账号
-router.post('/registerAdmin', function(req, res, next) {
+router.post('/registerAdmin', authorizationMiddleware, function(
+  req,
+  res,
+  next
+) {
   user.register(req, res)
 })
 //账号列表
@@ -372,7 +408,7 @@ router.post('/adminList', authorizationMiddleware, function(req, res, next) {
   user.adminList(req, res)
 })
 //删除账号
-router.get('/deleteAdmin', function(req, res, next) {
+router.get('/deleteAdmin', authorizationMiddleware, function(req, res, next) {
   user.deleteAdmin(req, res)
 })
 

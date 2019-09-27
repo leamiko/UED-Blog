@@ -1,7 +1,7 @@
 var User = require('../../models/user.js') //引入user表
 var crypto = require('crypto')
 const OAuth = require('wechat-oauth')
-const wxPcClient = new OAuth(process.env.WX_APP_ID, process.env.WX_APP_SECRET)
+const wxPcClient = new OAuth(process.env.WX_WEB_ID, process.env.WX_WEB_SECRET)
 
 exports.login = function(req, res) {
   const { account, passWord } = req.body
