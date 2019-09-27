@@ -18,29 +18,24 @@ exports.wxLogin = function(req, res) {
     },
     function(err, resp, data) {
       if (resp.statusCode == 200) {
-        console.log(data)
-        // var sessionKey = String(data.session_key)
-        // var openId = data.openid
-        // //自定义的加密，作为session_id
-        // var skey = sha1(sessionKey)
-        // var data = {
-        //   lastTime: curTime,
-        //   curTime: curTime,
-        //   cookies: cookies
-        // }
-        // var sessionData = {
-        //   session_id: skey,
-        //   expires: 60000,
-        //   data: JSON.stringify(data)
-        // }
-        // //session的MySQL管理器，设置session（如果session_id不存在，则写入数据库）
-        // sessionStore.set(skey, sessionData, function(err) {
-        //   if (err) console.log(err)
-        // })
-        // //返回给客户端
-        // res.json({ session_data: sessionData })
-      } else {
-        res.json(err)
+        User.findOne({ wxOpenId: data.openid }, function(err, user) {
+          if (user) {
+            // 登录
+            req.session.user = user
+            return res.json({
+              status_code: 200,
+              message: '登录成功！',
+              user: user
+            })
+          } else {
+            // 绑定
+            return res.json({
+              status_code: 401,
+              message: '请先登录或注册账号！',
+              data: null
+            })
+          }
+        })
       }
     }
   )
