@@ -1,7 +1,7 @@
 <template>
   <div class="container_404 cus-relative">
 		<div class="content_404 cus-absolute cus-fix-center">
-      <img src="@/assets/img/404.gif">
+      <img src="@/assets/img/image/image-system-404.gif">
       <h2>抱歉，您访问的页面出错了</h2>
       <p>您可能输错了网址，或该网页已删除或不存在</p>
       <el-button type="primary" @click="$router.push('/')" class="cus-box-center">返回主页</el-button>

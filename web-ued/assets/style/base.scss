@@ -6,6 +6,10 @@ body,
   height: 100%;
 }
 
+#__layout {
+  overflow: auto;
+}
+
 .cus-flex {
   display: flex;
 }
@@ -48,6 +52,14 @@ body,
   width: 100%;
 }
 
+.cus-full-height {
+  height: 100%;
+}
+
+.hidden {
+  overflow: hidden;
+}
+
 .inline {
   display: inline-block;
 }
@@ -58,4 +70,20 @@ body,
 
 .text-right {
   text-align: right;
+}
+
+.align-top {
+  vertical-align: top;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.bg-white {
+  background: white;
+}
+
+.custom-dialog {
+  border-radius: 12px;
 }
