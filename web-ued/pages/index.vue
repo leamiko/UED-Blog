@@ -1,18 +1,15 @@
 <template>
-  <div>
-    <my-header></my-header>
-    <div>
+  <my-scrollbar>
+    <div slot="container">
       <el-button type="primary" @click="reload()">刷新测试</el-button>
       <Logo></Logo>
     </div>
-    <my-footer></my-footer>
-  </div>
+  </my-scrollbar>
 </template>
 
 <script>
 import Logo from '@/components/Logo';
-import MyHeader from '@/components/Header';
-import MyFooter from '@/components/Footer';
+import MyScrollbar from '@/components/Scrollbar';
 
 export default {
   inject: ['reload'],
@@ -24,8 +21,7 @@ export default {
   // },
   components: {
     Logo,
-    MyHeader,
-    MyFooter
+    MyScrollbar
   },
   data () {
     return {
