@@ -10,7 +10,7 @@
           </el-dropdown-menu>
         </el-dropdown>
       </div>
-      <div slot="container"  class="my-body">
+      <div slot="container" class="my-body">
         <div>
           <div class="my-search">
             <h1 class="text-center">Bug避坑专用搜索引擎</h1>

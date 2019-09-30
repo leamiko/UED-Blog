@@ -1,6 +1,7 @@
 <template>
-  <my-scrollbar>
-    <div slot="container">
+  <my-scrollbar hasFoot :active="'首页'">
+    <div slot="container" style="min-height:800px">
+      <my-header activeLabel="首页"></my-header>
       <el-button type="primary" @click="reload()">刷新测试</el-button>
       <Logo></Logo>
     </div>
@@ -10,6 +11,7 @@
 <script>
 import Logo from '@/components/Logo';
 import MyScrollbar from '@/components/Scrollbar';
+import MyHeader from '@/components/Header';
 
 export default {
   inject: ['reload'],
@@ -21,7 +23,8 @@ export default {
   // },
   components: {
     Logo,
-    MyScrollbar
+    MyScrollbar,
+    MyHeader
   },
   data () {
     return {
