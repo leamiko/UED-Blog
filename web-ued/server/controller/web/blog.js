@@ -1,60 +1,7 @@
 var Blog = require('../../models/blog.js') //引入blog表
 var Like = require('../../models/like.js') //引入like表
 var Comment = require('../../models/comment.js') //引入comment表
-
-//blog新增编辑
-exports.addEditBlog = function(req, res) {
-  if (req.body._id) {
-    var whereBlog = {
-      _id: req.body._id
-    }
-    let updateBlog = {
-      title: req.body.title,
-      blogType: req.body.blogType,
-      info: req.body.info,
-      content: req.body.content
-    }
-    Blog.update(whereBlog, updateBlog, function(err, blog) {
-      if (err) {
-        console.log(err)
-        return res.json({
-          code: 201,
-          message: err,
-          data: null
-        })
-      }
-      return res.json({
-        status_code: 200,
-        message: '修改成功！',
-        data: null
-      })
-    })
-  } else {
-    let blog = new Blog({
-      title: req.body.title,
-      blogType: req.body.blogType,
-      info: req.body.info,
-      content: req.body.content,
-      author: req.session.user.nickName,
-      userId: req.session.user._id
-    })
-    blog.save(function(err, blog) {
-      if (err) {
-        console.log(err)
-        return res.json({
-          code: 201,
-          message: err,
-          data: null
-        })
-      }
-      return res.json({
-        status_code: 200,
-        message: '添加成功！',
-        data: null
-      })
-    })
-  }
-}
+var Reply = require('../../models/reply.js') //引入comment表
 
 //blog详情
 exports.getBlog = function(req, res) {
@@ -147,31 +94,6 @@ exports.getBlogList = async function(req, res) {
   )
 }
 
-//blog删除
-exports.deleteBlog = function(req, res) {
-  var whereBlog = {
-    _id: req.query.blogId
-  }
-  var updateBlog = {
-    deleted: true
-  }
-  Blog.update(whereBlog, updateBlog, function(err, blog) {
-    if (err) {
-      console.log(err)
-      return res.json({
-        code: 201,
-        message: err,
-        data: null
-      })
-    }
-    return res.json({
-      status_code: 200,
-      message: '删除成功！',
-      data: null
-    })
-  })
-}
-
 //点赞
 exports.likeBlog = function(req, res) {
   let like = new Like({
@@ -197,13 +119,14 @@ exports.likeBlog = function(req, res) {
 
 //评论
 exports.commentBlog = function(req, res) {
+  console.log(req.body)
   let comment = new Comment({
     commentName: req.body.commentName,
     commenId: req.body.commenId,
     blogId: req.body.blogId,
     content: req.body.content
   })
-  comment.save(function(err, blog) {
+  comment.save(function(err, comment) {
     if (err) {
       console.log(err)
       return res.json({
@@ -220,13 +143,11 @@ exports.commentBlog = function(req, res) {
   })
 }
 
-//获取评论评论
-exports.getBlogComment = function(req, res) {
-  const whereComment = {
-    blogId: req.query.blogId
-  }
-
-  Comment.find(whereComment, function(err, comments) {
+//评论
+exports.replyBlog = function(req, res) {
+  console.log(req.body)
+  let reply = new Reply(req.body)
+  reply.save(function(err, reply) {
     if (err) {
       console.log(err)
       return res.json({
@@ -237,8 +158,49 @@ exports.getBlogComment = function(req, res) {
     }
     return res.json({
       status_code: 200,
-      message: '获取评论成功！',
-      data: comments
+      message: '添加成功！',
+      data: null
     })
   })
 }
+
+//获取评论
+exports.getBlogComment = function(req, res) {
+  const whereComment = {
+    blogId: req.query.blogId
+  }
+
+  Comment.aggregate(
+    [
+      {
+        $match: whereComment
+      },
+      {
+        $lookup: {
+          from: 'reply',
+          localField: '_id',
+          foreignField: 'commentId',
+          as: 'replies'
+        }
+      }
+    ],
+    (err, comments) => {
+      if (err) {
+        console.log(err)
+        return res.json({
+          status_code: 201,
+          message: err,
+          data: null
+        })
+      }
+      return res.json({
+        status_code: 200,
+        message: '获取评论成功！',
+        data: comments
+      })
+    }
+  )
+}
+
+// rank定时任务
+exports.rankTask = function(req, res) {}
