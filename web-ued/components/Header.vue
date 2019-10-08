@@ -1,17 +1,20 @@
 <template>
-  <div class="my-header">
+  <div class="my-header" ref="header">
     <div class="cus-flex cus-flex-between cus-align-center">
       <div>
-        <img :src="custom.logo" :title="custom.title" alt="加载失败">
-        <h2 class="inline">{{ custom.title }}</h2>
+        <el-avatar :size="42" :src="logoURL" class="middle"></el-avatar>
+        <h2 class="inline middle">{{ custom.title }}</h2>
         <ul>
-          <li v-for="(item, index) in custom.menu" :key="index">
+          <li v-for="(item, index) in custom.menu" :key="index" :class="{'active': activeLabel === item.label}">
             <router-link :to="item.redirectUrl">{{ item.label }}</router-link>
           </li>
         </ul>
       </div>
-      <div>
-        <img src="" alt="">
+      <div class="cus-flex cus-align-center">
+        <slot name="box_cus"></slot>&emsp;&emsp;
+        <el-badge is-dot class="item">
+          <div class="inline pointer"><img :src="msgURL" class="message"></div>
+        </el-badge>
         <router-link :to="'login'">登录</router-link>
       </div>
     </div>
@@ -20,32 +23,62 @@
 
 <script>
 import * as custom from '@/assets/js/custom.config';
+import logo from '@/assets/img/logo/logo-system-small.svg';
+import msg from '@/assets/img/logo/logo-system-message.svg';
 export default {
-  data() {
-    return {
-      custom: custom.head
+  props: {
+    activeLabel: {
+      default: null,
+      type: String,
+      required: false
+    },
+    innerStyle: {
+      default: null,
+      type: Object,
+      required: false
     }
   },
-  created() { }
+  data() {
+    return {
+      custom: custom.head,
+      logoURL: logo,
+      msgURL: msg
+    }
+  },
+  mounted() {
+    if (this.innerStyle) {
+      Object.keys(this.innerStyle).forEach(key => {
+        this.$refs.header.style[key] = this.innerStyle[key];
+      })
+    }
+  }
 }
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/style/cus.scss';
+.item {
+  margin-top: 10px;
+  margin-right: 22px;
+}
+.middle {
+  vertical-align: middle;
+}
 a {
   color: inherit;
   text-decoration: none;
   &:hover {
-    color: #3376FF;
+    color: $primary_blue;
   }
 }
 .my-header {
   height: 82px;
   color: #34485E;
-  background: white;
 
   > div {
     width: 62.5%;
     height: 100%;
+    min-width: 600px;
     max-width: 1200px;
     margin: 0 auto;
   }
@@ -53,6 +86,10 @@ a {
   img {
     width: 42px;
     height: 42px;
+    &.message {
+      width: 21px;
+      height: 21px;
+    }
   }
 
   h2 {
@@ -64,6 +101,9 @@ a {
     list-style: none;
     li {
       margin-right: 60px;
+      &.active {
+        color: $primary_blue;
+      }
     }
   }
 }
