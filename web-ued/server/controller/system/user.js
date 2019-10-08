@@ -167,7 +167,8 @@ exports.adminList = async function(req, res) {
   if (req.body.filters.account) {
     filters.title = new RegExp(req.body.filters.account)
   }
-  const count = await Admin.count(filters)
+  const count = await Admin.countDocuments(filters)
+  console.log(count)
   Admin.find(filters, null, {
     skip: (page * 1 - 1) * 15,
     limit: limit,
@@ -189,7 +190,7 @@ exports.adminList = async function(req, res) {
           data: null
         })
       }
-      return res.json({
+      res.json({
         status_code: 200,
         message: '获取列表成功！',
         data: {

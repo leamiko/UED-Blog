@@ -90,4 +90,9 @@ router.post('/DeleteBugById', (req, res, next) => {
   web_bugCtrler.DeleteBugById(req, res, next);
 })
 
+// bug条目删除
+router.get('/GetBugTags', (req, res, next) => {
+  web_bugCtrler.GetBugTags(req, res, next);
+})
+
 module.exports = router

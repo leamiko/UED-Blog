@@ -117,7 +117,7 @@ exports.getBlogList = async function(req, res) {
   if (req.body.filters.isAudit) {
     filters.isAudit = req.body.filters.isAudit
   }
-  const count = await Blog.count(filters)
+  const count = await Blog.countDocuments(filters)
   Blog.find(
     filters,
     null,
