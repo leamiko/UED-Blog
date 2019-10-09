@@ -1,16 +1,17 @@
 <template>
-  <my-scrollbar hasHead hasFoot :headStyle="{'background':'white'}" :active="'打码'">
+  <my-scrollbar hasHead hasFoot :headStyle="{'background':'white'}" :headActive="'打码'">
     <div slot="container" style="height: 500px">
       <button @click="testGetListApi()">get</button>
       <button @click="testAddApi()">add</button>
       <button @click="testDetailApi()">detail</button>
       <button @click="testDelApi()">delate</button>
       <router-link :to="'/coding/search'">去搜索</router-link>
+      <router-link :to="'/coding/list'">去搜索列表</router-link>
     </div>
   </my-scrollbar>
 </template>
 <script>
-import MyScrollbar from '@/components/Scrollbar';
+import MyScrollbar from '@/components/scroller/Scrollbar';
 export default {
   components: {
     MyScrollbar

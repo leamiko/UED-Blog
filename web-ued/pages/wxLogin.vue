@@ -9,8 +9,8 @@
 
 <script>
 import Logo from '@/components/Logo';
-import MyHeader from '@/components/Header';
-import MyFooter from '@/components/Footer';
+import MyHeader from '@/components/header/Header';
+import MyFooter from '@/components/footer/Footer';
 
 export default {
   inject: ['reload'],

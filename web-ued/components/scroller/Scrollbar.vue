@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <my-header :activeLabel="active" v-if="hasHead" :innerStyle="headStyle">
+    <my-header :activeLabel="headActive" v-if="hasHead" :innerStyle="headStyle">
       <div slot="box_cus">
         <slot name="head_custom"></slot>
       </div>
@@ -8,13 +8,13 @@
     <div class="main" ref="main" :style="{'height': hasHead ? 'calc(100% - 82px)' : '100%'}">
       <el-backtop target=".main" :bottom="bottom"></el-backtop>
       <slot name="container"></slot>
-      <my-footer :hasMenu="isMenu" v-if="hasFoot"></my-footer>
+      <my-footer :hasMenu="isFootMenu" v-if="hasFoot"></my-footer>
     </div>
   </div>
 </template>
 <script>
-import MyHeader from '@/components/Header';
-import MyFooter from '@/components/Footer';
+import MyHeader from '@/components/header/Header';
+import MyFooter from '@/components/footer/Footer';
 export default {
   components: {
     MyHeader,
@@ -31,12 +31,12 @@ export default {
       type: Boolean,
       required: false
     },
-    active: {
+    headActive: {
       default: null,
       type: String,
       required: false
     },
-    isMenu: {
+    isFootMenu: {
       default: true,
       type: Boolean,
       required: false
@@ -63,6 +63,9 @@ export default {
         this.$refs.main.style[key] = this.mainStyle[key];
       })
     }
+    window.addEventListener('scroll', () => {
+      this.$emit('scrollTop', this.$refs.main.scrollTop);
+    }, true);
   }
 }
 </script>

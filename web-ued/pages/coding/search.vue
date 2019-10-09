@@ -1,6 +1,6 @@
 <template>
   <div class="cus-full-width cus-full-height hidden">
-    <my-scrollbar hasHead hasFoot :active="'打码'" :isMenu="false" :mainStyle="{'background':'white'}" :headStyle="styleConf">
+    <my-scrollbar hasHead hasFoot :headActive="'打码'" :isFootMenu="false" :mainStyle="{'background':'white'}" :headStyle="styleConf">
       <div slot="head_custom">
         <el-dropdown size="medium" split-button type="primary" @command="handleCommand">
           创建
@@ -14,10 +14,7 @@
         <div>
           <div class="my-search">
             <h1 class="text-center">Bug避坑专用搜索引擎</h1>
-            <div class="cus-flex">
-              <el-input v-model="searchVal" placeholder="有Bug，这里搜～"></el-input>
-              &emsp;&emsp;<el-button type="primary" round> &emsp;&emsp;搜&nbsp;索&emsp;&emsp; </el-button>
-            </div>
+            <my-search @search="getSearch"></my-search>
             <div>
               <br><br>
               <h4>大家都在搜</h4><br>
@@ -49,18 +46,19 @@
 
 <script>
 import * as custom from '@/assets/js/custom.config';
-import MyScrollbar from '@/components/Scrollbar';
-import QuizDialog from '@/components/QuizDialog';
-import AnswerDialog from '@/components/AnswerDialog';
+import MyScrollbar from '@/components/scroller/Scrollbar';
+import QuizDialog from '@/components/dialogs/QuizDialog';
+import AnswerDialog from '@/components/dialogs/AnswerDialog';
+import MySearch from '@/components/search/Search';
 export default {
   components: {
     MyScrollbar,
     QuizDialog,
-    AnswerDialog
+    AnswerDialog,
+    MySearch
   },
   data() {
     return {
-      searchVal: '',
       styleConf: {
         'background':'white',
         'borderBottom':'1px solid #DCDFE6',
@@ -77,6 +75,9 @@ export default {
   methods: {
     handleCommand(command) {
       this[command] = !this[command];
+    },
+    getSearch(val) {
+      console.log(val);
     }
   }
 }
