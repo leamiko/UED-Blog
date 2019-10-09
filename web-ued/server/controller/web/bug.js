@@ -173,23 +173,134 @@ exports.DeleteBugById = async function (req, res, next) {
 // 获取tags列表
 exports.GetBugTags = async function (req, res, next) {
   try {
-    var rootTag = await Dic.find({
+    const rootTag = await Dic.find({
       name: 'bugTags'
     }).exec();
     const parentTag = await Dic.find({
       parentId: rootTag[0]._id
+    }).exec();
+    const tores = parentTag.map(el => {
+      return {
+        _id: el._id,
+        name: el.name,
+        children: []
+      }
     })
-
+    for (ptag of tores) {
+      let ctags = await Dic.find({
+        parentId: ptag._id
+      }).exec();
+      ptag.children = ctags.map(ct => {
+        return {
+          _id: ct._id,
+          name: ct.name
+        }
+      })
+    }
     res.json({
       status_code: 200,
       message: 'success',
-      data: parentTag
+      data: tores
     })
   } catch (error) {
     res.send({
       status_code: 201,
       message: error
     })
-    next(error)
+    next(error);
+  }
+}
+
+// 添加其他标签
+exports.AddTags = async function (req, res, next) {
+  if (!req.body.parentName || !req.body.name)
+    return res.send({
+      status_code: 201,
+      message: '参数有误'
+    })
+  try {
+    const foundRootTag = await Dic.findOne({
+      name: 'bugTags'
+    }).exec();
+    const foundOtherTag = await Dic.findOne({
+      $and: [{
+          parentId: foundRootTag._id
+        },
+        {
+          name: req.body.parentName
+        }
+      ]
+    }).exec();
+    if (foundOtherTag) {
+      const createTag = await Dic.create([{
+        name: req.body.name,
+        parentId: foundOtherTag._id,
+        parentName: req.body.parentName
+      }]);
+      res.json({
+        status_code: 200,
+        message: 'success'
+      })
+    } else {
+      res.json({
+        status_code: 201,
+        message: '添加失败,没有该父级标签'
+      })
+    }
+  } catch (error) {
+    res.send({
+      status_code: 201,
+      message: error
+    })
+    next(error);
+  }
+}
+exports.TsThereATag = async function (req, res, next) {
+  if (!req.body.parentName || !req.body.name)
+    return res.send({
+      status_code: 201,
+      message: '参数有误'
+    })
+  try {
+    const foundRootTag = await Dic.findOne({
+      name: 'bugTags'
+    }).exec();
+    const foundPtag = await Dic.findOne({
+      $and: [{
+          parentId: foundRootTag._id
+        },
+        {
+          name: req.body.parentName
+        }
+      ]
+    }).exec();
+    if (foundPtag) {
+      const foundTag = await Dic.findOne({
+        $and: [{
+            parentId: foundPtag._id
+          },
+          {
+            name: req.body.name
+          }
+        ]
+      }).exec();
+      res.json({
+        status_code: 200,
+        message: 'success',
+        data: foundTag
+      })
+    } else {
+      res.json({
+        status_code: 201,
+        message: 'fail',
+        data: false
+      })
+    }
+  } catch (error) {
+    res.send({
+      status_code: 201,
+      message: error
+    })
+    next(error);
   }
 }

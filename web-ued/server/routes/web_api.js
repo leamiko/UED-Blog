@@ -1,26 +1,28 @@
 var express = require('express')
 const router = express.Router()
-const { verifyMiddleware } = require('../middleware/verify.js')
+const {
+  verifyMiddleware
+} = require('../middleware/verify.js')
 
 var web_user = require('../controller/web/user')
 var web_blog = require('../controller/web/blog')
 var web_bugCtrler = require('../controller/web/bug')
 
 /* GET home page. */
-router.get('/index', function(req, res, next) {
+router.get('/index', function (req, res, next) {
   res.json({
     name: 'hello world!'
   })
 })
 
 /* 登录注册 */
-router.post('/login', function(req, res, next) {
+router.post('/login', function (req, res, next) {
   web_user.login(req, res)
 })
-router.get('/logOut', function(req, res, next) {
+router.get('/logOut', function (req, res, next) {
   web_user.logOut(req, res)
 })
-router.post('/register', function(req, res, next) {
+router.post('/register', function (req, res, next) {
   web_user.register(req, res)
 })
 router.get('/callback', (req, res) => {
@@ -29,31 +31,31 @@ router.get('/callback', (req, res) => {
 
 /* 文章API */
 //获取blog详情
-router.get('/getBlog', function(req, res, next) {
+router.get('/getBlog', function (req, res, next) {
   web_blog.getBlog(req, res)
 })
 //blog列表
-router.post('/getBlogList', function(req, res, next) {
+router.post('/getBlogList', function (req, res, next) {
   //调用controller方法
   web_blog.getBlogList(req, res)
 })
 //blog点赞
-router.get('/likeBlog', function(req, res, next) {
+router.get('/likeBlog', function (req, res, next) {
   //调用controller方法
   web_blog.likeBlog(req, res)
 })
 //blog评论
-router.post('/commentBlog', function(req, res, next) {
+router.post('/commentBlog', function (req, res, next) {
   //调用controller方法
   web_blog.commentBlog(req, res)
 })
 //blog评论
-router.post('/replyBlog', function(req, res, next) {
+router.post('/replyBlog', function (req, res, next) {
   //调用controller方法
   web_blog.replyBlog(req, res)
 })
 //获取blog评论
-router.get('/getBlogComment', function(req, res, next) {
+router.get('/getBlogComment', function (req, res, next) {
   //调用controller方法
   web_blog.getBlogComment(req, res)
 })
@@ -82,9 +84,14 @@ router.post('/DeleteBugById', (req, res, next) => {
   web_bugCtrler.DeleteBugById(req, res, next)
 })
 
-// bug条目删除
+// 获取tag标签
 router.get('/GetBugTags', (req, res, next) => {
   web_bugCtrler.GetBugTags(req, res, next);
+})
+
+// 添加其他标签
+router.post('/AddTags', (req, res, next) => {
+  web_bugCtrler.AddTags(req, res, next);
 })
 
 module.exports = router

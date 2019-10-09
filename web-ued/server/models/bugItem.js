@@ -7,7 +7,8 @@ var BugSchema = new Schema({
     type: String //Bug名称
   },
   keyword: {
-    type: Array //Bug关键词--旧版本
+    type: Array, //Bug关键词--旧版本
+    default: []
   },
   tags: { // bug标签
     type: Array,
