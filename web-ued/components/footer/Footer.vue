@@ -16,7 +16,6 @@
 </template>
 
 <script>
-import logo from '@/assets/img/logo/logo-system-large.svg';
 import * as custom from '@/assets/js/custom.config';
 export default {
   props: {
@@ -32,7 +31,7 @@ export default {
   },
   mounted() {
     if (this.hasMenu) {
-      this.$refs.foot.style.backgroundImage = `url(${logo})`;
+      this.$refs.foot.style.backgroundImage = `url(${this.custom.logoUrl})`;
     }
   }
 }

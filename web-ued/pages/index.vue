@@ -1,17 +1,39 @@
 <template>
-  <my-scrollbar hasFoot :active="'首页'">
-    <div slot="container" style="min-height:800px">
-      <my-header activeLabel="首页"></my-header>
-      <el-button type="primary" @click="reload()">刷新测试</el-button>
-      <Logo></Logo>
+  <my-scrollbar hasFoot @scrollTop="getScrollTop">
+    <div slot="container">
+      <my-header class="cus-fixed my-header" :class="{'bg_white': !isAddClass, 'text_white': isAddClass}" activeLabel="首页"></my-header>
+      <el-carousel trigger="click" :height="height + 'px'">
+        <el-carousel-item v-for="item in config.bannerList" :key="item">
+          <img :src="item" style="width: 100%; height: 100%;">
+        </el-carousel-item>
+      </el-carousel>
+      <div class="my-content">
+        <ul>
+          <li v-for="item in config.newsList" :key="item.id" class="cus-flex">
+            <img :src="item.img" class="my-img">
+            <div>
+              <h5>{{item.title}}</h5>
+              <p>{{item.desc}}</p>
+              <div class="cus-flex cus-align-center">
+                <el-avatar size="small" :src="item.avatar"></el-avatar>
+                <span>{{item.author}} · {{item.updateTime}}</span>&emsp;&emsp;
+                <span>{{item.type}}</span>&emsp;&emsp;
+                <span>浏览{{item.skim}}</span>&emsp;&emsp;
+                <span>点赞{{item.likes}}</span>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <el-button round> 查看更多 </el-button>
+      </div>
     </div>
   </my-scrollbar>
 </template>
 
 <script>
-import Logo from '@/components/Logo';
-import MyScrollbar from '@/components/Scrollbar';
-import MyHeader from '@/components/Header';
+import * as custom from '@/assets/js/custom.config';
+import MyScrollbar from '@/components/scroller/Scrollbar';
+import MyHeader from '@/components/header/Header';
 
 export default {
   inject: ['reload'],
@@ -22,13 +44,14 @@ export default {
   //   }
   // },
   components: {
-    Logo,
     MyScrollbar,
     MyHeader
   },
   data () {
     return {
-      title: 'Hello World'
+      config: custom.index,
+      height: '',
+      isAddClass: true
     }
   },
   head () {
@@ -39,10 +62,53 @@ export default {
       ]
     }
   },
-  methods: {},
-  created () { }
+  methods: {
+    getScrollTop(val) {
+      if (val > (this.height - 100)) {
+        this.isAddClass = false;
+      } else {
+        this.isAddClass = true;
+      }
+    }
+  },
+  mounted () {
+    this.height = document.body.clientWidth / 1800 * 766;
+  }
 }
 </script>
+<style lang="scss" scoped>
+.bg_white {
+  background: white;
+  border-bottom: 1px solid rgb(220, 223, 230);
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 2px;
+}
+.my-header {
+  top: 0;
+  width: 100%;
+  z-index: 11;
+}
+.text_white {
+  color: white !important;
+}
+.my-content {
+  max-width: 1008px;
+  margin: 0 auto;
+  ul {
+    padding: 0;
+    list-style: none;
+    li {
+      padding: 50px 0;
+      border-bottom: 1px solid #EFF3F7;
+      &:nth-last-child(1) {
+        border-bottom: 0;
+      }
+      > img {
+        width: 300px;
+        height: 128px;
+        margin-right: 30px;
+      }
+    }
+  }
 
-<style>
+}
 </style>

@@ -23,8 +23,6 @@
 
 <script>
 import * as custom from '@/assets/js/custom.config';
-import logo from '@/assets/img/logo/logo-system-small.svg';
-import msg from '@/assets/img/logo/logo-system-message.svg';
 export default {
   props: {
     activeLabel: {
@@ -41,8 +39,8 @@ export default {
   data() {
     return {
       custom: custom.head,
-      logoURL: logo,
-      msgURL: msg
+      logoURL: custom.head.logoUrl,
+      msgURL: custom.head.msgUrl
     }
   },
   mounted() {
@@ -72,15 +70,22 @@ a {
   }
 }
 .my-header {
-  height: 82px;
+  min-height: 82px;
   color: #34485E;
 
   > div {
-    width: 62.5%;
-    height: 100%;
-    min-width: 600px;
-    max-width: 1200px;
-    margin: 0 auto;
+    &:nth-child(1) {
+      width: 62.5%;
+      height: 82px;
+      min-width: 600px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    &:nth-child(2) {
+      padding-top: 66px;
+      padding-bottom: 40px;
+      border-top: 1px solid #ECECEC;
+    }
   }
 
   img {
