@@ -94,4 +94,9 @@ router.post('/AddTags', (req, res, next) => {
   web_bugCtrler.AddTags(req, res, next);
 })
 
+// 判断是否存在某标签
+router.post('/IsThereATag', (req, res, next) => {
+  web_bugCtrler.IsThereATag(req, res, next);
+})
+
 module.exports = router

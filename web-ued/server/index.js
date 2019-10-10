@@ -82,6 +82,14 @@ var isLogin = function(req, res, next) {
 }
 app.use(isLogin)
 
+// 错误处理中间件
+app.use((err, req, res, next) => {
+   res.send({
+      status_code: 201,
+      message: err.message
+    })
+});
+
 // 系统API
 app.use('/api', system_api)
 
