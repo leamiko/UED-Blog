@@ -203,4 +203,9 @@ exports.getBlogComment = function(req, res) {
 }
 
 // rank定时任务
-exports.rankTask = function(req, res) {}
+exports.rankTask = async function(req, res) {
+  const blogs = await Blog.find()
+  res.json({
+    blogs: blogs
+  })
+}

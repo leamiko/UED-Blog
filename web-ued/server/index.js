@@ -6,20 +6,39 @@ var web_api = require('./routes/web_api')
 var system_api = require('./routes/system_api')
 var wxapp_api = require('./routes/wxapp_api')
 const bodyParser = require('body-parser')
+var cors = require('cors')
 
 const app = express()
 
 // 自定义跨域中间件
-var allowCors = function(req, res, next) {
-  res.header('Access-Control-Allow-Credentials', 'true')
-  res.header('Access-Control-Allow-Origin', req.headers.origin)
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-  res.header('Access-Control-Allow-Headers', 'Content-Type')
-  next()
-}
+// var allowCors = function(req, res, next) {
+//   res.header('Access-Control-Allow-Credentials', 'true')
+//   res.header('Access-Control-Allow-Origin', req.headers.origin)
+//   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+//   res.header('Access-Control-Allow-Headers', 'Content-Type')
+//   next()
+// }
 
-// 使用跨域中间件
-app.use(allowCors)
+// // 使用跨域中间件
+// app.use(allowCors)
+
+//cors 跨域配置--- 非whitelist无效
+var whitelist = ['http://127.0.0.1:3002']
+var corsOptionsDelegate = function(req, callback) {
+  var corsOptions
+
+  if (whitelist.indexOf(req.header('Origin')) !== -1) {
+    corsOptions = {
+      origin: true
+    } // reflect (enable) the requested origin in the CORS response
+  } else {
+    corsOptions = {
+      origin: false
+    } // disable CORS for this request
+  }
+  callback(null, corsOptions) // callback expects two parameters: error and options
+}
+app.use(cors(corsOptionsDelegate)) // 非whitelist无效
 
 // 使用 session 中间件
 app.use(
@@ -84,11 +103,11 @@ app.use(isLogin)
 
 // 错误处理中间件
 app.use((err, req, res, next) => {
-   res.send({
-      status_code: 201,
-      message: err.message
-    })
-});
+  res.send({
+    status_code: 201,
+    message: err.message
+  })
+})
 
 // 系统API
 app.use('/api', system_api)

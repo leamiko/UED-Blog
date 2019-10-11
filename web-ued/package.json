@@ -26,7 +26,8 @@
     "nuxt": "^2.0.0",
     "request": "^2.88.0",
     "vue-cookies": "^1.5.13",
-    "wechat-oauth": "^1.5.0"
+    "wechat-oauth": "^1.5.0",
+    "cors": "^2.8.5"
   },
   "devDependencies": {
     "node-sass": "^4.12.0",
