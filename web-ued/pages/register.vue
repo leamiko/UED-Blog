@@ -69,15 +69,18 @@ export default {
   },
   methods: {
     submitForm (formName) {
+      // console.log(formName)
       this.submitLoading = true;
       this.$refs[formName].validate(async (valid) => {
         this.submitLoading = false;
+        // console.log(valid)
         if (valid) {
           const { data } = await this.$axios.post(`${process.env.BASE_URL}/web_api/register`, this.params)
+          // console.log(data)
           if (data.status_code == 200) {
             this.$store.dispatch('login', data.user)
               .then(() => {
-                this.$router.replace('/wxLogin');
+                this.$router.replace('/login');
               })
           } else {
             //注册失败
