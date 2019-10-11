@@ -79,18 +79,32 @@ module.exports = {
    ** Nuxt.js modules
    */
   modules: ['@nuxtjs/axios', '@nuxtjs/proxy', '@nuxtjs/dotenv'],
+  axios: {
+    proxy: true, // 表示开启代理
+    prefix: '/api' // 表示给请求url加个前缀 /api
+    // credentials: true // 表示跨域请求时是否需要使用凭证
+  },
   /*
    ** Nuxt.js proxy
    */
-  proxy: {
-    // '/api_nuxt': {
-    //   target: process.env.BASE_URL,
-    //   changeOrigin: true,
-    //   pathRewrite: {
-    //     '^/api_nuxt': '/api_nuxt'
-    //   }
-    // }
-  },
+  // proxy: {
+  //   '/api': {
+  //     target: 'http://ued.lunz.cn', // 目标接口域名
+  //     changeOrigin: true, // 表示是否跨域
+  //     pathRewrite: {
+  //       '^/api': '/' // 把 /api 替换成 /
+  //     }
+  //   }
+  // },
+  // proxy: [
+  //   [
+  //     '/apis/', //拦截目录
+  //     {
+  //       target: process.env.BASE_URL, // 代理api主机
+  //       pathRewrite: { '^/apis/': '' }
+  //     }
+  //   ]
+  // ],
   /*
    ** 环境配置
    */
