@@ -78,7 +78,7 @@ exports.register = function(req, res) {
           account: postData.account,
           passWord: postData.passWord
         })
-        user_1.save(function(err) {
+        user_1.save(function(err, user) {
           if (err) {
             return res.json({
               status_code: 201,
