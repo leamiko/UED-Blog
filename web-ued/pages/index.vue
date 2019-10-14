@@ -43,7 +43,7 @@
                   :src="item.avatar"
                   class="avatar"
                 ></el-avatar>
-                <span class="text_color">{{item.author}} · {{item.updateTime}}</span>&emsp;&emsp;
+                <span class="text_color_time">{{item.author}} · {{item.updateTime}}</span>&emsp;&emsp;
                 <span class="text_color">{{item.type}}</span>&emsp;&emsp;
                 <span class="text_color"><img src="@/assets/img/icon/eyes.svg">浏览{{item.skim}}</span>&emsp;&emsp;
                 <span class="text_color">点赞{{item.likes}}</span>
@@ -51,7 +51,10 @@
             </div>
           </li>
         </ul>
-        <el-button round> 查看更多 </el-button>
+        <el-button
+          round
+          class="btn_style"
+        > 查看更多 </el-button>
       </div>
     </div>
   </my-scrollbar>
@@ -152,5 +155,20 @@ export default {
   font-size: 14px;
   font-weight: 400;
   color: rgba(158, 173, 186, 1);
+}
+.text_color_time {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(57, 74, 88, 1);
+}
+.btn_style {
+  width: -webkit-fill-available;
+  height: 54px;
+  border-radius: 27px;
+  background: rgba(238, 238, 239, 1);
+  font-size: 14px;
+}
+.el-carousel {
+  height: 645px;
 }
 </style>
