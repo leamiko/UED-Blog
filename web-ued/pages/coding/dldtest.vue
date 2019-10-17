@@ -1,5 +1,5 @@
 <template>
-  <div>杜林达test哈哈</div>
+  <div>杜林达测试</div>
 </template>
 <script>
 export default {
