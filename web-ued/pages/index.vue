@@ -11,7 +11,7 @@
       ></my-header>
       <el-carousel
         trigger="click"
-        :height="height + 'px'"
+        :height="645 + 'px'"
       >
         <el-carousel-item
           v-for="item in config.bannerList"
