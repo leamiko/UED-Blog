@@ -7,6 +7,7 @@
       <button @click="testDelApi()">delate</button>
       <router-link :to="'/coding/search'">去搜索</router-link>
       <router-link :to="'/coding/list'">去搜索列表</router-link>
+      <router-link :to="'/coding/solve'">去提供解决方案</router-link>
     </div>
   </my-scrollbar>
 </template>

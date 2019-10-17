@@ -1,6 +1,6 @@
 <template>
   <el-dialog :visible.sync="show" width="750px" :custom-class="classStyle" :before-close="handleClose" destroy-on-close append-to-body>
-    <img src="@/assets/img/bg/bg-dialog-ans.png" slot="title" class="dialog-img">
+    <img src="@/assets/img/bg/bg-dialog-ask.png" slot="title" class="dialog-img">
     <div class="cus-flex cus-align-center">
       <el-avatar :size="48" :src="avator" class="align-top"></el-avatar>&emsp;
       <el-input class="inline" v-model="input" :placeholder="placeholder"></el-input>
