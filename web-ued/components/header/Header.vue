@@ -19,12 +19,15 @@
           >
             <router-link
               :to="item.redirectUrl"
-              class="text_size_18"
             >{{ item.label }}</router-link>
           </li>
         </ul>
       </div>
-      <div class="cus-flex cus-align-center">
+      <div
+        class="cus-flex cus-align-center"
+        @mouseenter="showBadge=true"
+        @mouseleave="showBadge=false"
+      >
         <slot name="box_cus"></slot>&emsp;&emsp;
         <el-badge
           is-dot
@@ -39,6 +42,13 @@
           :to="'login'"
           class="text_size_18"
         >登录</router-link>
+        <div
+          class="badge_hover"
+          v-if="showBadge"
+        >
+          <div class="badge_hover_block">个人信息</div>
+          <div class="badge_hover_block">登出</div>
+        </div>
       </div>
     </div>
   </div>
@@ -63,7 +73,8 @@ export default {
     return {
       custom: custom.head,
       logoURL: custom.head.logoUrl,
-      msgURL: custom.head.msgUrl
+      msgURL: custom.head.msgUrl,
+      showBadge: false,
     }
   },
   mounted () {
@@ -96,6 +107,7 @@ a {
 .my-header {
   min-height: 82px;
   color: #34485e;
+  font-size: 16px;
 
   > div {
     &:nth-child(1) {
@@ -131,15 +143,33 @@ a {
     padding-top: 3px;
     li {
       margin-right: 60px;
-      font-size: 16px;
       &.active {
         color: $primary_blue;
       }
     }
   }
+}
+.badge_hover {
+  position: absolute;
+  right: 363px;
+  top: 58px;
 
-  .text_size_18 {
-    font-size: 18px;
-  }
+  padding-top: 6px;
+  width: 75px;
+  height: 65px;
+  background: rgba(234, 241, 255, 1);
+  border-radius: 6px;
+  text-align: center;
+}
+.margin_left {
+  margin-left: -47px;
+}
+.mag_top_64 {
+  margin-top: 64px;
+}
+.badge_hover_block {
+  font-weight: 400;
+  font-size: 16px;
+  color: rgba(52, 72, 94, 1);
 }
 </style>

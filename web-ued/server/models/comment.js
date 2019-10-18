@@ -15,7 +15,7 @@ var CommentSchema = new Schema(
     },
     likeNum: {
       type: Number, //点赞数
-      default: 1
+      default: 0
     },
     content: {
       type: String //内容

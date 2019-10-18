@@ -35,8 +35,8 @@ exports.addEditBlog = function(req, res) {
       blogType: req.body.blogType,
       info: req.body.info,
       content: req.body.content,
-      author: req.session.user.nickName,
-      userId: req.session.user._id
+      author: 'req.session.user.nickName',
+      userId: 'req.session.user._id'
     })
     blog.save(function(err, blog) {
       if (err) {

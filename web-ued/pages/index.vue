@@ -11,7 +11,7 @@
       ></my-header>
       <el-carousel
         trigger="click"
-        :height="height + 'px'"
+        :height="645 + 'px'"
       >
         <el-carousel-item
           v-for="item in config.bannerList"
@@ -66,13 +66,6 @@ import MyScrollbar from '@/components/scroller/Scrollbar';
 import MyHeader from '@/components/header/Header';
 
 export default {
-  inject: ['reload'],
-  // fetch ({ redirect, store }) {
-  //   console.log(store.state)
-  //   if (!store.state.authToken) {
-  //     redirect('/login');
-  //   }
-  // },
   components: {
     MyScrollbar,
     MyHeader
@@ -102,7 +95,7 @@ export default {
     }
   },
   mounted () {
-    this.height = document.body.clientWidth / 1800 * 766;
+    this.height = document.body.clientWidth / 900 * 383;
   }
 }
 </script>
@@ -168,7 +161,11 @@ export default {
   background: rgba(238, 238, 239, 1);
   font-size: 14px;
 }
-.el-carousel {
-  height: 645px;
-}
+/*
+* 轮播图的高度是根据屏幕的大小以及图片的比例计算出来的
+* 坚持要改，可修改this实例种height参数
+*/
+// .el-carousel {
+//   height: 645px;
+// }
 </style>
