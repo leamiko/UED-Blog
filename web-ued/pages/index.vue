@@ -1,30 +1,60 @@
 <template>
-  <my-scrollbar hasFoot @scrollTop="getScrollTop">
+  <my-scrollbar
+    hasFoot
+    @scrollTop="getScrollTop"
+  >
     <div slot="container">
-      <my-header class="cus-fixed my-header" :class="{'bg_white': !isAddClass, 'text_white': isAddClass}" activeLabel="首页"></my-header>
-      <el-carousel trigger="click" :height="height + 'px'">
-        <el-carousel-item v-for="item in config.bannerList" :key="item">
-          <img :src="item" style="width: 100%; height: 100%;">
+      <my-header
+        class="cus-fixed my-header"
+        :class="{'bg_white': !isAddClass, 'text_white': isAddClass}"
+        activeLabel="首页"
+      ></my-header>
+      <el-carousel
+        trigger="click"
+        :height="645 + 'px'"
+      >
+        <el-carousel-item
+          v-for="item in config.bannerList"
+          :key="item"
+        >
+          <img
+            :src="item"
+            style="width: 100%; height: 100%;"
+          >
         </el-carousel-item>
       </el-carousel>
       <div class="my-content">
         <ul>
-          <li v-for="item in config.newsList" :key="item.id" class="cus-flex">
-            <img :src="item.img" class="my-img">
+          <li
+            v-for="item in config.newsList"
+            :key="item.id"
+            class="cus-flex"
+          >
+            <img
+              :src="item.img"
+              class="my-img"
+            >
             <div>
-              <h5>{{item.title}}</h5>
-              <p>{{item.desc}}</p>
+              <h2>{{item.title}}</h2>
+              <p class="desc">{{item.desc}}</p>
               <div class="cus-flex cus-align-center">
-                <el-avatar size="small" :src="item.avatar"></el-avatar>
-                <span>{{item.author}} · {{item.updateTime}}</span>&emsp;&emsp;
-                <span>{{item.type}}</span>&emsp;&emsp;
-                <span>浏览{{item.skim}}</span>&emsp;&emsp;
-                <span>点赞{{item.likes}}</span>
+                <el-avatar
+                  size="small"
+                  :src="item.avatar"
+                  class="avatar"
+                ></el-avatar>
+                <span class="text_color_time">{{item.author}} · {{item.updateTime}}</span>&emsp;&emsp;
+                <span class="text_color">{{item.type}}</span>&emsp;&emsp;
+                <span class="text_color"><img src="@/assets/img/icon/eyes.svg">浏览{{item.skim}}</span>&emsp;&emsp;
+                <span class="text_color">点赞{{item.likes}}</span>
               </div>
             </div>
           </li>
         </ul>
-        <el-button round> 查看更多 </el-button>
+        <el-button
+          round
+          class="btn_style"
+        > 查看更多 </el-button>
       </div>
     </div>
   </my-scrollbar>
@@ -36,13 +66,6 @@ import MyScrollbar from '@/components/scroller/Scrollbar';
 import MyHeader from '@/components/header/Header';
 
 export default {
-  inject: ['reload'],
-  // fetch ({ redirect, store }) {
-  //   console.log(store.state)
-  //   if (!store.state.authToken) {
-  //     redirect('/login');
-  //   }
-  // },
   components: {
     MyScrollbar,
     MyHeader
@@ -63,7 +86,7 @@ export default {
     }
   },
   methods: {
-    getScrollTop(val) {
+    getScrollTop (val) {
       if (val > (this.height - 100)) {
         this.isAddClass = false;
       } else {
@@ -72,7 +95,7 @@ export default {
     }
   },
   mounted () {
-    this.height = document.body.clientWidth / 1800 * 766;
+    this.height = document.body.clientWidth / 900 * 383;
   }
 }
 </script>
@@ -98,7 +121,7 @@ export default {
     list-style: none;
     li {
       padding: 50px 0;
-      border-bottom: 1px solid #EFF3F7;
+      border-bottom: 1px solid #eff3f7;
       &:nth-last-child(1) {
         border-bottom: 0;
       }
@@ -109,6 +132,40 @@ export default {
       }
     }
   }
-
 }
+.desc {
+  font-weight: 400;
+  font-size: 18px;
+  color: rgba(57, 65, 69, 1);
+  line-height: 30px;
+  margin-top: 12px;
+  margin-bottom: 24px;
+}
+.avatar {
+  margin-right: 10px;
+}
+.text_color {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(158, 173, 186, 1);
+}
+.text_color_time {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(57, 74, 88, 1);
+}
+.btn_style {
+  width: -webkit-fill-available;
+  height: 54px;
+  border-radius: 27px;
+  background: rgba(238, 238, 239, 1);
+  font-size: 14px;
+}
+/*
+* 轮播图的高度是根据屏幕的大小以及图片的比例计算出来的
+* 坚持要改，可修改this实例种height参数
+*/
+// .el-carousel {
+//   height: 645px;
+// }
 </style>

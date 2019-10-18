@@ -1,21 +1,54 @@
 <template>
-  <div class="my-header" ref="header">
+  <div
+    class="my-header"
+    ref="header"
+  >
     <div class="cus-flex cus-flex-between cus-align-center">
       <div>
-        <el-avatar :size="42" :src="logoURL" class="middle"></el-avatar>
+        <el-avatar
+          :size="42"
+          :src="logoURL"
+          class="middle"
+        ></el-avatar>
         <h2 class="inline middle">{{ custom.title }}</h2>
         <ul>
-          <li v-for="(item, index) in custom.menu" :key="index" :class="{'active': activeLabel === item.label}">
-            <router-link :to="item.redirectUrl">{{ item.label }}</router-link>
+          <li
+            v-for="(item, index) in custom.menu"
+            :key="index"
+            :class="{'active': activeLabel === item.label}"
+          >
+            <router-link
+              :to="item.redirectUrl"
+            >{{ item.label }}</router-link>
           </li>
         </ul>
       </div>
-      <div class="cus-flex cus-align-center">
+      <div
+        class="cus-flex cus-align-center"
+        @mouseenter="showBadge=true"
+        @mouseleave="showBadge=false"
+      >
         <slot name="box_cus"></slot>&emsp;&emsp;
-        <el-badge is-dot class="item">
-          <div class="inline pointer"><img :src="msgURL" class="message"></div>
+        <el-badge
+          is-dot
+          class="item"
+        >
+          <div class="inline pointer"><img
+              :src="msgURL"
+              class="message"
+            ></div>
         </el-badge>
-        <router-link :to="'login'">登录</router-link>
+        <router-link
+          :to="'login'"
+          class="text_size_18"
+        >登录</router-link>
+        <div
+          class="badge_hover"
+          v-if="showBadge"
+        >
+          <div class="badge_hover_block">个人信息</div>
+          <div class="badge_hover_block">登出</div>
+        </div>
       </div>
     </div>
   </div>
@@ -36,14 +69,15 @@ export default {
       required: false
     }
   },
-  data() {
+  data () {
     return {
       custom: custom.head,
       logoURL: custom.head.logoUrl,
-      msgURL: custom.head.msgUrl
+      msgURL: custom.head.msgUrl,
+      showBadge: false,
     }
   },
-  mounted() {
+  mounted () {
     if (this.innerStyle) {
       Object.keys(this.innerStyle).forEach(key => {
         this.$refs.header.style[key] = this.innerStyle[key];
@@ -54,13 +88,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/style/cus.scss';
+@import "@/assets/style/cus.scss";
 .item {
   margin-top: 10px;
   margin-right: 22px;
 }
 .middle {
   vertical-align: middle;
+  margin-bottom: 8px;
 }
 a {
   color: inherit;
@@ -71,7 +106,8 @@ a {
 }
 .my-header {
   min-height: 82px;
-  color: #34485E;
+  color: #34485e;
+  font-size: 16px;
 
   > div {
     &:nth-child(1) {
@@ -84,7 +120,7 @@ a {
     &:nth-child(2) {
       padding-top: 66px;
       padding-bottom: 40px;
-      border-top: 1px solid #ECECEC;
+      border-top: 1px solid #ececec;
     }
   }
 
@@ -104,6 +140,7 @@ a {
   ul {
     display: inline-flex;
     list-style: none;
+    padding-top: 3px;
     li {
       margin-right: 60px;
       &.active {
@@ -111,5 +148,28 @@ a {
       }
     }
   }
+}
+.badge_hover {
+  position: absolute;
+  right: 363px;
+  top: 58px;
+
+  padding-top: 6px;
+  width: 75px;
+  height: 65px;
+  background: rgba(234, 241, 255, 1);
+  border-radius: 6px;
+  text-align: center;
+}
+.margin_left {
+  margin-left: -47px;
+}
+.mag_top_64 {
+  margin-top: 64px;
+}
+.badge_hover_block {
+  font-weight: 400;
+  font-size: 16px;
+  color: rgba(52, 72, 94, 1);
 }
 </style>
