@@ -179,5 +179,8 @@ module.exports = {
   },
   editorOption: {
 
+  },
+  write: {
+    swiperList:[require('../img/banner/write_swiper_1.png'),banner1,banner2]
   }
 }
