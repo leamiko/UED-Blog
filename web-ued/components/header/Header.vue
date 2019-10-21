@@ -176,5 +176,8 @@ a {
   font-weight: 400;
   font-size: 16px;
   color: rgba(52, 72, 94, 1);
+  &:hover {
+    cursor: pointer;
+  }
 }
 </style>
