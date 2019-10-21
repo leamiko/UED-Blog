@@ -87,7 +87,7 @@ export default {
   },
   methods: {
     getScrollTop (val) {
-      if (val > (this.height - 100)) {
+      if (val > (this.height - 150)) {
         this.isAddClass = false;
       } else {
         this.isAddClass = true;

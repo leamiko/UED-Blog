@@ -176,5 +176,8 @@ module.exports = {
         id: 10000107
       }
     ]
+  },
+  editorOption: {
+
   }
 }
