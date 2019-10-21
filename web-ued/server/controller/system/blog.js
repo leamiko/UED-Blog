@@ -12,11 +12,13 @@ exports.addEditBlog = function(req, res) {
       title: req.body.title,
       blogType: req.body.blogType,
       info: req.body.info,
-      content: req.body.content
+      content: req.body.content,
+      smallImgUrl: req.body.smallImgUrl,
+      midImgUrl: req.body.midImgUrl,
+      bigImgUrl: req.body.bigImgUrl
     }
     Blog.update(whereBlog, updateBlog, function(err, blog) {
       if (err) {
-        console.log(err)
         return res.json({
           code: 201,
           message: err,
@@ -35,12 +37,14 @@ exports.addEditBlog = function(req, res) {
       blogType: req.body.blogType,
       info: req.body.info,
       content: req.body.content,
-      author: 'req.session.user.nickName',
-      userId: 'req.session.user._id'
+      smallImgUrl: req.body.smallImgUrl,
+      midImgUrl: req.body.midImgUrl,
+      bigImgUrl: req.body.bigImgUrl,
+      author: req.body.author,
+      userId: req.body.userId
     })
     blog.save(function(err, blog) {
       if (err) {
-        console.log(err)
         return res.json({
           code: 201,
           message: err,
@@ -64,33 +68,16 @@ exports.getBlog = function(req, res) {
   }
   Blog.findOne(whereBlog, function(err, blog) {
     if (err) {
-      console.log(err)
       return res.json({
         status_code: 201,
         message: err,
         data: null
       })
     }
-    const whereLike = {
-      userId: blog.userId,
-      blogId: blog._id
-    }
-    Like.findOne(whereLike, function(err, like) {
-      if (like) {
-        blog['isLike'] = true
-        return res.json({
-          status_code: 200,
-          message: '获取成功！',
-          data: blog
-        })
-      } else {
-        blog['isLike'] = false
-        return res.json({
-          status_code: 200,
-          message: '获取成功！',
-          data: blog
-        })
-      }
+    return res.json({
+      status_code: 200,
+      message: '获取成功！',
+      data: blog
     })
   })
 }
@@ -128,7 +115,6 @@ exports.getBlogList = async function(req, res) {
     },
     function(err, books) {
       if (err) {
-        console.log(err)
         return res.json({
           status_code: 201,
           message: err,
