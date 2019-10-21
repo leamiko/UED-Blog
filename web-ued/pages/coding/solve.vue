@@ -39,9 +39,7 @@ export default {
       searchVal: '',
       className: 'custom-dialog',
       content: '',
-      editorOption: {
-       // something config
-      }
+      editorOption: custom.editorOption
     }
   },
   methods: {
