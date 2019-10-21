@@ -10,7 +10,7 @@
           </li>
         </ul>
       </div>
-      <div class="cus-flex cus-align-center">
+      <div class="cus-flex cus-align-center" @mouseenter="showBadge=true" @mouseleave="showBadge=false">
         <slot name="box_cus"></slot>&emsp;&emsp;
         <el-badge is-dot class="item">
           <div class="inline pointer"><img :src="msgURL" class="message"></div>
@@ -21,10 +21,17 @@
             <my-login v-if="$store.state.isLogin" :title="title" @titleChanged="registerTitle($event)" @modalChanged="modalChanged($event)"></my-login>
             <my-register v-if="!$store.state.isLogin" @titleChanged="loginTitle($event)"></my-register>
           </el-dialog>
+          <!-- <router-link
+          :to="'login'"
+          class="text_size_18"
+        >登录</router-link> -->
+          <div class="badge_hover" v-if="showBadge">
+            <div class="badge_hover_block">个人信息</div>
+            <div class="badge_hover_block">登出</div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -49,7 +56,8 @@ export default {
     MyLogin,
     MyRegister
   },
-  data() {
+ 
+  data () {
     return {
       custom: custom.head,
       logoURL: custom.head.logoUrl,
@@ -58,8 +66,10 @@ export default {
       title: "登录"
     };
   },
-  created() {},
-  mounted() {
+ 
+  mounted () {
+      showBadge: false;
+
     if (this.innerStyle) {
       Object.keys(this.innerStyle).forEach(key => {
         this.$refs.header.style[key] = this.innerStyle[key];
@@ -82,15 +92,14 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/style/cus.scss";
-.qwe {
-  height: 500px;
-}
+
 .item {
   margin-top: 10px;
   margin-right: 22px;
 }
 .middle {
   vertical-align: middle;
+  margin-bottom: 8px;
 }
 a {
   color: inherit;
@@ -102,6 +111,7 @@ a {
 .my-header {
   min-height: 82px;
   color: #34485e;
+  font-size: 16px;
 
   > div {
     &:nth-child(1) {
@@ -134,6 +144,7 @@ a {
   ul {
     display: inline-flex;
     list-style: none;
+    padding-top: 3px;
     li {
       margin-right: 60px;
       &.active {
@@ -146,5 +157,31 @@ a {
 .el-dialog__header {
   width: 600px;
   height: 600px;
+  .badge_hover {
+    position: absolute;
+    right: 363px;
+    top: 58px;
+
+    padding-top: 6px;
+    width: 75px;
+    height: 65px;
+    background: rgba(234, 241, 255, 1);
+    border-radius: 6px;
+    text-align: center;
+  }
+  .margin_left {
+    margin-left: -47px;
+  }
+  .mag_top_64 {
+    margin-top: 64px;
+  }
+  .badge_hover_block {
+    font-weight: 400;
+    font-size: 16px;
+    color: rgba(52, 72, 94, 1);
+    &:hover {
+      cursor: pointer;
+    }
+  }
 }
 </style>
