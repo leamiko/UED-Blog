@@ -23,8 +23,11 @@
           placeholder="请选择文章分类"
         >
           <!-- 需要所有文章分类 -->
-          <a-select-option value="CSS">CSS</a-select-option>
-          <a-select-option value="VUE">VUE</a-select-option>
+          <a-select-option value="1">技术</a-select-option>
+          <a-select-option value="2">交互</a-select-option>
+          <a-select-option value="3">设计</a-select-option>
+          <a-select-option value="4">管理</a-select-option>
+          <a-select-option value="5">其他</a-select-option>
         </a-select>
       </a-form-item>
       <!-- <a-form-item label="作者" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">

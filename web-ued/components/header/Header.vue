@@ -19,7 +19,6 @@
           >
             <router-link
               :to="item.redirectUrl"
-              class="text_size_18"
             >{{ item.label }}</router-link>
           </li>
         </ul>
@@ -108,6 +107,7 @@ a {
 .my-header {
   min-height: 82px;
   color: #34485e;
+  font-size: 16px;
 
   > div {
     &:nth-child(1) {
@@ -143,15 +143,10 @@ a {
     padding-top: 3px;
     li {
       margin-right: 60px;
-      font-size: 16px;
       &.active {
         color: $primary_blue;
       }
     }
-  }
-
-  .text_size_18 {
-    font-size: 18px;
   }
 }
 .badge_hover {

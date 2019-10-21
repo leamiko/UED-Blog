@@ -8,7 +8,7 @@ var BlogSchema = new Schema(
       type: String //文章名称
     },
     blogType: {
-      type: String //文章类别id
+      type: Number //文章类别id    1技术 2交互 3设计 4管理 5其他
     },
     info: {
       type: String //文章简介
@@ -30,21 +30,30 @@ var BlogSchema = new Schema(
     userId: {
       type: String //作者objectId也是登录用户objectId
     },
+    smallImgUrl: {
+      type: String //小图
+    },
+    midImgUrl: {
+      type: String //中图
+    },
+    bigImgUrl: {
+      type: String //大图
+    },
     likeNum: {
       type: Number, //点赞数
-      default: 1
+      default: 0
     },
     viewNum: {
       type: Number, //阅读量
-      default: 1
+      default: 0
     },
     commentNum: {
       type: Number, //评论数
-      default: 1
+      default: 0
     },
     commentLikeNum: {
       type: Number, //评论点赞数
-      default: 1
+      default: 0
     },
     rank: {
       type: Number, //rank

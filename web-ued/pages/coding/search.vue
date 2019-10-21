@@ -6,7 +6,7 @@
           创建
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="askShow">我要提问</el-dropdown-item>
-            <el-dropdown-item command="answerShow">提供解决方案</el-dropdown-item>
+            <el-dropdown-item command="answer">提供解决方案</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -39,7 +39,6 @@
     </my-scrollbar>
 
     <!-- 模态框 -->
-    <answer-dialog :isShow="answerShow" :classStyle="className" @hide="answerShow=false"></answer-dialog>
     <quiz-dialog :isShow="askShow" :classStyle="className" placeholder="请一句话描述你的问题" @hide="askShow=false"></quiz-dialog>
   </div>
 </template>
@@ -48,13 +47,11 @@
 import * as custom from '@/assets/js/custom.config';
 import MyScrollbar from '@/components/scroller/Scrollbar';
 import QuizDialog from '@/components/dialogs/QuizDialog';
-import AnswerDialog from '@/components/dialogs/AnswerDialog';
 import MySearch from '@/components/search/Search';
 export default {
   components: {
     MyScrollbar,
     QuizDialog,
-    AnswerDialog,
     MySearch
   },
   data() {
@@ -68,12 +65,17 @@ export default {
       list: custom.search.hotLabel,
       hotList: custom.search.hotList,
       askShow: false,
-      answerShow: false,
       className: 'custom-dialog'
     }
   },
   methods: {
     handleCommand(command) {
+      if (command === 'answer') {
+        this.$router.push({
+          path: '/coding/solve'
+        })
+        return;
+      }
       this[command] = !this[command];
     },
     getSearch(val) {
