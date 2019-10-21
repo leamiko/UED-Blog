@@ -31,12 +31,12 @@
 </template>
 
 <script>
-import * as custom from '@/assets/js/custom.config';
-import MyScrollbar from '@/components/scroller/Scrollbar';
-import MyHeader from '@/components/header/Header';
+import * as custom from "@/assets/js/custom.config";
+import MyScrollbar from "@/components/scroller/Scrollbar";
+import MyHeader from "@/components/header/Header";
 
 export default {
-  inject: ['reload'],
+  inject: ["reload"],
   // fetch ({ redirect, store }) {
   //   console.log(store.state)
   //   if (!store.state.authToken) {
@@ -47,36 +47,44 @@ export default {
     MyScrollbar,
     MyHeader
   },
-  data () {
+  data() {
     return {
       config: custom.index,
-      height: '',
-      isAddClass: true
-    }
+      height: "",
+      isAddClass: true,
+    };
   },
-  head () {
+  head() {
     return {
-      title: '首页',
+      title: "首页",
       meta: [
-        { hid: 'description', name: 'description', content: 'My custom description' }
+        {
+          hid: "description",
+          name: "description",
+          content: "My custom description"
+        }
       ]
-    }
+    };
   },
   methods: {
     getScrollTop(val) {
-      if (val > (this.height - 100)) {
+      if (val > this.height - 100) {
         this.isAddClass = false;
       } else {
         this.isAddClass = true;
       }
     }
   },
-  mounted () {
-    this.height = document.body.clientWidth / 1800 * 766;
+  mounted() {
+    this.height = (document.body.clientWidth / 1800) * 766;
   }
-}
+};
 </script>
 <style lang="scss" scoped>
+.el-dialog__body {
+  height: 500px;
+}
+
 .bg_white {
   background: white;
   border-bottom: 1px solid rgb(220, 223, 230);
@@ -98,7 +106,7 @@ export default {
     list-style: none;
     li {
       padding: 50px 0;
-      border-bottom: 1px solid #EFF3F7;
+      border-bottom: 1px solid #eff3f7;
       &:nth-last-child(1) {
         border-bottom: 0;
       }
@@ -109,6 +117,5 @@ export default {
       }
     }
   }
-
 }
 </style>

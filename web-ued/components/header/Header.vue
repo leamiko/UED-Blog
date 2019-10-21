@@ -15,14 +15,23 @@
         <el-badge is-dot class="item">
           <div class="inline pointer"><img :src="msgURL" class="message"></div>
         </el-badge>
-        <router-link :to="'login'">登录</router-link>
+        <div class="logModal">
+          <el-button type="text" @click="modalVisible = true">登录</el-button>
+          <el-dialog :title="title" :visible.sync="modalVisible" :append-to-body="true" custom-class="logDialog" :center="true" :close-on-click-modal="false">
+            <my-login v-if="$store.state.isLogin" :title="title" @titleChanged="registerTitle($event)" @modalChanged="modalChanged($event)"></my-login>
+            <my-register v-if="!$store.state.isLogin" @titleChanged="loginTitle($event)"></my-register>
+          </el-dialog>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import * as custom from '@/assets/js/custom.config';
+import * as custom from "@/assets/js/custom.config";
+import MyLogin from "@/pages/login";
+import MyRegister from "@/pages/register";
+
 export default {
   props: {
     activeLabel: {
@@ -36,25 +45,46 @@ export default {
       required: false
     }
   },
+  components: {
+    MyLogin,
+    MyRegister
+  },
   data() {
     return {
       custom: custom.head,
       logoURL: custom.head.logoUrl,
-      msgURL: custom.head.msgUrl
-    }
+      msgURL: custom.head.msgUrl,
+      modalVisible: false,
+      title: "登录"
+    };
   },
+  created() {},
   mounted() {
     if (this.innerStyle) {
       Object.keys(this.innerStyle).forEach(key => {
         this.$refs.header.style[key] = this.innerStyle[key];
-      })
+      });
+    }
+  },
+  methods: {
+    registerTitle(e) {
+      this.title = e;
+    },
+    loginTitle(e) {
+      this.title = e;
+    },
+    modalChanged(e) {
+      this.modalVisible = e;
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/style/cus.scss';
+@import "@/assets/style/cus.scss";
+.qwe {
+  height: 500px;
+}
 .item {
   margin-top: 10px;
   margin-right: 22px;
@@ -71,7 +101,7 @@ a {
 }
 .my-header {
   min-height: 82px;
-  color: #34485E;
+  color: #34485e;
 
   > div {
     &:nth-child(1) {
@@ -84,7 +114,7 @@ a {
     &:nth-child(2) {
       padding-top: 66px;
       padding-bottom: 40px;
-      border-top: 1px solid #ECECEC;
+      border-top: 1px solid #ececec;
     }
   }
 
@@ -111,5 +141,10 @@ a {
       }
     }
   }
+}
+
+.el-dialog__header {
+  width: 600px;
+  height: 600px;
 }
 </style>
