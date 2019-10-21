@@ -9,15 +9,19 @@ exports.getBlog = function(req, res) {
   const whereBlog = {
     _id: bid
   }
-  Blog.findOne(whereBlog, function(err, blog) {
+  Blog.findOne(whereBlog, async function(err, blog) {
     if (err) {
-      console.log(err)
       return res.json({
         status_code: 201,
         message: err,
         data: null
       })
     }
+    let updateBlog = {
+      viewNum: blog.viewNum ? blog.viewNum + 1 : 1
+    }
+    await Blog.updateOne(whereBlog, updateBlog)
+    blog.viewNum = blog.viewNum ? blog.viewNum + 1 : 1
     const whereLike = {
       userId: blog.userId,
       blogId: blog._id
@@ -42,34 +46,68 @@ exports.getBlog = function(req, res) {
   })
 }
 
-//blog列表
-exports.getBlogList = async function(req, res) {
+//首页列表
+exports.getHomeList = async function(req, res) {
+  const technology = await Blog.findOne({ blogType: 1 }).sort({
+    rank: -1
+  })
+  const interaction = await Blog.findOne({ blogType: 2 }).sort({
+    rank: -1
+  })
+  const design = await Blog.findOne({ blogType: 3 }).sort({
+    rank: -1
+  })
+  const manage = await Blog.findOne({ blogType: 4 }).sort({
+    rank: -1
+  })
+  const other = await Blog.findOne({ blogType: 5 }).sort({
+    rank: -1
+  })
+  let data = []
+  data.push(technology, interaction, design, manage, other)
+  return res.json({
+    status_code: 200,
+    message: '获取列表成功！',
+    data: data
+  })
+}
+
+//写字推荐
+exports.getWriteBest = async function(req, res) {
+  let popular = await Blog.findOne().sort({
+    viewNum: -1
+  })
+  let best = await Blog.findOne().sort({
+    likeNum: -1
+  })
+  let comment = await Blog.findOne().sort({
+    commentLikeNum: -1
+  })
+  let data = []
+  data.push(popular, best, comment)
+  return res.json({
+    status_code: 200,
+    message: '获取列表成功！',
+    data: data
+  })
+}
+
+//写字列表
+exports.getWriteList = async function(req, res) {
   const page = req.body.paging.page
   const limit = req.body.paging.limit
   let filters = {
     deleted: false
   }
-  if (req.body.filters.title) {
-    filters.title = new RegExp(req.body.filters.title)
-  }
   if (req.body.filters.blogType) {
     filters.blogType = req.body.filters.blogType
   }
-  if (req.body.filters.author) {
-    filters.author = req.body.filters.author
-  }
-  if (req.body.filters.isGood) {
-    filters.isGood = req.body.filters.isGood
-  }
-  if (req.body.filters.isAudit) {
-    filters.isAudit = req.body.filters.isAudit
-  }
-  const count = await Blog.count(filters)
+  const count = await Blog.countDocuments(filters)
   Blog.find(
     filters,
     null,
     {
-      skip: (page * 1 - 1) * 15,
+      skip: (page * 1 - 1) * 10,
       limit: limit,
       sort: { createdAt: -1 }
     },
@@ -96,22 +134,31 @@ exports.getBlogList = async function(req, res) {
 
 //点赞
 exports.likeBlog = function(req, res) {
+  const whereBlog = {
+    _id: req.query.blogId
+  }
   let like = new Like({
     userId: req.query.userId,
-    blogId: req.query.blogId
+    blogId: req.query.blogId,
+    count: req.query.count
   })
-  like.save(function(err, blog) {
+  like.save(async function(err, like) {
     if (err) {
-      console.log(err)
       return res.json({
         status_code: 201,
         message: err,
         data: null
       })
     }
+    let updateBlog = {
+      likeNum: req.query.likeNum
+        ? req.query.likeNum * 1 + req.query.count * 1
+        : req.query.count * 1
+    }
+    await Blog.updateOne(whereBlog, updateBlog)
     return res.json({
       status_code: 200,
-      message: '添加成功！',
+      message: '点赞成功！',
       data: null
     })
   })
@@ -119,22 +166,28 @@ exports.likeBlog = function(req, res) {
 
 //评论
 exports.commentBlog = function(req, res) {
-  console.log(req.body)
+  const whereBlog = {
+    _id: req.body.blogId
+  }
   let comment = new Comment({
     commentName: req.body.commentName,
     commenId: req.body.commenId,
     blogId: req.body.blogId,
     content: req.body.content
   })
-  comment.save(function(err, comment) {
+  comment.save(async function(err, comment) {
     if (err) {
-      console.log(err)
       return res.json({
         status_code: 201,
         message: err,
         data: null
       })
     }
+    const commentNum = await Comment.countDocuments()
+    let updateBlog = {
+      commentNum: commentNum ? commentNum + 1 : 1
+    }
+    await Blog.updateOne(whereBlog, updateBlog)
     return res.json({
       status_code: 200,
       message: '添加成功！',
@@ -143,7 +196,73 @@ exports.commentBlog = function(req, res) {
   })
 }
 
-//评论
+//评论点赞
+exports.commentLike = function(req, res) {
+  const whereBlog = {
+    _id: req.query.blogId
+  }
+  const whereComment = {
+    blogId: req.query.blogId
+  }
+  const whereUpdateComment = {
+    _id: req.query.commentId
+  }
+  let like = new Like({
+    userId: req.query.userId,
+    commentId: req.query.commentId
+  })
+  like.save(async function(err, like) {
+    if (err) {
+      return res.json({
+        status_code: 201,
+        message: err,
+        data: null
+      })
+    }
+    const likeNum = await Like.countDocuments({
+      commentId: req.query.commentId
+    })
+    let updateComment = {
+      likeNum: likeNum
+    }
+    await Comment.updateOne(whereUpdateComment, updateComment)
+    const comments = await Comment.find(whereComment).sort({
+      likeNum: -1
+    })
+    const updateBlog = {
+      commentLikeNum: comments[0].likeNum
+    }
+    await Blog.updateOne(whereBlog, updateBlog)
+    return res.json({
+      status_code: 200,
+      message: '点赞成功！',
+      data: null
+    })
+  })
+}
+
+//删除评论
+exports.deleteComment = function(req, res) {
+  var whereComment = {
+    _id: req.query.commentId
+  }
+  Comment.deleteOne(whereComment, function(err) {
+    if (err) {
+      return res.json({
+        code: 201,
+        message: err,
+        data: null
+      })
+    }
+    return res.json({
+      status_code: 200,
+      message: '删除成功！',
+      data: null
+    })
+  })
+}
+
+//回复
 exports.replyBlog = function(req, res) {
   console.log(req.body)
   let reply = new Reply(req.body)
@@ -159,6 +278,27 @@ exports.replyBlog = function(req, res) {
     return res.json({
       status_code: 200,
       message: '添加成功！',
+      data: null
+    })
+  })
+}
+
+//删除回复
+exports.deleteReply = function(req, res) {
+  var whereReply = {
+    _id: req.query.replyId
+  }
+  Reply.deleteOne(whereReply, function(err) {
+    if (err) {
+      return res.json({
+        code: 201,
+        message: err,
+        data: null
+      })
+    }
+    return res.json({
+      status_code: 200,
+      message: '删除成功！',
       data: null
     })
   })
@@ -186,7 +326,6 @@ exports.getBlogComment = function(req, res) {
     ],
     (err, comments) => {
       if (err) {
-        console.log(err)
         return res.json({
           status_code: 201,
           message: err,
@@ -205,7 +344,32 @@ exports.getBlogComment = function(req, res) {
 // rank定时任务
 exports.rankTask = async function(req, res) {
   const blogs = await Blog.find()
-  res.json({
-    blogs: blogs
+  for (let i = 0; i < blogs.length; i++) {
+    const rank =
+      ((Math.log(blogs[i].viewNum) / Math.LN10 +
+        (10 * Math.log(blogs[i].likeNum)) / Math.LN10 +
+        (5 * Math.log(blogs[i].commentNum)) / Math.LN10 +
+        (3 * Math.log(blogs[i].commentLikeNum)) / Math.LN10) /
+        count(blogs[i].createAt)) *
+      count(blogs[i].createAt)
+    const whereBlog = {
+      _id: blogs[i]._id
+    }
+    const updateBlog = {
+      rank: rank
+    }
+    await Blog.updateOne(whereBlog, updateBlog)
+  }
+  return res.json({
+    status_code: 200,
+    message: '更新排序成功！',
+    data: null
   })
+}
+
+function count(date) {
+  var date1 = new Date()
+  var date2 = new Date(date)
+  var date = (date1.getTime() - date2.getTime()) / (1000 * 60 * 60 * 24)
+  return date < 1 ? 1 : parseInt(date)
 }

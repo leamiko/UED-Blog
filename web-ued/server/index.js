@@ -11,19 +11,19 @@ var cors = require('cors')
 const app = express()
 
 // 自定义跨域中间件
-// var allowCors = function(req, res, next) {
-//   res.header('Access-Control-Allow-Credentials', 'true')
-//   res.header('Access-Control-Allow-Origin', req.headers.origin)
-//   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-//   res.header('Access-Control-Allow-Headers', 'Content-Type')
-//   next()
-// }
+var allowCors = function(req, res, next) {
+  res.header('Access-Control-Allow-Credentials', 'true')
+  res.header('Access-Control-Allow-Origin', req.headers.origin)
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+  res.header('Access-Control-Allow-Headers', 'Content-Type')
+  next()
+}
 
-// // 使用跨域中间件
-// app.use(allowCors)
+// 使用跨域中间件
+app.use(allowCors)
 
 //cors 跨域配置--- 非whitelist无效
-var whitelist = ['http://127.0.0.1:3002']
+var whitelist = ['http://127.0.0.1:3002', 'http://localhost:8081']
 var corsOptionsDelegate = function(req, callback) {
   var corsOptions
 
