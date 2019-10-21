@@ -56,8 +56,8 @@ export default {
     MyLogin,
     MyRegister
   },
- 
-  data () {
+
+  data() {
     return {
       custom: custom.head,
       logoURL: custom.head.logoUrl,
@@ -66,9 +66,9 @@ export default {
       title: "登录"
     };
   },
- 
-  mounted () {
-      showBadge: false;
+
+  mounted() {
+    showBadge: false;
 
     if (this.innerStyle) {
       Object.keys(this.innerStyle).forEach(key => {
