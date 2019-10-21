@@ -102,6 +102,7 @@ export default {
 
   data () {
     return {
+      showBadge: false,
       custom: custom.head,
       logoURL: custom.head.logoUrl,
       msgURL: custom.head.msgUrl,
