@@ -38,29 +38,50 @@ function Decrypt(word) {
 }
 
 export const state = () => ({
-  authToken: null
+  authToken: null,
+  isLogin: true,
+  modalVisible: false,
 })
 
 export const mutations = {
   SET_TOKEN(state, data) {
     state.authToken = data
+  },
+  isLogin(state, data) {
+    // console.log(data)
+    state.isLogin = data
+  },
+  modalVisible(state, data) {
+    state.modalVisible = data
   }
 }
 
 export const actions = {
   // nuxtServerInit is called by Nuxt.js before server-rendering every page
-  nuxtServerInit({ commit }, { req }) {
+  nuxtServerInit({
+    commit
+  }, {
+    req
+  }) {
     if (req.session.user) {
       commit('SET_TOKEN', Encrypt(req.session.user.account))
     }
   },
-  async login({ commit }, data) {
+  async login({
+    commit
+  }, data) {
     // 设置cookie缓存，时限为 30d
     VueCookie.set('AUTHTOKEN', Encrypt(data.account), 60 * 60 * 24 * 30)
     commit('SET_TOKEN', Encrypt(data.account))
   },
 
-  async logout({ commit }) {
+  async logout({
+    commit
+  }) {
     commit('SET_TOKEN', null)
-  }
+  },
+  // isLogin({ commit }, data) {
+  //   console.log(data)
+  //   commit('isLogin', data)
+  // }
 }

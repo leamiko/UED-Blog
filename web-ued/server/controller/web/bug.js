@@ -1,5 +1,6 @@
 var Bug = require('../../models/bugItem');
 var Dic = require('../../models/dictionary');
+const reg = /^[0-9]*[1-9][0-9]*$/;
 
 // 新增bug条目
 exports.AddBugItems = async function (req, res, next) {
@@ -226,4 +227,34 @@ async function isthereatag(pid, name) {
     ]
   }).exec();
   return x;
+}
+
+// 检索文章
+exports.SearchBug = async function( req, res, next ) {
+  try {
+    let countData;
+    let sql;
+    let countSize = req.body.pageSize;
+    let countIndex = req.body.pageIndex -1;
+    if (req.body.keywords) {
+      const keywords = new RegExp(req.body.keywords);
+      sql = {$or: [
+        {title: {$regex: keywords}},
+        {keywords: {$regex: keywords}},
+        {content: {$regex: keywords}},
+        {author: {$regex: keywords}}
+      ]};
+    } else {
+      sql = {}
+    }
+    countData = await Bug.find(sql).skip(countIndex * countSize).limit(countSize);
+    res.json({
+      status_code: 200, //状态码   200是成功   其他的码是错误
+      message: 'success', //返回的信息
+      data: countData, ///返回的数据
+      count: countData.length
+    })
+  } catch (error) {
+    next(error);
+  }
 }

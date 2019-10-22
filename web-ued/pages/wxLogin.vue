@@ -8,35 +8,39 @@
 </template>
 
 <script>
-import Logo from '@/components/Logo';
-import MyHeader from '@/components/header/Header';
-import MyFooter from '@/components/footer/Footer';
+import Logo from "@/components/Logo";
+import MyHeader from "@/components/header/Header";
+import MyFooter from "@/components/footer/Footer";
 
 export default {
-  inject: ['reload'],
+  inject: ["reload"],
   components: {
     Logo,
     MyHeader,
     MyFooter
   },
-  data () {
+  data() {
     return {
-      title: 'Hello World'
-    }
+      title: "Hello World"
+    };
   },
-  head () {
+  head() {
     return {
-      title: '微信登录绑定',
+      title: "微信登录绑定",
       meta: [
-        { hid: 'description', name: 'description', content: 'My custom description' }
+        {
+          hid: "description",
+          name: "description",
+          content: "My custom description"
+        }
       ]
-    }
+    };
   },
-  mounted () {
-    this.wxHandle()
+  mounted() {
+    this.wxHandle();
   },
   methods: {
-    wxHandle () {
+    wxHandle() {
       var obj = new WxLogin({
         id: "wxLoginQrcode",
         appid: process.env.WX_APP_ID,
@@ -45,11 +49,11 @@ export default {
         state: "",
         style: "",
         href: ""
-      })    }
+      });
+    }
   },
-  created () {
-  }
-}
+  created() {}
+};
 </script>
 
 <style>

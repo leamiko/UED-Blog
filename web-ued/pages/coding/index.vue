@@ -4,15 +4,17 @@
       <button @click="testGetListApi()">get</button>
       <button @click="testAddApi()">add</button>
       <button @click="testDetailApi()">detail</button>
-      <button @click="testDelApi()">delate</button>
-      <router-link :to="'/coding/search'">去搜索</router-link>
-      <router-link :to="'/coding/list'">去搜索列表</router-link>
-      <router-link :to="'/coding/solve'">去提供解决方案</router-link>
+      <button @click="testDelApi()">delate</button><br>
+      <router-link :to="'/coding/search'">去搜索</router-link><br>
+      <router-link :to="'/coding/list'">去搜索列表</router-link><br>
+      <router-link :to="'/coding/solve'">去提供解决方案</router-link><br>
+      <button @click="testSearchApi()">search</button><br>
     </div>
   </my-scrollbar>
 </template>
 <script>
 import MyScrollbar from '@/components/scroller/Scrollbar';
+import { async } from 'q';
 export default {
   components: {
     MyScrollbar
@@ -54,6 +56,15 @@ export default {
         id: '5cf8b075c26c2f18a0cb4fa7'
       }
       const { data } = await this.$axios.post('/api_nuxt/DeleteBugById', params);
+      console.log(data);
+    },
+    async testSearchApi() {
+      let params = {
+        keywords: 'author',
+        pageIndex: 1,
+        pageSize: 10
+      }
+      const { data } = await this.$axios.post(`/web_api/SearchByKeywords`, params);
       console.log(data);
     }
   },

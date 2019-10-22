@@ -1,48 +1,21 @@
 <template>
-  <my-scrollbar
-    hasFoot
-    @scrollTop="getScrollTop"
-  >
+  <my-scrollbar hasFoot @scrollTop="getScrollTop">
     <div slot="container">
-      <my-header
-        class="cus-fixed my-header"
-        :class="{'bg_white': !isAddClass, 'text_white': isAddClass}"
-        activeLabel="首页"
-      ></my-header>
-      <el-carousel
-        trigger="click"
-        :height="645 + 'px'"
-      >
-        <el-carousel-item
-          v-for="item in config.bannerList"
-          :key="item"
-        >
-          <img
-            :src="item"
-            style="width: 100%; height: 100%;"
-          >
+      <my-header class="cus-fixed my-header" :class="{'bg_white': !isAddClass, 'text_white': isAddClass}" activeLabel="首页"></my-header>
+      <el-carousel trigger="click" :height="645 + 'px'">
+        <el-carousel-item v-for="item in config.swipers" :key="item">
+          <img :src="item" style="width: 100%; height: 100%;">
         </el-carousel-item>
       </el-carousel>
       <div class="my-content">
         <ul>
-          <li
-            v-for="item in config.newsList"
-            :key="item.id"
-            class="cus-flex"
-          >
-            <img
-              :src="item.img"
-              class="my-img"
-            >
+          <li v-for="item in config.newsList" :key="item.id" class="cus-flex">
+            <img :src="item.img" class="my-img">
             <div>
               <h2>{{item.title}}</h2>
               <p class="desc">{{item.desc}}</p>
               <div class="cus-flex cus-align-center">
-                <el-avatar
-                  size="small"
-                  :src="item.avatar"
-                  class="avatar"
-                ></el-avatar>
+                <el-avatar size="small" :src="item.avatar" class="avatar"></el-avatar>
                 <span class="text_color_time">{{item.author}} · {{item.updateTime}}</span>&emsp;&emsp;
                 <span class="text_color">{{item.type}}</span>&emsp;&emsp;
                 <span class="text_color"><img src="@/assets/img/icon/eyes.svg">浏览{{item.skim}}</span>&emsp;&emsp;
@@ -51,55 +24,67 @@
             </div>
           </li>
         </ul>
-        <el-button
-          round
-          class="btn_style"
-        > 查看更多 </el-button>
+        <el-button round class="btn_style"> 查看更多 </el-button>
       </div>
     </div>
   </my-scrollbar>
 </template>
 
 <script>
-import * as custom from '@/assets/js/custom.config';
-import MyScrollbar from '@/components/scroller/Scrollbar';
-import MyHeader from '@/components/header/Header';
+import * as custom from "@/assets/js/custom.config";
+import MyScrollbar from "@/components/scroller/Scrollbar";
+import MyHeader from "@/components/header/Header";
 
 export default {
+  inject: ["reload"],
+  // fetch ({ redirect, store }) {
+  //   console.log(store.state)
+  //   if (!store.state.authToken) {
+  //     redirect('/login');
+  //   }
+  // },
   components: {
     MyScrollbar,
     MyHeader
   },
-  data () {
+  data() {
     return {
       config: custom.index,
-      height: '',
+      height: "",
       isAddClass: true
-    }
+    };
   },
-  head () {
+  head() {
     return {
-      title: '首页',
+      title: "首页",
       meta: [
-        { hid: 'description', name: 'description', content: 'My custom description' }
+        {
+          hid: "description",
+          name: "description",
+          content: "My custom description"
+        }
       ]
-    }
+    };
   },
   methods: {
-    getScrollTop (val) {
-      if (val > (this.height - 100)) {
+    getScrollTop(val) {
+      if (val > this.height - 150) {
         this.isAddClass = false;
       } else {
         this.isAddClass = true;
       }
     }
   },
-  mounted () {
-    this.height = document.body.clientWidth / 900 * 383;
+  mounted() {
+    this.height = (document.body.clientWidth / 900) * 383;
   }
-}
+};
 </script>
 <style lang="scss" scoped>
+.el-dialog__body {
+  height: 500px;
+}
+
 .bg_white {
   background: white;
   border-bottom: 1px solid rgb(220, 223, 230);
