@@ -1,8 +1,8 @@
 {
-  "name": "User-Experience-Center",
+  "name": "user-experience-center",
   "version": "1.0.0",
   "description": "Design By User Experience Department",
-  "author": "schinler2018",
+  "organization": "ZR GROUP UED",
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development WX_WEB_ID=wx742cbf40cfbc1dbf WX_WEB_SECRET=6e72bea53fd86a3c0dd13d067b425783 WX_APP_ID=wx3aad0674da13cb44 WX_APP_SECRET=ecfcd2a3dfdad3dc9608a8c4b7f0360f BASE_URL=http://127.0.0.1:3002 DB_URL=mongodb://localhost:27017/blog nodemon server/index.js --watch server",

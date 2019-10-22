@@ -1,12 +1,12 @@
 <template>
-  <div class="cus-full-width cus-full-height hidden">
+  <div class="cus-full-screen hidden bg-white">
     <my-scrollbar hasHead hasFoot :headActive="'打码'" :isFootMenu="false" :mainStyle="{'background':'white'}" :headStyle="styleConf">
       <div slot="head_custom">
-        <el-dropdown size="medium" split-button type="primary" @command="handleCommand">
+        <el-dropdown trigger="click" size="medium" split-button type="primary" @command="handleCommand">
           创建
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="askShow">我要提问</el-dropdown-item>
-            <el-dropdown-item command="answer">提供解决方案</el-dropdown-item>
+            <el-dropdown-item command="askShow"><p>我要提问</p></el-dropdown-item>
+            <el-dropdown-item command="answer"><p>提供解决方案</p></el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -17,20 +17,21 @@
             <my-search @search="getSearch"></my-search>
             <div>
               <br><br>
-              <h4>大家都在搜</h4><br>
+              <h4 class="text-dark">大家都在搜</h4><br>
               <div>
-                <el-tag :type="item.type" v-for="item in list" :key="item.name"> {{item.name}} </el-tag>
+                <my-tag class="my-tag" v-for="item in list" :key="item.name" :text="item.name"></my-tag>
+                <!-- <el-tag :type="item.type" v-for="item in list" :key="item.name"> {{item.name}} </el-tag> -->
               </div>
             </div>
           </div>
           <div class="my-card">
             <div class="cus-flex cus-flex-between cus-align-center">
-              <h4>热门问题</h4>
-              <el-button size="medium"> 查看更多<i class="el-icon-arrow-right el-icon-caret-right"></i> </el-button>
+              <h4 class="text-dark">热门问题</h4>
+              <el-button size="medium" round> 查看更多<i class="el-icon-arrow-right el-icon-caret-right"></i> </el-button>
             </div>
             <ul>
               <li v-for="item in hotList" :key="item.id">
-                <el-link href="javascript:void(0)" target="_blank">{{item.name}}</el-link>
+                <el-link :underline="false" href="javascript:void(0)" target="_blank">{{item.name}}</el-link>
               </li>
             </ul>
           </div>
@@ -48,11 +49,13 @@ import * as custom from '@/assets/js/custom.config';
 import MyScrollbar from '@/components/scroller/Scrollbar';
 import QuizDialog from '@/components/dialogs/QuizDialog';
 import MySearch from '@/components/search/Search';
+import MyTag from '@/components/Tag';
 export default {
   components: {
     MyScrollbar,
     QuizDialog,
-    MySearch
+    MySearch,
+    MyTag
   },
   data() {
     return {
@@ -86,18 +89,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.center {
-  margin: 0 auto;
-}
+@import '@/assets/style/cus.scss';
+@import '@/assets/style/base.scss';
 .my-body {
   min-height: calc(100% - 151px);
   > div {
     width: 1000px;
-    @extend .center;
+    @extend .cus-box-center;
   }
   .my-search {
     width: 760px;
-    @extend .center;
+    @extend .cus-box-center;
     padding-top: 133px;
 
     h1 {
@@ -124,9 +126,8 @@ export default {
   }
 }
 
-.el-tag {
+.my-tag {
   margin-right: 10px;
-  cursor: pointer;
   &:nth-last-child(1) {
     margin-right: 0;
   }

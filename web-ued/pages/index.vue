@@ -3,7 +3,7 @@
     <div slot="container">
       <my-header class="cus-fixed my-header" :class="{'bg_white': !isAddClass, 'text_white': isAddClass}" activeLabel="首页"></my-header>
       <el-carousel trigger="click" :height="645 + 'px'">
-        <el-carousel-item v-for="item in config.bannerList" :key="item">
+        <el-carousel-item v-for="item in config.swipers" :key="item">
           <img :src="item" style="width: 100%; height: 100%;">
         </el-carousel-item>
       </el-carousel>

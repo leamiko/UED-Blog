@@ -1,24 +1,28 @@
 <template>
   <el-dialog :visible.sync="show" width="750px" :custom-class="classStyle" :before-close="handleClose" destroy-on-close append-to-body>
     <img src="@/assets/img/bg/bg-dialog-ask.png" slot="title" class="dialog-img">
-    <div class="cus-flex cus-align-center">
-      <el-avatar :size="48" :src="avator" class="align-top"></el-avatar>&emsp;
-      <el-input class="inline" v-model="input" :placeholder="placeholder"></el-input>
-    </div>
-    <div>
-      <h5>问题描述</h5>
-      <div :content="content" v-quill:myQuillEditor="editorOption" @change="onEditorChange"  @blur="onEditorBlur($event)" @focus="onEditorFocus($event)" @ready="onEditorReady($event)"></div>
+    <div class="dialog-content">
+      <el-avatar :size="48" :src="avator" class="align-top"></el-avatar>
+      <div class="inline inline_auto">
+        <el-input v-model="input" :placeholder="placeholder"></el-input>
+        <h5 class="text-dark font-size--md line-height--lg">问题描述</h5>
+        <my-editor :height="'99px'" @change="onEditorChange"  @blur="onEditorBlur($event)" @focus="onEditorFocus($event)" @ready="onEditorReady($event)" ref="myEditor"></my-editor>
+      </div>
     </div>
     <div slot="footer" class="dialog-footer">
       <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
-      <el-button type="primary" round size="small">&emsp;发&nbsp;布&emsp;</el-button>
+      <el-button type="primary" round size="small" @click="submit()">&emsp;提&nbsp;问&emsp;</el-button>
     </div>
   </el-dialog>
 </template>
 <script>
 import avatorUrl from '@/assets/img/icon/icon-system-avator.svg';
 import * as custom from '@/assets/js/custom.config';
+import MyEditor from '@/components/Editor';
 export default {
+  components: {
+    MyEditor
+  },
   props: {
     isShow: {
       default: false,
@@ -71,15 +75,33 @@ export default {
       console.log('editor ready!', editor)
     },
     onEditorChange({ editor, html, text }) {
-      // console.log('editor change!', editor, html, text)
-      this.content = html
+      this.content = html;
+    },
+    submit() {
+      console.log(this.content);
+      console.log(this.$refs.myEditor);
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+@import '@/assets/style/cus.scss';
 .dialog-img {
   width: 750px;
   margin: -20px;
+}
+.dialog-content {
+  padding: 12px 16px 0;
+  margin-bottom: -15px;
+}
+.inline_auto {
+  width: 622px;
+  padding: 0 20px;
+  .height_48 {
+    height: 48px;
+  }
+}
+.dialog-footer {
+  padding-right: 38px;
 }
 </style>
