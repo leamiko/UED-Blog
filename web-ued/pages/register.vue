@@ -5,10 +5,10 @@
         <el-input v-model="params.account" placeholder="请输入账号" prefix-icon="el-icon-user" maxlength=20></el-input>
       </el-form-item>
       <el-form-item prop="passWord">
-        <el-input type="passWord" v-model="firstpassWord" placeholder="请输入6到16位密码，区分大小写" auto-complete="off" prefix-icon="el-icon-lock" minlength=6 maxlength=16></el-input>
+        <el-input type="passWord" v-model="params.passWord" placeholder="请输入6到16位密码，区分大小写" auto-complete="off" prefix-icon="el-icon-lock" minlength=6 maxlength=16></el-input>
       </el-form-item>
-      <el-form-item prop="passWord">
-        <el-input type="passWord" v-model="params.passWord" placeholder="请再次确认密码" auto-complete="off" prefix-icon="el-icon-lock" minlength=6 maxlength=16></el-input>
+      <el-form-item prop="checkPass">
+        <el-input type="passWord" v-model="params.checkPass" placeholder="请再次确认密码" auto-complete="off" prefix-icon="el-icon-lock" minlength=6 maxlength=16></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('params')" class="cus-full-width" :loading="submitLoading">注册</el-button>
@@ -36,6 +36,7 @@
 export default {
   data() {
     var checkName = (rule, value, callback) => {
+      console.log(value);
       if (!value) {
         return callback(new Error("账号不能为空"));
       } else {
@@ -49,22 +50,47 @@ export default {
         callback();
       }
     };
+    var checkPass = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入密码"));
+      } else if (value !== this.params.passWord) {
+          callback(new Error('两次输入密码不一致!'));
+        }  else {
+        callback();
+      }
+    };
+    var error = (rule, value, callback) => {
+      if (this.isError == true) {
+        callback(new Error("该账号已被注册"));
+      } else {
+        callback();
+      }
+    };
     return {
       params: {
         account: "",
-        passWord: ""
+        passWord: "",
+        checkPass: ""
       },
-      firstpassWord: "",
+      checkPass: "",
       rules2: {
-        account: [{ validator: checkName, trigger: "blur" }],
+        account: [
+          { validator: checkName, trigger: "blur" },
+          { validator: error, trigger: "blur" }
+        ],
         passWord: [
           { validator: validatePass, trigger: "blur" },
+          { min: 6, max: 16, message: "请输入6-16位密码", trigger: "blur" }
+        ],
+        checkPass: [
+          { validator: checkPass, trigger: "blur" },
           { min: 6, max: 16, message: "请输入6-16位密码", trigger: "blur" }
         ]
       },
       submitLoading: false,
       successBox: false,
-      bindWX: false
+      bindWX: false,
+      isError: false
     };
   },
   // head() {
@@ -94,10 +120,6 @@ export default {
       this.$store.commit("isLogin", true);
     },
     submitForm(formName) {
-      if (this.firstpassWord != this.params.passWord) {
-        alert("两次输入的密码不一致，请重新输入！");
-        return;
-      }
       this.submitLoading = true;
       this.$refs[formName].validate(async valid => {
         this.submitLoading = false;
@@ -116,7 +138,8 @@ export default {
             this.bindWX = true;
           } else {
             //注册失败
-            alert(data.message);
+            this.isError = true;
+            this.$refs[formName].validate(async valid => {});
           }
         }
       });

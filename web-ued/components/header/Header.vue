@@ -32,6 +32,8 @@
         </div>
       </div>
     </div>
+  </div>
+
 </template>
 
 <script>
@@ -63,13 +65,12 @@ export default {
       logoURL: custom.head.logoUrl,
       msgURL: custom.head.msgUrl,
       modalVisible: false,
-      title: "登录"
+      title: "登录",
+      showBadge: false
     };
   },
 
   mounted() {
-    showBadge: false;
-
     if (this.innerStyle) {
       Object.keys(this.innerStyle).forEach(key => {
         this.$refs.header.style[key] = this.innerStyle[key];

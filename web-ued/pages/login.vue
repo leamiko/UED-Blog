@@ -2,10 +2,10 @@
   <div class="el-form cus-absolute cus-fix-center">
     <el-form :model="loginForm" status-icon :rules="rules2" ref="loginForm" label-width="0" v-show="!iscodeBox">
       <el-form-item prop="account">
-        <el-input v-model="loginForm.account" placeholder="请输入账号" prefix-icon="el-icon-user"></el-input>
+        <el-input v-model="loginForm.account" placeholder="请输入账号" prefix-icon="el-icon-user" maxlength=20></el-input>
       </el-form-item>
       <el-form-item prop="passWord">
-        <el-input type="passWord" v-model="loginForm.passWord" placeholder="请输入密码" auto-complete="off" prefix-icon="el-icon-lock"></el-input>
+        <el-input type="passWord" v-model="loginForm.passWord" placeholder="请输入密码" auto-complete="off" prefix-icon="el-icon-lock" minlength=6 maxlength=16></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('loginForm')" class="cus-full-width" :loading="submitLoading">登录</el-button>
@@ -47,6 +47,13 @@ export default {
         callback();
       }
     };
+    var error = (rule, value, callback) => {
+      if (this.isError == true) {
+        callback(new Error("该账号尚未注册/密码有误，请重新输入"));
+      } else {
+        callback();
+      }
+    };
     return {
       loginForm: {
         account: "",
@@ -55,12 +62,16 @@ export default {
       rules2: {
         account: [
           { validator: checkName, trigger: "blur" },
-          { min: 1, max: 20, message: "长度在 1 到 20 个字符", trigger: "blur" }
+          { validator: error, trigger: "blur" }
         ],
-        passWord: [{ validator: validatePass, trigger: "blur" }]
+        passWord: [
+          { validator: validatePass, trigger: "blur" },
+          { validator: error, trigger: "blur" }
+        ]
       },
       submitLoading: false,
-      iscodeBox: false
+      iscodeBox: false,
+      isError: false
     };
   },
   mounted() {
@@ -105,7 +116,8 @@ export default {
             this.loginForm = {};
           } else {
             //登录失败
-            alert(data.message);
+            this.isError = true;
+            this.$refs[formName].validate(async valid => {});
           }
         }
       });
