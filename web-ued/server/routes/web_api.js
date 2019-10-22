@@ -117,4 +117,9 @@ router.post('/IsThereATag', (req, res, next) => {
   web_bugCtrler.IsThereATag(req, res, next)
 })
 
+// Bug检索
+router.post('/SearchByKeywords', (req, res, next) => {
+  web_bugCtrler.SearchBug(req, res, next)
+})
+
 module.exports = router
