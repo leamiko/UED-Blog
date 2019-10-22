@@ -1,5 +1,5 @@
 <template>
-  <div class="cus-full-width cus-full-height hidden">
+  <div class="cus-full-screen hidden">
     <my-scrollbar>
       <div slot="container">
         <div class="cus-fixed cus-header">
@@ -21,7 +21,7 @@
                 <el-link :underline="false" v-for="item in 6" :key="item">{{item}}</el-link>
               </div>
               <div class="top_16">
-                <el-tag type="info" v-for="item in 10" :key="item"> {{item}} </el-tag>
+                <my-tag class="my-tag" v-for="item in 10" :key="item" :text="item"></my-tag>
               </div>
             </div>
           </div>
@@ -45,6 +45,7 @@ import MyFooter from '@/components/footer/Footer';
 import MySearch from '@/components/search/Search';
 import NoResult from '@/components/search/NoResult';
 import QuizDialog from '@/components/dialogs/QuizDialog';
+import MyTag from '@/components/Tag';
 export default {
   components: {
     MyScrollbar,
@@ -52,7 +53,8 @@ export default {
     MyFooter,
     MySearch,
     NoResult,
-    QuizDialog
+    QuizDialog,
+    MyTag
   },
   data() {
     return {
@@ -114,7 +116,7 @@ export default {
   height: 30px;
   margin-right: 45px;
 }
-.el-tag {
+.my-tag {
   margin-right: 20px;
   cursor: pointer;
   &:nth-last-child(1) {

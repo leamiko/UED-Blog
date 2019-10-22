@@ -1,19 +1,19 @@
 <template>
-  <transition name="el-zoom-in-center">
-    <nuxt v-if="isRouterAlive"></nuxt>
-  </transition>
+  <nuxt v-if="isRouterAlive" v-loading="isloading"></nuxt>
 </template>
 
 <script>
 export default {
   provide() {
     return {
-      reload: this.reload
+      reload: this.reload,
+      isloading: this.reloading
     }
   },
   data() {
     return {
-      isRouterAlive: true
+      isRouterAlive: true,
+      isloading: false
     }
   },
   methods: {
@@ -21,6 +21,12 @@ export default {
       this.isRouterAlive = false
       this.$nextTick(() => {
         this.isRouterAlive = true
+      })
+    },
+    reloading() {
+      this.isloading = true
+      this.$nextTick(() => {
+        this.isloading = false
       })
     }
   }

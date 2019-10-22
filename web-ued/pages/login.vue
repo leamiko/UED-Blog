@@ -1,5 +1,5 @@
 <template>
-  <div class="el-form cus-absolute cus-fix-center">
+  <div class="el-form cus-fix-center">
     <el-form :model="loginForm" status-icon :rules="rules2" ref="loginForm" label-width="0" v-show="!iscodeBox">
       <el-form-item prop="account">
         <el-input v-model="loginForm.account" placeholder="请输入账号" prefix-icon="el-icon-user"></el-input>

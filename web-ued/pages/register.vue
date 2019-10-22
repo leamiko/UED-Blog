@@ -1,5 +1,5 @@
 <template>
-  <div class="el-form cus-absolute cus-fix-center">
+  <div class="el-form cus-fix-center">
     <el-form :model="params" status-icon :rules="rules2" ref="params" label-width="0" v-show="!successBox">
       <el-form-item prop="account">
         <el-input v-model="params.account" placeholder="请输入账号" prefix-icon="el-icon-user" maxlength=20></el-input>
