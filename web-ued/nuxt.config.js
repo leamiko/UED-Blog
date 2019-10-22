@@ -7,8 +7,10 @@ module.exports = {
     title: '用户体验中心',
     meta: [
       { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { name: 'author', content: process.env.npm_package_author || '' },
+      { name: 'name', content: process.env.npm_package_name || '' },
+      { name: 'version', content: process.env.npm_package_version || '' },
+      { name: 'viewport', content: 'width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no' },
+      { name: 'organization', content: process.env.npm_package_organization || '' },
       {
         hid: 'description',
         name: 'description',
@@ -35,13 +37,12 @@ module.exports = {
    ** Global CSS
    */
   css: [
-    'element-ui/lib/theme-chalk/index.css',
     {
-      src: '~/assets/style/reset.scss',
+      src: '~/assets/style/element-variables.scss',
       lang: 'scss'
     },
     {
-      src: '~/assets/style/element-variables.scss',
+      src: '~/assets/style/reset.scss',
       lang: 'scss'
     },
     {
