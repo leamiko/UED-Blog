@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="116px" height="36px" viewBox="0 0 116 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.2 (67145) - http://www.bohemiancoding.com/sketch -->
+    <title>人气最高</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="100%" y1="50%" x2="0.448690878%" y2="50%" id="linearGradient-1">
+            <stop stop-color="#FFD36A" offset="0%"></stop>
+            <stop stop-color="#FF0018" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="-19.9406176%" x2="39.1984851%" y2="100%" id="linearGradient-2">
+            <stop stop-color="#FFBA59" offset="0%"></stop>
+            <stop stop-color="#FF182E" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="33.4306579%" y1="120.772108%" x2="100%" y2="23.0625106%" id="linearGradient-3">
+            <stop stop-color="#FFBA59" offset="0%"></stop>
+            <stop stop-color="#FF182E" offset="100%"></stop>
+        </linearGradient>
+        <path d="M0.236089493,23.0640129 C-0.682210364,17.7488517 1.15438935,13.0120122 4.4249121,9.42508436 C5.00719468,8.78646915 6.39109035,7.58333832 8.5765991,5.81569185 L8.57658091,5.81566936 C8.83755197,5.60459513 9.22022028,5.64504451 9.43129451,5.90601557 C9.55571815,6.0598523 9.59746663,6.26462815 9.54319694,6.45489581 C9.54319694,6.45489581 9.54319694,6.45489581 9.54319694,6.45489581 C9.48521305,6.65818531 9.00048391,9.1729069 9.00812043,11.2857893 C9.01237404,12.4626821 9.45554268,13.9048996 9.67390021,13.7369733 C9.76006189,13.8316234 9.9708901,11.6004978 11.4589127,9.42508436 C13.8290056,5.96012908 18.1386332,2.15908462 22.0388552,1.10162344 C22.0704266,1.09304875 22.1338539,1.07521767 22.2291372,1.04813021 L22.2291242,1.04808457 C22.9434395,0.845016514 23.6871257,1.2594643 23.8901938,1.97377962 C23.9821506,2.29724842 23.9495628,2.6434332 23.7988573,2.94405918 C23.7988573,2.94405918 23.7988573,2.94405918 23.7988573,2.94405918 C22.9174963,4.70219038 21.1732081,8.35274885 22.0388552,12.6551937 C22.2707114,13.807567 24.8977403,10.1972843 25.3689304,11.2857893 C26.6515237,14.2487319 27.9891072,19.4838185 25.9481228,25.5018998 C23.9071384,31.5199811 18.3250545,34.0244492 12.8693191,33.9998202 C6.07788366,33.8960258 1.15438935,28.379174 0.236089493,23.0640129 Z" id="path-4"></path>
+        <filter x="-13.0%" y="-12.3%" width="151.7%" height="131.9%" filterUnits="objectBoundingBox" id="filter-5">
+            <feMorphology radius="1" operator="erode" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+            <feOffset dx="5" dy="1" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 1   0 0 0 0 0   0 0 0 0 0  0 0 0 0.406523164 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <filter x="-11.1%" y="-10.7%" width="148.0%" height="128.9%" filterUnits="objectBoundingBox" id="filter-6">
+            <feGaussianBlur stdDeviation="2" in="SourceAlpha" result="shadowBlurInner1"></feGaussianBlur>
+            <feOffset dx="-2" dy="-2" in="shadowBlurInner1" result="shadowOffsetInner1"></feOffset>
+            <feComposite in="shadowOffsetInner1" in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowInnerInner1"></feComposite>
+            <feColorMatrix values="0 0 0 0 1   0 0 0 0 1   0 0 0 0 1  0 0 0 0.58432583 0" type="matrix" in="shadowInnerInner1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="写字" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="写字2" transform="translate(-1432.000000, -131.000000)" fill-rule="nonzero">
+            <g id="人气最高" transform="translate(1432.000000, 130.000000)">
+                <path d="M115.611375,4.97895202 C115.852863,5.24520038 116,5.59859963 116,5.98636454 L116,22 C116,28.627417 110.627417,34 104,34 L17.5,34 C16.6715729,34 16,33.3284271 16,32.5 L16,6.33096676 L113.233097,6.33096676 C114.24421,6.33096676 115.128651,5.78861396 115.611375,4.97895202 Z" id="形状结合" fill="url(#linearGradient-1)" opacity="0.225864955"></path>
+                <text fill="url(#linearGradient-2)" font-family="PingFangSC-Medium, PingFang SC" font-size="16" font-weight="400" letter-spacing="0.5">
+                    <tspan x="36" y="26">人气最高</tspan>
+                </text>
+                <g id="形状结合">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-5)" xlink:href="#path-4"></use>
+                    <use fill="url(#linearGradient-3)" xlink:href="#path-4"></use>
+                    <use fill="black" fill-opacity="1" filter="url(#filter-6)" xlink:href="#path-4"></use>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

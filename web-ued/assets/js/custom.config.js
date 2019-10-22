@@ -250,5 +250,12 @@ module.exports = {
       ]
     },
     theme: 'snow'
+  },
+  write: {
+    swiperList:[
+      require('../img/banner/write_swiper_1.png'),
+      require('../img/banner/banner-index-banner-1.jpg'),
+      require('../img/banner/banner-index-banner-2.jpg')
+    ]
   }
 }
