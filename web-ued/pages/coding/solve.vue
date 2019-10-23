@@ -107,9 +107,7 @@ export default {
       this.showDialog = true;
     }
   },
-  mounted() {
-    console.log('app init, my quill insrance object is:', this.myQuillEditor);
-  }
+  mounted() { }
 }
 </script>
 

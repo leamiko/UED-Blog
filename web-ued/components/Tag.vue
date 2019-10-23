@@ -1,5 +1,7 @@
 <template>
-  <label class="my-label pointer" @click="$emit('active')">{{text}}</label>
+  <label class="my-label pointer" @click="$emit('active')" oncontextmenu="return false"
+  ondragstart="return false" onselectstart ="return false" onselect="document.selection.empty()"
+  oncopy="document.selection.empty()" onbeforecopy="return false" onmouseup="document.selection.empty()">{{text}}</label>
 </template>
 <script>
 export default {
