@@ -1,5 +1,7 @@
 var Bug = require('../../models/bugItem');
 var Dic = require('../../models/dictionary');
+var bugComment = require('../../models/comment-bug.js') //引入comment表
+
 const reg = /^[0-9]*[1-9][0-9]*$/;
 
 // 新增bug条目
@@ -230,20 +232,37 @@ async function isthereatag(pid, name) {
 }
 
 // 检索文章
-exports.SearchBug = async function( req, res, next ) {
+exports.SearchBug = async function (req, res, next) {
   try {
     let countData;
     let sql;
     let countSize = req.body.pageSize;
-    let countIndex = req.body.pageIndex -1;
+    let countIndex = req.body.pageIndex - 1;
     if (req.body.keywords) {
       const keywords = new RegExp(req.body.keywords);
-      sql = {$or: [
-        {title: {$regex: keywords}},
-        {keywords: {$regex: keywords}},
-        {content: {$regex: keywords}},
-        {author: {$regex: keywords}}
-      ]};
+      sql = {
+        $or: [{
+            title: {
+              $regex: keywords
+            }
+          },
+          {
+            keywords: {
+              $regex: keywords
+            }
+          },
+          {
+            content: {
+              $regex: keywords
+            }
+          },
+          {
+            author: {
+              $regex: keywords
+            }
+          }
+        ]
+      };
     } else {
       sql = {}
     }
@@ -256,5 +275,37 @@ exports.SearchBug = async function( req, res, next ) {
     })
   } catch (error) {
     next(error);
+  }
+}
+
+// bug评论
+//评论
+exports.commentBug = async function (req, res, next) {
+  try {
+    const whereBlog = {
+      _id: req.body.bugId
+    }
+    let comment = new bugComment({
+      commentName: req.body.commentName,
+      commentId: req.body.commentId,
+      bugId: req.body.bugId,
+      content: req.body.content
+    })
+    const comSaved = await comment.save();
+    if (comSaved) {
+      debugger;
+      const commentNum = await Comment.countDocuments();
+      let updateBlog = {
+        commentNum: commentNum ? commentNum + 1 : 1
+      }
+      await Blog.updateOne(whereBlog, updateBlog)
+      return res.json({
+        status_code: 200,
+        message: '添加成功！',
+        data: null
+      })
+    }
+  } catch (error) {
+    next(error)
   }
 }

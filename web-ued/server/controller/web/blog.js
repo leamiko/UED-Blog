@@ -171,7 +171,7 @@ exports.commentBlog = function(req, res) {
   }
   let comment = new Comment({
     commentName: req.body.commentName,
-    commenId: req.body.commenId,
+    commentId: req.body.commentId,
     blogId: req.body.blogId,
     content: req.body.content
   })
