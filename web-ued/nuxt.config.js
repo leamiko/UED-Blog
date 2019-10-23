@@ -50,9 +50,9 @@ module.exports = {
       lang: 'scss'
     },
     // 富文本编辑器样式
-    'quill/dist/quill.snow.css',
-    'quill/dist/quill.bubble.css',
-    'quill/dist/quill.core.css'
+    '~/assets/style/quill/quill.core.css',
+    // '~/assets/style/quill/quill.bubble.css',
+    '~/assets/style/quill/quill.snow.css'
   ],
   /*
    ** Plugins to load before mounting the App
