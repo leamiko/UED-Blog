@@ -1,7 +1,8 @@
+var mongoose = require('mongoose');
 var Bug = require('../../models/bugItem');
 var Dic = require('../../models/dictionary');
 var bugComment = require('../../models/comment-bug.js') //引入comment表
-var bugReply = require('../../models/comment-bug.js') //引入comment表
+var bugReply = require('../../models/reply-bug.js') //引入comment表
 
 
 const reg = /^[0-9]*[1-9][0-9]*$/;
@@ -319,7 +320,9 @@ exports.getBugComment = async function (req, res, next) {
     }
     const comments = await bugComment.aggregate(
       [{
-          $match: whereComment
+          $match: {
+            bugId: whereComment.bugId
+          }
         },
         {
           $lookup: {
