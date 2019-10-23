@@ -1,6 +1,8 @@
 var Bug = require('../../models/bugItem');
 var Dic = require('../../models/dictionary');
 var bugComment = require('../../models/comment-bug.js') //引入comment表
+var bugReply = require('../../models/comment-bug.js') //引入comment表
+
 
 const reg = /^[0-9]*[1-9][0-9]*$/;
 
@@ -285,26 +287,103 @@ exports.commentBug = async function (req, res, next) {
     const whereBlog = {
       _id: req.body.bugId
     }
-    let comment = new bugComment({
+    let comment = {
       commentName: req.body.commentName,
       commentId: req.body.commentId,
       bugId: req.body.bugId,
       content: req.body.content
-    })
-    const comSaved = await comment.save();
+    }
+    const comSaved = await bugComment.create([comment])
     if (comSaved) {
       debugger;
-      const commentNum = await Comment.countDocuments();
+      const commentNum = await bugComment.countDocuments();
       let updateBlog = {
         commentNum: commentNum ? commentNum + 1 : 1
       }
-      await Blog.updateOne(whereBlog, updateBlog)
-      return res.json({
+      const upBuged = await Bug.updateOne(whereBlog, updateBlog);
+      res.json({
         status_code: 200,
         message: '添加成功！',
         data: null
       })
     }
+  } catch (error) {
+    next(error)
+  }
+}
+//获取评论
+exports.getBugComment = async function (req, res, next) {
+  try {
+    const whereComment = {
+      bugId: req.query.bugId
+    }
+    const comments = await bugComment.aggregate(
+      [{
+          $match: whereComment
+        },
+        {
+          $lookup: {
+            from: 'bugreply',
+            localField: '_id',
+            foreignField: 'commentId',
+            as: 'replies'
+          }
+        }
+      ])
+    res.json({
+      status_code: 200,
+      message: '获取评论成功！',
+      data: comments
+    })
+  } catch (error) {
+    next(error);
+  }
+}
+//删除评论
+exports.deleteBugComment = async function (req, res, next) {
+  try {
+    var whereComment = {
+      _id: req.query.commentId
+    }
+    const delComed = await bugComment.deleteOne(whereComment)
+    res.json({
+      status_code: 200,
+      message: '删除成功！',
+      data: null
+    })
+  } catch (error) {
+    next(error)
+  }
+
+}
+//回复
+exports.replyBug = async function (req, res, next) {
+  try {
+    console.log(req.body)
+    let reply = req.body
+    const addReplyed = await bugReply.create([reply]);
+    console.log(addReplyed);
+    res.json({
+      status_code: 200,
+      message: '添加成功！',
+      data: null
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+//删除回复
+exports.deleteReply = async function (req, res, next) {
+  try {
+    var whereComment = {
+      _id: req.query.replyId
+    }
+    const delReplyed = await bugReply.deleteOne(whereComment)
+    res.json({
+      status_code: 200,
+      message: '删除成功！',
+      data: null
+    })
   } catch (error) {
     next(error)
   }
