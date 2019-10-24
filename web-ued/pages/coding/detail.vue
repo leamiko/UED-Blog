@@ -72,7 +72,7 @@
             <div class="interest inline frt">
                 <div class="interest_title">
                     你可能感兴趣
-                    <router-link class="more frt" :to="'/coding'">更多<i class="el-icon-arrow-right"></i></router-link>
+                    <router-link class="more frt" :to="'/coding/list'">更多<i class="el-icon-arrow-right"></i></router-link>
                 </div>
                 <div class="interest_list">
                     <div class="interest_info pointer">mysql批量插入数据，一次插入多少 行数据效率最高？</div>
