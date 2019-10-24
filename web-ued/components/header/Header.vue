@@ -1,44 +1,65 @@
 <template>
-  <div class="my-header"
-       ref="header">
+  <div
+    class="my-header"
+    ref="header"
+  >
     <div class="cus-flex cus-flex-between cus-align-center">
       <div>
-        <el-avatar :size="42"
-                   :src="logoURL"
-                   class="middle"></el-avatar>
+        <el-avatar
+          :size="42"
+          :src="logoURL"
+          class="middle"
+        ></el-avatar>
         <h2 class="inline middle">{{ custom.title }}</h2>
         <ul>
-          <li v-for="(item, index) in custom.menu"
-              :key="index"
-              :class="{'active': activeLabel === item.label}">
+          <li
+            v-for="(item, index) in custom.menu"
+            :key="index"
+            :class="{'active': activeLabel === item.label}"
+          >
             <router-link :to="item.redirectUrl">{{ item.label }}</router-link>
           </li>
         </ul>
       </div>
-      <div class="cus-flex cus-align-center"
-           @mouseenter="showBadge=true"
-           @mouseleave="showBadge=false">
+      <div class="cus-flex cus-align-center">
         <slot name="box_cus"></slot>&emsp;&emsp;
-        <el-badge is-dot
-                  class="item">
-          <div class="inline pointer"><img :src="msgURL"
-                 class="message"></div>
+        <el-badge
+          is-dot
+          class="item"
+        >
+          <div
+            class="inline pointer"
+            @mouseenter="showBadge=1"
+            @mouseleave="showBadge=2"
+          >
+            <img
+              :src="showBadge===2?(isChange===true? msgURL :msgUrl02 ):msgURLHover"
+              class="message"
+            ></div>
         </el-badge>
         <div class="logModal">
-          <el-button type="text"
-                     @click="modalVisible = true">登录</el-button>
-          <el-dialog :title="title"
-                     :visible.sync="modalVisible"
-                     :append-to-body="true"
-                     custom-class="logDialog"
-                     :center="true"
-                     :close-on-click-modal="false">
-            <my-login v-if="$store.state.isLogin"
-                      :title="title"
-                      @titleChanged="registerTitle($event)"
-                      @modalChanged="modalChanged($event)"></my-login>
-            <my-register v-if="!$store.state.isLogin"
-                         @titleChanged="loginTitle($event)"></my-register>
+          <el-button
+            type="text"
+            @click="modalVisible = true"
+          ><span :class="{'login_text':isChange,'login_text_02':!isChange}">登录</span></el-button>
+          <el-dialog
+            :title="title"
+            :visible.sync="modalVisible"
+            :append-to-body="true"
+            custom-class="logDialog"
+            :center="true"
+            :close-on-click-modal="false"
+          >
+            <my-login
+              v-if="$store.state.isLogin"
+              :title="title"
+              @titleChanged="registerTitle($event)"
+              @modalChanged="modalChanged($event)"
+            ></my-login>
+            <my-register
+              v-if="!$store.state.isLogin"
+              @titleChanged="loginTitle($event)"
+            ></my-register>
           </el-dialog>
           <!-- <router-link
           :to="'login'"
@@ -73,7 +94,11 @@ export default {
       default: null,
       type: Object,
       required: false
-    }
+    },
+    isChange: {
+      default: null,
+      type: Boolean,
+    },
   },
   components: {
     MyLogin,
@@ -82,13 +107,14 @@ export default {
 
   data () {
     return {
-      showBadge: false,
       custom: custom.head,
       logoURL: custom.head.logoUrl,
       msgURL: custom.head.msgUrl,
+      msgURLHover: custom.head.hoverMsgUrl,
+      msgUrl02: custom.head.msgUrl02,
       modalVisible: false,
       title: "登录",
-      showBadge: false
+      showBadge: 2,
     };
   },
 
@@ -205,6 +231,18 @@ a {
     &:hover {
       cursor: pointer;
     }
+  }
+}
+.login_text {
+  color: #ececec !important;
+  &:hover {
+    color: $primary_blue !important;
+  }
+}
+.login_text_02 {
+  color: rgba(52, 72, 94, 1) !important;
+  &:hover {
+    color: $primary_blue !important;
   }
 }
 </style>
