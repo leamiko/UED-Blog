@@ -14,20 +14,80 @@
               </el-dropdown>
             </div>
           </my-header>
-          <div class="my-search">
+          <div class="code_search">
             <my-search @search="getSearch" :value="searchVal"></my-search>
-            <div>
-              <div class="top_30">
-                <el-link :underline="false" v-for="item in 6" :key="item">{{item}}</el-link>
+            <div class="design_bar">
+              <div class="design_classI inline" v-for="item in config.list">
+                <el-link :underline="false" :key="item.id">{{item.name}}</el-link>
               </div>
-              <div class="top_16">
-                <my-tag class="my-tag" v-for="item in 10" :key="item" :text="item"></my-tag>
+              <div class="design_classII">
+                <!-- <el-tag type="info" v-for="tag in item.content" :key="tag.id">{{tag.name}}</el-tag> -->
+                <el-tag type="info" v-for="tag in list.content" :key="tag.id">{{tag.name}}</el-tag>
               </div>
             </div>
           </div>
         </div>
         <div class="my-content">
-          <no-result @active="askShow=true"></no-result>
+          <!-- 无结果 -->
+          <div class="code_noresult bg-white" v-show="true">
+            <!-- <no-result @active="askShow=true"></no-result> -->
+            <div class="noresult_img">
+              <img src="@/assets/img/image/image-search-noresult-image.png" >
+            </div>
+            <div class="noresult_prompt">
+              如你所料，果然没搜到！不妨试试
+              <button type="button" class="ask_btn bg-white pointer">我要提问</button>
+            </div>
+          </div>
+          <!-- 数据列表 -->
+          <div class="code_list bg-white">
+            <div class="category_tabs inline">
+              <span class="category_tab pointer active">全部</span>
+              <span class="category_tab pointer">已解决</span>
+              <span class="category_tab pointer">未解决</span>
+            </div>
+            <div class="code_info">
+              <div class="code_content pointer" @click="showDetail()">
+                <div class="content_title">Spring Cloud异步场景分布式事务怎样做？</div>
+                <div class="content_question">在微服务架构中，我们常常使用异步化的手段来提升系统的 吞吐量 和 解耦 上下游，而构建异步架构最常用的手段就是使用 消息队列(MQ)，那异步架构怎样才能实现数据一致性呢？</div>
+                <div class="content_mark inline">
+                  <div class="presenter flt">
+                    <div class="presenter_head flt inline">
+                      <img src="@/assets/img/image/code_presenter.png">
+                    </div>
+                    <span class="presenter_info inline">UILEO · 2019-08-28</span>
+                    <div class="mark_tags inline">
+                      <span class="mark_tag">javascript</span>
+                      <span class="mark_tag">php</span>
+                      <span class="mark_tag">css</span>
+                    </div>
+                  </div>
+                  <div class="respondents frt">已有10人回答</div>
+                </div>
+              </div>
+              <div class="code_content pointer" @click="showDetail()">
+                <div class="content_title">Spring Cloud异步场景分布式事务怎样做？</div>
+                <div class="content_question">在微服务架构中，我们常常使用异步化的手段来提升系统的 吞吐量 和 解耦 上下游，而构建异步架构最常用的手段就是使用 消息队列(MQ)，那异步架构怎样才能实现数据一致性呢？</div>
+                <div class="content_mark inline">
+                  <div class="presenter flt">
+                    <div class="presenter_head flt inline">
+                      <img src="@/assets/img/image/code_presenter.png">
+                    </div>
+                    <span class="presenter_info inline">UILEO · 2019-08-28</span>
+                    <div class="mark_tags inline">
+                      <span class="mark_tag">javascript</span>
+                      <span class="mark_tag">php</span>
+                      <span class="mark_tag">css</span>
+                    </div>
+                  </div>
+                  <div class="respondents frt">已有10人回答</div>
+                </div>
+              </div>
+            </div>
+            <div class="page_flipper">
+              <el-pagination background layout="prev, pager, next" :total="100"></el-pagination>
+            </div>
+          </div>
         </div>
         <my-footer :hasMenu="true"></my-footer>
       </div>
@@ -60,10 +120,17 @@ export default {
     return {
       searchVal: '',
       className: 'custom-dialog',
-      askShow: false
+      askShow: false,
+      config: custom.search,
+      list:  custom.search.list[0],
     }
   },
   methods: {
+    async showDetail () {
+      this.$router.push({
+        path: '/coding/detail'
+      })
+    },
     handleCommand(command) {
       if (command === 'answer') {
         this.$router.push({
@@ -91,42 +158,172 @@ export default {
   background: white;
   box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 2px;
 }
-
-.my-search {
+.flt {
+  float: left;
+}
+.frt {
+  float: right;
+}
+.code_search {
   padding-top: 66px;
   padding-bottom: 40px;
-  border-top: 1px solid #ECECEC;
-
+  border-top: 1px solid #ececec;
+  box-shadow: 0px 1px 5px 0px #ececec;
   > div {
     @extend .center;
     width: 62.5%;
     min-width: 600px;
     max-width: 922px;
   }
+  .design_bar {
+    margin-top: 30px;
+    .design_classI {
+      margin-right: 45px;
+      .el-link {
+        font-weight: 600;
+        .el-link--default{
+          color: #34485E;
+        }
+      }
+    }
+    .design_classI:active {
+      color: #3376FF;
+    }
+    .design_classII {
+      .el-tag.el-tag--info {
+        display: inline-block;
+        margin-top: 16px;
+        margin-right: 20px;
+        padding: 0 16px;
+        color: #A3B3BF;
+        font-size: 14px;
+        background:#F0F5F9;
+        border-radius:16px;
+        border: none;
+      }
+    }
+  }
 }
 .my-content {
-  padding-top: 357px;
-  padding-bottom: 60px;
-  min-height: 560px;
+  padding-top: 335px;
+  padding-bottom: 46px;
+  // min-height: 560px;
   min-width: 600px;
   max-width: 1200px;
   @extend .center;
 }
-.el-link {
-  height: 30px;
-  margin-right: 45px;
-}
-.my-tag {
-  margin-right: 20px;
-  cursor: pointer;
-  &:nth-last-child(1) {
-    margin-right: 0;
+// 无结果
+.code_noresult {
+  display: flex;
+  height: 218px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  padding-top: 38px;
+  box-shadow:0px 1px 5px 0px rgba(236,236,236,0.5);
+  .noresult_img {
+    width: 234px;
+    height: 185px;
+    margin-left: calc((100% - 614px)/2);
+    img {
+      width: 100%;
+    }
+  }
+  .noresult_prompt {
+    flex: 1;
+    margin-top: 60px;
+    margin-left: 50px;
+    color: #A0A0A0;
+    .ask_btn {
+      margin-left: 20px;
+      padding: 6px 19px;
+      color: #3376FF;
+      border: 1px solid #3376FF;
+      border-radius: 15px;
+    }
+    .ask_btn:focus {
+      outline: none;
+    }
   }
 }
-.top_30 {
-  padding-top: 30px;
-}
-.top_16 {
-  padding-top: 16px;
+.code_list {
+  box-shadow:0px 1px 5px 0px rgba(236,236,236,0.5);
+  .category_tabs {
+    width: 100%;
+    text-align: right;
+    padding: 30px 40px;
+    .category_tab {
+      margin-left:30px;
+      font-size: 16px;
+      color: #7D7D7D;
+    }
+    .category_tab.active {
+      color: #3376FF;
+    }
+  }
+  // 数据
+  .code_info {
+    padding: 0 75px;
+    .code_content {
+      padding: 40px 21px 30px;
+      border-top: 1px solid #EFF3F7;
+      .content_title {
+        margin-bottom: 21px;
+        font-size: 20px;
+        font-weight: 600;
+        color: #34485E;
+      }
+      .content_question {
+        width: 85%;
+        margin-bottom: 36px;
+        font-size: 18px;
+        color: #394145;
+      }
+      .content_mark {
+        width: 100%;
+        color: #394A58;
+        .presenter {
+          .presenter_head {
+            width: 30px;
+            height: 30px;
+            img {
+              width: 100%;
+            }
+          }
+          .presenter_info {
+            height: 100%;
+            margin-left: 10px;
+            padding: 5px 0;
+          }
+          .mark_tags {
+            margin-left: 20px;
+            .mark_tag {
+              margin-right: 16px;
+              color:#9EADBA;
+            }
+          }
+        }
+        .respondents {
+          padding: 5px 0;
+        }
+      }
+    }
+    .code_content:first-child {
+      padding-top: 0px;
+      border-top: none;
+    }
+  }
+  // 分页器
+  .page_flipper {
+    padding: 30px 50px 46px;
+    text-align: right;
+    .el-pagination {
+      font-weight: normal;
+    }
+    .el-pagination.is-background .btn-prev, .el-pagination.is-background .btn-next, .el-pagination.is-background .el-pager li {
+      border: 1px solid #D9D9D9!important;
+      background: #ffffff;
+    }
+  }
+  
 }
 </style>>
