@@ -1,7 +1,7 @@
 <template>
   <div class="cus-flex">
-    <el-input v-model="value" :placeholder="placeholder"></el-input>
-    &emsp;&emsp;<el-button type="primary" round @click="emit()"> &emsp;&emsp;搜&nbsp;索&emsp;&emsp; </el-button>
+    <el-input class="input_content" v-model="value" :placeholder="placeholder"></el-input>
+    &emsp;&emsp;<el-button type="primary" class="search_btn" round @click="emit()"> &emsp;&emsp;搜&nbsp;索&emsp;&emsp; </el-button>
   </div>
 </template>
 <script>
@@ -25,3 +25,12 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.input_content {
+  border-radius: 8px;
+  border: 2px solid #3376ff;
+}
+.search_btn {
+  border-radius: 23px;
+}
+</style>>
