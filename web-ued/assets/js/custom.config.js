@@ -2,7 +2,9 @@ module.exports = {
   head: {
     title: '瑞见',
     logoUrl: require('../img/logo/logo-system-small.svg'),
-    msgUrl: require('../img/logo/logo-system-message.svg'),
+    msgUrl: require('../img/logo/logo-system-message02.svg'),
+    msgUrl02: require('../img/logo/logo-system-message03.svg'),
+    hoverMsgUrl: require('../img/logo/logo-system-message.svg'),
     menu: [
       { label: '首页', redirectUrl: '/' },
       { label: '写字', redirectUrl: '/writing' },

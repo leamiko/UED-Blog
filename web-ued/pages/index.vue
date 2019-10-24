@@ -8,11 +8,12 @@
         class="cus-fixed my-header"
         :class="{'bg_white': !isAddClass, 'text_white': isAddClass}"
         activeLabel="首页"
+        :isChange='isAddClass'
       ></my-header>
       <el-carousel
         trigger="click"
         :height="645 + 'px'"
-        interval=6000
+        :interval="interval"
       >
         <el-carousel-item
           v-for="item in config.swipers"
@@ -37,7 +38,7 @@
             >
             <div>
               <span class="list_title">{{item.title}}</span>
-              <p class="desc">{{item.desc}}</p>
+              <span class="desc">{{item.desc}}</span>
               <div class="cus-flex cus-align-center">
                 <el-avatar
                   size="small"
@@ -46,16 +47,18 @@
                 ></el-avatar>
                 <span class="text_color_time">{{item.author}} · {{item.updateTime}}</span>&emsp;&emsp;
                 <span class="text_color">{{item.type}}</span>&emsp;&emsp;
-                <span class="text_color"><img src="@/assets/img/icon/eyes.svg">浏览{{item.skim}}</span>&emsp;&emsp;
-                <span class="text_color">点赞{{item.likes}}</span>
+                <span class="text_color"><img src="@/assets/img/icon/eyes.svg">{{item.skim}}</span>&emsp;&emsp;
+                <span class="text_color"><img src="@/assets/img/icon/like.svg">{{item.likes}}</span>
               </div>
             </div>
           </li>
         </ul>
-        <el-button
-          round
-          class="btn_style"
-        > 查看更多 </el-button>
+        <div class="center">
+          <el-button
+            round
+            class="btn_style"
+          > 查看更多 </el-button>
+        </div>
       </div>
     </div>
   </my-scrollbar>
@@ -81,8 +84,10 @@ export default {
   data () {
     return {
       config: custom.index,
-      height: "",
-      isAddClass: true
+      height: '',
+      isAddClass: true,
+      list: [],
+      interval: 6000,
     };
   },
   head () {
@@ -104,10 +109,21 @@ export default {
       } else {
         this.isAddClass = true;
       }
+    },
+    // 获取文章列表
+    async getHomeList () {
+      let response = await this.$axios.get(`${process.env.BASE_URL}/web_api/getHomeList`);
+      response.data.data.forEach(element => {
+        if (element !== null) {
+          this.list.push(element);
+        }
+      });
+      console.log(this.list);
     }
   },
   mounted () {
     this.height = (document.body.clientWidth / 900) * 383;
+    this.getHomeList();
   }
 };
 </script>
@@ -151,12 +167,18 @@ export default {
   }
 }
 .desc {
+  display: block;
   font-weight: 400;
   font-size: 18px;
   color: rgba(57, 65, 69, 1);
   line-height: 30px;
   margin-top: 12px;
   margin-bottom: 24px;
+  width: 628px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-break: keep-all;
 }
 .avatar {
   margin-right: 10px;
@@ -165,14 +187,20 @@ export default {
   font-size: 14px;
   font-weight: 400;
   color: rgba(158, 173, 186, 1);
+  img {
+    margin: 0 5px 1px 0;
+  }
 }
 .text_color_time {
   font-size: 14px;
   font-weight: 400;
   color: rgba(57, 74, 88, 1);
 }
+.center {
+  text-align: center;
+}
 .btn_style {
-  width: -webkit-fill-available;
+  width: 700px;
   height: 54px;
   border-radius: 27px;
   background: rgba(238, 238, 239, 1);
