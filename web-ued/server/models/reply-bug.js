@@ -19,7 +19,7 @@ var bugReplySchema = new Schema({
         type: String //条目objectId
     },
     commentId: {
-        type: String //评论objectId
+        type: mongoose.Schema.Types.ObjectId //评论objectId
     },
     likeNum: {
         type: Number, //点赞数

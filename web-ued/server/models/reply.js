@@ -20,7 +20,7 @@ var ReplySchema = new Schema(
       type: String //文章objectId
     },
     commentId: {
-      type: String //评论objectId
+      type: mongoose.Schema.Types.ObjectId //评论objectId
     },
     likeNum: {
       type: Number, //点赞数
