@@ -64,13 +64,13 @@
           :to="'login'"
           class="text_size_18"
         >登录</router-link> -->
-          <div
+          <!-- <div
             class="badge_hover"
             v-if="showBadge"
           >
             <div class="badge_hover_block">个人信息</div>
             <div class="badge_hover_block">登出</div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>

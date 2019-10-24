@@ -1,21 +1,49 @@
 <template>
-  <my-scrollbar hasFoot @scrollTop="getScrollTop">
+  <my-scrollbar
+    hasFoot
+    @scrollTop="getScrollTop"
+  >
     <div slot="container">
-      <my-header class="cus-fixed my-header" :class="{'bg_white': !isAddClass, 'text_white': isAddClass}" activeLabel="首页"></my-header>
-      <el-carousel trigger="click" :height="645 + 'px'">
-        <el-carousel-item v-for="item in config.swipers" :key="item">
-          <img :src="item" style="width: 100%; height: 100%;">
+      <my-header
+        class="cus-fixed my-header"
+        :class="{'bg_white': !isAddClass, 'text_white': isAddClass}"
+        activeLabel="首页"
+      ></my-header>
+      <el-carousel
+        trigger="click"
+        :height="645 + 'px'"
+        interval=6000
+      >
+        <el-carousel-item
+          v-for="item in config.swipers"
+          :key="item"
+        >
+          <img
+            :src="item"
+            style="width: 100%; height: 100%;"
+          >
         </el-carousel-item>
       </el-carousel>
       <div class="my-content">
         <ul>
-          <li v-for="item in config.newsList" :key="item.id" class="cus-flex">
-            <img :src="item.img" class="my-img">
+          <li
+            v-for="item in config.newsList"
+            :key="item.id"
+            class="cus-flex"
+          >
+            <img
+              :src="item.img"
+              class="my-img"
+            >
             <div>
-              <h2>{{item.title}}</h2>
+              <span class="list_title">{{item.title}}</span>
               <p class="desc">{{item.desc}}</p>
               <div class="cus-flex cus-align-center">
-                <el-avatar size="small" :src="item.avatar" class="avatar"></el-avatar>
+                <el-avatar
+                  size="small"
+                  :src="item.avatar"
+                  class="avatar"
+                ></el-avatar>
                 <span class="text_color_time">{{item.author}} · {{item.updateTime}}</span>&emsp;&emsp;
                 <span class="text_color">{{item.type}}</span>&emsp;&emsp;
                 <span class="text_color"><img src="@/assets/img/icon/eyes.svg">浏览{{item.skim}}</span>&emsp;&emsp;
@@ -24,7 +52,10 @@
             </div>
           </li>
         </ul>
-        <el-button round class="btn_style"> 查看更多 </el-button>
+        <el-button
+          round
+          class="btn_style"
+        > 查看更多 </el-button>
       </div>
     </div>
   </my-scrollbar>
@@ -47,14 +78,14 @@ export default {
     MyScrollbar,
     MyHeader
   },
-  data() {
+  data () {
     return {
       config: custom.index,
       height: "",
       isAddClass: true
     };
   },
-  head() {
+  head () {
     return {
       title: "首页",
       meta: [
@@ -67,7 +98,7 @@ export default {
     };
   },
   methods: {
-    getScrollTop(val) {
+    getScrollTop (val) {
       if (val > this.height - 150) {
         this.isAddClass = false;
       } else {
@@ -75,7 +106,7 @@ export default {
       }
     }
   },
-  mounted() {
+  mounted () {
     this.height = (document.body.clientWidth / 900) * 383;
   }
 };
@@ -86,6 +117,7 @@ export default {
 }
 
 .bg_white {
+  transition: all 0.5s ease;
   background: white;
   border-bottom: 1px solid rgb(220, 223, 230);
   box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 2px;
@@ -145,6 +177,17 @@ export default {
   border-radius: 27px;
   background: rgba(238, 238, 239, 1);
   font-size: 14px;
+  margin-bottom: 68px;
+}
+.list_title {
+  font-weight: 600;
+  width: 427px;
+  height: 32px;
+  font-size: 20px;
+  &:hover {
+    cursor: pointer;
+    color: #3376ff;
+  }
 }
 /*
 * 轮播图的高度是根据屏幕的大小以及图片的比例计算出来的
