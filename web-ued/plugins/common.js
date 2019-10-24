@@ -34,3 +34,14 @@ Vue.filter('formatDateMin', (time) => {
 Vue.filter('formatDateSec', (time) => {
   return moment(time).format('YYYY-MM-DD HH:mm:ss')
 })
+Vue.filter('textLength', function (value, num) {
+  let result = '';
+  if (value) {
+    if (value.length > num) {
+      result = value.substr(0, num) + '...'
+    } else {
+      result = value
+    }
+  }
+  return result;
+})

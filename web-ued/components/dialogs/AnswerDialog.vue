@@ -2,7 +2,7 @@
   <el-dialog :visible.sync="show" width="750px" :custom-class="classStyle" :before-close="handleClose" destroy-on-close append-to-body>
     <img src="@/assets/img/bg/bg-dialog-ans.png" slot="title" class="dialog-img">
     <div>
-      <el-avatar :size="48" :src="avator" class="align-top"></el-avatar>&emsp;
+      <el-avatar :size="40" :src="avator" class="align-top"></el-avatar>
       <div class="inline" style="width: 582px;">
         <div>占位符</div>
         <div class="cus-flex cus-flex-between">

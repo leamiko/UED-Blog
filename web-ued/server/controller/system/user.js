@@ -20,6 +20,7 @@ exports.login = function(req, res) {
         data: null
       })
     }
+    console.log(admin)
     if (admin) {
       req.session.admin = admin
       if (checked) req.session.cookie.maxAge = ms('30d')

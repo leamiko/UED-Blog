@@ -32,7 +32,23 @@ var BugSchema = new Schema({
     type: String //作者objectId也是登录用户objectId
   },
   likeNum: {
-    type: Number, //点赞数/采用数
+    type: Number, //点赞数
+    default: 0
+  },
+  viewNum: {
+    type: Number, //阅读量
+    default: 0
+  },
+  commentNum: {
+    type: Number, //评论数
+    default: 0
+  },
+  commentLikeNum: {
+    type: Number, //评论最高点赞数
+    default: 0
+  },
+  rank: {
+    type: Number, //rank
     default: 0
   },
   deleted: {
