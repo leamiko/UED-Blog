@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="54px" height="54px" viewBox="0 0 54 54" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.2 (67145) - http://www.bohemiancoding.com/sketch -->
+    <title>朋友圈</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <ellipse id="path-1" cx="24" cy="23" rx="23.1265823" ry="23"></ellipse>
+        <filter x="-14.1%" y="-12.0%" width="128.1%" height="128.3%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.685400723   0 0 0 0 0.685400723   0 0 0 0 0.685400723  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="详情-解决方案" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-269.000000, -426.000000)" id="Group-2">
+            <g transform="translate(272.000000, 220.000000)">
+                <g id="Group">
+                    <g id="朋友圈" transform="translate(0.000000, 209.000000)">
+                        <g id="Oval-2-Copy-3">
+                            <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                            <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                        </g>
+                        <g transform="translate(12.987342, 12.047619)" fill="#B2BAC1" fill-rule="nonzero" id="Shape">
+                            <path d="M16.2266218,8.54866344 L16.2266218,1.03409045 C16.2266218,1.03409045 12.5291736,-0.93720833 8.2130154,0.582757205 L16.2266218,8.54866344 Z M16.9266291,12.9694886 L16.9266291,1.34437678 C16.9266291,1.34437678 21.2976664,3.31437741 22.5294681,8.09995473 L16.9266291,12.9694886 Z M14.5751392,16.3485192 L22.6442206,8.80185935 C22.6442206,8.80185935 24.0719585,11.110367 21.9428513,16.3485192 L14.5751392,16.3485192 Z M10.4549172,17.3053412 L21.3530847,17.3053412 C21.3530847,17.3053412 20.0374603,20.8517205 15.3286636,22.315922 L10.4549172,17.3053412 Z M6.89739105,14.9112685 L6.89739105,21.9761733 C6.89739105,21.9761733 9.72781084,23.7788253 14.5751392,22.568497 L6.89739105,14.9112685 Z M0.592586754,15.276698 L6.11288007,10.3507228 L6.11288007,21.5530607 C6.11288007,21.5530607 2.77776494,20.4016854 0.592586754,15.276698 Z M0.452693143,14.488805 C0.452693143,14.488805 -0.810066749,10.4366266 0.95611156,6.91716983 L8.54881687,6.91716983 L0.452693143,14.488805 Z M1.4331403,6.1273578 C1.4331403,6.1273578 3.0304531,2.52583532 7.3731145,0.835981331 L12.55562,6.1273578 L1.4331403,6.1273578 Z"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
