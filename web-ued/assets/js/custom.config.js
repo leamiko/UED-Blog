@@ -5,6 +5,7 @@ module.exports = {
     msgUrl: require('../img/logo/logo-system-message02.svg'),
     msgUrl02: require('../img/logo/logo-system-message03.svg'),
     hoverMsgUrl: require('../img/logo/logo-system-message.svg'),
+    msgNull: require('../img/image/message-null.svg'),
     menu: [
       { label: '首页', redirectUrl: '/' },
       { label: '写字', redirectUrl: '/writing' },

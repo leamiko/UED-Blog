@@ -65,13 +65,15 @@
           :to="'login'"
           class="text_size_18"
         >登录</router-link> -->
-          <!-- <div
+          <div
             class="badge_hover"
-            v-if="showBadge"
+            v-if="showBadge===1"
+            @mouseenter="showBadge=1"
+            @mouseleave="showBadge=2"
           >
-            <div class="badge_hover_block">个人信息</div>
-            <div class="badge_hover_block">登出</div>
-          </div> -->
+            <img :src="msgNull">
+            <span>还没有消息哦</span>
+          </div>
         </div>
       </div>
     </div>
@@ -112,6 +114,7 @@ export default {
       msgURL: custom.head.msgUrl,
       msgURLHover: custom.head.hoverMsgUrl,
       msgUrl02: custom.head.msgUrl02,
+      msgNull: custom.head.msgNull,
       modalVisible: false,
       title: "登录",
       showBadge: 2,
@@ -202,22 +205,31 @@ a {
     }
   }
 }
-
+.badge_hover {
+  position: absolute;
+  right: 363px;
+  top: 58px;
+  padding: 171px 131px;
+  width: 440px;
+  height: 530px;
+  background: white;
+  border-radius: 4px;
+  text-align: center;
+  img {
+    width: 178px;
+    height: 144px;
+  }
+  span {
+    padding-top: 20px;
+    font-weight: 400;
+    color: rgba(160, 160, 160, 1);
+    line-height: 22px;
+    font-size: 14px;
+  }
+}
 .el-dialog__header {
   width: 600px;
   height: 600px;
-  .badge_hover {
-    position: absolute;
-    right: 363px;
-    top: 58px;
-
-    padding-top: 6px;
-    width: 75px;
-    height: 65px;
-    background: rgba(234, 241, 255, 1);
-    border-radius: 6px;
-    text-align: center;
-  }
   .margin_left {
     margin-left: -47px;
   }
