@@ -36,7 +36,7 @@
             </div>
             <div class="noresult_prompt">
               如你所料，果然没搜到！不妨试试
-              <button type="button" class="ask_btn bg-white pointer">我要提问</button>
+              <button type="button" class="ask_btn bg-white pointer" @click="askShow=true">我要提问</button>
             </div>
           </div>
           <!-- 数据列表 -->
@@ -168,7 +168,7 @@ export default {
   padding-top: 66px;
   padding-bottom: 40px;
   border-top: 1px solid #ececec;
-  box-shadow: 0px 1px 5px 0px #ececec;
+  box-shadow: 0px 4px 5px 0px #ececec;
   > div {
     @extend .center;
     width: 62.5%;

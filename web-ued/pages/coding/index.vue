@@ -1,20 +1,6 @@
 <template>
   <my-scrollbar hasHead hasFoot :headStyle="{'background':'white'}" :headActive="'打码'">
     <div slot="container">
-      <div class="code_search bg-white">
-        <div class="search_bar">
-          <el-input class="input_content" placeholder="有Bug，这里搜～"></el-input>
-          <el-button type="primary" class="search_btn">搜索</el-button>
-        </div>
-        <div class="design_bar">
-          <div class="design_classI inline" v-for="item in config.list">
-              <el-link :underline="false" :key="item.id">{{item.name}}</el-link>
-          </div>
-          <div class="design_classII">
-              <el-tag type="info" v-for="tag in list.content" :key="tag.id">{{tag.name}}</el-tag>
-          </div>
-        </div>
-      </div>
       <button @click="testGetListApi()">get</button>
       <button @click="testAddApi()">add</button>
       <button @click="testDetailApi()">detail</button>
@@ -86,64 +72,3 @@ export default {
   },
 }
 </script>
-<style lang='scss' scoped>
-.flt {
-  float: left;
-}
-.frt {
-  float: right;
-}
-.code_search {
-  padding-top: 66px;
-  padding-bottom: 40px;
-  border-top: 1px solid #ececec;
-  box-shadow: 0px 1px 5px 0px #ececec;
-  .search_bar {
-    width: 62.5%;
-    height: 46px;
-    margin: 0 auto;
-    .input_content {
-      width: 60%;
-      height: 44px;
-      border-radius: 8px;
-      border: 2px solid #3376ff;
-    }
-    .search_btn {
-      width: 130px;
-      height: 44px;
-      margin-left: 20px;
-      border-radius: 23px;
-    }
-  }
-  .design_bar {
-    width: 62.5%;
-    margin: 30px auto 0;
-    .design_classI {
-      margin-right: 45px;
-      .el-link {
-        font-weight: 600;
-        .el-link--default{
-          color: #34485E;
-        }
-      }
-    }
-    .design_classI:active {
-      color: #3376FF;
-    }
-    .design_classII {
-      // margin-top: 16px;
-      .el-tag.el-tag--info {
-        display: inline-block;
-        margin-top: 16px;
-        margin-right: 20px;
-        padding: 0 16px;
-        color: #A3B3BF;
-        font-size: 14px;
-        background:#F0F5F9;
-        border-radius:16px;
-        border: none;
-      }
-    }
-  }
-}
-</style>
