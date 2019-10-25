@@ -289,8 +289,8 @@ exports.commentBug = async function (req, res, next) {
       _id: req.body.bugId
     }
     let comment = {
-      commentName: req.body.commentName,
-      commentId: req.body.commentId,
+      commenterName: req.body.commenterName,
+      commenterId: req.body.commenterId,
       bugId: req.body.bugId,
       content: req.body.content
     }

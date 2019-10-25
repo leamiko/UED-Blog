@@ -3,16 +3,16 @@ var db = require('./db.js')
 var Schema = mongoose.Schema
 
 var bugReplySchema = new Schema({
-    replyName: {
+    replyerName: {
         type: String //回复人
     },
-    replyId: {
+    replyerId: {
         type: String //回复人objectId
     },
-    reReplyName: {
+    replyTargetName: {
         type: String //被回复人
     },
-    reReplyId: {
+    replyTargetId: {
         type: String //被回复人objectId
     },
     bugId: {

@@ -3,10 +3,10 @@ var db = require('./db.js')
 var Schema = mongoose.Schema
 
 var bugCommentSchema = new Schema({
-    commentName: {
+    commenterName: {
         type: String //评论人
     },
-    commentId: {
+    commenterId: {
         type: String //评论人objectid
     },
     bugId: {
