@@ -3,6 +3,7 @@ var Bug = require('../../models/bugItem');
 var Dic = require('../../models/dictionary');
 var bugComment = require('../../models/comment-bug.js') //引入comment表
 var bugReply = require('../../models/reply-bug.js') //引入comment表
+var bugLike = require('../../models/like-bug.js') //引入like表
 
 
 const reg = /^[0-9]*[1-9][0-9]*$/;
@@ -195,6 +196,7 @@ exports.AddTags = async function (req, res, next) {
     next(error);
   }
 }
+// 判断是否存在某个bug
 exports.IsThereATag = async function (req, res, next) {
   try {
     if (!req.body.parentName || !req.body.name)
@@ -308,6 +310,47 @@ exports.commentBug = async function (req, res, next) {
         data: null
       })
     }
+  } catch (error) {
+    next(error)
+  }
+}
+//评论点赞
+exports.bugCommentLike = async function (req, res, next) {
+  try {
+    const whereBug = {
+      _id: req.query.bugId
+    }
+    const whereComment = {
+      bugId: req.query.bugId
+    }
+    const whereUpdateComment = {
+      _id: req.query.commentId
+    }
+    let like = {
+      userId: req.query.userId,
+      commentId: req.query.commentId
+    }
+    const liked = await bugLike.create([like]);
+    const likeNum = await bugLike.countDocuments({
+      commentId: req.query.commentId
+    })
+    let updateComment = {
+      likeNum: likeNum
+    }
+    await bugComment.updateOne(whereUpdateComment, updateComment)
+    const comments = await bugComment.find(whereComment).sort({
+      likeNum: -1
+    })
+    console.log(comments);
+    const updateBug = {
+      comtTallestLikeNum: comments[0].likeNum
+    }
+    await Bug.updateOne(whereBug, updateBug)
+    return res.json({
+      status_code: 200,
+      message: '点赞成功！',
+      data: null
+    })
   } catch (error) {
     next(error)
   }

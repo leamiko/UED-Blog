@@ -43,7 +43,7 @@ var BugSchema = new Schema({
     type: Number, //评论数
     default: 0
   },
-  commentLikeNum: {
+  comtTallestLikeNum: {
     type: Number, //评论最高点赞数
     default: 0
   },

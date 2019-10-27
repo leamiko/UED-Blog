@@ -143,4 +143,9 @@ router.post('/replyBug', (req, res, next) => {
 router.get('/deleteReply', (req, res, next) => {
   web_bugCtrler.deleteReply(req, res, next)
 })
+//评论点赞
+router.get('/bugCommentLike', (req, res, next) => {
+  //调用controller方法
+  web_bugCtrler.bugCommentLike(req, res, next)
+})
 module.exports = router
