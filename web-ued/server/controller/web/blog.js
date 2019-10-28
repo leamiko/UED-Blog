@@ -171,7 +171,7 @@ exports.commentBlog = function(req, res) {
   }
   let comment = new Comment({
     commentName: req.body.commentName,
-    commentId: req.body.commentId,
+    commentUserId: req.body.commentUserId,
     blogId: req.body.blogId,
     content: req.body.content
   })
@@ -264,7 +264,6 @@ exports.deleteComment = function(req, res) {
 
 //回复
 exports.replyBlog = function(req, res) {
-  console.log(req.body)
   let reply = new Reply(req.body)
   reply.save(function(err, reply) {
     if (err) {

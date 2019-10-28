@@ -29,20 +29,10 @@ router.get('/wxLogin', (req, res) => {
 router.get('/getBlog', function(req, res, next) {
   web_blog.getBlog(req, res)
 })
-//首页列表
-router.get('/getHomeList', function(req, res, next) {
-  //调用controller方法
-  web_blog.getHomeList(req, res)
-})
-//写字推荐
-router.post('/getWriteBest', function(req, res, next) {
-  //调用controller方法
-  web_blog.getWriteBest(req, res)
-})
 //写字列表
-router.post('/getWriteList', function(req, res, next) {
+router.post('/getList', function(req, res, next) {
   //调用controller方法
-  web_blog.getWriteList(req, res)
+  web_blog.getList(req, res)
 })
 //blog点赞
 router.get('/likeBlog', function(req, res, next) {
@@ -73,6 +63,11 @@ router.get('/getBlogComment', function(req, res, next) {
 router.get('/rankTask', function(req, res, next) {
   //调用controller方法
   web_blog.rankTask(req, res)
+})
+//写字列表
+router.post('/getList', function(req, res, next) {
+  //调用controller方法
+  web_blog.getList(req, res)
 })
 
 module.exports = router
