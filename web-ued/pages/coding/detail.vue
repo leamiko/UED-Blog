@@ -113,6 +113,29 @@
                 </div>
               </div>
             </div>
+            <hr class="comment_hr" />
+            <div class="comment_text">
+              <div class="current_user inline">
+                <img src="@/assets/img/image/code_presenter.png" />
+              </div>
+              <div class="current_edit inline">
+                <div class="comment_unit_name">Maria</div>
+                <div class="comment_unit_content">
+                  写的真的很棒，虽然还远没有做到架构师的级别，但是看到了自己的不足和应该努力
+                  的方向。
+                </div>
+                <div class="comment_unit_bottom">
+                  <div class="comment_unit_bottom_left">
+                    <div class="comment_unit_bottom_btn">
+                      <img src="@/assets/img/icon/icon-support.svg" />
+                      0
+                    </div>
+                    <div class="comment_unit_bottom_btn margin_left_15">回复</div>
+                  </div>
+                  <div class="comment_unit_bottom_right">2019-09-06</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -352,5 +375,51 @@ export default {
       }
     }
   }
+}
+.margin_left_15 {
+  margin-left: 15px;
+}
+.comment_hr {
+  margin: 0 0 40px;
+  border-top-color: #eff3f7;
+  opacity: 0.2;
+}
+.comment_unit_name {
+  margin: 12px 0;
+  color: #333333;
+  font-size: 18px;
+  font-weight: 600;
+}
+.comment_unit_content {
+  font-size: 18px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 1);
+}
+.comment_unit_bottom {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+.comment_unit_bottom_left {
+  display: flex;
+  flex-direction: row;
+}
+.comment_unit_bottom_btn {
+  cursor: pointer;
+  padding: 8px 25px;
+  background: rgba(242, 245, 246, 1);
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 400;
+  color: rgba(145, 153, 161, 1);
+  img {
+    vertical-align: -2px;
+  }
+}
+.comment_unit_bottom_right {
+  font-size: 16px;
+  font-weight: 400;
+  color: rgba(145, 153, 161, 1);
+  margin-top: 15px;
 }
 </style>
