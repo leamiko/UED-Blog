@@ -12,7 +12,7 @@
       ></my-header>
       <el-carousel
         trigger="click"
-        :height="645 + 'px'"
+        :height="height + 'px'"
         :interval="interval"
       >
         <el-carousel-item
@@ -104,6 +104,7 @@ export default {
   },
   methods: {
     getScrollTop (val) {
+      console.log(val);
       if (val > this.height - 150) {
         this.isAddClass = false;
       } else {
@@ -122,7 +123,7 @@ export default {
     }
   },
   mounted () {
-    this.height = (document.body.clientWidth / 900) * 383;
+    this.height = (document.body.clientWidth / 1920) * 645;
     this.getHomeList();
   }
 };
