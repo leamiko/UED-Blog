@@ -67,4 +67,4 @@ var BlogSchema = new Schema(
   { timestamps: { createdAt: 'createAt', updatedAt: 'updateAt' } }
 )
 
-module.exports = blog.model('Blog', BlogSchema)
+module.exports = blog.model('Blog', BlogSchema, 'blog')

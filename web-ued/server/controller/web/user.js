@@ -146,3 +146,19 @@ exports.wxLogin = function(req, res) {
     }
   })
 }
+
+exports.isLogin = function(req, res) {
+  if (req.session.user) {
+    return res.json({
+      status_code: 200,
+      message: '已登陆状态！',
+      data: true
+    })
+  } else {
+    return res.json({
+      status_code: 200,
+      message: '未登录状态！',
+      data: false
+    })
+  }
+}

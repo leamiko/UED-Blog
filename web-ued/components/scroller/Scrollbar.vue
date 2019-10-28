@@ -64,7 +64,9 @@ export default {
       })
     }
     window.addEventListener('scroll', () => {
-      this.$emit('scrollTop', this.$refs.main.scrollTop);
+      if (this.$refs.main && this.$refs.main.scrollTop) {
+        this.$emit('scrollTop', this.$refs.main.scrollTop);
+      }
     }, true);
   }
 }

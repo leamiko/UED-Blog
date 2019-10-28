@@ -7,7 +7,7 @@ var CommentSchema = new Schema(
     commentName: {
       type: String //评论人
     },
-    commentId: {
+    commentUserId: {
       type: String //评论人objectid
     },
     blogId: {
@@ -19,6 +19,9 @@ var CommentSchema = new Schema(
     },
     content: {
       type: String //内容
+    },
+    anonymous: {
+      type: Boolean //是否匿名
     }
   },
   { timestamps: { createdAt: 'createAt', updatedAt: 'updateAt' } }

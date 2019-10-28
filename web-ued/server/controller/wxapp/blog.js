@@ -46,63 +46,19 @@ exports.getBlog = function(req, res) {
   })
 }
 
-//首页列表
-exports.getHomeList = async function(req, res) {
-  const technology = await Blog.findOne({ blogType: 1 }).sort({
-    rank: -1
-  })
-  const interaction = await Blog.findOne({ blogType: 2 }).sort({
-    rank: -1
-  })
-  const design = await Blog.findOne({ blogType: 3 }).sort({
-    rank: -1
-  })
-  const manage = await Blog.findOne({ blogType: 4 }).sort({
-    rank: -1
-  })
-  const other = await Blog.findOne({ blogType: 5 }).sort({
-    rank: -1
-  })
-  let data = []
-  data.push(technology, interaction, design, manage, other)
-  return res.json({
-    status_code: 200,
-    message: '获取列表成功！',
-    data: data
-  })
-}
-
-//写字推荐
-exports.getWriteBest = async function(req, res) {
-  let popular = await Blog.findOne().sort({
-    viewNum: -1
-  })
-  let best = await Blog.findOne().sort({
-    likeNum: -1
-  })
-  let comment = await Blog.findOne().sort({
-    commentLikeNum: -1
-  })
-  let data = []
-  data.push(popular, best, comment)
-  return res.json({
-    status_code: 200,
-    message: '获取列表成功！',
-    data: data
-  })
-}
-
-//写字列表
-exports.getWriteList = async function(req, res) {
+//文章列表
+exports.getList = async function(req, res) {
   const page = req.body.paging.page
   const limit = req.body.paging.limit
   let filters = {
     deleted: false
   }
+  if (req.body.filters.title) {
+    filters.title = new RegExp(req.body.filters.title)
+  }
   if (req.body.filters.blogType) {
     filters.blogType = req.body.filters.blogType
   }
-  const count = await Blog.countDocuments(filters)
   Blog.find(
     filters,
     null,
@@ -123,10 +79,7 @@ exports.getWriteList = async function(req, res) {
       return res.json({
         status_code: 200,
         message: '获取列表成功！',
-        data: {
-          total: count,
-          data: books
-        }
+        data: books
       })
     }
   )
@@ -171,7 +124,7 @@ exports.commentBlog = function(req, res) {
   }
   let comment = new Comment({
     commentName: req.body.commentName,
-    commentUserId: req.body.commentUserId,
+    commentId: req.body.commentId,
     blogId: req.body.blogId,
     content: req.body.content
   })
@@ -264,6 +217,7 @@ exports.deleteComment = function(req, res) {
 
 //回复
 exports.replyBlog = function(req, res) {
+  console.log(req.body)
   let reply = new Reply(req.body)
   reply.save(function(err, reply) {
     if (err) {
@@ -340,35 +294,85 @@ exports.getBlogComment = function(req, res) {
   )
 }
 
-// rank定时任务
-exports.rankTask = async function(req, res) {
-  const blogs = await Blog.find()
-  for (let i = 0; i < blogs.length; i++) {
-    const rank =
-      ((Math.log(blogs[i].viewNum) / Math.LN10 +
-        (10 * Math.log(blogs[i].likeNum)) / Math.LN10 +
-        (5 * Math.log(blogs[i].commentNum)) / Math.LN10 +
-        (3 * Math.log(blogs[i].commentLikeNum)) / Math.LN10) /
-        count(blogs[i].createAt)) *
-      count(blogs[i].createAt)
-    const whereBlog = {
-      _id: blogs[i]._id
-    }
-    const updateBlog = {
-      rank: rank
-    }
-    await Blog.updateOne(whereBlog, updateBlog)
+// 我的文章
+exports.getMyBlog = function(req, res) {
+  const page = req.body.paging.page
+  const limit = req.body.paging.limit
+  let filters = {
+    deleted: false
   }
-  return res.json({
-    status_code: 200,
-    message: '更新排序成功！',
-    data: null
-  })
+  if (req.body.filters.userId) {
+    filters.userId = req.body.filters.userId
+  }
+  Blog.find(
+    filters,
+    null,
+    {
+      skip: (page * 1 - 1) * 10,
+      limit: limit,
+      sort: { createdAt: -1 }
+    },
+    function(err, books) {
+      if (err) {
+        console.log(err)
+        return res.json({
+          status_code: 201,
+          message: err,
+          data: null
+        })
+      }
+      return res.json({
+        status_code: 200,
+        message: '获取列表成功！',
+        data: books
+      })
+    }
+  )
 }
 
-function count(date) {
-  var date1 = new Date()
-  var date2 = new Date(date)
-  var date = (date1.getTime() - date2.getTime()) / (1000 * 60 * 60 * 24)
-  return date < 1 ? 1 : parseInt(date)
+//我的赞
+exports.getMyLike = function(req, res) {
+  const page = req.body.paging.page
+  const limit = req.body.paging.limit
+  let filters = {
+    blogId: { $exists: true }
+  }
+  if (req.body.filters.userId) {
+    filters.userId = req.body.filters.userId
+  }
+  Like.aggregate(
+    [
+      {
+        $match: filters
+      },
+      {
+        $lookup: {
+          from: 'blog',
+          localField: 'blogId',
+          foreignField: '_id',
+          as: 'blog'
+        }
+      },
+      { $skip: Number(page) },
+      { $limit: Number(limit) }
+    ],
+    (err, likes) => {
+      if (err) {
+        return res.json({
+          status_code: 201,
+          message: err,
+          data: null
+        })
+      }
+      let blogs = []
+      for (let i = 0; i < likes.length; i++) {
+        blogs.push(likes[i].blog[0])
+      }
+      return res.json({
+        status_code: 200,
+        message: '获取成功！',
+        data: blogs
+      })
+    }
+  )
 }
