@@ -7,7 +7,7 @@ var CommentSchema = new Schema(
     commentName: {
       type: String //评论人
     },
-    commentId: {
+    commentUserId: {
       type: String //评论人objectid
     },
     blogId: {
