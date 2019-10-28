@@ -28,27 +28,27 @@
       <div class="my-content">
         <ul>
           <li
-            v-for="item in config.newsList"
+            v-for="item in list"
             :key="item.id"
             class="cus-flex"
           >
             <img
-              :src="item.img"
+              :src="img"
               class="my-img"
             >
             <div>
               <span class="list_title">{{item.title}}</span>
-              <span class="desc">{{item.desc}}</span>
+              <span class="desc">{{item.content}}</span>
               <div class="cus-flex cus-align-center">
                 <el-avatar
                   size="small"
-                  :src="item.avatar"
+                  :src="avatar"
                   class="avatar"
                 ></el-avatar>
-                <span class="text_color_time">{{item.author}} · {{item.updateTime}}</span>&emsp;&emsp;
+                <span class="text_color_time">{{item.author}} · {{updateTime}}</span>&emsp;&emsp;
                 <span class="text_color">{{item.type}}</span>&emsp;&emsp;
-                <span class="text_color"><img src="@/assets/img/icon/eyes.svg">{{item.skim}}</span>&emsp;&emsp;
-                <span class="text_color"><img src="@/assets/img/icon/like.svg">{{item.likes}}</span>
+                <span class="text_color"><img src="@/assets/img/icon/eyes.svg">{{item.viewNum}}</span>&emsp;&emsp;
+                <span class="text_color"><img src="@/assets/img/icon/like.svg">{{item.likeNum}}</span>
               </div>
             </div>
           </li>
@@ -88,6 +88,9 @@ export default {
       isAddClass: true,
       list: [],
       interval: 6000,
+      img: custom.index.newsList[0].img,
+      avatar: custom.index.newsList[0].avatar,
+      updateTime: custom.index.newsList[0].updateTime,
     };
   },
   head () {
