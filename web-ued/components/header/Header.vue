@@ -1,76 +1,32 @@
 <template>
-  <div
-    class="my-header"
-    ref="header"
-  >
+  <div class="my-header" ref="header">
     <div class="cus-flex cus-flex-between cus-align-center">
       <div>
-        <el-avatar
-          :size="42"
-          :src="logoURL"
-          class="middle"
-        ></el-avatar>
+        <el-avatar :size="42" :src="logoURL" class="middle"></el-avatar>
         <h2 class="inline middle">{{ custom.title }}</h2>
         <ul>
-          <li
-            v-for="(item, index) in custom.menu"
-            :key="index"
-            :class="{'active': activeLabel === item.label}"
-          >
+          <li v-for="(item, index) in custom.menu" :key="index" :class="{'active': activeLabel === item.label}">
             <router-link :to="item.redirectUrl">{{ item.label }}</router-link>
           </li>
         </ul>
       </div>
       <div class="cus-flex cus-align-center">
         <slot name="box_cus"></slot>&emsp;&emsp;
-        <el-badge
-          is-dot
-          class="item"
-        >
-          <div
-            class="inline pointer"
-            @mouseenter="showBadge=1"
-            @mouseleave="showBadge=2"
-          >
-            <img
-              :src="showBadge===2?(isChange===true? msgURL :msgUrl02 ):msgURLHover"
-              class="message"
-            ></div>
+        <el-badge is-dot class="item">
+          <div class="inline pointer" @mouseenter="showBadge=1" @mouseleave="showBadge=2">
+            <img :src="showBadge===2?(isChange===true? msgURL :msgUrl02 ):msgURLHover" class="message"></div>
         </el-badge>
         <div class="logModal">
-          <el-button
-            type="text"
-            @click="modalVisible = true"
-          ><span :class="{'login_text':isChange,'login_text_02':!isChange}">登录</span></el-button>
-          <el-dialog
-            :title="title"
-            :visible.sync="modalVisible"
-            :append-to-body="true"
-            custom-class="logDialog"
-            :center="true"
-            :close-on-click-modal="false"
-          >
-            <my-login
-              v-if="$store.state.isLogin"
-              :title="title"
-              @titleChanged="registerTitle($event)"
-              @modalChanged="modalChanged($event)"
-            ></my-login>
-            <my-register
-              v-if="!$store.state.isLogin"
-              @titleChanged="loginTitle($event)"
-            ></my-register>
+          <el-button type="text" @click="modalVisible = true"><span :class="{'login_text':isChange,'login_text_02':!isChange}">登录</span></el-button>
+          <el-dialog :title="title" :visible.sync="modalVisible" :append-to-body="true" custom-class="logDialog" :center="true" :close-on-click-modal="false">
+            <my-login v-if="$store.state.isLogin" :title="title" @titleChanged="registerTitle($event)" @modalChanged="modalChanged($event)"></my-login>
+            <my-register v-if="!$store.state.isLogin" @titleChanged="loginTitle($event)"></my-register>
           </el-dialog>
           <!-- <router-link
           :to="'login'"
           class="text_size_18"
         >登录</router-link> -->
-          <div
-            class="badge_hover"
-            v-if="showBadge===1"
-            @mouseenter="showBadge=1"
-            @mouseleave="showBadge=2"
-          >
+          <div class="badge_hover" v-if="showBadge===1" @mouseenter="showBadge=1" @mouseleave="showBadge=2">
             <img :src="msgNull">
             <span>还没有消息哦</span>
           </div>
@@ -128,6 +84,9 @@ export default {
       });
     }
   },
+  created() {
+    this.isLogin();
+  },
   methods: {
     registerTitle (e) {
       this.title = e;
@@ -137,7 +96,12 @@ export default {
     },
     modalChanged (e) {
       this.modalVisible = e;
-    }
+    },
+    //判断是否登录
+     async isLogin () {
+      const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/isLogin`);
+      console.log(res);
+    },
   }
 };
 </script>

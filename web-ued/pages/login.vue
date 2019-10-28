@@ -108,7 +108,9 @@ export default {
             `${process.env.BASE_URL}/web_api/login`,
             this.loginForm
           );
+          console.log(data);
           if (data.status_code == 200) {
+            localStorage.setItem("user", JSON.stringify(data.user));
             this.$emit("modalChanged", false);
             this.$store.dispatch("login", data.user).then(() => {
               this.$router.replace("/");
