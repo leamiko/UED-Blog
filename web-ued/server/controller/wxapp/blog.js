@@ -334,7 +334,9 @@ exports.getMyBlog = function(req, res) {
 exports.getMyLike = function(req, res) {
   const page = req.body.paging.page
   const limit = req.body.paging.limit
-  let filters = {}
+  let filters = {
+    blogId: { $exists: true }
+  }
   if (req.body.filters.userId) {
     filters.userId = req.body.filters.userId
   }
