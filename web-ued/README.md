@@ -12,7 +12,7 @@ $ npm run install
 $ npm run dev
 
 # 纯开发前端的同学使用如下命令启动项目
-$ npm run dev:oneline
+$ npm run dev:online
 
 # build for production and launch server
 $ npm run build
@@ -26,9 +26,9 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 
 ## 1. 提示
 
-* #### 如本机上存在 `lunz+1.0` 框架的项目，推荐使用 `nvm` 安装最新的 `node.js` 版本，`lunz+1.0` 的框架最佳的 `node.js` 版本为8.2.1。
+- #### 如本机上存在 `lunz+1.0` 框架的项目，推荐使用 `nvm` 安装最新的 `node.js` 版本，`lunz+1.0` 的框架最佳的 `node.js` 版本为 8.2.1。
 
-* #### 如出现更换 `node.js` 的情况，安装完后需要运行 `npm uninstall node-sass` && `npm i node-sass`。
+- #### 如出现更换 `node.js` 的情况，安装完后需要运行 `npm uninstall node-sass` && `npm i node-sass`。
 
 ## 2. 目录结构
 
@@ -57,15 +57,15 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 
 ## 3. 组件
 
-* #### `Scrollbar.vue`
+- #### `Scrollbar.vue`
 
   内容滚动，因个人能力有限无法提取出 `element ui` 中的 `el-scrollbar` 组件出现的代替品。
 
-* #### `Editor.vue`
+- #### `Editor.vue`
 
   富文本组件，集成 `vue-quill-editor` ，可解决 `vue-quill-editor` 在页面中无法设置多个富文本的问题，
   组件可设置 提示语、工具栏选项、主题色（snow）、内容高度，具体的工具栏选项可前往 `@/assets/js/custom.config.js` 中查看。
 
-* #### `Tag.vue`
+- #### `Tag.vue`
 
   标签（label）组件，可传入 text 显示。
