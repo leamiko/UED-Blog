@@ -13,7 +13,6 @@ exports.login = function(req, res) {
   }
   User.findOne(params, function(err, user) {
     if (err) {
-      console.log(err)
       return res.json({
         status_code: 201,
         message: err,
@@ -103,11 +102,9 @@ exports.wxLogin = function(req, res) {
   // 这里接收前端的 redirect_url 传递的 code
   const { code } = req.query
   wxPcClient.getAccessToken(code, (err, result) => {
-    console.log(rsult)
     if (!err) {
       const openId = result.data.openid
       wxPcClient.getUser(openId, (err, result) => {
-        console.log(result)
         // 这里获取到了用户的信息, 可以存储在数据库中
         const { nickname, sex, city, province, country, headimgurl } = result
         User.findOne({ wxOpenId: openId }, function(err, user) {

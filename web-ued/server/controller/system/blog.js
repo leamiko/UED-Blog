@@ -143,7 +143,6 @@ exports.deleteBlog = function(req, res) {
   }
   Blog.update(whereBlog, updateBlog, function(err, blog) {
     if (err) {
-      console.log(err)
       return res.json({
         code: 201,
         message: err,

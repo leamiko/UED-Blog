@@ -20,7 +20,6 @@ exports.login = function(req, res) {
         data: null
       })
     }
-    console.log(admin)
     if (admin) {
       req.session.admin = admin
       if (checked) req.session.cookie.maxAge = ms('30d')
@@ -169,7 +168,6 @@ exports.adminList = async function(req, res) {
     filters.title = new RegExp(req.body.filters.account)
   }
   const count = await Admin.countDocuments(filters)
-  console.log(count)
   Admin.find(filters, null, {
     skip: (page * 1 - 1) * 15,
     limit: limit,
