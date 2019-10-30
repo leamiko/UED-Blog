@@ -112,8 +112,8 @@
                   >&emsp;评&nbsp;论&emsp;</el-button>
                 </div>
               </div>
+              <hr class="comment_hr" />
             </div>
-            <hr class="comment_hr" />
             <div class="comment_text">
               <div class="current_user inline">
                 <img src="@/assets/img/image/code_presenter.png" />
@@ -130,9 +130,121 @@
                       <img src="@/assets/img/icon/icon-support.svg" />
                       0
                     </div>
-                    <div class="comment_unit_bottom_btn margin_left_15">回复</div>
+                    <div class="comment_unit_bottom_btn margin_left_15">删除</div>
                   </div>
                   <div class="comment_unit_bottom_right">2019-09-06</div>
+                </div>
+                <div class="comment_text margin_top_40">
+                  <div class="current_user inline">
+                    <img src="@/assets/img/image/code_presenter.png" />
+                  </div>
+                  <div class="current_edit inline">
+                    <div class="comment_unit_name">
+                      Nike
+                      <span>回复</span>
+                      Maria
+                    </div>
+                    <div class="comment_unit_content">
+                      写的真的很棒，虽然还远没有做到架构师的级别，但是看到了自己的不足和应该努力
+                      的方向。
+                    </div>
+                    <div class="comment_unit_bottom">
+                      <div class="comment_unit_bottom_left">
+                        <div class="comment_unit_bottom_btn">
+                          <img src="@/assets/img/icon/icon-support.svg" />
+                          0
+                        </div>
+                        <div class="comment_unit_bottom_btn margin_left_15">回复</div>
+                      </div>
+                      <div class="comment_unit_bottom_right">2019-09-06</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="comment_text">
+                  <div class="current_user inline">
+                    <img src="@/assets/img/image/code_presenter.png" />
+                  </div>
+                  <div class="current_edit inline">
+                    <my-editor :height="'104px'" :placeholder="'我有一个大胆的想法～'"></my-editor>
+                    <br />
+                    <div class="text-right">
+                      <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
+                      <el-button
+                        type="primary"
+                        round
+                        size="small"
+                        @click="submit()"
+                      >&emsp;评&nbsp;论&emsp;</el-button>
+                    </div>
+                  </div>
+                </div>
+                <div class="btn_blue">查看更多回复</div>
+              </div>
+              <hr class="comment_hr" />
+            </div>
+            <div class="comment_text">
+              <div class="current_user inline">
+                <img src="@/assets/img/image/code_presenter.png" />
+              </div>
+              <div class="current_edit inline">
+                <div class="comment_unit_name">Maria</div>
+                <div class="comment_unit_content">
+                  写的真的很棒，虽然还远没有做到架构师的级别，但是看到了自己的不足和应该努力
+                  的方向。
+                </div>
+                <div class="comment_unit_bottom">
+                  <div class="comment_unit_bottom_left">
+                    <div class="comment_unit_bottom_btn">
+                      <img src="@/assets/img/icon/icon-support.svg" />
+                      0
+                    </div>
+                    <div class="comment_unit_bottom_btn margin_left_15">删除</div>
+                  </div>
+                  <div class="comment_unit_bottom_right">2019-09-06</div>
+                </div>
+                <div class="comment_text margin_top_40">
+                  <div class="current_user inline">
+                    <img src="@/assets/img/image/code_presenter.png" />
+                  </div>
+                  <div class="current_edit inline">
+                    <div class="comment_unit_name">
+                      Nike
+                      <span>回复</span>
+                      Maria
+                    </div>
+                    <div class="comment_unit_content">
+                      写的真的很棒，虽然还远没有做到架构师的级别，但是看到了自己的不足和应该努力
+                      的方向。
+                    </div>
+                    <div class="comment_unit_bottom">
+                      <div class="comment_unit_bottom_left">
+                        <div class="comment_unit_bottom_btn">
+                          <img src="@/assets/img/icon/icon-support.svg" />
+                          0
+                        </div>
+                        <div class="comment_unit_bottom_btn margin_left_15">回复</div>
+                      </div>
+                      <div class="comment_unit_bottom_right">2019-09-06</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="comment_text">
+                  <div class="current_user inline">
+                    <img src="@/assets/img/image/code_presenter.png" />
+                  </div>
+                  <div class="current_edit inline">
+                    <my-editor :height="'104px'" :placeholder="'我有一个大胆的想法～'"></my-editor>
+                    <br />
+                    <div class="text-right">
+                      <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
+                      <el-button
+                        type="primary"
+                        round
+                        size="small"
+                        @click="submit()"
+                      >&emsp;评&nbsp;论&emsp;</el-button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -379,8 +491,17 @@ export default {
 .margin_left_15 {
   margin-left: 15px;
 }
+.margin_top_40 {
+  margin-top: 40px;
+}
+.btn_blue {
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 400;
+  color: rgba(0, 132, 255, 1);
+}
 .comment_hr {
-  margin: 0 0 40px;
+  margin: 30px 0 10px;
   border-top-color: #eff3f7;
   opacity: 0.2;
 }
@@ -389,6 +510,10 @@ export default {
   color: #333333;
   font-size: 18px;
   font-weight: 600;
+  > span {
+    font-weight: 500;
+    color: rgba(145, 153, 161, 1);
+  }
 }
 .comment_unit_content {
   font-size: 18px;
@@ -406,7 +531,7 @@ export default {
 }
 .comment_unit_bottom_btn {
   cursor: pointer;
-  padding: 8px 25px;
+  padding: 7px 25px;
   background: rgba(242, 245, 246, 1);
   border-radius: 20px;
   font-size: 16px;
