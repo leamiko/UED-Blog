@@ -260,6 +260,16 @@ module.exports = {
       require('../img/banner/write_swiper_1.png'),
       require('../img/banner/banner-index-banner-1.jpg'),
       require('../img/banner/banner-index-banner-2.jpg')
+    ],
+    avatorList:[
+      require('../img/image/avator_1.svg'),
+      require('../img/image/avator_2.svg'),
+      require('../img/image/avator_3.svg'),
+      require('../img/image/avator_4.svg'),
+      require('../img/image/avator_5.svg'),
+      require('../img/image/avator_6.svg'),
+      require('../img/image/avator_7.svg'),
+      require('../img/image/avator_8.svg'),
     ]
   }
 }

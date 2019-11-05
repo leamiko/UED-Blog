@@ -124,3 +124,25 @@ body,
     }
   }
 }
+
+// 个人信息弹窗
+.info_dialog{
+  .el-dialog__header{
+    padding: 0;
+    height: 139px;
+  }
+  .el-button{
+    padding: 11px 28px;
+    font-size: 16px;  
+  }
+  .el-input{
+    margin-right: 31px;
+  }
+  .el-avatar{
+    background: white;
+    margin-right: 20px;
+  }
+  .el-dialog__footer{
+    padding: 0 58px 40px 0; 
+  }
+}
