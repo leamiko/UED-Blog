@@ -64,7 +64,22 @@ exports.getHomeList = async function(req, res) {
     rank: -1
   })
   let data = []
-  data.push(technology, interaction, design, manage, other)
+  if (technology) {
+    data.push(technology)
+  }
+  if (interaction) {
+    data.push(interaction)
+  }
+  if (design) {
+    data.push(design)
+  }
+  if (manage) {
+    data.push(manage)
+  }
+  if (other) {
+    data.push(other)
+  }
+  // data.push(technology, interaction, design, manage, other)
   return res.json({
     status_code: 200,
     message: '获取列表成功！',
@@ -84,7 +99,16 @@ exports.getWriteBest = async function(req, res) {
     commentLikeNum: -1
   })
   let data = []
-  data.push(popular, best, comment)
+  if (popular) {
+    data.push(popular)
+  }
+  if (best) {
+    data.push(best)
+  }
+  if (comment) {
+    data.push(comment)
+  }
+  // data.push(popular, best, comment)
   return res.json({
     status_code: 200,
     message: '获取列表成功！',
