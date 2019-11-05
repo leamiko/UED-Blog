@@ -131,7 +131,7 @@ exports.getWriteList = async function(req, res) {
     filters,
     null,
     {
-      skip: (page * 1 - 1) * 10,
+      skip: (page * 1 - 1) * limit,
       limit: limit,
       sort: { createdAt: -1 }
     },
