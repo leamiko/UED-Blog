@@ -1,14 +1,14 @@
 <template>
   <my-scrollbar hasHead hasFoot :headStyle="{'background':'white'}" :headActive="'打码'">
     <div slot="container">
-      <button @click="testGetListApi()">get</button>
+      <!-- <button @click="testGetListApi()">get</button>
       <button @click="testAddApi()">add</button>
       <button @click="testDetailApi()">detail</button>
       <button @click="testDelApi()">delate</button><br>
+      <button @click="testSearchApi()">search</button><br> -->
       <router-link :to="'/coding/search'">去搜索</router-link><br>
       <router-link :to="'/coding/list'">去打码列表</router-link><br>
       <router-link :to="'/coding/solve'">去提供解决方案</router-link><br>
-      <button @click="testSearchApi()">search</button><br>
     </div>
   </my-scrollbar>
 </template>
