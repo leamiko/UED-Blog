@@ -3,7 +3,7 @@
     <div slot="container" class="container">
       <!-- top block -->
       <div class="top_article">
-        <el-carousel trigger="click" :height="342 + 'px'" :autoplay="false" class="set_width">
+        <el-carousel trigger="click" :height="342 + 'px'" :autoplay="false" class="set_width" v-if="topList.length > 0">
           <el-carousel-item v-for="(item,index) in topList" :key="index" class="flex">
             <div class="left_title">
               <img src="../../assets/img/banner/write_swiper_1.png" style="width: 100%; height: 100%;">
@@ -12,7 +12,6 @@
               <img :src="require('../../assets/img/image/' + item.imgUrl)" alt="">
               <div class="title">
                 <p>{{item.title}}</p>
-                <!-- <p>基于前端的服务器搭建指南</p> -->
               </div>
               <div class="subtitle">{{item.info}}</div>
             </div>
@@ -28,9 +27,9 @@
               :class="{'active': item.id == blogType}">{{item.name}}</li>
           </ul>
         </div>
-        <div class="right_articles">
-          <div class="article_block" v-for="item in lists">
-            <img class="title_img" src="../../assets/img/banner/banner-index-banner-8.jpg" alt="">
+        <div class="right_articles" v-infinite-scroll="getWriteList"  infinite-scroll-disabled="disabled">
+          <div class="article_block" v-for="item in lists" :hidden="lists.length == 0">
+            <img class="title_img" src="../../assets/img/banner/banner-index-banner-8.jpg" alt="" >
             <div>
               <p>{{item.title}}</p>
               <p v-html="$options.filters.textLength(item.info, 38)"></p>
@@ -245,7 +244,12 @@
         lists: [], // 写字列表
         blogType: 0, // 文章类型
         topList: [], // top3文章
-        topImg: ['best_article.svg','most_popular.svg','best_comment.svg']
+        topImg: ['best_article.svg','most_popular.svg','best_comment.svg'],
+        disabled: false,
+        paging: {
+          page: 0,
+          limit: 10
+        }
       }
     },
     mounted() {
@@ -282,31 +286,46 @@
       },
       // 获得文章列表
       async getWriteList() {
-        let paging = {
-          page: 1,
-          limit: 10
+        this.disabled = true
+        this.paging = {
+          page: ++this.paging.page,
+          limit: 10,
         }
         let filters = {
           blogType: this.blogType == 0 ? null : this.blogType
         }
         let params = {
-          paging: paging,
+          paging: this.paging,
           filters: filters
         }
         const data = await await this.$axios.post(`${process.env.BASE_URL}/web_api/getWriteList`, params);
         if (data.status === 200) {
-          this.lists = data.data.data.data;
+        const res = data.data.data.data
+          if(res.length > 0) {
+            if(res.length < 10) {
+              this.disabled = true
+            } else {
+              this.disabled = false
+            }
+            res.forEach(e => {
+              this.lists.push(e)
+            });
+          } else {
+            this.disabled = true
+          }
         }
       },
       // 获得top3文章
       async getBest() {
         const data = await await this.$axios.post(`${process.env.BASE_URL}/web_api/getWriteBest`);
         if (data.status === 200) {
+          if(data.data.data.length > 0) {
           this.topList = data.data.data;
           for(let i = 0 ; i < this.topList.length; i++) {
-            this.topList[i].imgUrl = this.topImg[i]
+           this.topList[i].imgUrl = this.topImg[i]
           }
           console.log(this.topList)
+          }
         }
       }
     },

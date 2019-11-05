@@ -18,6 +18,7 @@
         </el-badge>
         <div class="logModal">
           <el-button type="text" @click="modalVisible = true"><span :class="{'login_text':isChange,'login_text_02':!isChange}">登录</span></el-button>
+           <el-button type="text" @click="infoShow = true">个人信息</el-button>
           <el-dialog :title="title" :visible.sync="modalVisible" :append-to-body="true" custom-class="logDialog" :center="true" :close-on-click-modal="false">
             <my-login v-if="$store.state.isLogin" :title="title" @titleChanged="registerTitle($event)" @modalChanged="modalChanged($event)"></my-login>
             <my-register v-if="!$store.state.isLogin" @titleChanged="loginTitle($event)"></my-register>
@@ -33,13 +34,17 @@
         </div>
       </div>
     </div>
+       <!-- 模态框 -->
+  <person-dialog :isShow="infoShow" :classStyle="className"  @hide="infoShow=false"></person-dialog>
   </div>
+
 </template>
 
 <script>
 import * as custom from "@/assets/js/custom.config";
 import MyLogin from "@/pages/login";
 import MyRegister from "@/pages/register";
+import PersonDialog from '../dialogs/PersonalInfo';
 
 export default {
   props: {
@@ -60,7 +65,8 @@ export default {
   },
   components: {
     MyLogin,
-    MyRegister
+    MyRegister,
+    PersonDialog
   },
 
   data () {
@@ -74,6 +80,8 @@ export default {
       modalVisible: false,
       title: "登录",
       showBadge: 2,
+      infoShow: false, // 个人信息弹窗
+      className: 'info_dialog'
     };
   },
 
