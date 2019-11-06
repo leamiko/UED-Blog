@@ -1,31 +1,62 @@
 <template>
   <div class="el-form cus-fix-center">
-    <el-form :model="params" status-icon :rules="rules2" ref="params" label-width="0" v-show="!successBox">
+    <el-form :model="params"
+             status-icon
+             :rules="rules2"
+             ref="params"
+             label-width="0"
+             v-show="!successBox">
       <el-form-item prop="account">
-        <el-input v-model="params.account" placeholder="请输入账号" prefix-icon="el-icon-user" maxlength=20></el-input>
+        <el-input v-model="params.account"
+                  placeholder="请输入账号"
+                  prefix-icon="el-icon-user"
+                  maxlength=20></el-input>
       </el-form-item>
       <el-form-item prop="passWord">
-        <el-input type="passWord" v-model="params.passWord" placeholder="请输入6到16位密码，区分大小写" auto-complete="off" prefix-icon="el-icon-lock" minlength=6 maxlength=16></el-input>
+        <el-input type="passWord"
+                  v-model="params.passWord"
+                  placeholder="请输入6到16位密码，区分大小写"
+                  auto-complete="off"
+                  prefix-icon="el-icon-lock"
+                  minlength=6
+                  maxlength=16></el-input>
       </el-form-item>
       <el-form-item prop="checkPass">
-        <el-input type="passWord" v-model="params.checkPass" placeholder="请再次确认密码" auto-complete="off" prefix-icon="el-icon-lock" minlength=6 maxlength=16></el-input>
+        <el-input type="passWord"
+                  v-model="params.checkPass"
+                  placeholder="请再次确认密码"
+                  auto-complete="off"
+                  prefix-icon="el-icon-lock"
+                  minlength=6
+                  maxlength=16></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('params')" class="cus-full-width" :loading="submitLoading">注册</el-button>
-        <div class="login">已有账号，<el-button type="text" @click="Visible">直接登录</el-button>
+        <el-button type="primary"
+                   @click="submitForm('params')"
+                   class="cus-full-width"
+                   :loading="submitLoading">注册</el-button>
+        <div class="login">已有账号，<el-button type="text"
+                     @click="Visible">直接登录</el-button>
         </div>
       </el-form-item>
     </el-form>
 
-    <div class="regSuccess" v-show="successBox">
-      <div class="successBox" v-show="!bindWX">
-        <div class="successPic"><img src="@/assets/img/image/Bitmap.png" alt=""></div>
-        <el-button type="primary" class="cus-full-width successBtn">丰富你的个人信息</el-button>
+    <div class="regSuccess"
+         v-show="successBox">
+      <div class="successBox"
+           v-show="!bindWX">
+        <div class="successPic"><img src="@/assets/img/image/Bitmap.png"
+               alt=""></div>
+        <el-button type="primary"
+                   class="cus-full-width successBtn">丰富你的个人信息</el-button>
       </div>
-      <div class="codeBox" v-show="bindWX">
+      <div class="codeBox"
+           v-show="bindWX">
         <div class="text1">扫码绑定微信，登录更方便哦~</div>
-        <div class="box" id="wxBindQrcode">假设这里有二维码</div>
-        <div class="text2">不绑定，<el-button type="text" @click="bindWX=false">直接跳过</el-button>
+        <div class="box"
+             id="wxBindQrcode">假设这里有二维码</div>
+        <div class="text2">不绑定，<el-button type="text"
+                     @click="bindWX=false">直接跳过</el-button>
         </div>
       </div>
     </div>
@@ -34,7 +65,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     var checkName = (rule, value, callback) => {
       console.log(value);
       if (!value) {
@@ -54,8 +85,8 @@ export default {
       if (value === "") {
         callback(new Error("请输入密码"));
       } else if (value !== this.params.passWord) {
-          callback(new Error('两次输入密码不一致!'));
-        }  else {
+        callback(new Error('两次输入密码不一致!'));
+      } else {
         callback();
       }
     };
@@ -98,12 +129,12 @@ export default {
   //     title: "注册"
   //   };
   // },
-  mounted() {
+  mounted () {
     this.wxHandle();
   },
   methods: {
     //二维码
-    wxHandle() {
+    wxHandle () {
       var obj = new WxLogin({
         id: "wxBindQrcode",
         appid: process.env.WX_APP_ID,
@@ -115,11 +146,11 @@ export default {
       });
     },
     //注册框隐藏登录框显示
-    Visible() {
+    Visible () {
       this.$emit("titleChanged", "登录");
       this.$store.commit("isLogin", true);
     },
-    submitForm(formName) {
+    submitForm (formName) {
       this.submitLoading = true;
       this.$refs[formName].validate(async valid => {
         this.submitLoading = false;
@@ -133,13 +164,14 @@ export default {
             // this.$store.dispatch("login", data.user).then(() => {
             //   this.$router.replace("/login");
             // });
+            localStorage.setItem("user", JSON.stringify(data.user));
             this.$emit("titleChanged", "恭喜你，注册成功");
             this.successBox = true;
             this.bindWX = true;
           } else {
             //注册失败
             this.isError = true;
-            this.$refs[formName].validate(async valid => {});
+            this.$refs[formName].validate(async valid => { });
           }
         }
       });
