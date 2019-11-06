@@ -143,9 +143,12 @@ export default {
     async wxLogin () {
       console.log(this.getQueryVariable('code'))
       const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/wxLogin?code=${this.getQueryVariable('code')}`);
-      if (!res.data && localStorage.getItem("user")) {
-        localStorage.removeItem('user')
-        window.location.reload()
+      if (data.status_code == 200) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+        this.loginForm = {};
+      } else {
+        //登录失败
+        console.log('请先登录或者注册')
       }
     },
     getQueryVariable (variable) {

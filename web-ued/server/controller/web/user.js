@@ -104,55 +104,41 @@ exports.wxLogin = function(req, res) {
   wxPcClient.getAccessToken(code, (err, result) => {
     if (!err) {
       const openId = result.data.openid
-      const unionid = result.data.unionid
       wxPcClient.getUser(openId, (err, result) => {
         // 这里获取到了用户的信息, 可以存储在数据库中
-        // const {
-        //   nickname,
-        //   sex,
-        //   city,
-        //   province,
-        //   country,
-        //   headimgurl,
-        //   unionId
-        // } = result
-        return res.json({
-          status_code: 200,
-          message: '登录成功！',
-          user: result
+        const { unionId } = result
+        User.findOne({ wxOpenId: unionId }, function(err, user) {
+          if (user) {
+            // 登录
+            req.session.user = user
+            return res.json({
+              status_code: 200,
+              message: '登录成功！',
+              user: user
+            })
+          } else {
+            // 绑定
+            User.findByIdAndUpdate(
+              req.session.user._id,
+              { wxOpenId: unionId },
+              function(err, user) {
+                if (user) {
+                  return res.json({
+                    status_code: 200,
+                    message: '绑定成功！',
+                    user: user
+                  })
+                } else {
+                  return res.json({
+                    status_code: 401,
+                    message: '请先登录或注册账号！',
+                    data: false
+                  })
+                }
+              }
+            )
+          }
         })
-        // User.findOne({ wxOpenId: openId }, function(err, user) {
-        //   if (user) {
-        //     // 登录
-        //     req.session.user = user
-        //     return res.json({
-        //       status_code: 200,
-        //       message: '登录成功！',
-        //       user: user
-        //     })
-        //   } else {
-        //     // 绑定
-        //     User.findByIdAndUpdate(
-        //       req.session.user._id,
-        //       { wxOpenId: openId },
-        //       function(err, user) {
-        //         if (user) {
-        //           return res.json({
-        //             status_code: 200,
-        //             message: '绑定成功！',
-        //             user: user
-        //           })
-        //         } else {
-        //           return res.json({
-        //             status_code: 401,
-        //             message: '请先登录或注册账号！',
-        //             data: null
-        //           })
-        //         }
-        //       }
-        //     )
-        //   }
-        // })
       })
     }
   })
