@@ -29,6 +29,9 @@ router.get('/callback', (req, res) => {
 router.get('/isLogin', (req, res) => {
   web_user.isLogin(req, res)
 })
+router.get('/wxLogin', (req, res) => {
+  web_user.wxLogin(req, res)
+})
 
 /* 文章API */
 //获取blog详情
