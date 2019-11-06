@@ -249,7 +249,8 @@
         paging: {
           page: 0,
           limit: 10
-        }
+        },
+        typeChoose: false
       }
     },
     mounted() {
@@ -259,6 +260,7 @@
     methods: {
       // 选择文章类型
       chooseType(item) {
+        this.typeChoose = true
         this.blogType = item.id
         this.getWriteList()
       },
@@ -287,9 +289,14 @@
       // 获得文章列表
       async getWriteList() {
         this.disabled = true
+        this.lists = []
+        if(this.typeChoose){
+          this.paging.page = 1
+        } else {
         this.paging = {
           page: ++this.paging.page,
           limit: 10,
+        }
         }
         let filters = {
           blogType: this.blogType == 0 ? null : this.blogType
