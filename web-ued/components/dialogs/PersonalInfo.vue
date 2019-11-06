@@ -7,11 +7,11 @@
             <p>昵称</p>
             <div class="cus-flex cus-align-center nickname">
                 <el-input v-model="name" placeholder="听说，好看的人都会给自己起一个与众不同的名字~"></el-input>
-                <span>不想起名字</span>
+                <span @click="generate">不想起名字</span>
             </div>
             <p>头像</p>
             <div class="cus-flex cus-align-center" >
-               <el-avatar v-for="item in config.avatorList" :size="60" :src="item" class="align-top" shape="square"></el-avatar>
+               <el-avatar v-for="(item,index) in config.avatorList" :key="index" :size="60" :src="item" class="align-top" shape="square"></el-avatar>
             </div>
         </div>
         <div slot="footer" class="dialog-footer">
@@ -84,6 +84,14 @@
                 this.show = false;
                 // done();
             },
+            // 生成随机昵称
+            generate() {
+                this.name = '';
+                for(let i = 0 ; i < 5 ; i++){
+                    // u4e00-/u9fa5
+                  this.name += eval('"\\u' + (Math.round(Math.random() * 20902) + 19968).toString(16)+'"') 
+                }  
+            }
         },
 
     }
