@@ -116,7 +116,11 @@ exports.wxLogin = function(req, res) {
         //   headimgurl,
         //   unionId
         // } = result
-        return result
+        return res.json({
+          status_code: 200,
+          message: '登录成功！',
+          user: result
+        })
         // User.findOne({ wxOpenId: openId }, function(err, user) {
         //   if (user) {
         //     // 登录
