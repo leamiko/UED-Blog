@@ -9,8 +9,15 @@ module.exports = {
       { charset: 'utf-8' },
       { name: 'name', content: process.env.npm_package_name || '' },
       { name: 'version', content: process.env.npm_package_version || '' },
-      { name: 'viewport', content: 'width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no' },
-      { name: 'organization', content: process.env.npm_package_organization || '' },
+      {
+        name: 'viewport',
+        content:
+          'width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no'
+      },
+      {
+        name: 'organization',
+        content: process.env.npm_package_organization || ''
+      },
       {
         hid: 'description',
         name: 'description',
@@ -60,7 +67,7 @@ module.exports = {
   plugins: [
     '@/plugins/element-ui',
     '~/plugins/common.js',
-    { src: '~plugins/vue-quill-editor.js', ssr: false },
+    { src: '~plugins/vue-quill-editor.js', ssr: false }
     // '~/plugins/axios.js'
   ],
   router: {
@@ -116,6 +123,8 @@ module.exports = {
    */
   env: {
     NODE_ENV: process.env.NODE_ENV,
+    WX_WEB_ID: process.env.WX_WEB_ID,
+    WX_WEB_SECRET: process.env.WX_WEB_SECRET,
     WX_APP_ID: process.env.WX_APP_ID,
     WX_APP_SECRET: process.env.WX_APP_SECRET,
     BASE_URL: process.env.BASE_URL,

@@ -119,6 +119,7 @@ export default {
   },
   created () {
     this.isLogin();
+    this.wxLogin();
   },
   methods: {
     registerTitle (e) {
@@ -138,6 +139,14 @@ export default {
         window.location.reload()
       }
     },
+    // 调用微信扫码API
+    async wxLogin () {
+      const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/wxLogin`);
+      if (!res.data && localStorage.getItem("user")) {
+        localStorage.removeItem('user')
+        window.location.reload()
+      }
+    }
   }
 };
 </script>
