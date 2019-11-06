@@ -20,8 +20,8 @@ var UserSchema = new Schema(
     avatar: {
       type: String //头像
     },
-    wxOpenId: {
-      type: String //微信openId
+    wxUnionId: {
+      type: String //微信unionid
     }
   },
   { timestamps: { createdAt: 'createAt', updatedAt: 'updateAt' } }
