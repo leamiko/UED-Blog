@@ -109,7 +109,6 @@ export default {
     },
     //二维码
     wxHandle () {
-      console.log(process.env.WX_WEB_ID)
       var obj = new WxLogin({
         id: "wxLoginQrcode",
         appid: process.env.WX_WEB_ID,
