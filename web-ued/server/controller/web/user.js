@@ -89,7 +89,7 @@ exports.register = function(req, res) {
             return res.json({
               status_code: 200,
               message: '注册成功！',
-              user: postData
+              user: user
             })
           }
         })
