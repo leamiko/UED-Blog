@@ -135,7 +135,7 @@ exports.wxLogin = function(req, res) {
             } else {
               return res.json({
                 status_code: 401,
-                message: '请先登录或注册账号！',
+                message: '请先登录绑定账号！',
                 data: false
               })
             }
