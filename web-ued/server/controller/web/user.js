@@ -105,7 +105,7 @@ exports.wxLogin = function(req, res) {
   return res.json({
     status_code: 200,
     message: '登录成功！',
-    user: req.query
+    user: code
   })
   // wxPcClient.getAccessToken(code, (err, result) => {
   //   if (!err) {
