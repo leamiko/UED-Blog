@@ -106,8 +106,8 @@ exports.wxLogin = function(req, res) {
       const openId = result.data.openid
       wxPcClient.getUser(openId, (err, result) => {
         // 这里获取到了用户的信息, 可以存储在数据库中
-        const { nickname, sex, city, province, country, headimgurl } = result
-        User.findOne({ wxOpenId: openId }, function(err, user) {
+        const { unionid } = result
+        User.findOne({ wxUnionId: unionid }, function(err, user) {
           if (user) {
             // 登录
             req.session.user = user
@@ -118,25 +118,27 @@ exports.wxLogin = function(req, res) {
             })
           } else {
             // 绑定
-            User.findByIdAndUpdate(
-              req.session.user._id,
-              { wxOpenId: openId },
-              function(err, user) {
-                if (user) {
-                  return res.json({
-                    status_code: 200,
-                    message: '绑定成功！',
-                    user: user
-                  })
-                } else {
-                  return res.json({
-                    status_code: 401,
-                    message: '请先登录或注册账号！',
-                    data: null
-                  })
+            if (req.session.user) {
+              User.findByIdAndUpdate(
+                req.session.user._id,
+                { wxUnionId: unionid },
+                function(err, user) {
+                  if (user) {
+                    return res.json({
+                      status_code: 200,
+                      message: '绑定成功！',
+                      user: user
+                    })
+                  }
                 }
-              }
-            )
+              )
+            } else {
+              return res.json({
+                status_code: 401,
+                message: '请先登录绑定账号！',
+                data: false
+              })
+            }
           }
         })
       })

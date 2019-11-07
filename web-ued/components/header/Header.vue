@@ -149,6 +149,7 @@ export default {
   },
   created () {
     this.isLogin();
+    this.wxLogin();
   },
   methods: {
     registerTitle (e) {
@@ -168,6 +169,27 @@ export default {
         window.location.reload()
       }
     },
+    // 调用微信扫码API
+    async wxLogin () {
+      console.log(this.getQueryVariable('code'))
+      const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/wxLogin?code=${this.getQueryVariable('code')}`);
+      if (res.status_code == 200) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+        this.loginForm = {};
+      } else {
+        //登录失败
+        console.log('请先登录绑定账号！')
+      }
+    },
+    getQueryVariable (variable) {
+      var query = window.location.search.substring(1);
+      var vars = query.split("&");
+      for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split("=");
+        if (pair[0] == variable) { return pair[1]; }
+      }
+      return (false);
+    }
   }
 };
 </script>
