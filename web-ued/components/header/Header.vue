@@ -41,6 +41,8 @@
           <el-button
             type="text"
             @click="modalVisible = true"
+            @mouseenter.native="showMsg=true"
+            @mouseleave.native="showMsg=false"
           ><span :class="{'login_text':isChange,'login_text_02':!isChange}">登录</span></el-button>
           <!-- <el-button
             type="text"
@@ -78,7 +80,12 @@
             <img :src="msgNull">
             <span>还没有消息哦</span>
           </div>
-          <div class="badge_hover msg_hover">
+          <div
+            class="badge_hover msg_hover"
+            v-if="showMsg"
+            @mouseenter="showMsg=true"
+            @mouseleave="showMsg=false"
+          >
             <span @click="infoShow = true">个人信息</span>
             <span>退出账号</span>
           </div>
@@ -135,6 +142,7 @@ export default {
       modalVisible: false,
       title: "登录",
       showBadge: 2,
+      showMsg: '',
       infoShow: false, // 个人信息弹窗
       className: 'info_dialog'
     };
