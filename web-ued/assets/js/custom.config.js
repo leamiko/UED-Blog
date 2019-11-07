@@ -271,6 +271,5 @@ module.exports = {
       require('../img/image/avator_7.svg'),
       require('../img/image/avator_8.svg'),
     ]
-  },
-  randomName: ['']
+  }
 }

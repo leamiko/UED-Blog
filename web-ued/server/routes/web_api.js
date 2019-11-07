@@ -33,6 +33,11 @@ router.get('/wxLogin', (req, res) => {
   web_user.wxLogin(req, res)
 })
 
+/*个人信息*/
+router.post('/editInfo', (req, res) => {
+  
+})
+
 /* 文章API */
 //获取blog详情
 router.get('/getBlog', function(req, res, next) {
