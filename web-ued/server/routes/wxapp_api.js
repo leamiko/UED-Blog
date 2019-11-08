@@ -23,6 +23,9 @@ router.post('/register', function(req, res, next) {
 router.get('/wxLogin', (req, res) => {
   wxapp_user.wxLogin(req, res)
 })
+router.get('/isLogin', (req, res) => {
+  wxapp_user.isLogin(req, res)
+})
 
 /* 文章API */
 //获取blog详情
