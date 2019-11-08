@@ -5,7 +5,8 @@ var Schema = mongoose.Schema
 var UserSchema = new Schema(
   {
     nickName: {
-      type: String //昵称
+      type: String, //昵称
+      default: ''
     },
     account: {
       type: String //账号
@@ -18,7 +19,8 @@ var UserSchema = new Schema(
       default: 1
     },
     avatar: {
-      type: String //头像
+      type: String, //头像
+      default: ''
     },
     wxUnionId: {
       type: String //微信unionid

@@ -61,7 +61,7 @@ exports.login = async function(req, res) {
       user['loginType'] = 'wxapp'
       user['wxUnionId'] = unionid
       req.session.user = user
-      await User.findByIdAndUpdate(req.session.user._id, { wxUnionId: unionid })
+    //  await User.findByIdAndUpdate(req.session.user._id, { wxUnionId: unionid })
       return res.json({
         status_code: 200,
         message: '登录成功！',

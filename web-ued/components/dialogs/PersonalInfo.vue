@@ -17,7 +17,7 @@
             </div>
         </div>
         <div slot="footer" class="dialog-footer">
-            <el-button type="primary" round size="large">确定</el-button>
+            <el-button type="primary" round size="large" @click="submit">确定</el-button>
         </div>
     </el-dialog>
 </template>
@@ -73,9 +73,14 @@
                 show: false,
                 name: null,
                 config: custom.write,
-                nameList: []
-                // avatorList: ['avator_1.svg', 'avator_2.svg','avator_3.svg','avator_4.svg','avator_5.svg','avator_6.svg','avator_7.svg','avator_8.svg',]
+                nameList: [],
+                memberInfo: {},  // 用户信息
+                imgUrl: null
             }
+        },
+        mounted() {
+            this.memberInfo = JSON.parse(localStorage.getItem('user'))
+            this.name = this.memberInfo.nickName
         },
         methods: {
             handleClose(done) {
@@ -96,9 +101,8 @@
             },
             // 选择头像
             chooseAvator(item) {
-                let result = ''
                 this.uploadImgToBase64(item.srcElement.currentSrc).then(res => {
-                    result = res
+                    this.imgUrl = res
                     console.log(res)
                 })
 
@@ -127,6 +131,23 @@
                     //reader.onerror = reject
                 })
             },
+
+            async submit() {
+                const params = {
+                    id: this.memberInfo._id,
+                    nickName: this.name,
+                    avatar: this.imgUrl
+                }
+                const res = await this.$axios.post(`${process.env.BASE_URL}/web_api/editInfo`, params);
+                if(res.status == 200) {
+                    let user = res.data.data
+                    console.log(user)
+                    if(user) {
+                        localStorage.removeItem('user')
+                        localStorage.setItem("user", JSON.stringify(user));
+                    }
+                }
+            }
         }
     }
 </script>
