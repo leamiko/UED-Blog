@@ -41,15 +41,15 @@ exports.isLogin = function(req, res) {
   }
 }
 
-exports.login = async function(req, res) {
-  const { account, passWord,unionid } = req.body
+exports.login = function(req, res) {
+  const { account, passWord, unionid } = req.body
   var md5 = crypto.createHash('md5')
   const end_paw = md5.update(passWord).digest('hex')
   const params = {
     account: account,
     passWord: end_paw
   }
-  User.findOne(params, function(err, user) {
+  User.findOne(params, async function(err, user) {
     if (err) {
       return res.json({
         status_code: 201,
@@ -119,7 +119,7 @@ exports.register = function(req, res) {
           account: postData.account,
           passWord: postData.passWord
         })
-        user_1.save(function(err, user) {
+        user_1.save(async function(err, user) {
           if (err) {
             return res.json({
               status_code: 201,
@@ -130,7 +130,9 @@ exports.register = function(req, res) {
             user['loginType'] = 'wxapp'
             user['wxUnionId'] = unionid
             req.session.user = user
-            await User.findByIdAndUpdate(req.session.user._id, { wxUnionId: unionid })
+            await User.findByIdAndUpdate(req.session.user._id, {
+              wxUnionId: unionid
+            })
             return res.json({
               status_code: 200,
               message: '注册成功！',
