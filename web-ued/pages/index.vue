@@ -45,7 +45,7 @@
                   :src="avatar"
                   class="avatar"
                 ></el-avatar>
-                <span class="text_color_time">{{item.author}} · {{updateTime}}</span>&emsp;&emsp;
+                <span class="text_color_time">{{item.author}} · {{item.updateAt | datetimeFormat}}</span>&emsp;&emsp;
                 <span class="text_color">{{item.type}}</span>&emsp;&emsp;
                 <span class="text_color"><img src="@/assets/img/icon/eyes.svg">{{item.viewNum}}</span>&emsp;&emsp;
                 <span class="text_color"><img src="@/assets/img/icon/like.svg">{{item.likeNum}}</span>
@@ -104,6 +104,14 @@ export default {
         }
       ]
     };
+  },
+  filters: {
+    datetimeFormat: function (value) {
+      if (!value) return ''
+      value = value.toString()
+      let date = value.split('T')[0];
+      return date;
+    }
   },
   methods: {
     getScrollTop (val) {

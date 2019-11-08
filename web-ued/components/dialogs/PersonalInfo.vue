@@ -6,13 +6,14 @@
             <!-- <el-avatar :size="40" :src="avator" class="align-top"></el-avatar> -->
             <p>昵称</p>
             <div class="cus-flex cus-align-center nickname">
-                <el-input v-model="name" placeholder="听说，好看的人都会给自己起一个与众不同的名字~"  maxlength="20"></el-input>
+                <el-input v-model="name" placeholder="听说，好看的人都会给自己起一个与众不同的名字~" maxlength="20"></el-input>
                 <span @click="generate">不想起名字</span>
             </div>
             <p>头像</p>
             <div class="cus-flex cus-align-center">
-                <el-avatar v-for="(item,index) in config.avatorList" :key="index" :size="60" :src="item"
-                    class="align-top" shape="square"></el-avatar>
+                <div v-for="(item,index) in config.avatorList" @click="chooseAvator($event)">
+                    <el-avatar :key="index" :size="60" :src="item" class="align-top" shape="square"></el-avatar>
+                </div>
             </div>
         </div>
         <div slot="footer" class="dialog-footer">
@@ -84,15 +85,48 @@
             },
             // 生成随机昵称
             async generate() {
-              const data = await this.$axios.get('/name.txt')
-              data.data = data.data.replace(/[\r\n]/g," ")
-              this.nameList = data.data.split(' ')
-              this.nameList = this.nameList.filter(s =>{
-                  return s && s.trim()
-              })
-            console.log(this.nameList)
-              this.name = this.nameList[Math.floor((Math.random()*this.nameList.length))]
-            }
+                const data = await this.$axios.get('/name.txt')
+                data.data = data.data.replace(/[\r\n]/g, " ")
+                this.nameList = data.data.split(' ')
+                this.nameList = this.nameList.filter(s => {
+                    return s && s.trim()
+                })
+                console.log(this.nameList)
+                this.name = this.nameList[Math.floor((Math.random() * this.nameList.length))]
+            },
+            // 选择头像
+            chooseAvator(item) {
+                let result = ''
+                this.uploadImgToBase64(item.srcElement.currentSrc).then(res => {
+                    result = res
+                    console.log(res)
+                })
+
+            },
+
+            uploadImgToBase64(img) {
+                return new Promise((resolve, reject) => {
+                    let image = new Image()
+                    image.crossOrigin = '';
+                    image.src = img;
+                    image.onload = function () {
+                        var canvas = document.createElement("canvas");
+                        canvas.width = image.width;
+                        canvas.height = image.height;
+                        var ctx = canvas.getContext("2d");
+                        ctx.drawImage(image, 0, 0, image.width, image.height);
+                        var ext = image.src.substring(image.src.lastIndexOf(".") + 1).toLowerCase();
+                        var dataURL = canvas.toDataURL("image/" + ext);
+                        resolve(dataURL);
+                    }
+                    // const reader = new FileReader()
+                    // reader.readAsDataURL(file)
+                    // reader.onload = function () { // 图片转base64完成后返回reader对象
+                    //     resolve(reader)
+                    // }
+                    //reader.onerror = reject
+                })
+            },
         }
-        }
+    }
 </script>
