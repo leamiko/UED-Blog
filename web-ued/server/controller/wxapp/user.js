@@ -86,7 +86,7 @@ exports.logOut = function(req, res) {
   })
 }
 
-exports.register = function(req, res) {
+exports.register = async function(req, res) {
   const { unionid } = req.body
   var md5 = crypto.createHash('md5')
   if (req.body.account === '' && req.body.account.length === 0) {
