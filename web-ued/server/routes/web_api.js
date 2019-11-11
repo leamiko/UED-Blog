@@ -35,7 +35,7 @@ router.get('/wxLogin', (req, res) => {
 
 /*个人信息*/
 router.post('/editInfo', (req, res) => {
-  web_user.editInfo(req, res)
+  //web_user.editInfo(req, res)
 })
 
 /* 文章API */
