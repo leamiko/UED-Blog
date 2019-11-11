@@ -28,7 +28,7 @@
           </ul>
         </div>
         <div class="right_articles" v-infinite-scroll="getWriteList" infinite-scroll-disabled="disabled">
-          <div class="article_block" v-for="item in lists" :hidden="lists.length == 0">
+          <div class="article_block" v-for="(item,index) in lists" :hidden="lists.length == 0" :key="index">
             <img class="title_img" src="../../assets/img/banner/banner-index-banner-8.jpg" alt="">
             <div>
               <p>{{item.title}}</p>

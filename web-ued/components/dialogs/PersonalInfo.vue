@@ -11,7 +11,7 @@
             </div>
             <p>头像</p>
             <div class="cus-flex cus-align-center">
-                <div v-for="(item,index) in config.avatorList" @click="chooseAvator($event)">
+                <div v-for="(item,index) in config.avatorList" @click="chooseAvator($event)" :key="index">
                     <el-avatar :key="index" :size="60" :src="item" class="align-top" shape="square"></el-avatar>
                 </div>
             </div>
