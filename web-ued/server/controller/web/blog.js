@@ -48,7 +48,6 @@ exports.getBlog = function(req, res) {
 
 //首页列表
 exports.getHomeList = async function(req, res) {
-  console.log(await Blog.find())
   const technology = await Blog.findOne({ blogType: 1 }).sort({
     rank: -1
   })
@@ -64,7 +63,6 @@ exports.getHomeList = async function(req, res) {
   const other = await Blog.findOne({ blogType: 5 }).sort({
     rank: -1
   })
-  console.log(technology)
   let data = []
   if (technology) {
     data.push(technology)
@@ -81,8 +79,6 @@ exports.getHomeList = async function(req, res) {
   if (other) {
     data.push(other)
   }
-  console.log(data)
-  // data.push(technology, interaction, design, manage, other)
   return res.json({
     status_code: 200,
     message: '获取列表成功！',

@@ -136,11 +136,11 @@ export default {
     //二维码
     wxHandle () {
       var obj = new WxLogin({
-        id: "wxLoginQrcode",
+        id: "wxBindQrcode",
         appid: process.env.WX_WEB_ID,
         scope: "snsapi_login",
-        redirect_uri: window.location.href,
-        // redirect_uri: 'http://ued.lunz.cn',
+        // redirect_uri: window.location.href,
+        redirect_uri: 'http://ued.lunz.cn',
         state: "",
         style: "",
         href: ""
