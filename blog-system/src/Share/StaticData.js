@@ -28,6 +28,12 @@ const menuList = [
     name: '字典管理',
     linkUrl: '/dictionary',
     iconName: 'file-search'
+  },
+  {
+    code: '6',
+    name: '头像管理',
+    linkUrl: '/avatar',
+    iconName: 'file-search'
   }
 ]
 

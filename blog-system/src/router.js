@@ -81,6 +81,14 @@ const router = new Router({
           meta: {
             title: '查看Bug详情'
           }
+        },
+        {
+          path: '/avatar',
+          name: 'avatar',
+          component: () => import('./views/Avatar.vue'),
+          meta: {
+            title: '头像管理'
+          }
         }
       ]
     }
