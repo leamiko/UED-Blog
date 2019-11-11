@@ -7,7 +7,7 @@
             <p>昵称</p>
             <div class="cus-flex cus-align-center nickname">
                 <el-input v-model="name" placeholder="听说，好看的人都会给自己起一个与众不同的名字~" maxlength="20"></el-input>
-                <span @click="generate">不想起名字</span>
+                <span @click="generate">想不起名字</span>
             </div>
             <p>头像</p>
             <div class="cus-flex cus-align-center">
@@ -70,23 +70,24 @@
         },
         data() {
             return {
-                show: false,
                 name: null,
                 config: custom.write,
                 nameList: [],
-                memberInfo: {},  // 用户信息
+                memberInfo: {}, // 用户信息
                 imgUrl: null
             }
         },
         mounted() {
-            this.memberInfo = JSON.parse(localStorage.getItem('user'))
+            if(localStorage.user) {
+             this.memberInfo = JSON.parse(localStorage.getItem('user'))
             this.name = this.memberInfo.nickName
+            }
         },
         methods: {
             handleClose(done) {
                 this.$emit('hide', true);
-                this.show = false;
-                // done();
+                this.isShow = false;
+                done();
             },
             // 生成随机昵称
             async generate() {
@@ -99,37 +100,27 @@
                 console.log(this.nameList)
                 this.name = this.nameList[Math.floor((Math.random() * this.nameList.length))]
             },
-            // 选择头像
+            // // 选择头像
             chooseAvator(item) {
-                this.uploadImgToBase64(item.srcElement.currentSrc).then(res => {
+                this.uploadImgToBase64(item.srcElement.currentSrc, (res) => {
                     this.imgUrl = res
-                    console.log(res)
+                    console.log(this.imgUrl)
                 })
-
             },
-
-            uploadImgToBase64(img) {
-                return new Promise((resolve, reject) => {
-                    let image = new Image()
-                    image.crossOrigin = '';
-                    image.src = img;
-                    image.onload = function () {
-                        var canvas = document.createElement("canvas");
-                        canvas.width = image.width;
-                        canvas.height = image.height;
-                        var ctx = canvas.getContext("2d");
-                        ctx.drawImage(image, 0, 0, image.width, image.height);
-                        var ext = image.src.substring(image.src.lastIndexOf(".") + 1).toLowerCase();
-                        var dataURL = canvas.toDataURL("image/" + ext);
-                        resolve(dataURL);
-                    }
-                    // const reader = new FileReader()
-                    // reader.readAsDataURL(file)
-                    // reader.onload = function () { // 图片转base64完成后返回reader对象
-                    //     resolve(reader)
-                    // }
-                    //reader.onerror = reject
-                })
+            uploadImgToBase64(img, callback) {
+                let image = new Image()
+                image.crossOrigin = '';
+                image.src = img;
+                image.onload = function () {
+                    var canvas = document.createElement("canvas");
+                    canvas.width = image.width;
+                    canvas.height = image.height;
+                    var ctx = canvas.getContext("2d");
+                    ctx.drawImage(image, 0, 0, image.width, image.height);
+                    var ext = image.src.substring(image.src.lastIndexOf(".") + 1).toLowerCase();
+                    var dataURL = canvas.toDataURL("image/" + ext);
+                    callback ? callback(dataURL) : null; //调用回调函数
+                }
             },
 
             async submit() {
@@ -139,12 +130,17 @@
                     avatar: this.imgUrl
                 }
                 const res = await this.$axios.post(`${process.env.BASE_URL}/web_api/editInfo`, params);
-                if(res.status == 200) {
+                if (res.status == 200) {
                     let user = res.data.data
                     console.log(user)
-                    if(user) {
+                    if (user) {
                         localStorage.removeItem('user')
                         localStorage.setItem("user", JSON.stringify(user));
+                        this.isShow = false
+                        this.$message({
+                            message: '信息更新成功',
+                            type: 'success'
+                        });
                     }
                 }
             }

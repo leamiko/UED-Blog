@@ -174,8 +174,10 @@ exports.editInfo = function(req, res) {
       })
     }
     if (user) { // 如果有该昵称的用户，则昵称重复
-      res.send('该昵称已存在！')
-      return
+      if(user._id != req.body.id) {
+        res.send('该昵称已存在！')
+        return
+      }
     }
     User.findByIdAndUpdate(req.body.id, req.body, {new: true}, function(errors, result) {
       if (errors) {
