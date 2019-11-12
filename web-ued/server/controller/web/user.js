@@ -59,7 +59,7 @@ exports.register = function(req, res) {
   const pwd = md5.update(req.body.passWord).digest('hex')
   var postData = {
     account: req.body.account,
-    passWord: pwd,
+    passWord: pwd
   }
   User.findOne(
     {
@@ -107,6 +107,7 @@ exports.wxLogin = function(req, res) {
       wxPcClient.getUser(openId, (err, result) => {
         // 这里获取到了用户的信息, 可以存储在数据库中
         const { unionid } = result
+        // console.log(unionid)
         User.findOne({ wxUnionId: unionid }, function(err, user) {
           if (user) {
             // 登录
@@ -163,37 +164,44 @@ exports.isLogin = function(req, res) {
 }
 
 exports.editInfo = function(req, res) {
-  User.findOne( {
-    nickName: req.body.nickName
-  }, function(err, user) {
-    if (err) {
-      return res.json({
-        status_code: 201,
-        message: err,
-        data: null
-      })
-    }
-    if (user) { // 如果有该昵称的用户，则昵称重复
-      res.send('该昵称已存在！')
-      return
-    }
-    User.findByIdAndUpdate(req.body.id, req.body, {new: true}, function(errors, result) {
-      if (errors) {
+  User.findOne(
+    {
+      nickName: req.body.nickName
+    },
+    function(err, user) {
+      if (err) {
         return res.json({
           status_code: 201,
-          message: errors,
+          message: err,
           data: null
         })
       }
-      if(result) {
-        return res.json({
-          status_code: 200,
-          message: '修改成功！',
-          data: result
-        })  
+      if (user) {
+        // 如果有该昵称的用户，则昵称重复
+        if (user._id != req.body.id) {
+          res.send('该昵称已存在！')
+          return
+        }
       }
-    })
-
-  })
-
+      User.findByIdAndUpdate(req.body.id, req.body, { new: true }, function(
+        errors,
+        result
+      ) {
+        if (errors) {
+          return res.json({
+            status_code: 201,
+            message: errors,
+            data: null
+          })
+        }
+        if (result) {
+          return res.json({
+            status_code: 200,
+            message: '修改成功！',
+            data: result
+          })
+        }
+      })
+    }
+  )
 }

@@ -79,7 +79,6 @@ exports.getHomeList = async function(req, res) {
   if (other) {
     data.push(other)
   }
-  // data.push(technology, interaction, design, manage, other)
   return res.json({
     status_code: 200,
     message: '获取列表成功！',

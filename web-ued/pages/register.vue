@@ -136,7 +136,7 @@ export default {
     //二维码
     wxHandle () {
       var obj = new WxLogin({
-        id: "wxLoginQrcode",
+        id: "wxBindQrcode",
         appid: process.env.WX_WEB_ID,
         scope: "snsapi_login",
         // redirect_uri: window.location.href,
