@@ -1,67 +1,91 @@
 <template>
-  <div class="my-header"
-       ref="header">
+  <div
+    class="my-header"
+    ref="header"
+  >
     <div class="cus-flex cus-flex-between cus-align-center">
       <div>
-        <el-avatar :size="42"
-                   :src="logoURL"
-                   class="middle"></el-avatar>
+        <el-avatar
+          :size="42"
+          :src="logoURL"
+          class="middle"
+        ></el-avatar>
         <h2 class="inline middle">{{ custom.title }}</h2>
         <ul>
-          <li v-for="(item, index) in custom.menu"
-              :key="index"
-              :class="{'active': activeLabel === item.label}">
+          <li
+            v-for="(item, index) in custom.menu"
+            :key="index"
+            :class="{'active': activeLabel === item.label}"
+          >
             <router-link :to="item.redirectUrl">{{ item.label }}</router-link>
           </li>
         </ul>
       </div>
       <div class="cus-flex cus-align-center">
         <slot name="box_cus"></slot>&emsp;&emsp;
-        <el-badge is-dot
-                  class="item">
-          <div class="inline pointer"
-               @mouseenter="showBadge=1"
-               @mouseleave="showBadge=2">
-            <img :src="showBadge===2?(isChange===true? msgURL :msgUrl02 ):msgURLHover"
-                 class="message"></div>
+        <el-badge
+          is-dot
+          class="item"
+        >
+          <div
+            class="inline pointer"
+            @mouseenter="showBadge=1"
+            @mouseleave="showBadge=2"
+          >
+            <img
+              :src="showBadge===2?(isChange===true? msgURL :msgUrl02 ):msgURLHover"
+              class="message"
+            ></div>
         </el-badge>
         <div class="logModal">
-          <el-button type="text"
-                     @click="modalVisible = true"
-                     @mouseenter.native="showMsg=true"
-                     @mouseleave.native="showMsg=false"><span :class="{'login_text':isChange,'login_text_02':!isChange}">登录</span></el-button>
+          <el-button
+            type="text"
+            @click="modalVisible = true"
+            @mouseenter.native="showMsg=true"
+            @mouseleave.native="showMsg=false"
+          ><span :class="{'login_text':isChange,'login_text_02':!isChange}">登录</span></el-button>
           <!-- <el-button
             type="text"
             @click="infoShow = true"
           >个人信息</el-button> -->
-          <el-dialog :title="title"
-                     :visible.sync="modalVisible"
-                     :append-to-body="true"
-                     custom-class="logDialog"
-                     :center="true"
-                     :close-on-click-modal="false">
-            <my-login v-if="$store.state.isLogin"
-                      :title="title"
-                      @titleChanged="registerTitle($event)"
-                      @modalChanged="modalChanged($event)"></my-login>
-            <my-register v-if="!$store.state.isLogin"
-                         @titleChanged="loginTitle($event)"></my-register>
+          <el-dialog
+            :title="title"
+            :visible.sync="modalVisible"
+            :append-to-body="true"
+            custom-class="logDialog"
+            :center="true"
+            :close-on-click-modal="false"
+          >
+            <my-login
+              v-if="$store.state.isLogin"
+              :title="title"
+              @titleChanged="registerTitle($event)"
+              @modalChanged="modalChanged($event)"
+            ></my-login>
+            <my-register
+              v-if="!$store.state.isLogin"
+              @titleChanged="loginTitle($event)"
+            ></my-register>
           </el-dialog>
           <!-- <router-link
           :to="'login'"
           class="text_size_18"
         >登录</router-link> -->
-          <div class="badge_hover"
-               v-if="showBadge===1"
-               @mouseenter="showBadge=1"
-               @mouseleave="showBadge=2">
+          <div
+            class="badge_hover"
+            v-if="showBadge===1"  
+            @mouseenter="showBadge=1"
+            @mouseleave="showBadge=2"
+          >
             <img :src="msgNull">
             <span>还没有消息哦</span>
           </div>
-          <div class="badge_hover msg_hover"
-               v-if="showMsg"
-               @mouseenter="showMsg=true"
-               @mouseleave="showMsg=false">
+          <div
+            class="badge_hover msg_hover"
+            v-if="showMsg"
+            @mouseenter="showMsg=true"
+            @mouseleave="showMsg=false"
+          >
             <span @click="infoShow = true">个人信息</span>
             <span>退出账号</span>
           </div>
@@ -69,9 +93,11 @@
       </div>
     </div>
     <!-- 模态框 -->
-    <person-dialog :isShow="infoShow"
-                   :classStyle="className"
-                   @hide="infoShow=false"></person-dialog>
+    <person-dialog
+      :isShow="infoShow"
+      :classStyle="className"
+      @hide="infoShow=false"
+    ></person-dialog>
   </div>
 
 </template>
@@ -153,8 +179,8 @@ export default {
     },
     // 调用微信扫码API
     async wxLogin () {
-      const res = await this.$axios.get(
-        `${process.env.BASE_URL}/web_api/wxLogin?code=${this.getQueryVariable('code')}`);
+      console.log(this.getQueryVariable('code'))
+      const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/wxLogin?code=${this.getQueryVariable('code')}`);
       if (res.status_code == 200) {
         localStorage.setItem("user", JSON.stringify(data.user));
         this.loginForm = {};
@@ -168,9 +194,7 @@ export default {
       var vars = query.split("&");
       for (var i = 0; i < vars.length; i++) {
         var pair = vars[i].split("=");
-        if (pair[0] == variable) {
-          return pair[1];
-        }
+        if (pair[0] == variable) { return pair[1]; }
       }
       return (false);
     }
@@ -185,21 +209,17 @@ export default {
   margin-top: 10px;
   margin-right: 22px;
 }
-
 .middle {
   vertical-align: middle;
   margin-bottom: 8px;
 }
-
 a {
   color: inherit;
   text-decoration: none;
-
   &:hover {
     color: $primary_blue;
   }
 }
-
 .my-header {
   min-height: 82px;
   color: #34485e;
@@ -213,7 +233,6 @@ a {
       max-width: 1200px;
       margin: 0 auto;
     }
-
     &:nth-child(2) {
       padding-top: 66px;
       padding-bottom: 40px;
@@ -224,7 +243,6 @@ a {
   img {
     width: 42px;
     height: 42px;
-
     &.message {
       width: 21px;
       height: 21px;
@@ -239,17 +257,14 @@ a {
     display: inline-flex;
     list-style: none;
     padding-top: 3px;
-
     li {
       margin-right: 60px;
-
       &.active {
         color: $primary_blue;
       }
     }
   }
 }
-
 .badge_hover {
   position: absolute;
   right: 363px;
@@ -260,12 +275,10 @@ a {
   background: white;
   border-radius: 4px;
   text-align: center;
-
   img {
     width: 178px;
     height: 144px;
   }
-
   span {
     padding-top: 20px;
     font-weight: 400;
@@ -274,34 +287,27 @@ a {
     font-size: 14px;
   }
 }
-
 .login_text {
   color: #ececec !important;
-
   &:hover {
     color: $primary_blue !important;
   }
 }
-
 .login_text_02 {
   color: rgba(52, 72, 94, 1) !important;
-
   &:hover {
     color: $primary_blue !important;
   }
 }
-
 .msg_hover {
   padding: 10px 0 !important;
   width: 113px !important;
   height: 106px !important;
-
   span {
     display: inline-block;
     font-size: 16px;
     padding: 10px 20px !important;
     color: rgba(52, 72, 94, 1);
-
     &:hover {
       background: rgba(249, 249, 249, 1);
       color: rgba(51, 118, 255, 1);
