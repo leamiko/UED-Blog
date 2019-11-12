@@ -126,8 +126,8 @@ module.exports = {
   index: {
     swipers: [
       require('../img/banner/banner-index-banner-1.jpg'),
-      // require('../img/banner/banner-index-banner-2.jpg'),
-      // require('../img/banner/banner-index-banner-3.jpg'),
+      require('../img/banner/banner-index-banner-2.jpg'),
+      require('../img/banner/banner-index-banner-3.jpg'),
       // require('../img/banner/banner-index-banner-4.jpg'),
       // require('../img/banner/banner-index-banner-5.jpg'),
       // require('../img/banner/banner-index-banner-6.jpg'),
