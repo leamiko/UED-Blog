@@ -14,6 +14,8 @@
               </el-dropdown>
             </div>
           </my-header>
+        </div>
+        <div class="my-content">
           <div class="code_search">
             <my-search @search="getSearch" :value="searchVal"></my-search>
             <div class="design_bar">
@@ -26,8 +28,6 @@
               </div>
             </div>
           </div>
-        </div>
-        <div class="my-content">
           <!-- 无结果 -->
           <div class="code_noresult bg-white" v-show="true">
             <!-- <no-result @active="askShow=true"></no-result> -->
@@ -164,87 +164,206 @@ export default {
 .frt {
   float: right;
 }
-.code_search {
-  padding-top: 66px;
-  padding-bottom: 40px;
-  border-top: 1px solid #ececec;
-  box-shadow: 0px 4px 5px 0px #ececec;
+.my-content {
+  padding: 82px 0 46px;
+
   > div {
+    max-width: 1200px;
+    min-width: 960px;
     @extend .center;
-    width: 62.5%;
-    min-width: 600px;
-    max-width: 922px;
-  }
-  .design_bar {
-    margin-top: 30px;
-    .design_classI {
-      margin-right: 45px;
-      .el-link {
-        font-weight: 600;
-        .el-link--default{
-          color: #34485E;
+
+    &:first-child {
+      width: 100%;
+      max-width: initial;
+      min-width: initial;
+      padding-top: 66px;
+      padding-bottom: 40px;
+      background: #fff;
+      border-top: 1px solid #ececec;
+      box-shadow: 0px 4px 5px 0px #ececec;
+      > div {
+        @extend .center;
+        width: 62.5%;
+        min-width: 960px;
+        max-width: 1200px;
+        min-width: 600px;
+        max-width: 922px;
+      }
+      .design_bar {
+        margin-top: 30px;
+        .design_classI {
+          margin-right: 45px;
+          .el-link {
+            font-weight: 600;
+            .el-link--default{
+              color: #34485E;
+            }
+          }
+        }
+        .design_classI:active {
+          color: #3376FF;
+        }
+        .design_classII {
+          .el-tag.el-tag--info {
+            display: inline-block;
+            margin-top: 16px;
+            margin-right: 20px;
+            padding: 0 16px;
+            color: #A3B3BF;
+            font-size: 14px;
+            background:#F0F5F9;
+            border-radius:16px;
+            border: none;
+          }
         }
       }
     }
-    .design_classI:active {
-      color: #3376FF;
-    }
-    .design_classII {
-      .el-tag.el-tag--info {
-        display: inline-block;
-        margin-top: 16px;
-        margin-right: 20px;
-        padding: 0 16px;
-        color: #A3B3BF;
-        font-size: 14px;
-        background:#F0F5F9;
-        border-radius:16px;
-        border: none;
+
+    &.code_noresult {
+      display: flex;
+      height: 218px;
+      margin-top: 20px;
+      margin-bottom: 30px;
+      padding-top: 38px;
+      box-shadow:0px 1px 5px 0px rgba(236,236,236,0.5);
+      .noresult_img {
+        width: 234px;
+        height: 185px;
+        margin-left: calc((100% - 614px)/2);
+        img {
+          width: 100%;
+        }
+      }
+      .noresult_prompt {
+        flex: 1;
+        margin-top: 60px;
+        margin-left: 50px;
+        color: #A0A0A0;
+        .ask_btn {
+          margin-left: 20px;
+          padding: 6px 19px;
+          color: #3376FF;
+          border: 1px solid #3376FF;
+          border-radius: 15px;
+        }
+        .ask_btn:focus {
+          outline: none;
+        }
       }
     }
   }
 }
-.my-content {
-  padding-top: 335px;
-  padding-bottom: 46px;
-  // min-height: 560px;
-  min-width: 600px;
-  max-width: 1200px;
-  @extend .center;
-}
-// 无结果
-.code_noresult {
-  display: flex;
-  height: 218px;
-  margin-top: 20px;
-  margin-bottom: 30px;
-  padding-top: 38px;
-  box-shadow:0px 1px 5px 0px rgba(236,236,236,0.5);
-  .noresult_img {
-    width: 234px;
-    height: 185px;
-    margin-left: calc((100% - 614px)/2);
-    img {
-      width: 100%;
-    }
-  }
-  .noresult_prompt {
-    flex: 1;
-    margin-top: 60px;
-    margin-left: 50px;
-    color: #A0A0A0;
-    .ask_btn {
-      margin-left: 20px;
-      padding: 6px 19px;
-      color: #3376FF;
-      border: 1px solid #3376FF;
-      border-radius: 15px;
-    }
-    .ask_btn:focus {
-      outline: none;
+
+@media screen and(min-width: 1024px) {
+  .my-content {
+
+    > div {
+      width: 960px;
+
+      &:first-child {
+
+        > div {
+          width: 600px;
+        }
+      }
     }
   }
 }
+
+@media screen and(min-width: 1100px) {
+  .my-content {
+
+    > div {
+      width: 1000px;
+
+      &:first-child {
+
+        > div {
+          width: 720px;
+        }
+      }
+    }
+  }
+}
+@media screen and(min-width: 1280px) {
+  .my-content {
+
+    > div {
+      width: 1100px;
+
+      &:first-child {
+
+        > div {
+          width: 840px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and(min-width: 1366px) {
+  .my-content {
+
+    > div {
+      width: 1200px;
+
+      &:first-child {
+
+        > div {
+          width: 922px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and(min-width: 1440px) {
+  .my-content {
+
+    > div {
+      width: 1200px;
+
+      &:first-child {
+
+        > div {
+          width: 922px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and(min-width: 1680px) {
+  .my-content {
+
+    > div {
+      width: 1200px;
+
+      &:first-child {
+
+        > div {
+          width: 922px;
+        }
+      }
+    }
+  }
+}
+@media screen and(min-width: 1920px) {
+  .my-content {
+
+    > div {
+      width: 1200px;
+
+      &:first-child {
+
+        > div {
+          width: 922px;
+        }
+      }
+    }
+  }
+}
+
 .code_list {
   box-shadow:0px 1px 5px 0px rgba(236,236,236,0.5);
   .category_tabs {
@@ -324,6 +443,6 @@ export default {
       background: #ffffff;
     }
   }
-  
+
 }
 </style>>

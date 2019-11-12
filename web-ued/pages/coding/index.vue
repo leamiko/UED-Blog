@@ -1,74 +1,135 @@
 <template>
-  <my-scrollbar hasHead hasFoot :headStyle="{'background':'white'}" :headActive="'打码'">
-    <div slot="container">
-      <!-- <button @click="testGetListApi()">get</button>
-      <button @click="testAddApi()">add</button>
-      <button @click="testDetailApi()">detail</button>
-      <button @click="testDelApi()">delate</button><br>
-      <button @click="testSearchApi()">search</button><br> -->
-      <router-link :to="'/coding/search'">去搜索</router-link><br>
-      <router-link :to="'/coding/list'">去打码列表</router-link><br>
-      <router-link :to="'/coding/solve'">去提供解决方案</router-link><br>
-    </div>
-  </my-scrollbar>
+  <div class="cus-full-screen hidden bg-white">
+    <my-scrollbar hasHead hasFoot :headActive="'打码'" :isFootMenu="false" :mainStyle="{'background':'white'}" :headStyle="styleConf">
+      <div slot="head_custom">
+        <el-dropdown trigger="click" size="medium" split-button type="primary" @command="handleCommand">
+          创建
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="askShow"><p>我要提问</p></el-dropdown-item>
+            <el-dropdown-item command="answer"><p>提供解决方案</p></el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
+      <div slot="container" class="my-body">
+        <div>
+          <div class="my-search">
+            <h1 class="text-center">Bug避坑专用搜索引擎</h1>
+            <my-search @search="getSearch"></my-search>
+            <div>
+              <br><br>
+              <h4 class="text-dark">大家都在搜</h4><br>
+              <div>
+                <my-tag class="my-tag" v-for="item in list" :key="item.name" :text="item.name"></my-tag>
+                <!-- <el-tag :type="item.type" v-for="item in list" :key="item.name"> {{item.name}} </el-tag> -->
+              </div>
+            </div>
+          </div>
+          <div class="my-card">
+            <div class="cus-flex cus-flex-between cus-align-center">
+              <h4 class="text-dark">热门问题</h4>
+              <el-button size="medium" round> 查看更多<i class="el-icon-arrow-right el-icon-caret-right"></i> </el-button>
+            </div>
+            <ul>
+              <li v-for="item in hotList" :key="item.id">
+                <el-link :underline="false" href="javascript:void(0)" target="_blank">{{item.name}}</el-link>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </my-scrollbar>
+
+    <!-- 模态框 -->
+    <quiz-dialog :isShow="askShow" :classStyle="className" placeholder="请一句话描述你的问题" @hide="askShow=false"></quiz-dialog>
+  </div>
 </template>
+
 <script>
-import * as custom from "@/assets/js/custom.config";
+import * as custom from '@/assets/js/custom.config';
 import MyScrollbar from '@/components/scroller/Scrollbar';
-import { async } from 'q';
+import QuizDialog from '@/components/dialogs/QuizDialog';
+import MySearch from '@/components/search/Search';
+import MyTag from '@/components/Tag';
 export default {
   components: {
-    MyScrollbar
+    MyScrollbar,
+    QuizDialog,
+    MySearch,
+    MyTag
   },
-  data () {
+  data() {
     return {
-      config: custom.search,
-      list:  custom.search.list[0],
+      styleConf: {
+        'background':'white',
+        'borderBottom':'1px solid #DCDFE6',
+        'boxShadow': '0 0 2px rgba(0, 0, 0, 0.12)',
+        'marginBottom': '4px'
+      },
+      list: custom.search.hotLabel,
+      hotList: custom.search.hotList,
+      askShow: false,
+      className: 'custom-dialog'
     }
-  },
-  mounted () {
   },
   methods: {
-    async testAddApi () {
-      let params = {
-        title: 'req.body.title',
-        content: 'req.body.content',
-        tags: [],
-        bugStatus: true,
-        bugSolution: 'req.body.bugSolution',
-        author: 'req.body.author'
+    handleCommand(command) {
+      if (command === 'answer') {
+        this.$router.push({
+          path: '/coding/solve'
+        })
+        return;
       }
-      const { data } = await this.$axios.post(`${process.env.BASE_URL}/web_api/AddBugItems`, params);
-      console.log(data);
+      this[command] = !this[command];
     },
-    async testGetListApi () {
-      let params = {
-        pageIndex: 1,
-        pageSize: 10
-      }
-      const { data } = await this.$axios.post(`${process.env.BASE_URL}/web_api/GetBugList`, params);
-      console.log(data);
-    },
-    async testDetailApi () {
-      const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/GetBugDetail?bugId=5cf8b075c26c2f18a0cb4fa7`);
-      console.log(res);
-    },
-    async testDelApi () {
-      let params = {
-        id: '5cf8b075c26c2f18a0cb4fa7'
-      }
-      const { data } = await this.$axios.post('/api_nuxt/DeleteBugById', params);
-      console.log(data);
-    },
-    async testSearchApi() {
-      let params = {
-        keywords: 'author',
-        pageIndex: 1,
-        pageSize: 10
-      }
-      const { data } = await this.$axios.post(`/web_api/SearchByKeywords`, params);
-      console.log(data);
+    getSearch(val) {
+      console.log(val);
     }
-  },
+  }
 }
 </script>
+
+<style lang="scss" scoped>
+@import '@/assets/style/cus.scss';
+@import '@/assets/style/base.scss';
+.my-body {
+  min-height: calc(100% - 151px);
+  > div {
+    width: 1000px;
+    @extend .cus-box-center;
+  }
+  .my-search {
+    width: 760px;
+    @extend .cus-box-center;
+    padding-top: 133px;
+
+    h1 {
+      margin-bottom: 50px;
+    }
+  }
+  .my-card  {
+    background: #F7FAFC;
+    border-radius: 4px;
+    padding: 30px;
+    margin: 140px 0 95px;
+    ul {
+      list-style: none;
+      padding: 30px 0 0;
+      > li {
+        padding: 20px 0;
+        border-bottom: 1px solid #EFF3F7;
+
+        &:last-child {
+          border-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+.my-tag {
+  margin-right: 10px;
+  &:nth-last-child(1) {
+    margin-right: 0;
+  }
+}
+</style>>
