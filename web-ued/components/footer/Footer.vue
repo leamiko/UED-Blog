@@ -54,9 +54,9 @@ h5 {
   background: white;
 
   > div.foot {
-    width: 62.5%;
     height: 100%;
-    min-width: 600px;
+    width: 62.5%;
+    min-width: 960px;
     max-width: 1200px;
     margin: 0 auto;
     padding: 102px 0 68px;
@@ -93,6 +93,67 @@ h5 {
       &:nth-last-child(1) {
         margin-bottom: 0;
       }
+    }
+  }
+}
+
+@media screen and(min-width: 1024px){
+  .my-footer {
+
+    > div.foot {
+      width: 960px;
+    }
+  }
+}
+
+@media screen and(min-width: 1100px) {
+  .my-footer {
+
+    > div.foot {
+      width: 1000px;
+    }
+  }
+}
+@media screen and(min-width: 1280px) {
+  .my-footer {
+
+    > div.foot {
+      width: 1100px;
+    }
+  }
+}
+
+@media screen and(min-width: 1366px) {
+  .my-footer {
+
+    > div.foot {
+      width: 1200px;
+    }
+  }
+}
+
+@media screen and(min-width: 1440px) {
+  .my-footer {
+
+    > div.foot {
+      width: 1200px;
+    }
+  }
+}
+
+@media screen and(min-width: 1680px) {
+  .my-footer {
+
+    > div.foot {
+      width: 1200px;
+    }
+  }
+}
+@media screen and(min-width: 1920px) {
+  .my-footer {
+
+    > div.foot {
+      width: 1200px;
     }
   }
 }

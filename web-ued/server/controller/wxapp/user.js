@@ -1,5 +1,6 @@
 var User = require('../../models/user.js') //引入user表
 var request = require('request')
+var crypto = require('crypto')
 
 // 微信授权登录
 exports.wxLogin = function(req, res) {
@@ -61,7 +62,7 @@ exports.login = function(req, res) {
       user['loginType'] = 'wxapp'
       user['wxUnionId'] = unionid
       req.session.user = user
-    //  await User.findByIdAndUpdate(req.session.user._id, { wxUnionId: unionid })
+      //  await User.findByIdAndUpdate(req.session.user._id, { wxUnionId: unionid })
       return res.json({
         status_code: 200,
         message: '登录成功！',

@@ -42,7 +42,7 @@
     </div>
     <div class="codeBox"
          v-show="iscodeBox">
-      <div class="text">请使用微信扫码二维码登录</div>
+      <div class="text">请使用微信扫描二维码登录</div>
       <div class="box"
            id="wxLoginQrcode">假设这里有二维码</div>
     </div>
