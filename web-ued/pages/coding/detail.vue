@@ -100,7 +100,7 @@
                 <img src="@/assets/img/image/code_presenter.png" />
               </div>
               <div class="current_edit inline">
-                <my-editor :height="'104px'" :placeholder="'我有一个大胆的想法～'"></my-editor>
+                <my-editor onkeyup="onEditorChange" :height="'104px'" :placeholder="'我有一个大胆的想法～'"></my-editor>
                 <br />
                 <div class="text-right">
                   <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
@@ -109,6 +109,7 @@
                     round
                     size="small"
                     @click="submit()"
+                    v-bind:class="{comment_btn: haveCommentContent}"
                   >&emsp;评&nbsp;论&emsp;</el-button>
                 </div>
               </div>
@@ -280,15 +281,24 @@ export default {
       isAnonymous: false,
       resultMsg: "",
       resultImage: "",
-      showDialog: false
+      showDialog: false,
+      commentContent: "",
+      haveCommentContent: false
     };
   },
   mounted() {},
   methods: {
+    // 发布评论
     submit() {
+      if (!haveCommentContent) return;
+      console.log(this.commentContent);
       this.resultMsg = "发布成功!";
       this.resultImage = successImg;
       this.showDialog = true;
+    },
+    onEditorChange({ editor, text }) {
+      this.commentContent = text;
+      this.haveCommentContent = text ? true : false;
     }
   }
 };
@@ -475,8 +485,8 @@ export default {
     .comment_text {
       padding-bottom: 30px;
       .current_user {
-        width: 60px;
-        margin-right: 26px;
+        width: 50px;
+        margin-right: 10px;
         vertical-align: top;
         img {
           width: 100%;
@@ -546,5 +556,10 @@ export default {
   font-weight: 400;
   color: rgba(145, 153, 161, 1);
   margin-top: 15px;
+}
+.comment_btn {
+  background: #f2f5f6;
+  color: #9199a1;
+  border: none;
 }
 </style>
