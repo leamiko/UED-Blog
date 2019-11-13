@@ -100,7 +100,7 @@
                 <img src="@/assets/img/image/code_presenter.png" />
               </div>
               <div class="current_edit inline">
-                <my-editor onkeyup="onEditorChange" :height="'104px'" :placeholder="'我有一个大胆的想法～'"></my-editor>
+                <my-editor @change="onEditorChange" :height="'104px'" :placeholder="'我有一个大胆的想法～'"></my-editor>
                 <br />
                 <div class="text-right">
                   <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
@@ -109,7 +109,7 @@
                     round
                     size="small"
                     @click="submit()"
-                    v-bind:class="{comment_btn: haveCommentContent}"
+                    v-bind:class="{comment_btn_gray: !haveCommentContent}"
                   >&emsp;评&nbsp;论&emsp;</el-button>
                 </div>
               </div>
@@ -121,10 +121,9 @@
               </div>
               <div class="current_edit inline">
                 <div class="comment_unit_name">Maria</div>
-                <div class="comment_unit_content">
-                  写的真的很棒，虽然还远没有做到架构师的级别，但是看到了自己的不足和应该努力
-                  的方向。
-                </div>
+                <div
+                  class="comment_unit_content"
+                >写的真的很棒，虽然还远没有做到架构师的级别，但是看到了自己的不足和应该努力的方向但是看到了自己的不足和应该努力的方向。</div>
                 <div class="comment_unit_bottom">
                   <div class="comment_unit_bottom_left">
                     <div class="comment_unit_bottom_btn">
@@ -145,10 +144,7 @@
                       <span>回复</span>
                       Maria
                     </div>
-                    <div class="comment_unit_content">
-                      写的真的很棒，虽然还远没有做到架构师的级别，但是看到了自己的不足和应该努力
-                      的方向。
-                    </div>
+                    <div class="comment_unit_content">写的真的很棒，虽然还远没有做到架构师的级别，但是看到了自己的不足和应该努力的方向。</div>
                     <div class="comment_unit_bottom">
                       <div class="comment_unit_bottom_left">
                         <div class="comment_unit_bottom_btn">
@@ -182,72 +178,6 @@
                 <div class="btn_blue">查看更多回复</div>
               </div>
               <hr class="comment_hr" />
-            </div>
-            <div class="comment_text">
-              <div class="current_user inline">
-                <img src="@/assets/img/image/code_presenter.png" />
-              </div>
-              <div class="current_edit inline">
-                <div class="comment_unit_name">Maria</div>
-                <div class="comment_unit_content">
-                  写的真的很棒，虽然还远没有做到架构师的级别，但是看到了自己的不足和应该努力
-                  的方向。
-                </div>
-                <div class="comment_unit_bottom">
-                  <div class="comment_unit_bottom_left">
-                    <div class="comment_unit_bottom_btn">
-                      <img src="@/assets/img/icon/icon-support.svg" />
-                      0
-                    </div>
-                    <div class="comment_unit_bottom_btn margin_left_15">删除</div>
-                  </div>
-                  <div class="comment_unit_bottom_right">2019-09-06</div>
-                </div>
-                <div class="comment_text margin_top_40">
-                  <div class="current_user inline">
-                    <img src="@/assets/img/image/code_presenter.png" />
-                  </div>
-                  <div class="current_edit inline">
-                    <div class="comment_unit_name">
-                      Nike
-                      <span>回复</span>
-                      Maria
-                    </div>
-                    <div class="comment_unit_content">
-                      写的真的很棒，虽然还远没有做到架构师的级别，但是看到了自己的不足和应该努力
-                      的方向。
-                    </div>
-                    <div class="comment_unit_bottom">
-                      <div class="comment_unit_bottom_left">
-                        <div class="comment_unit_bottom_btn">
-                          <img src="@/assets/img/icon/icon-support.svg" />
-                          0
-                        </div>
-                        <div class="comment_unit_bottom_btn margin_left_15">回复</div>
-                      </div>
-                      <div class="comment_unit_bottom_right">2019-09-06</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="comment_text">
-                  <div class="current_user inline">
-                    <img src="@/assets/img/image/code_presenter.png" />
-                  </div>
-                  <div class="current_edit inline">
-                    <my-editor :height="'104px'" :placeholder="'我有一个大胆的想法～'"></my-editor>
-                    <br />
-                    <div class="text-right">
-                      <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
-                      <el-button
-                        type="primary"
-                        round
-                        size="small"
-                        @click="submit()"
-                      >&emsp;评&nbsp;论&emsp;</el-button>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -283,22 +213,30 @@ export default {
       resultImage: "",
       showDialog: false,
       commentContent: "",
-      haveCommentContent: false
+      haveCommentContent: false,
+      name: ""
     };
+  },
+  watch: {
+    name(val, oldval) {
+      console.log(val); //val 为input中的新值
+      // console.log(oldval); //oldval 为input中的旧值
+    }
   },
   mounted() {},
   methods: {
     // 发布评论
     submit() {
-      if (!haveCommentContent) return;
+      if (!this.haveCommentContent) return;
       console.log(this.commentContent);
       this.resultMsg = "发布成功!";
       this.resultImage = successImg;
       this.showDialog = true;
     },
-    onEditorChange({ editor, text }) {
+    onEditorChange({ editor, html, text }) {
       this.commentContent = text;
-      this.haveCommentContent = text ? true : false;
+      this.haveCommentContent = html ? true : false;
+      console.log(this.commentContent, this.haveCommentContent);
     }
   }
 };
@@ -493,7 +431,7 @@ export default {
         }
       }
       .current_edit {
-        width: calc(100% - 92px);
+        width: calc(100% - 90px);
       }
     }
   }
@@ -518,7 +456,7 @@ export default {
 .comment_unit_name {
   margin: 12px 0;
   color: #333333;
-  font-size: 18px;
+  font-size: 1rem;
   font-weight: 600;
   > span {
     font-weight: 500;
@@ -526,7 +464,7 @@ export default {
   }
 }
 .comment_unit_content {
-  font-size: 18px;
+  font-size: 1rem;
   font-weight: 400;
   color: rgba(0, 0, 0, 1);
 }
@@ -557,7 +495,7 @@ export default {
   color: rgba(145, 153, 161, 1);
   margin-top: 15px;
 }
-.comment_btn {
+.comment_btn_gray {
   background: #f2f5f6;
   color: #9199a1;
   border: none;
