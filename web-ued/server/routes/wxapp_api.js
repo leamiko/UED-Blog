@@ -1,7 +1,7 @@
 var express = require('express')
 const router = express.Router()
 
-//var wxapp_user = require('../controller/wxapp/user')
+var wxapp_user = require('../controller/wxapp/user')
 
 /* GET home page. */
 router.get('/index', function(req, res, next) {
