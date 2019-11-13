@@ -19,7 +19,7 @@
               <br><br>
               <h4 class="text-dark">大家都在搜</h4><br>
               <div>
-                <my-tag class="my-tag" v-for="item in list" :key="item.name" :text="item.name"></my-tag>
+                <my-tag class="my-tag" v-for="item in list" :key="item.name" :text="item.name" @active="getSearch(item.name)"></my-tag>
                 <!-- <el-tag :type="item.type" v-for="item in list" :key="item.name"> {{item.name}} </el-tag> -->
               </div>
             </div>
@@ -27,11 +27,11 @@
           <div class="my-card">
             <div class="cus-flex cus-flex-between cus-align-center">
               <h4 class="text-dark">热门问题</h4>
-              <el-button size="medium" round> 查看更多<i class="el-icon-arrow-right el-icon-caret-right"></i> </el-button>
+              <el-button size="medium" round @click="pathRedirect('/coding/list')"> 查看更多<i class="el-icon-arrow-right el-icon-caret-right"></i> </el-button>
             </div>
             <ul>
               <li v-for="item in hotList" :key="item.id">
-                <el-link :underline="false" href="javascript:void(0)" target="_blank">{{item.name}}</el-link>
+                <el-link :underline="false" :href="'/coding/detail?id=' + item._id">{{item.title}}</el-link>
               </li>
             </ul>
           </div>
@@ -82,8 +82,36 @@ export default {
       this[command] = !this[command];
     },
     getSearch(val) {
-      console.log(val);
+      this.$router.push({
+        path: '/coding/list',
+        query: val ? {search: val} : null
+      });
+    },
+    pathRedirect(url) {
+      this.$router.push({
+        path: url
+      });
+    },
+    // 获取热门问题以及在搜标签
+    async getHotData() {
+      const parmas = {
+        pageIndex: 1,
+        pageSize: 10,
+        filters:{}
+      };
+      const res = await this.$axios.post(`${process.env.BASE_URL}/web_api/GetBugList`, parmas);
+      if (res.status === 200 && res.data.message === 'success') {
+        this.hotList = res.data.data;
+      } else {
+        this.$notify.error({
+          title: '错误',
+          message: res.data.message
+        });
+      }
     }
+  },
+  mounted() {
+    this.getHotData();
   }
 }
 </script>
