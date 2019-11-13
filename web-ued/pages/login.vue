@@ -106,7 +106,6 @@ export default {
     Qrcode () {
       this.iscodeBox = !this.iscodeBox;
       this.$emit("titleChanged", "登录");
-      console.log(this.iscodeBox);
     },
     //二维码
     wxHandle () {
