@@ -19,7 +19,7 @@
               <br><br>
               <h4 class="text-dark">大家都在搜</h4><br>
               <div>
-                <my-tag class="my-tag" v-for="item in list" :key="item.name" :text="item.name"></my-tag>
+                <my-tag class="my-tag" v-for="item in list" :key="item.name" :text="item.name" @active="getSearch(item.name)"></my-tag>
                 <!-- <el-tag :type="item.type" v-for="item in list" :key="item.name"> {{item.name}} </el-tag> -->
               </div>
             </div>
@@ -31,7 +31,7 @@
             </div>
             <ul>
               <li v-for="item in hotList" :key="item.id">
-                <el-link :underline="false" href="javascript:void(0)" target="_blank">{{item.name}}</el-link>
+                <el-link :underline="false" :href="'/coding/detail?id=' + item._id">{{item.title}}</el-link>
               </li>
             </ul>
           </div>
@@ -94,12 +94,24 @@ export default {
     },
     // 获取热门问题以及在搜标签
     async getHotData() {
-      const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/AddTags`);
-      if (!res.data && localStorage.getItem("user")) {
-        localStorage.removeItem('user')
-        window.location.reload()
+      const parmas = {
+        pageIndex: 1,
+        pageSize: 10,
+        filters:{}
+      };
+      const res = await this.$axios.post(`${process.env.BASE_URL}/web_api/GetBugList`, parmas);
+      if (res.status === 200 && res.data.message === 'success') {
+        this.hotList = res.data.data;
+      } else {
+        this.$notify.error({
+          title: '错误',
+          message: res.data.message
+        });
       }
     }
+  },
+  mounted() {
+    this.getHotData();
   }
 }
 </script>
