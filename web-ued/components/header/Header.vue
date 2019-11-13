@@ -10,14 +10,19 @@
           :src="logoURL"
           class="middle"
         ></el-avatar>
-        <h2 class="inline middle">{{ custom.title }}</h2>
+        <router-link :to="custom.menu[0].redirectUrl">
+          <h2 class="inline middle">{{ custom.title }}</h2>
+        </router-link>
         <ul>
           <li
             v-for="(item, index) in custom.menu"
             :key="index"
             :class="{'active': activeLabel === item.label}"
           >
-            <router-link :to="item.redirectUrl">{{ item.label }}</router-link>
+            <router-link
+              :to="item.redirectUrl"
+              class="font-size-18"
+            >{{ item.label }}</router-link>
           </li>
         </ul>
       </div>
@@ -265,9 +270,8 @@ a {
     }
   }
 }
-@media screen and(min-width: 1024px){
+@media screen and(min-width: 1024px) {
   .my-header {
-
     > div {
       &:nth-child(1) {
         width: 960px;
@@ -278,7 +282,6 @@ a {
 
 @media screen and(min-width: 1100px) {
   .my-header {
-
     > div {
       &:nth-child(1) {
         width: 1000px;
@@ -288,7 +291,6 @@ a {
 }
 @media screen and(min-width: 1280px) {
   .my-header {
-
     > div {
       &:nth-child(1) {
         width: 1100px;
@@ -299,7 +301,6 @@ a {
 
 @media screen and(min-width: 1366px) {
   .my-header {
-
     > div {
       &:nth-child(1) {
         width: 1200px;
@@ -310,7 +311,6 @@ a {
 
 @media screen and(min-width: 1440px) {
   .my-header {
-
     > div {
       &:nth-child(1) {
         width: 1200px;
@@ -321,7 +321,6 @@ a {
 
 @media screen and(min-width: 1680px) {
   .my-header {
-
     > div {
       &:nth-child(1) {
         width: 1200px;
@@ -331,7 +330,6 @@ a {
 }
 @media screen and(min-width: 1920px) {
   .my-header {
-
     > div {
       &:nth-child(1) {
         width: 1200px;
@@ -362,13 +360,18 @@ a {
     font-size: 14px;
   }
 }
+.font-size-18 {
+  font-size: 18px;
+}
 .login_text {
+  font-size: 18px;
   color: #ececec !important;
   &:hover {
     color: $primary_blue !important;
   }
 }
 .login_text_02 {
+  font-size: 18px;
   color: rgba(52, 72, 94, 1) !important;
   &:hover {
     color: $primary_blue !important;
