@@ -19,7 +19,7 @@
           <div class="code_search">
             <my-search @search="getSearch" :value="searchVal"></my-search>
             <div class="design_bar">
-              <div class="design_classI inline" v-for="item in config.list">
+              <div class="design_classI inline" v-for="item in config.list" :key="item.id">
                 <el-link :underline="false" :key="item.id">{{item.name}}</el-link>
               </div>
               <div class="design_classII">

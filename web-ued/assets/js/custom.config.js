@@ -115,11 +115,11 @@ module.exports = {
       {id: 'ht00007', name: 'python', type: 'info'}
     ],
     hotList: [
-      {id: '001', name: 'Spring Cloud异步场景分布式事务怎样做？'},
-      {id: '002', name: '压测工具如何选择? ab、locust、Jmeter、go压测工具'},
-      {id: '003', name: 'Spring Boot启动之前做了哪些事？'},
-      {id: '004', name: '小程序手机端数字键盘无法输入小数'},
-      {id: '005', name: 'mysql批量插入数据，一次插入多少行数据效率最高？'}
+      {_id: '001', title: 'Spring Cloud异步场景分布式事务怎样做？'},
+      {_id: '002', title: '压测工具如何选择? ab、locust、Jmeter、go压测工具'},
+      {_id: '003', title: 'Spring Boot启动之前做了哪些事？'},
+      {_id: '004', title: '小程序手机端数字键盘无法输入小数'},
+      {_id: '005', title: 'mysql批量插入数据，一次插入多少行数据效率最高？'}
     ],
 
   },
