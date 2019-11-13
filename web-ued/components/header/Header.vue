@@ -149,7 +149,7 @@ export default {
       showBadge: 2,
       showMsg: '',
       infoShow: false, // 个人信息弹窗
-      className: 'info_dialog'
+      className: 'info_dialog',
     };
   },
 
@@ -191,6 +191,8 @@ export default {
         this.loginForm = {};
       } else {
         //登录失败
+        this.title='登录失败';
+        this.$store.state.qrcodeBindText='您还没有绑定过微信，请绑定后再登录'
         console.log('请先登录绑定账号！')
       }
     },
