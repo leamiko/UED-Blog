@@ -1,112 +1,63 @@
 <template>
-  <div
-    class="my-header"
-    ref="header"
-  >
+  <div class="my-header" ref="header">
     <div class="cus-flex cus-flex-between cus-align-center">
       <div>
-        <el-avatar
-          :size="42"
-          :src="logoURL"
-          class="middle"
-        ></el-avatar>
+        <el-avatar :size="42" :src="logoURL" class="middle"></el-avatar>
         <h2 class="inline middle">{{ custom.title }}</h2>
         <ul>
-          <li
-            v-for="(item, index) in custom.menu"
-            :key="index"
-            :class="{'active': activeLabel === item.label}"
-          >
+          <li v-for="(item, index) in custom.menu" :key="index" :class="{ active: activeLabel === item.label }">
             <router-link :to="item.redirectUrl">{{ item.label }}</router-link>
           </li>
         </ul>
       </div>
       <div class="cus-flex cus-align-center">
         <slot name="box_cus"></slot>&emsp;&emsp;
-        <el-badge
-          is-dot
-          class="item"
-        >
-          <div
-            class="inline pointer"
-            @mouseenter="showBadge=1"
-            @mouseleave="showBadge=2"
-          >
-            <img
-              :src="showBadge===2?(isChange===true? msgURL :msgUrl02 ):msgURLHover"
-              class="message"
-            ></div>
+        <el-badge is-dot class="item">
+          <div class="inline pointer" @mouseenter="showBadge = 1" @mouseleave="showBadge = 2">
+            <img :src="
+                showBadge === 2
+                  ? isChange === true
+                    ? msgURL
+                    : msgUrl02
+                  : msgURLHover
+              " class="message" />
+          </div>
         </el-badge>
         <div class="logModal">
-          <el-button
-            type="text"
-            @click="modalVisible = true"
-            @mouseenter.native="showMsg=true"
-            @mouseleave.native="showMsg=false"
-          ><span :class="{'login_text':isChange,'login_text_02':!isChange}">登录</span></el-button>
+          <el-button type="text" @click="modalVisible = true" @mouseenter.native="showMsg = true" @mouseleave.native="showMsg = false"><span :class="{ login_text: isChange, login_text_02: !isChange }">登录</span></el-button>
           <!-- <el-button
             type="text"
             @click="infoShow = true"
           >个人信息</el-button> -->
-          <el-dialog
-            :title="title"
-            :visible.sync="modalVisible"
-            :append-to-body="true"
-            custom-class="logDialog"
-            :center="true"
-            :close-on-click-modal="false"
-          >
-            <my-login
-              v-if="$store.state.isLogin"
-              :title="title"
-              @titleChanged="registerTitle($event)"
-              @modalChanged="modalChanged($event)"
-            ></my-login>
-            <my-register
-              v-if="!$store.state.isLogin"
-              @titleChanged="loginTitle($event)"
-            ></my-register>
+          <el-dialog :title="title" :visible.sync="modalVisible" :append-to-body="true" custom-class="logDialog" :center="true" :close-on-click-modal="false">
+            <my-login v-if="$store.state.isLogin" :title="title" @titleChanged="registerTitle($event)" @modalChanged="modalChanged($event)"></my-login>
+            <my-register v-if="!$store.state.isLogin" @titleChanged="loginTitle($event)"></my-register>
           </el-dialog>
           <!-- <router-link
           :to="'login'"
           class="text_size_18"
         >登录</router-link> -->
-          <div
-            class="badge_hover"
-            v-if="showBadge===1"
-            @mouseenter="showBadge=1"
-            @mouseleave="showBadge=2"
-          >
-            <img :src="msgNull">
+          <div class="badge_hover" v-if="showBadge === 1" @mouseenter="showBadge = 1" @mouseleave="showBadge = 2">
+            <img :src="msgNull" />
             <span>还没有消息哦</span>
           </div>
-          <div
-            class="badge_hover msg_hover"
-            v-if="showMsg"
-            @mouseenter="showMsg=true"
-            @mouseleave="showMsg=false"
-          >
+          <div class="badge_hover msg_hover" v-if="showMsg" @mouseenter="showMsg = true" @mouseleave="showMsg = false">
             <span @click="infoShow = true">个人信息</span>
-            <span>退出账号</span>
+            <span @click="logOut">退出账号</span>
           </div>
         </div>
       </div>
     </div>
     <!-- 模态框 -->
-    <person-dialog
-      :isShow="infoShow"
-      :classStyle="className"
-      @hide="infoShow=false"
-    ></person-dialog>
+    <person-dialog :isShow="infoShow" :classStyle="className" @hide="infoShow = false"></person-dialog>
   </div>
-
 </template>
 
 <script>
 import * as custom from "@/assets/js/custom.config";
 import MyLogin from "@/pages/login";
 import MyRegister from "@/pages/register";
-import PersonDialog from '../dialogs/PersonalInfo';
+import PersonDialog from "../dialogs/PersonalInfo";
 
 export default {
   props: {
@@ -122,8 +73,8 @@ export default {
     },
     isChange: {
       default: null,
-      type: Boolean,
-    },
+      type: Boolean
+    }
   },
   components: {
     MyLogin,
@@ -131,7 +82,7 @@ export default {
     PersonDialog
   },
 
-  data () {
+  data() {
     return {
       custom: custom.head,
       logoURL: custom.head.logoUrl,
@@ -144,61 +95,77 @@ export default {
       showBadge: 2,
       showMsg: '',
       infoShow: false, // 个人信息弹窗
-      className: 'info_dialog',
+      className: "info_dialog"
     };
   },
 
-  mounted () {
+  mounted() {
     if (this.innerStyle) {
       Object.keys(this.innerStyle).forEach(key => {
         this.$refs.header.style[key] = this.innerStyle[key];
       });
     }
   },
-  created () {
+  created() {
     this.isLogin();
     this.wxLogin();
   },
   methods: {
-    registerTitle (e) {
+    registerTitle(e) {
       this.title = e;
     },
-    loginTitle (e) {
+    loginTitle(e) {
       this.title = e;
     },
-    modalChanged (e) {
+    modalChanged(e) {
       this.modalVisible = e;
     },
+    // 退出登录
+    async logOut() {
+      const res = await this.$axios.get(
+        `${process.env.BASE_URL}/web_api/logOut`
+      );
+      console.log(res)
+    },
     //判断是否登录
-    async isLogin () {
-      const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/isLogin`);
+    async isLogin() {
+      const res = await this.$axios.get(
+        `${process.env.BASE_URL}/web_api/isLogin`
+      );
       if (!res.data && localStorage.getItem("user")) {
-        localStorage.removeItem('user')
-        window.location.reload()
+        localStorage.removeItem("user");
+        window.location.reload();
       }
     },
     // 调用微信扫码API
-    async wxLogin () {
-      console.log(this.getQueryVariable('code'))
-      const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/wxLogin?code=${this.getQueryVariable('code')}`);
+    async wxLogin() {
+      console.log(this.getQueryVariable("code"));
+      const res = await this.$axios.get(
+        `${process.env.BASE_URL}/web_api/wxLogin?code=${this.getQueryVariable(
+          "code"
+        )}`
+      );
       if (res.status_code == 200) {
         localStorage.setItem("user", JSON.stringify(data.user));
         this.loginForm = {};
       } else {
         //登录失败
-        this.title='登录失败';
-        this.$store.state.qrcodeBindText='您还没有绑定过微信，请绑定后再登录'
-        console.log('请先登录绑定账号！')
+        this.title = "登录失败";
+        this.$store.state.qrcodeBindText = "您还没有绑定过微信，请绑定后再登录";
+        this.modalVisible=true;
+        console.log("还没绑");
       }
     },
-    getQueryVariable (variable) {
+    getQueryVariable(variable) {
       var query = window.location.search.substring(1);
       var vars = query.split("&");
       for (var i = 0; i < vars.length; i++) {
         var pair = vars[i].split("=");
-        if (pair[0] == variable) { return pair[1]; }
+        if (pair[0] == variable) {
+          return pair[1];
+        }
       }
-      return (false);
+      return false;
     }
   }
 };
@@ -267,9 +234,8 @@ a {
     }
   }
 }
-@media screen and(min-width: 1024px){
+@media screen and(min-width: 1024px) {
   .my-header {
-
     > div {
       &:nth-child(1) {
         width: 960px;
@@ -280,7 +246,6 @@ a {
 
 @media screen and(min-width: 1100px) {
   .my-header {
-
     > div {
       &:nth-child(1) {
         width: 1000px;
@@ -290,7 +255,6 @@ a {
 }
 @media screen and(min-width: 1280px) {
   .my-header {
-
     > div {
       &:nth-child(1) {
         width: 1100px;
@@ -301,7 +265,6 @@ a {
 
 @media screen and(min-width: 1366px) {
   .my-header {
-
     > div {
       &:nth-child(1) {
         width: 1200px;
@@ -312,7 +275,6 @@ a {
 
 @media screen and(min-width: 1440px) {
   .my-header {
-
     > div {
       &:nth-child(1) {
         width: 1200px;
@@ -323,7 +285,6 @@ a {
 
 @media screen and(min-width: 1680px) {
   .my-header {
-
     > div {
       &:nth-child(1) {
         width: 1200px;
@@ -333,7 +294,6 @@ a {
 }
 @media screen and(min-width: 1920px) {
   .my-header {
-
     > div {
       &:nth-child(1) {
         width: 1200px;

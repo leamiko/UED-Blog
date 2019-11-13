@@ -105,7 +105,7 @@ export default {
   methods: {
     Qrcode () {
       this.iscodeBox = !this.iscodeBox;
-      this.title='登录'
+      this.$emit("titleChanged", "登录");
       console.log(this.iscodeBox);
     },
     //二维码
