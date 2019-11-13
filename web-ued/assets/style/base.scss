@@ -98,11 +98,15 @@ body,
 }
 
 .logDialog {
+  margin-top: 24vh!important;
   width: 390px;
   min-height: 354px;
   border-radius: 12px;
   .el-dialog__title{
     color: black;
+    margin-top: 15px;
+    display: inline-block;
+    box-sizing: border-box;
   }
   .el-dialog__body {
     padding: 25px 25px 10px;
