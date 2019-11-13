@@ -27,7 +27,7 @@
           <div class="my-card">
             <div class="cus-flex cus-flex-between cus-align-center">
               <h4 class="text-dark">热门问题</h4>
-              <el-button size="medium" round> 查看更多<i class="el-icon-arrow-right el-icon-caret-right"></i> </el-button>
+              <el-button size="medium" round @click="pathRedirect('/coding/list')"> 查看更多<i class="el-icon-arrow-right el-icon-caret-right"></i> </el-button>
             </div>
             <ul>
               <li v-for="item in hotList" :key="item.id">
@@ -82,7 +82,23 @@ export default {
       this[command] = !this[command];
     },
     getSearch(val) {
-      console.log(val);
+      this.$router.push({
+        path: '/coding/list',
+        query: val ? {search: val} : null
+      });
+    },
+    pathRedirect(url) {
+      this.$router.push({
+        path: url
+      });
+    },
+    // 获取热门问题以及在搜标签
+    async getHotData() {
+      const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/AddTags`);
+      if (!res.data && localStorage.getItem("user")) {
+        localStorage.removeItem('user')
+        window.location.reload()
+      }
     }
   }
 }
