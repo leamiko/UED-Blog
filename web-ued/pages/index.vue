@@ -46,7 +46,7 @@
                   class="avatar"
                 ></el-avatar>
                 <span class="text_color_time">{{item.author}} · {{item.updateAt | datetimeFormat}}</span>&emsp;&emsp;
-                <span class="text_color">{{item.type}}</span>&emsp;&emsp;
+                <span class="text_color">{{item.blogType}}</span>&emsp;&emsp;
                 <span class="text_color"><img src="@/assets/img/icon/eyes.svg">{{item.viewNum}}</span>&emsp;&emsp;
                 <span class="text_color"><img src="@/assets/img/icon/like.svg">{{item.likeNum}}</span>
               </div>

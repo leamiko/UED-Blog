@@ -73,7 +73,7 @@
         >登录</router-link> -->
           <div
             class="badge_hover"
-            v-if="showBadge===1"  
+            v-if="showBadge===1"
             @mouseenter="showBadge=1"
             @mouseleave="showBadge=2"
           >
@@ -230,9 +230,9 @@ a {
   > div {
     &:nth-child(1) {
       width: 62.5%;
-      height: 82px;
-      min-width: 600px;
+      min-width: 960px;
       max-width: 1200px;
+      height: 82px;
       margin: 0 auto;
     }
     &:nth-child(2) {
@@ -267,6 +267,81 @@ a {
     }
   }
 }
+@media screen and(min-width: 1024px){
+  .my-header {
+
+    > div {
+      &:nth-child(1) {
+        width: 960px;
+      }
+    }
+  }
+} /*>=1024的设备*/
+
+@media screen and(min-width: 1100px) {
+  .my-header {
+
+    > div {
+      &:nth-child(1) {
+        width: 1000px;
+      }
+    }
+  }
+}
+@media screen and(min-width: 1280px) {
+  .my-header {
+
+    > div {
+      &:nth-child(1) {
+        width: 1100px;
+      }
+    }
+  }
+}
+
+@media screen and(min-width: 1366px) {
+  .my-header {
+
+    > div {
+      &:nth-child(1) {
+        width: 1200px;
+      }
+    }
+  }
+}
+
+@media screen and(min-width: 1440px) {
+  .my-header {
+
+    > div {
+      &:nth-child(1) {
+        width: 1200px;
+      }
+    }
+  }
+}
+
+@media screen and(min-width: 1680px) {
+  .my-header {
+
+    > div {
+      &:nth-child(1) {
+        width: 1200px;
+      }
+    }
+  }
+}
+@media screen and(min-width: 1920px) {
+  .my-header {
+
+    > div {
+      &:nth-child(1) {
+        width: 1200px;
+      }
+    }
+  }
+}
+
 .badge_hover {
   position: absolute;
   right: 363px;
