@@ -1,7 +1,7 @@
 <template>
   <div>
     <my-scrollbar hasHead hasFoot :headStyle="{'background':'white'}" :headActive="'打码'">
-      <div slot="container">
+      <div slot="container" v-loading="loading">
         <div class="detail_container">
           <div class="support">
             <div class="support_icon pointer">
@@ -24,21 +24,19 @@
           </div>
           <div class="detail_info inline bg-white">
             <div class="detail_title">
-              nodeJs使用md5报错
+              {{detailInfo.title}}
               <div class="detail_presenter">
                 <div class="presenter_head flt inline">
                   <img src="@/assets/img/image/code_presenter.png" />
                 </div>
-                <span class="presenter_info inline">UILEO · 2019-08-28</span>
+                <span class="presenter_info inline">{{detailInfo.author}} · {{detailInfo.createAt | formatDateDay}}</span>
                 <div class="mark_tags inline">
-                  <span class="mark_tag">javascript</span>
-                  <span class="mark_tag">php</span>
-                  <span class="mark_tag">css</span>
+                  <span class="mark_tag" v-for="item in detailInfo.tags">{{item}}</span>
                 </div>
-                <div class="browse inline">
+                <div class="browse inline" v-show="detailInfo.viewNum>0">
                   <div class="browse_icon inline">
                     <img src="@/assets/img/icon/browse.png" />
-                  </div>6713
+                  </div>{{detailInfo.viewNum}}
                 </div>
               </div>
             </div>
@@ -47,31 +45,24 @@
                 <span class="span_sign inline flt"></span>问题描述
               </div>
               <div class="describe">
-                <div class="word">nodeJs报错，如图：</div>
-                <div class="image">
-                  <img src="@/assets/img/bg/bg-dialog-ask.png" />
-                </div>
+                <!-- <div class="word" v-html="detailInfo.content"></div> -->
+                <div class="word">{{detailInfo.content}}</div>
               </div>
             </div>
-            <div class="detail_content">
+            <div class="detail_content" v-show="detailInfo.bugSolution!==''">
               <div class="detail_sign">
                 <span class="span_sign inline flt"></span>解决方案
               </div>
               <div class="describe">
-                <div class="word">
-                  原因是一个crypto实例只能调用digest一次。
-                  <br />解决方法如图：
-                </div>
-                <div class="image">
-                  <img src="@/assets/img/bg/bg-dialog-ask.png" />
-                </div>
+                <!-- <div class="word" v-html="detailInfo.bugSolution"></div> -->
+                <div class="word">{{detailInfo.bugSolution}}</div>
               </div>
             </div>
             <div class="praise">
               <div class="praise_img pointer">
                 <img src="@/assets/img/icon/praise.png" />
               </div>
-              <div class="praise_num">136个赞</div>
+              <div class="praise_num">&nbsp;&nbsp;{{detailInfo.likeNum?detailInfo.likeNum:0}}个赞</div>
             </div>
           </div>
           <div class="interest inline frt">
@@ -206,8 +197,9 @@ export default {
   },
   data() {
     return {
-      config: custom.search,
-      list: custom.search.list[0],
+      loading: false,
+      Id: '', // 当前问题Id
+      detailInfo: {}, // 详情信息
       isAnonymous: false,
       resultMsg: "",
       resultImage: "",
@@ -223,8 +215,49 @@ export default {
       // console.log(oldval); //oldval 为input中的旧值
     }
   },
-  mounted() {},
+  mounted() {
+    this.Id = this.$route.query.bugId ? this.$route.query.bugId : '';
+    if (this.Id) {
+      this.getInfo();
+    }
+  },
   methods: {
+    // 获取详情信息
+    async getInfo() {
+      let params = {
+        bugId: this.Id
+      }
+      const url = `${process.env.BASE_URL}/web_api/GetBugDetail?bugId=`+ this.Id;
+      const res = await this.$axios.get(url);
+      if (res.status === 200) {
+        if (res.data.data && res.data.data !== null) {
+          this.detailInfo = res.data.data;
+          // setTimeout(() => {
+          //   this.loading = false;
+          // }, 500);
+        } else {
+          // setTimeout(() => {
+          //   this.loading = false;
+          // }, 500);
+          this.$notify.error({
+            title: '错误',
+            message: '未查询到相关数据，请联系管理员。'
+          });
+        }
+      } else {
+        // setTimeout(() => {
+        //   this.loading = false;
+        // }, 500);
+        this.$notify.error({
+          title: '错误',
+          message: data.data.message
+        });
+      }
+    },
+    // 详情点赞
+    praise() {
+
+    },
     // 发布评论
     submit() {
       if (!this.haveCommentContent) return;
@@ -248,6 +281,7 @@ export default {
 .frt {
   float: right;
 }
+// 详情
 .detail_container {
   position: relative;
   width: 62.5%;
@@ -338,7 +372,6 @@ export default {
       .describe {
         padding: 30px 52px;
         .word {
-          padding: 0 65px 20px;
           line-height: 35px;
           font-size: 16px;
           color: #000000;
@@ -406,6 +439,7 @@ export default {
     }
   }
 }
+// 评论
 .comment_container {
   width: 62.5%;
   margin: 0 auto 48px;
