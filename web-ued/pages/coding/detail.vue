@@ -31,7 +31,7 @@
                 </div>
                 <span class="presenter_info inline">{{detailInfo.author}} · {{detailInfo.createAt | formatDateDay}}</span>
                 <div class="mark_tags inline">
-                  <span class="mark_tag" v-for="item in detailInfo.tags">{{item}}</span>
+                  <span class="mark_tag" v-for="(item,index) in detailInfo.tags" :key="index">{{item}}</span>
                 </div>
                 <div class="browse inline" v-show="detailInfo.viewNum>0">
                   <div class="browse_icon inline">
