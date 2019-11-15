@@ -131,9 +131,12 @@ body,
 
 // 个人信息弹窗
 .info_dialog{
+  .el-dialog__body{
+    padding: 26px 46px 28px 46px;
+  }
   .el-dialog__header{
     padding: 0;
-    height: 139px;
+    height: 121px;
   }
   .el-button{
     padding: 11px 28px;
@@ -144,9 +147,9 @@ body,
   }
   .el-avatar{
     background: white;
-    margin-right: 20px;
+    margin-right: 16px;
   }
   .el-dialog__footer{
-    padding: 0 58px 40px 0; 
+    padding: 0 46px 33px 0; 
   }
 }

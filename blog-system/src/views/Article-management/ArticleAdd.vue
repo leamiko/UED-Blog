@@ -2,26 +2,20 @@
   <div class="page">
     <a-form :form="form" @submit="handleSubmit">
       <a-form-item label="名称" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
-        <a-input
-          v-decorator="[
+        <a-input v-decorator="[
           'model.title',
           {
             rules: [{ required: true, message: '名称不能为空！' }],
             initialValue:model.title
           }
-        ]"
-          placeholder="请输入文章名称"
-        />
+        ]" placeholder="请输入文章名称" />
       </a-form-item>
       <a-form-item label="分类" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
-        <a-select
-          v-decorator="[
+        <a-select v-decorator="[
           'model.blogType',
           {rules: [{ required: true, message: '分类不能为空!' }],
                 initialValue:model.blogType}
-        ]"
-          placeholder="请选择文章分类"
-        >
+        ]" placeholder="请选择文章分类">
           <!-- 需要所有文章分类 -->
           <a-select-option value="1">技术</a-select-option>
           <a-select-option value="2">交互</a-select-option>
@@ -69,18 +63,26 @@
         </a-select>
       </a-form-item>-->
       <a-form-item label="文章简介" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
-        <a-textarea
-          v-decorator="[
+        <a-textarea v-decorator="[
           'model.info',
           {rules: [{ required: true, message: '文章简介不能为空！' }],
                 initialValue:model.info}
-        ]"
-          placeholder="请输入文章简介"
-          :autosize="{ minRows: 1, maxRows: 3 }"
-        />
+        ]" placeholder="请输入文章简介" :autosize="{ minRows: 1, maxRows: 3 }" />
       </a-form-item>
       <a-form-item label="文章内容" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
         <quill-editor v-model="model.content" ref="myTextEditor" :options="editorOption"></quill-editor>
+      </a-form-item>
+      <a-form-item label="图片上传" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
+        <a-upload action="//ued-okr.oss-cn-qingdao.aliyuncs.com/" listType="picture-card" :fileList="fileList"
+          @preview="handlePreview" @change="handleChange">
+          <div v-if="fileList.length < 2">
+            <a-icon type="plus" />
+            <div class="ant-upload-text">Upload</div>
+          </div>
+        </a-upload>
+        <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+          <img alt="example" style="width: 100%" :src="previewImage" />
+        </a-modal>
       </a-form-item>
       <!-- 新建按钮 -->
       <a-form-item :wrapper-col="{ span: 12, offset: 7 }">
@@ -92,6 +94,7 @@
 </template>
 
 <script>
+import { client } from '../../assets/js/aliyun_oss'
 export default {
   data () {
     return {
@@ -99,11 +102,16 @@ export default {
       formLayout: 'horizontal',
       form: this.$form.createForm(this),
       model: {},
-      blogId: ''
+      blogId: '',
+      previewVisible: false,
+      previewImage: '',
+      fileList: [],
+      ossSetting: null
     }
   },
   mounted () {
     this.blogId = this.$route.query.blogId ? this.$route.query.blogId : ''
+    this.ossSetting = client()
     if (this.blogId) {
       this.getArticleInfo()
     }
@@ -120,6 +128,27 @@ export default {
         this.model = res.data
       }
     },
+    handleCancel () {
+      this.previewVisible = false
+    },
+    handlePreview (file) {
+      this.previewImage = file.url || file.thumbUrl
+      this.previewVisible = true
+    },
+    async handleChange ({ file }) {
+      if (file.status === 'success') {
+        this.fileList.push(file)
+        console.log(file)
+      }
+      let url = Math.round(new Date().getTime() / 1000) + '.' + file.name.split('.')[1]
+      await client().put('ued/' + url, file.originFileObj, {
+      }).then(function (result) {
+        console.log(result)
+        alert('上传成功')
+      }).catch(function (err) {
+        console.log(err)
+      })
+    },
     // 组件校验
     handleSubmit (e) {
       e.preventDefault()
@@ -128,6 +157,10 @@ export default {
           console.log('校验的值: ', values)
         }
       })
+    },
+    // 图片上传阿里云
+    uploadImgOss () {
+
     },
     // 保存
     save () {
@@ -165,13 +198,13 @@ export default {
 </script>
 
 <style>
-.page {
-  padding: 50px;
-  background: #ffffff;
-}
+  .page {
+    padding: 50px;
+    background: #ffffff;
+  }
 
-.article_addbtn {
-  margin-top: 50px;
-  text-align: center;
-}
+  .article_addbtn {
+    margin-top: 50px;
+    text-align: center;
+  }
 </style>
