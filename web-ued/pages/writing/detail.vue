@@ -39,7 +39,7 @@
                   </div>{{detailList.viewNum}}
                 </div>
               </div>
-              <img class="topImg" v-if="detailParams.imgUrl" :src="require('../../assets/img/image/' + detailParams.imgUrl)" alt="">
+              <img class="topImg" v-show="detailParams.imgUrl" :src="require('../../assets/img/image/' + detailParams.imgUrl)" alt="">
             </div>
             <div class="detail_content">
               <div class="infoBox">

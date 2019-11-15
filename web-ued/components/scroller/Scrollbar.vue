@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <my-header :activeLabel="headActive" v-if="hasHead" :innerStyle="headStyle">
+    <my-header :activeLabel="headActive" v-show="hasHead" :innerStyle="headStyle">
       <div slot="box_cus">
         <slot name="head_custom"></slot>
       </div>
@@ -8,7 +8,7 @@
     <div class="main" ref="main" :style="{'height': hasHead ? 'calc(100% - 82px)' : '100%'}">
       <el-backtop target=".main" :bottom="bottom"></el-backtop>
       <slot name="container"></slot>
-      <my-footer :hasMenu="isFootMenu" v-if="hasFoot"></my-footer>
+      <my-footer :hasMenu="isFootMenu" v-show="hasFoot"></my-footer>
     </div>
   </div>
 </template>

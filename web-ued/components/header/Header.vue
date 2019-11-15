@@ -69,13 +69,13 @@
             :close-on-click-modal="false"
           >
             <my-login
-              v-if="$store.state.isLogin"
+              v-show="$store.state.isLogin"
               :title="title"
               @titleChanged="registerTitle($event)"
               @modalChanged="modalChanged($event)"
             ></my-login>
             <my-register
-              v-if="!$store.state.isLogin"
+              v-show="!$store.state.isLogin"
               @titleChanged="loginTitle($event)"
             ></my-register>
           </el-dialog>
@@ -85,7 +85,7 @@
         >登录</router-link> -->
           <div
             class="badge_hover margin_right"
-            v-if="showBadge === 1"
+            v-show="showBadge === 1"
             @mouseenter="showBadge = 1"
             @mouseleave="showBadge = 2"
           >
@@ -96,7 +96,7 @@
             class="badge_hover msg_hover"
             @mouseenter="showMsg = true"
             @mouseleave="showMsg = false"
-            v-if="showMsg"
+            v-show="showMsg"
           >
             <span @click="infoShow = true">个人信息</span>
             <span @click="logOut">退出账号</span>

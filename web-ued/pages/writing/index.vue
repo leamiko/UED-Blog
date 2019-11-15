@@ -3,7 +3,7 @@
     <div slot="container" class="container">
       <!-- top block -->
       <div class="top_article">
-        <el-carousel trigger="click" :height="342 + 'px'" :autoplay="false" class="set_width" v-if="topList.length > 0">
+        <el-carousel trigger="click" :height="342 + 'px'" :autoplay="false" class="set_width" v-show="topList.length > 0">
           <el-carousel-item v-for="(item,index) in topList" :key="index" class="flex">
             <div class="left_title" @click="goDetail(item)">
               <img src="../../assets/img/banner/write_swiper_1.png" style="width: 100%; height: 100%;">
