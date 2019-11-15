@@ -24,47 +24,29 @@
           </div>
           <div class="detail_info inline bg-white">
             <div class="detail_title">
-              体验设计之移动端中的微交互
+              {{detailList.title}}
               <div class="detail_presenter">
                 <div class="presenter_head flt inline">
                   <img src="@/assets/img/image/code_presenter.png" />
                 </div>
-                <span class="presenter_info inline">UILEO · 2019-08-28</span>
+                <span class="presenter_info inline">{{detailList.author}} · {{detailList.updateAt | formatDateDay}}</span>
                 <div class="mark_tags inline">
-                  <span class="mark_tag">javascript</span>
-                  <span class="mark_tag">php</span>
-                  <span class="mark_tag">css</span>
+                  <span class="mark_tag">{{ detailList.blogType == 1 ? "技术" : detailList.blogType == 2 ? "交互" :detailList.blogType == 3 ? "设计" :detailList.blogType == 4 ? "管理" :"其它" }}</span>
                 </div>
                 <div class="browse inline">
                   <div class="browse_icon inline">
                     <img src="@/assets/img/icon/browse.png" />
-                  </div>6713
+                  </div>{{detailList.viewNum}}
                 </div>
               </div>
+              <img class="topImg" v-if="detailParams.imgUrl" :src="require('../../assets/img/image/' + detailParams.imgUrl)" alt="">
             </div>
             <div class="detail_content">
-              <div class="detail_sign">
-                <span class="span_sign inline flt"></span>问题描述
+              <div class="infoBox">
+                {{detailList.info}}
               </div>
-              <div class="describe">
-                <div class="word">nodeJs报错，如图：</div>
-                <div class="image">
-                  <img src="@/assets/img/bg/bg-dialog-ask.png" />
-                </div>
-              </div>
-            </div>
-            <div class="detail_content">
-              <div class="detail_sign">
-                <span class="span_sign inline flt"></span>解决方案
-              </div>
-              <div class="describe">
-                <div class="word">
-                  原因是一个crypto实例只能调用digest一次。
-                  <br />解决方法如图：
-                </div>
-                <div class="image">
-                  <img src="@/assets/img/bg/bg-dialog-ask.png" />
-                </div>
+              <div class="contentBox" v-html="detailList.content">
+                {{detailList.content}}
               </div>
             </div>
             <div class="praise">
@@ -83,11 +65,30 @@
               </router-link>
             </div>
             <div class="interest_list">
-              <div class="interest_info pointer">mysql批量插入数据，一次插入多少 行数据效率最高？</div>
-              <div class="interest_info pointer active">LUNZ+——select选择项为请选择时 表单不验证</div>
-              <div class="interest_info pointer">Vue框架在ios微信端存在input输入时 系统键盘会将整个浏览器推上去</div>
-              <div class="interest_info pointer">小程序手机端数字键盘无法输入小数</div>
-              <div class="interest_info pointer">Java如何实现五分钟内重复获取返回 同一个短信验证码</div>
+              <div class="interest_info pointer">
+                <div class="pic">
+                  <img src="@/assets/img/banner/banner-index-banner-11.jpg" />
+                </div>
+                <span>浏览器的内核是支持浏览器运行的最核心的 程序，分为渲染引擎和 JS 引擎两部分…</span>
+              </div>
+              <div class="interest_info pointer">
+                <div class="pic">
+                  <img src="@/assets/img/banner/banner-index-banner-12.jpg" />
+                </div>
+                <span>浏览器的内核是支持浏览器运行的最核心的 程序，分为渲染引擎和 JS 引擎两部分…</span>
+              </div>
+              <div class="interest_info pointer">
+                <div class="pic">
+                  <img src="@/assets/img/banner/banner-index-banner-15.jpg" />
+                </div>
+                <span>浏览器的内核是支持浏览器运行的最核心的 程序，分为渲染引擎和 JS 引擎两部分…</span>
+              </div>
+              <div class="interest_info pointer">
+                <div class="pic">
+                  <img src="@/assets/img/banner/banner-index-banner-10.jpg" />
+                </div>
+                <span>浏览器的内核是支持浏览器运行的最核心的 程序，分为渲染引擎和 JS 引擎两部分…</span>
+              </div>
             </div>
           </div>
         </div>
@@ -191,6 +192,12 @@ export default {
     MyScrollbar,
     MyEditor
   },
+  props: {
+    lists: {
+      type: Array,
+      required: false
+    }
+  },
   data() {
     return {
       config: custom.search,
@@ -201,7 +208,9 @@ export default {
       showDialog: false,
       commentContent: "",
       haveCommentContent: false,
-      name: ""
+      name: "",
+      detailParams: JSON.parse(this.$route.query.detailParams),
+      detailList: new Array()
     };
   },
   watch: {
@@ -212,15 +221,17 @@ export default {
   },
   created() {
     this.getBlog();
-    console.log(111)
+    console.log(this.detailParams);
   },
   methods: {
     //获取详情列表
     async getBlog() {
       const res = await this.$axios.get(
-        `${process.env.BASE_URL}/web_api/getBlog`
+        `${process.env.BASE_URL}/web_api/getBlog?blogId=${this.detailParams.detailId}`
       );
-      console.log(res);
+      this.detailList = res.data.data;
+      // console.log(this.detailList);
+      // console.log(this.detailParams);
     },
     // 发布评论
     submit() {
@@ -283,6 +294,7 @@ export default {
       font-weight: 600;
       color: #000000;
       border-bottom: 1px solid #eff3f7;
+      position: relative;
       .detail_presenter {
         margin-top: 17px;
         font-size: 14px;
@@ -317,34 +329,23 @@ export default {
           }
         }
       }
+      .topImg {
+        position: absolute;
+        top: 28px;
+        right: 6px;
+      }
     }
     .detail_content {
-      margin-top: 54px;
-      margin-bottom: 40px;
-      .detail_sign {
-        font-size: 22px;
-        font-weight: 600;
+      margin: 54px auto 40px;
+      width: 100%;
+      text-align: center;
+      .infoBox,
+      .contentBox {
         color: #000000;
-        .span_sign {
-          width: 10px;
-          height: 30px;
-          margin: 4px 14px 14px 0;
-          background: #3376ff;
-        }
-      }
-      .describe {
-        padding: 30px 52px;
-        .word {
-          padding: 0 65px 20px;
-          line-height: 35px;
-          font-size: 16px;
-          color: #000000;
-        }
-        .image {
-          img {
-            width: 100%;
-          }
-        }
+        font-size: 16px;
+        width: 640px;
+        text-align: left;
+        margin: 0 auto 50px;
       }
     }
     .praise {
@@ -393,6 +394,16 @@ export default {
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
         overflow: hidden;
+        .pic{
+          img{
+            width: 300px;
+            height: 128px;
+          }
+        }
+        span{
+          color: #34485E;
+          font-size: 14px;
+        }
       }
       .interest_info:first-child {
         border-top: none;
