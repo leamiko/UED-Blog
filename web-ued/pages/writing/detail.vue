@@ -285,7 +285,7 @@ export default {
     }
   }
   .detail_info {
-    width: 75%;
+    width: 874px;
     box-shadow: 0px 1px 5px 0px #ececec;
     border-radius: 2px;
     .detail_title {
