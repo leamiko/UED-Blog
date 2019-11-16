@@ -33,10 +33,10 @@
     </el-form>
     <div class="codePic"
          @click="Qrcode">
-      <img v-if="!iscodeBox"
+      <img v-show="!iscodeBox"
            src="@/assets/img/image/code1.png"
            alt="">
-      <img v-if="iscodeBox"
+      <img v-show="iscodeBox"
            src="@/assets/img/image/code2.png"
            alt="">
     </div>

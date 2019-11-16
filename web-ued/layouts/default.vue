@@ -1,5 +1,5 @@
 <template>
-  <nuxt v-if="isRouterAlive" v-loading="isloading"></nuxt>
+  <nuxt v-show="isRouterAlive" v-loading="isloading"></nuxt>
 </template>
 
 <script>

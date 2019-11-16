@@ -19,18 +19,16 @@
           <div class="code_search">
             <my-search @search="getSearch" :value="searchVal"></my-search>
             <div class="design_bar">
-              <div class="design_classI inline" v-for="item in config.list" :key="item.id">
-                <el-link :underline="false" :key="item.id">{{item.name}}</el-link>
+              <div class="design_classI inline" v-for="item in classList.list" :key="item.id">
+                <el-link :underline="false" :key="item.id" @click="changeType(item)">{{item.name}}</el-link>
               </div>
               <div class="design_classII">
-                <!-- <el-tag type="info" v-for="tag in item.content" :key="tag.id">{{tag.name}}</el-tag> -->
-                <el-tag type="info" v-for="tag in list.content" :key="tag.id">{{tag.name}}</el-tag>
+                <el-tag type="info" class="type_select pointer" v-for="tag in typeObject.content" :key="tag.id" @click="chooseTag(tag)">{{tag.name}}</el-tag>
               </div>
             </div>
           </div>
           <!-- 无结果 -->
-          <div class="code_noresult bg-white" v-show="true">
-            <!-- <no-result @active="askShow=true"></no-result> -->
+          <div class="code_noresult bg-white" v-show="noData">
             <div class="noresult_img">
               <img src="@/assets/img/image/image-search-noresult-image.png" >
             </div>
@@ -42,50 +40,30 @@
           <!-- 数据列表 -->
           <div class="code_list bg-white">
             <div class="category_tabs inline">
-              <span class="category_tab pointer active">全部</span>
-              <span class="category_tab pointer">已解决</span>
-              <span class="category_tab pointer">未解决</span>
+              <span class="category_tab pointer" :class="{'active':m.isActive}" v-for="m in stateList" @click="changeState(m)">{{m.text}}</span>
             </div>
             <div class="code_info">
-              <div class="code_content pointer" @click="showDetail()">
-                <div class="content_title">Spring Cloud异步场景分布式事务怎样做？</div>
-                <div class="content_question">在微服务架构中，我们常常使用异步化的手段来提升系统的 吞吐量 和 解耦 上下游，而构建异步架构最常用的手段就是使用 消息队列(MQ)，那异步架构怎样才能实现数据一致性呢？</div>
+              <div class="code_content" v-for="x in bugList" :key="x._id">
+                <div class="pointer" @click="showDetail(x._id)">
+                  <div class="content_title">{{x.title}}</div>
+                  <div class="content_question">{{x.content}}</div>
+                </div>                
                 <div class="content_mark inline">
                   <div class="presenter flt">
                     <div class="presenter_head flt inline">
                       <img src="@/assets/img/image/code_presenter.png">
                     </div>
-                    <span class="presenter_info inline">UILEO · 2019-08-28</span>
+                    <span class="presenter_info inline">{{x.author}} · {{x.updateAt | formatDateDay}}</span>
                     <div class="mark_tags inline">
-                      <span class="mark_tag">javascript</span>
-                      <span class="mark_tag">php</span>
-                      <span class="mark_tag">css</span>
+                      <span class="mark_tag" v-for="y in x.tags">{{y}}</span>
                     </div>
                   </div>
-                  <div class="respondents frt">已有10人回答</div>
-                </div>
-              </div>
-              <div class="code_content pointer" @click="showDetail()">
-                <div class="content_title">Spring Cloud异步场景分布式事务怎样做？</div>
-                <div class="content_question">在微服务架构中，我们常常使用异步化的手段来提升系统的 吞吐量 和 解耦 上下游，而构建异步架构最常用的手段就是使用 消息队列(MQ)，那异步架构怎样才能实现数据一致性呢？</div>
-                <div class="content_mark inline">
-                  <div class="presenter flt">
-                    <div class="presenter_head flt inline">
-                      <img src="@/assets/img/image/code_presenter.png">
-                    </div>
-                    <span class="presenter_info inline">UILEO · 2019-08-28</span>
-                    <div class="mark_tags inline">
-                      <span class="mark_tag">javascript</span>
-                      <span class="mark_tag">php</span>
-                      <span class="mark_tag">css</span>
-                    </div>
-                  </div>
-                  <div class="respondents frt">已有10人回答</div>
+                  <div class="respondents frt">已有{{x.commentNum}}人回答</div>
                 </div>
               </div>
             </div>
             <div class="page_flipper">
-              <el-pagination background layout="prev, pager, next" :total="100"></el-pagination>
+              <el-pagination background layout="prev, pager, next" :total="count?count:0" @current-change="changePage"></el-pagination>
             </div>
           </div>
         </div>
@@ -118,19 +96,100 @@ export default {
   },
   data() {
     return {
-      searchVal: '',
       className: 'custom-dialog',
       askShow: false,
-      config: custom.search,
-      list:  custom.search.list[0],
+      searchVal: null, // 搜索内容
+      classList: custom.search, // 条目
+      typeObject: custom.search.list[0], // 二级条目
+      searchType: [], // 条目类别
+      stateList: [
+        {id: '0', text: '全部', state: null, isActive: true},
+        {id: '1', text: '已解决', state: 'true', isActive: false},
+        {id: '2', text: '未解决', state: 'false', isActive: false},
+      ],
+      solveState: null, // 解决状态
+      noData: true, // 无数据
+      pageIndex: 1,
+      bugList: [], // bug
+      count: '', // bug总条数
     }
   },
+  mounted() {
+    this.getInfo();
+  },
   methods: {
-    async showDetail () {
+    // 获取列表信息
+    async getInfo () {
+      let params = {
+        pageIndex: this.pageIndex,
+        pageSize: 10,
+        filters: { 
+          title: this.searchVal,
+        	bugStatus: this.solveState,
+	        author: "", //作者，置空
+        	tags: this.searchType
+        }
+      }
+      const { data } = await this.$axios.post(`${process.env.BASE_URL}/web_api/GetBugList`, params);
+      if (data.status_code === 200) {
+        if(data.data.length > 0) {
+          this.noData = false;
+          this.bugList = data.data;
+          this.count = data.count;
+        } else {
+          this.noData = true;
+        }
+      } else {
+        this.$notify.error({
+          title: '错误',
+          message: data.data.message
+        });
+      }
+    },
+    // 搜索
+    getSearch(val) {
+      if(val !== '') {
+        this.getInfo();
+      }
+    },
+    // 切换分类
+    changeType(val) {
+      this.typeObject = {};
+      this.typeObject = val;
+    },
+    // 选择分类
+    chooseTag(val) {
+      this.searchType = [];
+      this.searchType.push(val.name);
+      this.getInfo();
+    },
+    // 切换状态
+    changeState(val) {
+      for (let i = 0; i < this.stateList.length; i++) {
+        if (this.stateList[i].id === val.id) {
+          this.stateList[i].isActive = true;
+        } else {
+          this.stateList[i].isActive = false;
+        }
+      }
+      this.solveState = val.state;
+      this.getInfo();
+    },
+    // 翻页
+    changePage(page) {
+      this.pageIndex = page;
+      this.getInfo();
+    },
+    // 查看打码明细
+    showDetail (id) {
       this.$router.push({
-        path: '/coding/detail'
+        path: '/coding/detail',
+        query: {
+          bugId: id
+        }
       })
     },
+    // 创建
     handleCommand(command) {
       if (command === 'answer') {
         this.$router.push({
@@ -140,9 +199,6 @@ export default {
       }
       this[command] = !this[command];
     },
-    getSearch(val) {
-      console.log(val);
-    }
   }
 }
 </script>
@@ -166,7 +222,6 @@ export default {
 }
 .my-content {
   padding: 82px 0 46px;
-
   > div {
     max-width: 1200px;
     min-width: 960px;
@@ -215,6 +270,10 @@ export default {
             border-radius:16px;
             border: none;
           }
+          .type_select:active {
+            background: #3376FF; 
+            color: #ffffff;
+          }
         }
       }
     }
@@ -222,8 +281,7 @@ export default {
     &.code_noresult {
       display: flex;
       height: 218px;
-      margin-top: 20px;
-      margin-bottom: 30px;
+      margin-top: 30px;
       padding-top: 38px;
       box-shadow:0px 1px 5px 0px rgba(236,236,236,0.5);
       .noresult_img {
@@ -365,7 +423,8 @@ export default {
 }
 
 .code_list {
-  box-shadow:0px 1px 5px 0px rgba(236,236,236,0.5);
+  margin-top: 30px !important;
+  box-shadow: 0px 1px 5px 0px rgba(236,236,236,0.5);
   .category_tabs {
     width: 100%;
     text-align: right;

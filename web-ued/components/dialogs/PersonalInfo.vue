@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :visible.sync="isShow" width="750px" :custom-class="classStyle" :before-close="handleClose"
+    <el-dialog :visible.sync="isShow" width="610px" :custom-class="classStyle" :before-close="handleClose"
         destroy-on-close append-to-body>
         <img src="@/assets/img/bg/bg-dialog-info.png" slot="title" class="dialog-img">
         <div class="content_block">
@@ -12,7 +12,7 @@
             <p>头像</p>
             <div class="cus-flex cus-align-center">
                 <div v-for="(item,index) in config.avatorList" @click="chooseAvator($event)" :key="index">
-                    <el-avatar :key="index" :size="60" :src="item" class="align-top" shape="square"></el-avatar>
+                    <el-avatar :key="index" :size="50" :src="item" class="align-top" shape="square"></el-avatar>
                 </div>
             </div>
         </div>
@@ -24,7 +24,7 @@
 <style lang="scss" scoped>
     .info_dialog {
         .content_block {
-            padding: 15px 38px 10px 16px;
+            //padding: 15px 38px 10px 16px;
         }
 
         .nickname {

@@ -1,6 +1,6 @@
 <template>
   <div class="my-footer" :class="{'bor-top': hasMenu}">
-    <div class="cus-flex cus-flex-center foot" ref="foot" v-if="hasMenu">
+    <div class="cus-flex cus-flex-center foot" ref="foot" v-show="hasMenu">
       <div v-for="(item, index) in custom.menu" :key="index">
         <h5> {{ item.label }} </h5>
         <ul>

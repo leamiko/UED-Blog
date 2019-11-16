@@ -6,7 +6,7 @@
           <h5 class="font-size--md text-dark line-height--lg">{{resultMsg}}</h5>
         </template>
       <div class="text-center">
-        <p v-if="resultError">{{resultError}}</p>
+        <p v-show="resultError">{{resultError}}</p>
         <img :src="resultImage" class="my-img">
       </div>
     </el-dialog>
@@ -15,8 +15,8 @@
       <el-avatar :size="48" :src="avator" class="align-top"></el-avatar>
       <div class="inline inline_auto">
         <el-input v-model="input" :placeholder="placeholder" @focus="showContent = true" maxlength="40"></el-input>
-        <h5 class="text-dark font-size--md line-height--lg" v-if="showContent">问题描述</h5>
-        <my-editor v-if="showContent" :height="'99px'" @change="onEditorChange" ref="myEditor"></my-editor>
+        <h5 class="text-dark font-size--md line-height--lg" v-show="showContent">问题描述</h5>
+        <my-editor v-show="showContent" :height="'99px'" @change="onEditorChange" ref="myEditor"></my-editor>
       </div>
     </div>
     <div slot="footer" class="dialog-footer">

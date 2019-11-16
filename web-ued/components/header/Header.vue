@@ -1,5 +1,8 @@
 <template>
-  <div class="my-header" ref="header">
+  <div
+    class="my-header"
+    ref="header"
+  >
     <div class="cus-flex cus-flex-between cus-align-center">
       <div>
         <el-avatar
@@ -25,36 +28,76 @@
       </div>
       <div class="cus-flex cus-align-center">
         <slot name="box_cus"></slot>&emsp;&emsp;
-        <el-badge is-dot class="item">
-          <div class="inline pointer" @mouseenter="showBadge = 1" @mouseleave="showBadge = 2">
-            <img :src="
+        <el-badge
+          is-dot
+          class="item"
+        >
+          <div
+            class="inline pointer"
+            @mouseenter="showBadge = 1"
+            @mouseleave="showBadge = 2"
+          >
+            <img
+              :src="
                 showBadge === 2
                   ? isChange === true
                     ? msgURL
                     : msgUrl02
                   : msgURLHover
-              " class="message" />
+              "
+              class="message"
+            />
           </div>
         </el-badge>
         <div class="logModal">
-          <el-button type="text" @click="modalVisible = true" @mouseenter.native="showMsg = true" @mouseleave.native="showMsg = false"><span :class="{ login_text: isChange, login_text_02: !isChange }">登录</span></el-button>
+          <el-button
+            type="text"
+            @click="modalVisible = true"
+            @mouseenter.native="showMsg = true"
+            @mouseleave.native="showMsg = false"
+          ><span :class="{ login_text: isChange, login_text_02: !isChange }">登录</span></el-button>
           <!-- <el-button
             type="text"
             @click="infoShow = true"
           >个人信息</el-button> -->
-          <el-dialog :title="title" :visible.sync="modalVisible" :append-to-body="true" custom-class="logDialog" :center="true" :close-on-click-modal="false">
-            <my-login v-if="$store.state.isLogin" :title="title" @titleChanged="registerTitle($event)" @modalChanged="modalChanged($event)"></my-login>
-            <my-register v-if="!$store.state.isLogin" @titleChanged="loginTitle($event)"></my-register>
+          <el-dialog
+            :title="title"
+            :visible.sync="modalVisible"
+            :append-to-body="true"
+            custom-class="logDialog"
+            :center="true"
+            :close-on-click-modal="false"
+          >
+            <my-login
+              v-show="$store.state.isLogin"
+              :title="title"
+              @titleChanged="registerTitle($event)"
+              @modalChanged="modalChanged($event)"
+            ></my-login>
+            <my-register
+              v-show="!$store.state.isLogin"
+              @titleChanged="loginTitle($event)"
+            ></my-register>
           </el-dialog>
           <!-- <router-link
           :to="'login'"
           class="text_size_18"
         >登录</router-link> -->
-          <div class="badge_hover" v-if="showBadge === 1" @mouseenter="showBadge = 1" @mouseleave="showBadge = 2">
+          <div
+            class="badge_hover margin_right"
+            v-show="showBadge === 1"
+            @mouseenter="showBadge = 1"
+            @mouseleave="showBadge = 2"
+          >
             <img :src="msgNull" />
             <span>还没有消息哦</span>
           </div>
-          <div class="badge_hover msg_hover" v-if="showMsg" @mouseenter="showMsg = true" @mouseleave="showMsg = false">
+          <div
+            class="badge_hover msg_hover"
+            @mouseenter="showMsg = true"
+            @mouseleave="showMsg = false"
+            v-show="showMsg"
+          >
             <span @click="infoShow = true">个人信息</span>
             <span @click="logOut">退出账号</span>
           </div>
@@ -62,7 +105,11 @@
       </div>
     </div>
     <!-- 模态框 -->
-    <person-dialog :isShow="infoShow" :classStyle="className" @hide="infoShow = false"></person-dialog>
+    <person-dialog
+      :isShow="infoShow"
+      :classStyle="className"
+      @hide="infoShow = false"
+    ></person-dialog>
   </div>
 </template>
 
@@ -95,7 +142,7 @@ export default {
     PersonDialog
   },
 
-  data() {
+  data () {
     return {
       custom: custom.head,
       logoURL: custom.head.logoUrl,
@@ -112,36 +159,36 @@ export default {
     };
   },
 
-  mounted() {
+  mounted () {
     if (this.innerStyle) {
       Object.keys(this.innerStyle).forEach(key => {
         this.$refs.header.style[key] = this.innerStyle[key];
       });
     }
   },
-  created() {
+  created () {
     this.isLogin();
     this.wxLogin();
   },
   methods: {
-    registerTitle(e) {
+    registerTitle (e) {
       this.title = e;
     },
-    loginTitle(e) {
+    loginTitle (e) {
       this.title = e;
     },
-    modalChanged(e) {
+    modalChanged (e) {
       this.modalVisible = e;
     },
     // 退出登录
-    async logOut() {
+    async logOut () {
       const res = await this.$axios.get(
         `${process.env.BASE_URL}/web_api/logOut`
       );
       console.log(res)
     },
     //判断是否登录
-    async isLogin() {
+    async isLogin () {
       const res = await this.$axios.get(
         `${process.env.BASE_URL}/web_api/isLogin`
       );
@@ -151,7 +198,7 @@ export default {
       }
     },
     // 调用微信扫码API
-    async wxLogin() {
+    async wxLogin () {
       console.log(this.getQueryVariable("code"));
       const res = await this.$axios.get(
         `${process.env.BASE_URL}/web_api/wxLogin?code=${this.getQueryVariable(
@@ -165,11 +212,11 @@ export default {
         //登录失败
         this.title = "登录失败";
         this.$store.state.qrcodeBindText = "您还没有绑定过微信，请绑定后再登录";
-        this.modalVisible=true;
+        this.modalVisible = true;
         console.log("还没绑");
       }
     },
-    getQueryVariable(variable) {
+    getQueryVariable (variable) {
       var query = window.location.search.substring(1);
       var vars = query.split("&");
       for (var i = 0; i < vars.length; i++) {
@@ -317,7 +364,6 @@ a {
 
 .badge_hover {
   position: absolute;
-  right: 363px;
   top: 58px;
   padding: 171px 131px;
   width: 440px;
@@ -369,5 +415,8 @@ a {
       cursor: pointer;
     }
   }
+}
+.margin_right {
+  margin-left: -450px !important;
 }
 </style>

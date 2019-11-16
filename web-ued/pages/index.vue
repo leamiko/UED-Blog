@@ -84,13 +84,14 @@ export default {
   data () {
     return {
       config: custom.index,
-      height: '',
+      height: Number,
       isAddClass: true,
       list: [],
       interval: 6000,
       img: custom.index.newsList[0].img,
       avatar: custom.index.newsList[0].avatar,
       updateTime: custom.index.newsList[0].updateTime,
+      screenWidth: Number,
     };
   },
   head () {
@@ -133,9 +134,15 @@ export default {
     }
   },
   mounted () {
+    this.screenWidth = document.body.clientWidth;
     this.height = (document.body.clientWidth / 1920) * 645;
+    window.onresize = () => {
+      return (() => {
+        this.height = (document.body.clientWidth / 1920) * 645;
+      })()
+    }
     this.getHomeList();
-  }
+  },
 };
 </script>
 <style lang="scss" scoped>
