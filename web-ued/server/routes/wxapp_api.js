@@ -2,6 +2,7 @@ var express = require('express')
 const router = express.Router()
 
 var wxapp_user = require('../controller/wxapp/user')
+var wxapp_blog = require('../controller/wxapp/blog')
 
 /* GET home page. */
 router.get('/index', function(req, res, next) {
@@ -30,47 +31,47 @@ router.get('/isLogin', (req, res) => {
 /* 文章API */
 //获取blog详情
 router.get('/getBlog', function(req, res, next) {
-  web_blog.getBlog(req, res)
+  wxapp_blog.getBlog(req, res)
 })
 //写字列表
 router.post('/getList', function(req, res, next) {
   //调用controller方法
-  web_blog.getList(req, res)
+  wxapp_blog.getList(req, res)
 })
 //blog点赞
 router.get('/likeBlog', function(req, res, next) {
   //调用controller方法
-  web_blog.likeBlog(req, res)
+  wxapp_blog.likeBlog(req, res)
 })
 //blog评论
 router.post('/commentBlog', function(req, res, next) {
   //调用controller方法
-  web_blog.commentBlog(req, res)
+  wxapp_blog.commentBlog(req, res)
 })
 //评论点赞
 router.get('/commentLike', function(req, res, next) {
   //调用controller方法
-  web_blog.commentLike(req, res)
+  wxapp_blog.commentLike(req, res)
 })
 //blog评论
 router.post('/replyBlog', function(req, res, next) {
   //调用controller方法
-  web_blog.replyBlog(req, res)
+  wxapp_blog.replyBlog(req, res)
 })
 //获取blog评论
 router.get('/getBlogComment', function(req, res, next) {
   //调用controller方法
-  web_blog.getBlogComment(req, res)
+  wxapp_blog.getBlogComment(req, res)
 })
 //获取blog评论
 router.get('/rankTask', function(req, res, next) {
   //调用controller方法
-  web_blog.rankTask(req, res)
+  wxapp_blog.rankTask(req, res)
 })
 //写字列表
 router.post('/getList', function(req, res, next) {
   //调用controller方法
-  web_blog.getList(req, res)
+  wxapp_blog.getList(req, res)
 })
 
 module.exports = router
