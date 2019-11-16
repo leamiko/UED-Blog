@@ -5,6 +5,7 @@ const { verifyMiddleware } = require('../middleware/verify.js')
 var web_user = require('../controller/web/user')
 var web_blog = require('../controller/web/blog')
 var web_bugCtrler = require('../controller/web/bug')
+var avatar = require('../controller/web/avatar')
 
 /* GET home page. */
 router.get('/index', function(req, res, next) {
@@ -28,6 +29,14 @@ router.get('/callback', (req, res) => {
 })
 router.get('/isLogin', (req, res) => {
   web_user.isLogin(req, res)
+})
+router.get('/wxLogin', (req, res) => {
+  web_user.wxLogin(req, res)
+})
+
+/*个人信息*/
+router.post('/editInfo', (req, res) => {
+  web_user.editInfo(req, res)
 })
 
 /* 文章API */
@@ -149,4 +158,13 @@ router.get('/bugCommentLike', (req, res, next) => {
   //调用controller方法
   web_bugCtrler.bugCommentLike(req, res, next)
 })
+
+/**
+ * 头像管理
+ */
+// 头像列表
+router.get('/getAvatarList', (req, res, next) => {
+  avatar.getAvatarList(req, res, next)
+})
+
 module.exports = router

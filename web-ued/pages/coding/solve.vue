@@ -13,8 +13,9 @@
             <div class="card-content">
               <el-avatar :size="48" :src="avator" class="align-top"></el-avatar>
               <div class="inline inline_auto">
-                <el-input v-model="input" :placeholder="'请一句话描述问题'"></el-input>
+                <el-input v-model="input" :placeholder="'请一句话描述问题'" maxlength="40"></el-input>
                 <div class="cus-flex cus-flex-between my-padding">
+                  <!-- 添加标签的功能 -->
                   <el-dropdown trigger="click" :placement="'bottom-start'">
                     <span class="el-dropdown-link pointer">#添加标签</span>
                     <el-dropdown-menu slot="dropdown">
@@ -30,8 +31,8 @@
                   </el-dropdown>
                   <span class="my-text font-size--md">最多只能输入40个字哦～</span>
                 </div>
-                <my-editor :height="'374px'" :placeholder="'可以详细描述问题，也可以插入图片和代码块（选填）'"></my-editor><br>
-                <my-editor :height="'374px'" :placeholder="'请将您的解决方案写在此处，感谢你为其他码农作出的贡献！'"></my-editor><br>
+                <my-editor :height="'374px'" :placeholder="'可以详细描述问题，也可以插入图片和代码块（选填）'" @change="onEditor1Change" ref="myEditor1"></my-editor><br>
+                <my-editor :height="'374px'" :placeholder="'请将您的解决方案写在此处，感谢你为其他码农作出的贡献！'" @change="onEditor2Change" ref="myEditor2"></my-editor><br>
                 <div class="text-right">
                   <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
                   <el-button type="primary" round size="small" @click="submit()">&emsp;发&nbsp;布&emsp;</el-button>
@@ -44,11 +45,12 @@
       </div>
     </my-scrollbar>
 
-    <el-dialog :visible.sync="showDialog" :show-close="false" width="390px" center>
+    <el-dialog :visible.sync="showDialog" :show-close="false" width="390px" center :before-close="handleClose" append-to-body>
         <template slot="title">
           <h5 class="font-size--md text-dark line-height--lg">{{resultMsg}}</h5>
         </template>
       <div class="text-center">
+        <p v-show="resultError">{{resultError}}</p>
         <img :src="resultImage" class="my-img">
       </div>
     </el-dialog>
@@ -79,6 +81,8 @@ export default {
     return {
       avator: avatorUrl,
       input: '',
+      content1: '',
+      content2: '',
       className: 'custom-dialog',
       isAnonymous: false,
       list: custom.search.list,
@@ -86,10 +90,20 @@ export default {
       showDialog: false,
       checkList: [],
       resultMsg: '',
-      resultImage: ''
+      resultImage: '',
+      resultError: null
     }
   },
   methods: {
+    handleClose() {
+      this.showDialog = false;
+      // 如果发布成功直接跳到列表
+      if (!this.resultError) {
+        this.$route.push({
+          path: '/coding/list'
+        });
+      }
+    },
     checkLabel(val) {
       if (this.checkList.indexOf(val) === -1) {
         this.checkList.push(val);
@@ -101,10 +115,45 @@ export default {
         })
       }
     },
-    submit() {
-      this.resultMsg = '发布成功!';
-      this.resultImage = successImg;
-      this.showDialog = true;
+    onEditor1Change({ editor, html, text }) {
+      this.content1 = html;
+    },
+    onEditor2Change({ editor, html, text }) {
+      this.content2 = html;
+    },
+    async submit() {
+      if (!this.input) {
+        this.$notify.error({
+          title: '错误',
+          message: '请填写提问标题！'
+        });
+        return;
+      }
+      if (!this.content1) {
+        this.$notify.error({
+          title: '错误',
+          message: '请填写提问描述！'
+        });
+        return;
+      }
+      const params = {
+        title: this.input,
+        content: this.content1,
+        tags: this.checkList,
+        bugStatus: false,
+        bugSolution: this.content2
+      };
+      const res = await this.$axios.post(`${process.env.BASE_URL}/web_api/AddBugItems`, params);
+      if (res.status === 200 && res.data.message === 'success') {
+        this.resultMsg = '发布成功!';
+        this.resultImage = successImg;
+        this.showDialog = true;
+      } else {
+        this.resultError = res.data.message;
+        this.resultMsg = '发布失败!';
+        this.resultImage = failImg;
+        this.showDialog = true;
+      }
     }
   },
   mounted() { }

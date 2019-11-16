@@ -18,9 +18,18 @@ import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import './assets/scss/common.scss'
 import './assets/scss/website.scss'
+// 引入图片查看器
+import Viewer from 'v-viewer'
+import 'viewerjs/dist/viewer.css'
 
 Vue.use(Antd)
 Vue.use(VueQuillEditor)
+
+Vue.use(Viewer, {
+  defaultOptions: {
+    zIndex: 9999
+  }
+})
 
 // 时间过滤器
 Vue.filter('formatDateMinSec', function (time) {

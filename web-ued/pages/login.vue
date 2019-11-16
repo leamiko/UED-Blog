@@ -1,25 +1,50 @@
 <template>
   <div class="el-form cus-fix-center">
-    <el-form :model="loginForm" status-icon :rules="rules2" ref="loginForm" label-width="0" v-show="!iscodeBox">
+    <el-form :model="loginForm"
+             status-icon
+             :rules="rules2"
+             ref="loginForm"
+             label-width="0"
+             v-show="!iscodeBox">
       <el-form-item prop="account">
-        <el-input v-model="loginForm.account" placeholder="请输入账号" prefix-icon="el-icon-user" maxlength=20></el-input>
+        <el-input v-model="loginForm.account"
+                  placeholder="请输入账号"
+                  prefix-icon="el-icon-user"
+                  maxlength=20></el-input>
       </el-form-item>
       <el-form-item prop="passWord">
-        <el-input type="passWord" v-model="loginForm.passWord" placeholder="请输入密码" auto-complete="off" prefix-icon="el-icon-lock" minlength=6 maxlength=16></el-input>
+        <el-input type="passWord"
+                  v-model="loginForm.passWord"
+                  placeholder="请输入密码"
+                  auto-complete="off"
+                  prefix-icon="el-icon-lock"
+                  minlength=6
+                  maxlength=16></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('loginForm')" class="cus-full-width" :loading="submitLoading">登录</el-button>
-        <div class="login">没有账号，<el-button type="text" @click="Visible">立即注册</el-button>
+        <el-button type="primary"
+                   @click="submitForm('loginForm')"
+                   class="cus-full-width"
+                   :loading="submitLoading">登录</el-button>
+        <div class="login">没有账号，<el-button type="text"
+                     @click="Visible">立即注册</el-button>
         </div>
       </el-form-item>
     </el-form>
-    <div class="codePic" @click="Qrcode">
-      <img v-if="!iscodeBox" src="@/assets/img/image/code1.png" alt="">
-      <img v-if="iscodeBox" src="@/assets/img/image/code2.png" alt="">
+    <div class="codePic"
+         @click="Qrcode">
+      <img v-show="!iscodeBox"
+           src="@/assets/img/image/code1.png"
+           alt="">
+      <img v-show="iscodeBox"
+           src="@/assets/img/image/code2.png"
+           alt="">
     </div>
-    <div class="codeBox" v-show="iscodeBox">
-      <div class="text">请使用微信扫码二维码登录</div>
-      <div class="box" id="wxLoginQrcode">假设这里有二维码</div>
+    <div class="codeBox"
+         v-show="iscodeBox">
+      <div class="text">{{$store.state.qrcodeBindText}}</div>
+      <div class="box"
+           id="wxLoginQrcode"></div>
     </div>
   </div>
 </template>
@@ -32,7 +57,7 @@ export default {
       required: false
     }
   },
-  data() {
+  data () {
     var checkName = (rule, value, callback) => {
       if (!value) {
         return callback(new Error("账号不能为空"));
@@ -71,35 +96,36 @@ export default {
       },
       submitLoading: false,
       iscodeBox: false,
-      isError: false
+      isError: false,
     };
   },
-  mounted() {
+  mounted () {
     this.wxHandle();
   },
   methods: {
-    Qrcode() {
+    Qrcode () {
       this.iscodeBox = !this.iscodeBox;
-      console.log(this.iscodeBox);
+      this.$emit("titleChanged", "登录");
     },
     //二维码
-    wxHandle() {
+    wxHandle () {
       var obj = new WxLogin({
         id: "wxLoginQrcode",
-        appid: process.env.WX_APP_ID,
+        appid: process.env.WX_WEB_ID,
         scope: "snsapi_login",
-        redirect_uri: "http://ued.lunz.cn/web_api/wxLogin",
+        // redirect_uri: window.location.href,
+        redirect_uri: 'http://ued.lunz.cn',
         state: "",
         style: "",
-        href: ""
+        href: "data:text/css;base64,Ly8gLmltcG93ZXJCb3ggew0KLy8gICAucXJjb2RlIHsNCi8vICAgICB3aWR0aDogMTgwcHg7DQovLyAgICAgaGVpZ2h0OiAxODBweDsNCi8vICAgICBtYXJnaW4tdG9wOiAwcHg7DQovLyAgICAgbWFyZ2luLXJpZ2h0OiAxMThweDsNCi8vICAgICBib3JkZXI6IDFweCBzb2xpZCAjZTJlMmUyOw0KLy8gICB9DQovLyAgIC5pbmZvew0KLy8gICAgIGRpc3BsYXk6IG5vbmU7DQovLyAgIH0NCi8vICAgLnRpdGxlew0KLy8gICAgIGRpc3BsYXk6IG5vbmU7DQovLyAgIH0NCi8vIH0NCi5pbXBvd2VyQm94IC5xcmNvZGV7DQogIHdpZHRoOiAxODBweDsNCiAgaGVpZ2h0OiAxODBweDsNCiAgbWFyZ2luLXRvcDogMHB4Ow0KICBtYXJnaW4tcmlnaHQ6IDExOHB4Ow0KICBib3JkZXI6IDFweCBzb2xpZCAjZTJlMmUyOw0KfQ0KLmltcG93ZXJCb3ggLmluZm97DQogIGRpc3BsYXk6IG5vbmU7DQp9DQouaW1wb3dlckJveCAudGl0bGV7DQogIGRpc3BsYXk6IG5vbmU7DQp9"
       });
     },
     //注册框隐藏登录框显示
-    Visible() {
+    Visible () {
       this.$emit("titleChanged", "注册");
       this.$store.commit("isLogin", false);
     },
-    submitForm(formName) {
+    submitForm (formName) {
       this.submitLoading = true;
       this.$refs[formName].validate(async valid => {
         this.submitLoading = false;
@@ -119,13 +145,13 @@ export default {
           } else {
             //登录失败
             this.isError = true;
-            this.$refs[formName].validate(async valid => {});
+            this.$refs[formName].validate(async valid => { });
           }
         }
       });
     },
     // 清空数据
-    resetForm(formName) {
+    resetForm (formName) {
       this.$refs[formName].resetFields();
     }
   }
@@ -160,7 +186,6 @@ export default {
     width: 180px;
     height: 180px;
     margin: 0 auto;
-    border: 1px solid black;
     box-sizing: border-box;
   }
 }

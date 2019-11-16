@@ -1,7 +1,7 @@
 <template>
   <div>
-    <my-scrollbar hasHead hasFoot :headStyle="{'background':'white'}" :headActive="'打码'">
-      <div slot="container" v-loading="loading">
+    <my-scrollbar hasHead hasFoot :headStyle="{'background':'white'}" :headActive="'写字'">
+      <div slot="container">
         <div class="detail_container">
           <div class="support">
             <div class="support_icon pointer">
@@ -24,45 +24,36 @@
           </div>
           <div class="detail_info inline bg-white">
             <div class="detail_title">
-              {{detailInfo.title}}
+              {{detailList.title}}
               <div class="detail_presenter">
                 <div class="presenter_head flt inline">
                   <img src="@/assets/img/image/code_presenter.png" />
                 </div>
-                <span class="presenter_info inline">{{detailInfo.author}} · {{detailInfo.createAt | formatDateDay}}</span>
+                <span class="presenter_info inline">{{detailList.author}} · {{detailList.updateAt | formatDateDay}}</span>
                 <div class="mark_tags inline">
-                  <span class="mark_tag" v-for="(item,index) in detailInfo.tags" :key="index">{{item}}</span>
+                  <span class="mark_tag">{{ detailList.blogType == 1 ? "技术" : detailList.blogType == 2 ? "交互" :detailList.blogType == 3 ? "设计" :detailList.blogType == 4 ? "管理" :"其它" }}</span>
                 </div>
-                <div class="browse inline" v-show="detailInfo.viewNum>0">
+                <div class="browse inline">
                   <div class="browse_icon inline">
                     <img src="@/assets/img/icon/browse.png" />
-                  </div>{{detailInfo.viewNum}}
+                  </div>{{detailList.viewNum}}
                 </div>
               </div>
+              <img class="topImg" v-show="detailParams.imgUrl" :src="require('../../assets/img/image/' + detailParams.imgUrl)" alt="">
             </div>
             <div class="detail_content">
-              <div class="detail_sign">
-                <span class="span_sign inline flt"></span>问题描述
+              <div class="infoBox">
+                {{detailList.info}}
               </div>
-              <div class="describe">
-                <!-- <div class="word" v-html="detailInfo.content"></div> -->
-                <div class="word">{{detailInfo.content}}</div>
-              </div>
-            </div>
-            <div class="detail_content" v-show="detailInfo.bugSolution!==''">
-              <div class="detail_sign">
-                <span class="span_sign inline flt"></span>解决方案
-              </div>
-              <div class="describe">
-                <!-- <div class="word" v-html="detailInfo.bugSolution"></div> -->
-                <div class="word">{{detailInfo.bugSolution}}</div>
+              <div class="contentBox" v-html="detailList.content">
+                {{detailList.content}}
               </div>
             </div>
             <div class="praise">
               <div class="praise_img pointer">
                 <img src="@/assets/img/icon/praise.png" />
               </div>
-              <div class="praise_num">&nbsp;&nbsp;{{detailInfo.likeNum?detailInfo.likeNum:0}}个赞</div>
+              <div class="praise_num">136个赞</div>
             </div>
           </div>
           <div class="interest inline frt">
@@ -74,11 +65,30 @@
               </router-link>
             </div>
             <div class="interest_list">
-              <div class="interest_info pointer">mysql批量插入数据，一次插入多少 行数据效率最高？</div>
-              <div class="interest_info pointer active">LUNZ+——select选择项为请选择时 表单不验证</div>
-              <div class="interest_info pointer">Vue框架在ios微信端存在input输入时 系统键盘会将整个浏览器推上去</div>
-              <div class="interest_info pointer">小程序手机端数字键盘无法输入小数</div>
-              <div class="interest_info pointer">Java如何实现五分钟内重复获取返回 同一个短信验证码</div>
+              <div class="interest_info pointer">
+                <div class="pic">
+                  <img src="@/assets/img/banner/banner-index-banner-11.jpg" />
+                </div>
+                <span>浏览器的内核是支持浏览器运行的最核心的 程序，分为渲染引擎和 JS 引擎两部分…</span>
+              </div>
+              <div class="interest_info pointer">
+                <div class="pic">
+                  <img src="@/assets/img/banner/banner-index-banner-12.jpg" />
+                </div>
+                <span>浏览器的内核是支持浏览器运行的最核心的 程序，分为渲染引擎和 JS 引擎两部分…</span>
+              </div>
+              <div class="interest_info pointer">
+                <div class="pic">
+                  <img src="@/assets/img/banner/banner-index-banner-15.jpg" />
+                </div>
+                <span>浏览器的内核是支持浏览器运行的最核心的 程序，分为渲染引擎和 JS 引擎两部分…</span>
+              </div>
+              <div class="interest_info pointer">
+                <div class="pic">
+                  <img src="@/assets/img/banner/banner-index-banner-10.jpg" />
+                </div>
+                <span>浏览器的内核是支持浏览器运行的最核心的 程序，分为渲染引擎和 JS 引擎两部分…</span>
+              </div>
             </div>
           </div>
         </div>
@@ -95,13 +105,7 @@
                 <br />
                 <div class="text-right">
                   <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
-                  <el-button
-                    type="primary"
-                    round
-                    size="small"
-                    @click="submit()"
-                    v-bind:class="{comment_btn_gray: !haveCommentContent}"
-                  >&emsp;评&nbsp;论&emsp;</el-button>
+                  <el-button type="primary" round size="small" @click="submit()" v-bind:class="{comment_btn_gray: !haveCommentContent}">&emsp;评&nbsp;论&emsp;</el-button>
                 </div>
               </div>
               <hr class="comment_hr" />
@@ -112,20 +116,13 @@
               </div>
               <div class="current_edit inline">
                 <div class="comment_unit_name">Maria</div>
-                <div
-                  class="comment_unit_content"
-                >写的真的很棒，虽然还远没有做到架构师的级别，但是看到了自己的不足和应该努力的方向但是看到了自己的不足和应该努力的方向。</div>
+                <div class="comment_unit_content">写的真的很棒，虽然还远没有做到架构师的级别，但是看到了自己的不足和应该努力的方向但是看到了自己的不足和应该努力的方向。</div>
                 <div class="comment_unit_bottom">
                   <div class="comment_unit_bottom_left">
-                    <!-- <div class="comment_unit_bottom_btn">
+                    <div class="comment_unit_bottom_btn">
                       <img src="@/assets/img/icon/icon-support.svg" />
                       0
-                    </div>-->
-
-                    <el-button type="primary" plain round class="comment_unit_bottom_btn">
-                      <img src="@/assets/img/icon/icon-support.svg" />
-                      0
-                    </el-button>
+                    </div>
                     <div class="comment_unit_bottom_btn margin_left_15">删除</div>
                   </div>
                   <div class="comment_unit_bottom_right">2019-09-06</div>
@@ -162,12 +159,7 @@
                     <br />
                     <div class="text-right">
                       <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
-                      <el-button
-                        type="primary"
-                        round
-                        size="small"
-                        @click="submit()"
-                      >&emsp;评&nbsp;论&emsp;</el-button>
+                      <el-button type="primary" round size="small" @click="submit()">&emsp;评&nbsp;论&emsp;</el-button>
                     </div>
                   </div>
                 </div>
@@ -200,18 +192,25 @@ export default {
     MyScrollbar,
     MyEditor
   },
+  props: {
+    lists: {
+      type: Array,
+      required: false
+    }
+  },
   data() {
     return {
-      loading: false,
-      Id: '', // 当前问题Id
-      detailInfo: {}, // 详情信息
+      config: custom.search,
+      list: custom.search.list[0],
       isAnonymous: false,
       resultMsg: "",
       resultImage: "",
       showDialog: false,
       commentContent: "",
       haveCommentContent: false,
-      name: ""
+      name: "",
+      detailParams: JSON.parse(this.$route.query.detailParams),
+      detailList: new Array()
     };
   },
   watch: {
@@ -220,48 +219,19 @@ export default {
       // console.log(oldval); //oldval 为input中的旧值
     }
   },
-  mounted() {
-    this.Id = this.$route.query.bugId ? this.$route.query.bugId : '';
-    if (this.Id) {
-      this.getInfo();
-    }
+  created() {
+    this.getBlog();
+    console.log(this.detailParams);
   },
   methods: {
-    // 获取详情信息
-    async getInfo() {
-      let params = {
-        bugId: this.Id
-      }
-      const url = `${process.env.BASE_URL}/web_api/GetBugDetail?bugId=`+ this.Id;
-      const res = await this.$axios.get(url);
-      if (res.status === 200) {
-        if (res.data.data && res.data.data !== null) {
-          this.detailInfo = res.data.data;
-          // setTimeout(() => {
-          //   this.loading = false;
-          // }, 500);
-        } else {
-          // setTimeout(() => {
-          //   this.loading = false;
-          // }, 500);
-          this.$notify.error({
-            title: '错误',
-            message: '未查询到相关数据，请联系管理员。'
-          });
-        }
-      } else {
-        // setTimeout(() => {
-        //   this.loading = false;
-        // }, 500);
-        this.$notify.error({
-          title: '错误',
-          message: data.data.message
-        });
-      }
-    },
-    // 详情点赞
-    praise() {
-
+    //获取详情列表
+    async getBlog() {
+      const res = await this.$axios.get(
+        `${process.env.BASE_URL}/web_api/getBlog?blogId=${this.detailParams.detailId}`
+      );
+      this.detailList = res.data.data;
+      // console.log(this.detailList);
+      // console.log(this.detailParams);
     },
     // 发布评论
     submit() {
@@ -286,7 +256,6 @@ export default {
 .frt {
   float: right;
 }
-// 详情
 .detail_container {
   position: relative;
   width: 62.5%;
@@ -316,7 +285,7 @@ export default {
     }
   }
   .detail_info {
-    width: 75%;
+    width: 874px;
     box-shadow: 0px 1px 5px 0px #ececec;
     border-radius: 2px;
     .detail_title {
@@ -325,6 +294,7 @@ export default {
       font-weight: 600;
       color: #000000;
       border-bottom: 1px solid #eff3f7;
+      position: relative;
       .detail_presenter {
         margin-top: 17px;
         font-size: 14px;
@@ -359,33 +329,23 @@ export default {
           }
         }
       }
+      .topImg {
+        position: absolute;
+        top: 28px;
+        right: 6px;
+      }
     }
     .detail_content {
-      margin-top: 54px;
-      margin-bottom: 40px;
-      .detail_sign {
-        font-size: 22px;
-        font-weight: 600;
+      margin: 54px auto 40px;
+      width: 100%;
+      text-align: center;
+      .infoBox,
+      .contentBox {
         color: #000000;
-        .span_sign {
-          width: 10px;
-          height: 30px;
-          margin: 4px 14px 14px 0;
-          background: #3376ff;
-        }
-      }
-      .describe {
-        padding: 30px 52px;
-        .word {
-          line-height: 35px;
-          font-size: 16px;
-          color: #000000;
-        }
-        .image {
-          img {
-            width: 100%;
-          }
-        }
+        font-size: 16px;
+        width: 640px;
+        text-align: left;
+        margin: 0 auto 50px;
       }
     }
     .praise {
@@ -434,6 +394,16 @@ export default {
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
         overflow: hidden;
+        .pic{
+          img{
+            width: 300px;
+            height: 128px;
+          }
+        }
+        span{
+          color: #34485E;
+          font-size: 14px;
+        }
       }
       .interest_info:first-child {
         border-top: none;
@@ -444,7 +414,6 @@ export default {
     }
   }
 }
-// 评论
 .comment_container {
   width: 62.5%;
   margin: 0 auto 48px;
@@ -524,7 +493,6 @@ export default {
   font-size: 16px;
   font-weight: 400;
   color: rgba(145, 153, 161, 1);
-  border: none;
   img {
     vertical-align: -2px;
   }

@@ -5,10 +5,10 @@
   "organization": "ZR GROUP UED",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_ENV=development WX_WEB_ID=wx742cbf40cfbc1dbf WX_WEB_SECRET=6e72bea53fd86a3c0dd13d067b425783 WX_APP_ID=wx3aad0674da13cb44 WX_APP_SECRET=ecfcd2a3dfdad3dc9608a8c4b7f0360f BASE_URL=http://127.0.0.1:3002 DB_URL=mongodb://localhost:27017/blog nodemon server/index.js --watch server",
-    "dev:online": "cross-env NODE_ENV=development WX_WEB_ID=wx742cbf40cfbc1dbf WX_WEB_SECRET=6e72bea53fd86a3c0dd13d067b425783 WX_APP_ID=wx3aad0674da13cb44 WX_APP_SECRET=ecfcd2a3dfdad3dc9608a8c4b7f0360f BASE_URL=http://ued.lunz.cn DB_URL=mongodb://blog:blog@localhost:27017/blog nodemon server/index.js --watch server",
-    "build": "cross-env NODE_ENV=production WX_WEB_ID=wx742cbf40cfbc1dbf WX_WEB_SECRET=6e72bea53fd86a3c0dd13d067b425783 WX_APP_ID=wx14c4a28f08447736 WX_APP_SECRET=789670eb1f496c67e0904bc27d2d70d9 BASE_URL=http://ued.lunz.cn DB_URL=mongodb://blog:blog@localhost:27017/blog nuxt build",
-    "start": "cross-env NODE_ENV=production WX_WEB_ID=wx742cbf40cfbc1dbf WX_WEB_SECRET=6e72bea53fd86a3c0dd13d067b425783 WX_APP_ID=wx14c4a28f08447736 WX_APP_SECRET=789670eb1f496c67e0904bc27d2d70d9 BASE_URL=http://ued.lunz.cn DB_URL=mongodb://blog:blog@localhost:27017/blog node server/index.js",
+    "dev": "cross-env NODE_ENV=development WX_WEB_ID=wx2983f9200093b22e WX_WEB_SECRET=7aeb11eb4b58968f75333fe99b9dbc60 WX_APP_ID=wx3aad0674da13cb44 WX_APP_SECRET=ecfcd2a3dfdad3dc9608a8c4b7f0360f BASE_URL=http://127.0.0.1:3002 DB_URL=mongodb://localhost:27017/blog nodemon server/index.js --watch server",
+    "dev:online": "cross-env NODE_ENV=development WX_WEB_ID=wx2983f9200093b22e WX_WEB_SECRET=7aeb11eb4b58968f75333fe99b9dbc60 WX_APP_ID=wx3aad0674da13cb44 WX_APP_SECRET=ecfcd2a3dfdad3dc9608a8c4b7f0360f BASE_URL=http://ued.lunz.cn DB_URL=mongodb://blog:blog@localhost:27017/blog nodemon server/index.js --watch server",
+    "build": "cross-env NODE_ENV=production WX_WEB_ID=wx2983f9200093b22e WX_WEB_SECRET=7aeb11eb4b58968f75333fe99b9dbc60 WX_APP_ID=wx14c4a28f08447736 WX_APP_SECRET=789670eb1f496c67e0904bc27d2d70d9 BASE_URL=http://ued.lunz.cn DB_URL=mongodb://blog:blog@localhost:27017/blog nuxt build",
+    "start": "cross-env NODE_ENV=production WX_WEB_ID=wx2983f9200093b22e WX_WEB_SECRET=7aeb11eb4b58968f75333fe99b9dbc60 WX_APP_ID=wx14c4a28f08447736 WX_APP_SECRET=789670eb1f496c67e0904bc27d2d70d9 BASE_URL=http://ued.lunz.cn DB_URL=mongodb://blog:blog@localhost:27017/blog node server/index.js",
     "generate": "nuxt generate"
   },
   "dependencies": {

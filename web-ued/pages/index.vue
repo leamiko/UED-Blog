@@ -45,8 +45,8 @@
                   :src="avatar"
                   class="avatar"
                 ></el-avatar>
-                <span class="text_color_time">{{item.author}} · {{updateTime}}</span>&emsp;&emsp;
-                <span class="text_color">{{item.type}}</span>&emsp;&emsp;
+                <span class="text_color_time">{{item.author}} · {{item.updateAt | datetimeFormat}}</span>&emsp;&emsp;
+                <span class="text_color">{{item.blogType}}</span>&emsp;&emsp;
                 <span class="text_color"><img src="@/assets/img/icon/eyes.svg">{{item.viewNum}}</span>&emsp;&emsp;
                 <span class="text_color"><img src="@/assets/img/icon/like.svg">{{item.likeNum}}</span>
               </div>
@@ -84,13 +84,14 @@ export default {
   data () {
     return {
       config: custom.index,
-      height: '',
+      height: Number,
       isAddClass: true,
       list: [],
       interval: 6000,
       img: custom.index.newsList[0].img,
       avatar: custom.index.newsList[0].avatar,
       updateTime: custom.index.newsList[0].updateTime,
+      screenWidth: Number,
     };
   },
   head () {
@@ -104,6 +105,14 @@ export default {
         }
       ]
     };
+  },
+  filters: {
+    datetimeFormat: function (value) {
+      if (!value) return ''
+      value = value.toString()
+      let date = value.split('T')[0];
+      return date;
+    }
   },
   methods: {
     getScrollTop (val) {
@@ -125,9 +134,15 @@ export default {
     }
   },
   mounted () {
+    this.screenWidth = document.body.clientWidth;
     this.height = (document.body.clientWidth / 1920) * 645;
+    window.onresize = () => {
+      return (() => {
+        this.height = (document.body.clientWidth / 1920) * 645;
+      })()
+    }
     this.getHomeList();
-  }
+  },
 };
 </script>
 <style lang="scss" scoped>
