@@ -117,10 +117,15 @@
                 >写的真的很棒，虽然还远没有做到架构师的级别，但是看到了自己的不足和应该努力的方向但是看到了自己的不足和应该努力的方向。</div>
                 <div class="comment_unit_bottom">
                   <div class="comment_unit_bottom_left">
-                    <div class="comment_unit_bottom_btn">
+                    <!-- <div class="comment_unit_bottom_btn">
                       <img src="@/assets/img/icon/icon-support.svg" />
                       0
-                    </div>
+                    </div>-->
+
+                    <el-button type="primary" plain round class="comment_unit_bottom_btn">
+                      <img src="@/assets/img/icon/icon-support.svg" />
+                      0
+                    </el-button>
                     <div class="comment_unit_bottom_btn margin_left_15">删除</div>
                   </div>
                   <div class="comment_unit_bottom_right">2019-09-06</div>
@@ -519,6 +524,7 @@ export default {
   font-size: 16px;
   font-weight: 400;
   color: rgba(145, 153, 161, 1);
+  border: none;
   img {
     vertical-align: -2px;
   }
