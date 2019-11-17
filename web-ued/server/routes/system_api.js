@@ -25,6 +25,9 @@ router.get('/logOut', function(req, res, next) {
 router.get('/superAdmin', function(req, res, next) {
   user.superAdmin(req, res)
 })
+router.get('/getUserList', function(req, res, next) {
+  user.getUserList(req, res)
+})
 
 /* GET users listing. */
 
