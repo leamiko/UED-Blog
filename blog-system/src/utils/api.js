@@ -28,5 +28,10 @@ export default {
   // 用户管理
   AddAdmin: `${baseUrl}/registerAdmin`,
   adminList: `${baseUrl}/adminList`,
-  deleteAdmin: `${baseUrl}/deleteAdmin`
+  deleteAdmin: `${baseUrl}/deleteAdmin`,
+
+  // 头像管理
+  addAvatar: `${baseUrl}/addAvatar`,
+  getAvatarList: `${baseUrl}/getAvatarList`,
+  deleteAvatar: `${baseUrl}/deleteAvatar`
 }
