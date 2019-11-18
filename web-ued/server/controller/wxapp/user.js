@@ -102,7 +102,9 @@ exports.register = function(req, res) {
   const pwd = md5.update(req.body.passWord).digest('hex')
   var postData = {
     account: req.body.account,
-    passWord: pwd
+    passWord: pwd,
+    avatar: req.body.avatar,
+    nickName: req.body.nickName
   }
   User.findOne(
     {
@@ -118,7 +120,9 @@ exports.register = function(req, res) {
       } else {
         var user_1 = new User({
           account: postData.account,
-          passWord: postData.passWord
+          passWord: postData.passWord,
+          avatar: postData.avatar,
+          nickName: postData.nickName
         })
         user_1.save(async function(err, user) {
           if (err) {
