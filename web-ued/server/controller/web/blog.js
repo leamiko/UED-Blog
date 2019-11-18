@@ -310,6 +310,38 @@ exports.replyBlog = function(req, res) {
   })
 }
 
+//回复点赞
+exports.replyLike = function(req, res) {
+  const whereUpdateReply = {
+    _id: req.query.replyId
+  }
+  let like = new Like({
+    userId: req.query.userId,
+    replyId: req.query.replyId
+  })
+  like.save(async function(err, like) {
+    if (err) {
+      return res.json({
+        status_code: 201,
+        message: err,
+        data: null
+      })
+    }
+    const likeNum = await Like.countDocuments({
+      replyId: req.query.replyId
+    })
+    let updatereply = {
+      likeNum: likeNum
+    }
+    await Reply.updateOne(whereUpdateReply, updatereply)
+    return res.json({
+      status_code: 200,
+      message: '点赞成功！',
+      data: null
+    })
+  })
+}
+
 //删除回复
 exports.deleteReply = function(req, res) {
   var whereReply = {
@@ -336,7 +368,6 @@ exports.getBlogComment = function(req, res) {
   const whereComment = {
     blogId: req.query.blogId
   }
-
   Comment.aggregate(
     [
       {
@@ -351,13 +382,37 @@ exports.getBlogComment = function(req, res) {
         }
       }
     ],
-    (err, comments) => {
+    async (err, comments) => {
       if (err) {
         return res.json({
           status_code: 201,
           message: err,
           data: null
         })
+      }
+      for (let i = 0; i < comments.length; i++) {
+        let whereCommentLike = {
+          userId: req.session.user._id,
+          commentId: comments[i]._id
+        }
+        const likeNum = await Like.countDocuments(whereCommentLike)
+        if (likeNum > 0) {
+          comments[i]['isLike'] = true
+        } else {
+          comments[i]['isLike'] = false
+        }
+        for (let n = 0; i < comments[i].replies.length; n++) {
+          let whereReplyLike = {
+            userId: req.session.user._id,
+            replyId: comments[i].replies[n]._id
+          }
+          const likeNum = await Like.countDocuments(whereReplyLike)
+          if (likeNum > 0) {
+            comments[i].replies[n]['isLike'] = true
+          } else {
+            comments[i].replies[n]['isLike'] = false
+          }
+        }
       }
       return res.json({
         status_code: 200,

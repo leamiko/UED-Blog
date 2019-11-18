@@ -13,6 +13,9 @@ var LikeSchema = new Schema(
     commentId: {
       type: String //评论objectId
     },
+    replyId: {
+      type: String //回复objectId
+    },
     count: {
       type: Number //单词点赞数
     }
