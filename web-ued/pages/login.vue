@@ -22,9 +22,9 @@
       <div class="text">请使用微信扫码二维码登录</div>
       <div class="box" id="wxLoginQrcode"></div>
     </div>
-    <div class="noBindBox" v-show="$store.state.qrcodeBindBox">
+    <div class="codeBox" v-show="$store.state.qrcodeBindBox">
       <div class="text">您还没有绑定过微信，请绑定后再登录</div>
-      <div class="box">11</div>
+      <div class="box" id="wxBindQrcode"></div>
     </div>
   </div>
 </template>
@@ -81,6 +81,7 @@ export default {
   },
   mounted() {
     this.wxHandle();
+    this.wxBindHandle();
   },
   methods: {
     Qrcode() {
@@ -88,8 +89,22 @@ export default {
       this.$store.state.qrcodeBindBox = false;
       this.$emit("titleChanged", "登录");
     },
-    //二维码
+    //登录二维码
     wxHandle() {
+      var obj = new WxLogin({
+        id: "wxLoginQrcode",
+        appid: process.env.WX_WEB_ID,
+        scope: "snsapi_login",
+        // redirect_uri: window.location.href,
+        redirect_uri: "http://ued.lunz.cn",
+        state: "",
+        style: "",
+        href:
+          "data:text/css;base64,Ly8gLmltcG93ZXJCb3ggew0KLy8gICAucXJjb2RlIHsNCi8vICAgICB3aWR0aDogMTgwcHg7DQovLyAgICAgaGVpZ2h0OiAxODBweDsNCi8vICAgICBtYXJnaW4tdG9wOiAwcHg7DQovLyAgICAgbWFyZ2luLXJpZ2h0OiAxMThweDsNCi8vICAgICBib3JkZXI6IDFweCBzb2xpZCAjZTJlMmUyOw0KLy8gICB9DQovLyAgIC5pbmZvew0KLy8gICAgIGRpc3BsYXk6IG5vbmU7DQovLyAgIH0NCi8vICAgLnRpdGxlew0KLy8gICAgIGRpc3BsYXk6IG5vbmU7DQovLyAgIH0NCi8vIH0NCi5pbXBvd2VyQm94IC5xcmNvZGV7DQogIHdpZHRoOiAxODBweDsNCiAgaGVpZ2h0OiAxODBweDsNCiAgbWFyZ2luLXRvcDogMHB4Ow0KICBtYXJnaW4tcmlnaHQ6IDExOHB4Ow0KICBib3JkZXI6IDFweCBzb2xpZCAjZTJlMmUyOw0KfQ0KLmltcG93ZXJCb3ggLmluZm97DQogIGRpc3BsYXk6IG5vbmU7DQp9DQouaW1wb3dlckJveCAudGl0bGV7DQogIGRpc3BsYXk6IG5vbmU7DQp9"
+      });
+    },
+    //绑定二维码
+    wxBindHandle() {
       var obj = new WxLogin({
         id: "wxLoginQrcode",
         appid: process.env.WX_WEB_ID,
