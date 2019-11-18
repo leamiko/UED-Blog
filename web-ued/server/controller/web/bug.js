@@ -125,6 +125,20 @@ exports.DeleteBugById = async function (req, res, next) {
     next(error);
   }
 }
+// bug点赞
+exports.LikeBugById = async function (req, res, next) {
+  try {
+    var id = req.body.id
+    const result = await Bug.findByIdAndDelete(id);
+    res.json({
+      status_code: 200,
+      message: 'success'
+    })
+  } catch (error) {
+    next(error);
+  }
+}
+// tags
 // 获取tags列表
 exports.GetBugTags = async function (req, res, next) {
   try {
@@ -294,11 +308,11 @@ exports.commentBug = async function (req, res, next) {
       commenterName: req.body.commenterName,
       commenterId: req.body.commenterId,
       bugId: req.body.bugId,
-      content: req.body.content
+      content: req.body.content,
+      anonymous: req.body.anonymous
     }
     const comSaved = await bugComment.create([comment])
     if (comSaved) {
-      debugger;
       const commentNum = await bugComment.countDocuments();
       let updateBlog = {
         commentNum: commentNum ? commentNum + 1 : 1
@@ -362,7 +376,23 @@ exports.getBugComment = async function (req, res, next) {
       bugId: req.query.bugId
     }
     const comments = await bugComment.aggregate(
-      [{
+      [
+        // {
+        //   $project: {
+        //     // anonymous: 'anonymous',
+        //     commenterName: {
+        //       // $cond: ['anonymous', 0, 1]
+        //       $cond: {
+        //         if: {
+        //           $eq: ['$anonymous']
+        //         },
+        //         then: 0,
+        //         else: 1
+        //       }
+        //     }
+        //   }
+        // },
+        {
           $match: {
             bugId: whereComment.bugId
           }
@@ -389,7 +419,7 @@ exports.getBugComment = async function (req, res, next) {
 exports.deleteBugComment = async function (req, res, next) {
   try {
     var whereComment = {
-      _id: req.query.commentId
+      _id: req.body.commentId
     }
     const delComed = await bugComment.deleteOne(whereComment)
     res.json({
@@ -400,7 +430,6 @@ exports.deleteBugComment = async function (req, res, next) {
   } catch (error) {
     next(error)
   }
-
 }
 //回复
 exports.replyBug = async function (req, res, next) {
@@ -422,7 +451,7 @@ exports.replyBug = async function (req, res, next) {
 exports.deleteReply = async function (req, res, next) {
   try {
     var whereComment = {
-      _id: req.query.replyId
+      _id: req.body.replyId
     }
     const delReplyed = await bugReply.deleteOne(whereComment)
     res.json({

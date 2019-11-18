@@ -142,7 +142,7 @@ router.get('/getBugComment', (req, res, next) => {
   web_bugCtrler.getBugComment(req, res, next)
 })
 // 删除Bug评论
-router.get('/deleteBugComment', (req, res, next) => {
+router.post('/deleteBugComment', (req, res, next) => {
   web_bugCtrler.deleteBugComment(req, res, next)
 })
 // Bug回复
@@ -150,7 +150,7 @@ router.post('/replyBug', (req, res, next) => {
   web_bugCtrler.replyBug(req, res, next)
 })
 // 删除Bug回复
-router.get('/deleteReply', (req, res, next) => {
+router.post('/deleteReply', (req, res, next) => {
   web_bugCtrler.deleteReply(req, res, next)
 })
 //评论点赞
