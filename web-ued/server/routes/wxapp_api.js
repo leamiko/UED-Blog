@@ -63,15 +63,15 @@ router.get('/getBlogComment', function(req, res, next) {
   //调用controller方法
   wxapp_blog.getBlogComment(req, res)
 })
-//获取blog评论
-router.get('/rankTask', function(req, res, next) {
+//我的文章
+router.post('/getMyBlog', function(req, res, next) {
   //调用controller方法
-  wxapp_blog.rankTask(req, res)
+  wxapp_blog.getMyBlog(req, res)
 })
-//写字列表
-router.post('/getList', function(req, res, next) {
+//我的赞
+router.post('/getMyLike', function(req, res, next) {
   //调用controller方法
-  wxapp_blog.getList(req, res)
+  wxapp_blog.getMyLike(req, res)
 })
 
 module.exports = router
