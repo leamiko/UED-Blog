@@ -200,7 +200,8 @@ exports.commentBlog = function(req, res) {
     commentName: req.body.commentName,
     commentUserId: req.body.commentUserId,
     blogId: req.body.blogId,
-    content: req.body.content
+    content: req.body.content,
+    anonymous: req.body.anonymous
   })
   comment.save(async function(err, comment) {
     if (err) {
