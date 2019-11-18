@@ -4,14 +4,14 @@ const OAuth = require('wechat-oauth')
 const wxPcClient = new OAuth(process.env.WX_WEB_ID, process.env.WX_WEB_SECRET)
 
 exports.login = function(req, res) {
-  const { account, passWord } = req.body
+  const { account, passWord, wxUnionId } = req.body
   var md5 = crypto.createHash('md5')
   const end_paw = md5.update(passWord).digest('hex')
   const params = {
     account: account,
     passWord: end_paw
   }
-  User.findOne(params, function(err, user) {
+  User.findOneAndUpdate(params, { wxUnionId: wxUnionId }, function(err, user) {
     if (err) {
       return res.json({
         status_code: 201,
@@ -137,7 +137,7 @@ exports.wxLogin = function(req, res) {
               return res.json({
                 status_code: 401,
                 message: '请先登录绑定账号！',
-                data: false
+                data: { wxUnionId: unionid }
               })
             }
           }
