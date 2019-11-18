@@ -113,6 +113,10 @@ router.post('/UpdateBugById', (req, res, next) => {
 router.post('/DeleteBugById', (req, res, next) => {
   web_bugCtrler.DeleteBugById(req, res, next)
 })
+// bug点赞
+router.post('/LikeBugById', (req, res, next) => {
+  web_bugCtrler.LikeBugById(req, res, next)
+})
 
 // 获取tag标签
 router.get('/GetBugTags', (req, res, next) => {

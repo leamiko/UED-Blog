@@ -4,6 +4,7 @@ var Dic = require('../../models/dictionary');
 var bugComment = require('../../models/comment-bug.js') //引入comment表
 var bugReply = require('../../models/reply-bug.js') //引入comment表
 var bugLike = require('../../models/like-bug.js') //引入like表
+var User = require('../../models/user.js') //引入user表
 
 
 const reg = /^[0-9]*[1-9][0-9]*$/;
@@ -128,12 +129,44 @@ exports.DeleteBugById = async function (req, res, next) {
 // bug点赞
 exports.LikeBugById = async function (req, res, next) {
   try {
-    var id = req.body.id
-    const result = await Bug.findByIdAndDelete(id);
-    res.json({
-      status_code: 200,
-      message: 'success'
+    const whereBug = {
+      _id: req.body.bugId
+    }
+    let like = new bugLike({
+      userId: req.body.userId,
+      bugId: req.body.bugId,
+      count: req.body.count
     })
+    like.save(async function (err, like) {
+      if (err) {
+        return res.json({
+          status_code: 201,
+          message: err,
+          data: null
+        })
+      }
+      let updateBug = {
+        likeNum: req.body.likeNum ?
+          req.body.likeNum * 1 + req.body.count * 1 : req.body.count * 1
+      }
+      await Bug.updateOne(whereBug, updateBug)
+      await User.findByIdAndUpdate(req.session.user._id, {
+        bugAllLikeNum: req.session.user.bugAllLikeNum + 1
+      })
+      return res.json({
+        status_code: 200,
+        message: '点赞成功！',
+        data: null
+      })
+    })
+  } catch (error) {
+    next(error);
+  }
+}
+// 可能感兴趣的bug列表
+exports.MaybeInteresList = async function (req, res, next) {
+  try {
+    
   } catch (error) {
     next(error);
   }

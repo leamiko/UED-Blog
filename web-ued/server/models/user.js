@@ -32,6 +32,10 @@ var UserSchema = new Schema(
     blogAllLikeNum: {
       type: Number, //文章总点赞数
       default: 0
+    },
+    bugAllLikeNum: {
+      type: Number, //打码总点赞数
+      default: 0
     }
   },
   { timestamps: { createdAt: 'createAt', updatedAt: 'updateAt' } }
