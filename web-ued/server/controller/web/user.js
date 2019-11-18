@@ -137,7 +137,7 @@ exports.wxLogin = function(req, res) {
               return res.json({
                 status_code: 401,
                 message: '请先登录绑定账号！',
-                data: false
+                data: { wxUnionId: unionid }
               })
             }
           }
