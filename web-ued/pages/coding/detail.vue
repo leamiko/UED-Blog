@@ -91,9 +91,9 @@
         </div>
         <!-- 评论 -->
         <div class="comment_container">
-          <div class="comment_title">共8条评论</div>
+          <div class="comment_title">共{{commentList.length}}条评论</div>
           <div class="comment_info bg-white">
-            <!-- 发表评论 -->
+            <!-- 发表一级评论 -->
             <div class="comment_text">
               <div class="current_user inline">
                 <img src="@/assets/img/image/code_presenter.png" />
@@ -115,36 +115,42 @@
               <hr class="comment_hr" />
             </div>
             <!-- 整条评论，包括一级二级 -->
-            <div class="comment_text margin_top_40">
+            <div
+              class="comment_text margin_top_40"
+              v-for="(fistItem,fistIndex) in commentList"
+              :key="fistIndex"
+            >
               <div class="current_user inline">
                 <img src="@/assets/img/image/code_presenter.png" />
               </div>
               <div class="current_edit inline">
                 <!-- 一级评论 -->
+                <!-- deleteComBtnIsHover = true
+                deleteComBtnIsHover = false-->
                 <div
-                  @mouseenter="deleteComBtnIsHover = true"
-                  @mouseleave="deleteComBtnIsHover = false"
+                  @mouseenter="mouseHoverDelComBtn(fistIndex, fistItem.commenterId, true)"
+                  @mouseleave="mouseHoverDelComBtn(fistIndex, fistItem.commenterId, false)"
                 >
-                  <div class="comment_unit_name">Maria</div>
-                  <div
-                    class="comment_unit_content"
-                  >写的真的很棒，虽然还远没有做到架构师的级别，但是看到了自己的不足和应该努力的方向但是看到了自己的不足和应该努力的方向。</div>
+                  <div class="comment_unit_name">{{fistItem.commenterName}}</div>
+                  <div class="comment_unit_content">{{fistItem.content}}</div>
                   <div class="comment_unit_bottom">
                     <div class="comment_unit_bottom_left">
+                      <!-- @mouseenter="supportComBtnIsHover = true"
+                      @mouseleave="supportComBtnIsHover = false"-->
                       <div
                         class="comment_unit_bottom_btn"
-                        @mouseenter="supportComBtnIsHover = true"
-                        @mouseleave="supportComBtnIsHover = false"
+                        @mouseenter="mouseHoverSupComBtn(fistIndex,true)"
+                        @mouseleave="mouseHoverSupComBtn(fistIndex,false)"
                         @click="like()"
                         v-bind:class="{comment_unit_bottom_btn_selected: isClick}"
                       >
                         <img
-                          v-if="isClick || supportComBtnIsHover"
+                          v-if="firstComIndex === fistIndex && (isClick || supportComBtnIsHover)"
                           src="@/assets/img/icon/icon-support-hover.svg"
                           alt
                         />
                         <img
-                          v-if="!(isClick || supportComBtnIsHover)"
+                          v-if="!(firstComIndex === fistIndex && (isClick || supportComBtnIsHover))"
                           src="@/assets/img/icon/icon-support.svg"
                           alt
                         />
@@ -179,13 +185,13 @@
                       >回复</div>
                       <div
                         class="comment_unit_bottom_btn margin_left_15"
-                        v-if="deleteComBtnIsHover"
+                        v-if="userInfo._id === firstCommenterId && firstComIndex === fistIndex && deleteComBtnIsHover"
                       >删除</div>
                     </div>
-                    <div class="comment_unit_bottom_right">2019-09-06</div>
+                    <div class="comment_unit_bottom_right">{{fistItem.createAt | formatDateDay}}</div>
                   </div>
                 </div>
-                <!-- 回复一级评论 -->
+                <!-- 发表二级评论 -->
                 <div class="margin_top_40" v-if="isShowReply">
                   <div class="current_user inline">
                     <img src="@/assets/img/image/code_presenter.png" />
@@ -205,8 +211,8 @@
                   </div>
                 </div>
                 <!-- 二级评论 -->
-                <template v-for="(item, index) in list">
-                  <div class="two_commment_div margin_top_40" :key="item.id">
+                <!-- <template v-for="(secondItem, secondIndex) in list">
+                  <div class="two_commment_div margin_top_40" :key="secondIndex">
                     <div class="current_user inline">
                       <img src="@/assets/img/image/code_presenter.png" />
                     </div>
@@ -228,9 +234,9 @@
                         <div class="comment_unit_bottom_right">2019-09-06</div>
                       </div>
                     </div>
-                  </div>
-                  <!-- 回复二级评论 -->
-                  <div class="margin_top_40" v-if="isShowReply" :key="index">
+                </div>-->
+                <!-- 回复二级评论 -->
+                <!-- <div class="margin_top_40" v-if="isShowReply" :key="secondIndex">
                     <div class="current_user inline">
                       <img src="@/assets/img/image/code_presenter.png" />
                     </div>
@@ -248,7 +254,7 @@
                       </div>
                     </div>
                   </div>
-                </template>
+                </template>-->
                 <div class="btn_blue margin_top_30">查看更多回复</div>
               </div>
               <hr class="comment_hr" />
@@ -287,31 +293,28 @@ export default {
       resultMsg: "",
       resultImage: "",
       showDialog: false,
-      firstComContent: "",
-      haveFirstComContent: false,
-      name: "",
+      firstComContent: "", // 一级评论内容
+      haveFirstComContent: false, // 监听一级评论内容
       isClick: false, //评论点赞
       clickNum: 10, // 评论点赞数量
       supportComBtnIsHover: false, // 评论点赞按钮是否悬浮
       deleteComBtnIsHover: false, // 评论删除按钮是否悬浮
       isShowReply: false, // 是否展示回复框
-      userInfo: "",
+      userInfo: "", // 用户信息
+      commentList: [], // 评论列表
+      firstCommenterId: "", // 评论列表中一级评论人id
+      firstComIndex: "", // 评论列表中一级评论数组下标
       list: [{ id: 10 }, { id: 11 }]
     };
-  },
-  watch: {
-    name(val, oldval) {
-      console.log(val); //val 为input中的新值
-      // console.log(oldval); //oldval 为input中的旧值
-    }
   },
   mounted() {
     console.log(this.$route, "dld");
     this.Id = this.$route.query.id ? this.$route.query.id : "";
     if (this.Id) {
       this.getInfo();
+      this.getCommentList();
     }
-    this.userInfo = JSON.parse(localStorage.getItem("user"));
+    this.userInfo = JSON.parse(localStorage.getItem("user")); // 获取当前用户信息
   },
   methods: {
     // 获取详情信息
@@ -376,6 +379,7 @@ export default {
       this.haveFirstComContent = html ? true : false;
       // console.log(this.firstComContent, this.haveFirstComContent);
     },
+    // 评论点赞
     like() {
       if (!this.isClick) {
         this.isClick = true;
@@ -385,6 +389,32 @@ export default {
         this.isClick = false;
         this.clickNum = this.clickNum - 1;
       }
+    },
+    // 获取评论
+    async getCommentList() {
+      const res = await this.$axios.get(
+        `${process.env.BASE_URL}/web_api/getBugComment?bugId=` + this.Id
+      );
+      if (res.data.status_code === 200) {
+        this.commentList = res.data.data;
+        console.log(this.commentList);
+      } else {
+        this.$notify.error({
+          title: "错误",
+          message: res.data.message
+        });
+      }
+    },
+    // 评论删除按钮悬浮
+    mouseHoverDelComBtn(index, id, isHover, supportBtn) {
+      this.deleteComBtnIsHover = isHover;
+      this.firstCommenterId = id;
+      this.firstComIndex = index;
+    },
+    // 评论点赞按钮悬浮
+    mouseHoverSupComBtn(index, isHover) {
+      this.supportComBtnIsHover = isHover;
+      this.firstComIndex = index;
     }
   }
 };
