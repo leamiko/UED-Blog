@@ -199,19 +199,20 @@ export default {
     },
     // 调用微信扫码API
     async wxLogin () {
-      console.log(this.getQueryVariable("code"));
+      // console.log(this.getQueryVariable("code"));
       const res = await this.$axios.get(
         `${process.env.BASE_URL}/web_api/wxLogin?code=${this.getQueryVariable(
           "code"
         )}`
       );
+      console.log(res)
       if (res.status_code == 200) {
         localStorage.setItem("user", JSON.stringify(data.user));
         this.loginForm = {};
       } else {
         //登录失败
         this.title = "登录失败";
-        this.$store.state.qrcodeBindText = "您还没有绑定过微信，请绑定后再登录";
+        this.$store.state.qrcodeBindBox = true;
         this.modalVisible = true;
         console.log("还没绑");
       }
