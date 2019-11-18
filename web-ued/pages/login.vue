@@ -1,6 +1,6 @@
 <template>
   <div class="el-form cus-fix-center">
-    <el-form :model="loginForm" status-icon :rules="rules2" ref="loginForm" label-width="0" v-show="!iscodeBox&&!$store.state.qrcodeBindBox">
+    <el-form :model="loginForm" status-icon :rules="rules2" ref="loginForm" label-width="0" v-show="!iscodeBox">
       <el-form-item prop="account">
         <el-input v-model="loginForm.account" placeholder="请输入账号" prefix-icon="el-icon-user" maxlength="20"></el-input>
       </el-form-item>
@@ -18,14 +18,14 @@
       <img v-show="!iscodeBox" src="@/assets/img/image/code1.png" alt="" />
       <img v-show="iscodeBox" src="@/assets/img/image/code2.png" alt="" />
     </div>
-    <div class="codeBox" v-show="iscodeBox&&!$store.state.qrcodeBindBox">
+    <div class="codeBox" v-show="iscodeBox">
       <div class="text">请使用微信扫码二维码登录</div>
       <div class="box" id="wxLoginQrcode"></div>
     </div>
-    <div class="codeBox" v-show="$store.state.qrcodeBindBox">
+    <!-- <div class="codeBox" v-show="$store.state.qrcodeBindBox">
       <div class="text">您还没有绑定过微信，请绑定后再登录</div>
       <div class="box" id="wxBindQrcode"></div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -87,7 +87,7 @@ export default {
   methods: {
     Qrcode() {
       this.iscodeBox = !this.iscodeBox;
-      this.$store.state.qrcodeBindBox = false;
+      // this.$store.state.qrcodeBindBox = false;
       this.$emit("titleChanged", "登录");
     },
     //登录二维码
