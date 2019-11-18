@@ -154,6 +154,7 @@ export default {
         this.loginForm = {};
       } else {
         //登录失败
+        this.$store.state.wxUnionId=this.user.wxUnionId;
         this.title = "登录失败";
         this.$store.state.qrcodeBindBox = true;
         this.modalVisible = true;

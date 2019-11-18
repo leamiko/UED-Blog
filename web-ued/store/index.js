@@ -42,6 +42,7 @@ export const state = () => ({
   isLogin: true,
   modalVisible: false,
   qrcodeBindBox: false,
+  wxUnionId: null,
 })
 
 export const mutations = {
@@ -57,6 +58,9 @@ export const mutations = {
   },
   qrcodeBindBox(state, data) {
     state.qrcodeBindBox = data
+  },
+  wxUnionId(state, data) {
+    state.wxUnionId = data
   }
 }
 

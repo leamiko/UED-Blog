@@ -62,7 +62,8 @@ export default {
     return {
       loginForm: {
         account: "",
-        passWord: ""
+        passWord: "",
+        wxUnionId: ""
       },
       rules2: {
         account: [
@@ -127,6 +128,9 @@ export default {
       this.$refs[formName].validate(async valid => {
         this.submitLoading = false;
         if (valid) {
+          if (this.$store.state.wxUnionId) {
+            this.loginForm.wxUnionId = this.$store.state.wxUnionId;
+          }
           const { data } = await this.$axios.post(
             `${process.env.BASE_URL}/web_api/login`,
             this.loginForm
