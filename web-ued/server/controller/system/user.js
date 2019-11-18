@@ -1,4 +1,5 @@
 var Admin = require('../../models/admin.js') //引入user表
+var User = require('../../models/user.js') //引入user表
 var crypto = require('crypto')
 const ms = require('ms')
 
@@ -214,6 +215,24 @@ exports.deleteAdmin = function(req, res) {
       status_code: 200,
       message: '删除成功！',
       data: null
+    })
+  })
+}
+
+// 获取用户列表
+exports.getUserList = function(req, res) {
+  User.find({}, function(err, users) {
+    if (err) {
+      return res.json({
+        status_code: 201,
+        message: err,
+        data: null
+      })
+    }
+    return res.json({
+      status_code: 200,
+      message: '获取用户列表成功！',
+      data: users
     })
   })
 }

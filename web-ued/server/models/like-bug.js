@@ -13,7 +13,7 @@ var bugLikeSchema = new Schema({
         type: String //评论objectId
     },
     count: {
-        type: Number //单词点赞数
+        type: Number //单次点赞数
     }
 }, {
     timestamps: {

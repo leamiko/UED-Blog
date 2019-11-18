@@ -1,6 +1,7 @@
 var Blog = require('../../models/blog.js') //引入blog表
 var Like = require('../../models/like.js') //引入like表
 var Comment = require('../../models/comment.js') //引入comment表
+var User = require('../../models/user.js') //引入user表
 
 //blog新增编辑
 exports.addEditBlog = function(req, res) {
@@ -43,7 +44,8 @@ exports.addEditBlog = function(req, res) {
       author: req.body.author,
       userId: req.body.userId
     })
-    blog.save(function(err, blog) {
+    const blogWordNum = req.body.content.length
+    blog.save(async function(err, blog) {
       if (err) {
         return res.json({
           code: 201,
@@ -51,6 +53,9 @@ exports.addEditBlog = function(req, res) {
           data: null
         })
       }
+      await User.findByIdAndUpdate(req.body.userId, {
+        blogWordNum: blogWordNum
+      })
       return res.json({
         status_code: 200,
         message: '添加成功！',
