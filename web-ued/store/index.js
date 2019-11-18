@@ -41,7 +41,8 @@ export const state = () => ({
   authToken: null,
   isLogin: true,
   modalVisible: false,
-  qrcodeBindText:'请使用微信扫描二维码登录'
+  qrcodeBindBox: false,
+  wxUnionId: null,
 })
 
 export const mutations = {
@@ -55,8 +56,11 @@ export const mutations = {
   modalVisible(state, data) {
     state.modalVisible = data
   },
-  qrcodeBindText(state, data) {
-    state.qrcodeBindText = data
+  qrcodeBindBox(state, data) {
+    state.qrcodeBindBox = data
+  },
+  wxUnionId(state, data) {
+    state.wxUnionId = data
   }
 }
 
