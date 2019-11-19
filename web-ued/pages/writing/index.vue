@@ -6,7 +6,7 @@
         <el-carousel trigger="click" :height="342 + 'px'" :autoplay="false" class="set_width" v-show="topList.length > 0">
           <el-carousel-item v-for="(item,index) in topList" :key="index" class="flex">
             <div class="left_title" @click="goDetail(item)">
-              <img src="../../assets/img/banner/write_swiper_1.png" style="width: 100%; height: 100%;">
+              <img :src="item.bigImgUrl" style="width: 100%; height: 100%;">
             </div>
             <div class="right_detail" @click="goDetail(item)">
               <img :src="require('../../assets/img/image/' + item.imgUrl)" alt="">
@@ -28,7 +28,7 @@
         </div>
         <div class="right_articles" v-infinite-scroll="getWriteList" infinite-scroll-disabled="disabled">
           <div class="article_block" v-for="(item,index) in lists" @click="goDetail(item)" :hidden="lists.length == 0" :key="index">
-            <img class="title_img" src="../../assets/img/banner/banner-index-banner-8.jpg" alt="">
+            <img class="title_img" :src="item.midImgUrl" alt="">
             <div>
               <p>{{item.title}}</p>
               <p v-html="$options.filters.textLength(item.info, 38)"></p>

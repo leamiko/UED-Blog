@@ -117,82 +117,56 @@
             <!-- 整条评论，包括一级二级 -->
             <div
               class="comment_text margin_top_40"
-              v-for="(fistItem,fistIndex) in commentList"
-              :key="fistIndex"
+              v-for="(firstItem,firstIndex) in commentList"
+              :key="firstIndex"
             >
               <div class="current_user inline">
                 <img src="@/assets/img/image/code_presenter.png" />
               </div>
               <div class="current_edit inline">
                 <!-- 一级评论 -->
-                <!-- deleteComBtnIsHover = true
-                deleteComBtnIsHover = false-->
                 <div
-                  @mouseenter="mouseHoverDelComBtn(fistIndex, fistItem.commenterId, true)"
-                  @mouseleave="mouseHoverDelComBtn(fistIndex, fistItem.commenterId, false)"
+                  @mouseenter="mouseHoverDelComBtn(firstIndex, firstItem.commenterId, true)"
+                  @mouseleave="mouseHoverDelComBtn(firstIndex, firstItem.commenterId, false)"
                 >
-                  <div class="comment_unit_name">{{fistItem.commenterName}}</div>
-                  <div class="comment_unit_content">{{fistItem.content}}</div>
+                  <div class="comment_unit_name">{{firstItem.commenterName}}</div>
+                  <div class="comment_unit_content">{{firstItem.content}}</div>
                   <div class="comment_unit_bottom">
                     <div class="comment_unit_bottom_left">
-                      <!-- @mouseenter="supportComBtnIsHover = true"
-                      @mouseleave="supportComBtnIsHover = false"-->
                       <div
                         class="comment_unit_bottom_btn"
-                        @mouseenter="mouseHoverSupComBtn(fistIndex,true)"
-                        @mouseleave="mouseHoverSupComBtn(fistIndex,false)"
-                        @click="like()"
-                        v-bind:class="{comment_unit_bottom_btn_selected: isClick}"
+                        @mouseenter="mouseHoverSupComBtn(firstIndex,true)"
+                        @mouseleave="mouseHoverSupComBtn(firstIndex,false)"
+                        @click="commentLike(firstItem._id)"
+                        v-bind:class="{comment_unit_bottom_btn_selected: firstItem.firstComIsLike}"
                       >
                         <img
-                          v-if="firstComIndex === fistIndex && (isClick || supportComBtnIsHover)"
+                          v-if="firstItem.firstComIsLike || (firstComIndex === firstIndex && supportComBtnIsHover)"
                           src="@/assets/img/icon/icon-support-hover.svg"
                           alt
                         />
                         <img
-                          v-if="!(firstComIndex === fistIndex && (isClick || supportComBtnIsHover))"
+                          v-if="!(firstItem.firstComIsLike || (firstComIndex === firstIndex && supportComBtnIsHover))"
                           src="@/assets/img/icon/icon-support.svg"
                           alt
                         />
-                        {{clickNum}}
+                        {{firstItem.likeNum}}
                       </div>
-                      <!-- <el-button
-                      @click="like()"
-                      onmouseover="supportComBtnIsHover = true"
-                      onmouseout="supportComBtnIsHover = false"
-                      type="primary"
-                      plain
-                      round
-                      class="comment_unit_bottom_btn"
-                      v-bind:class="{comment_unit_bottom_btn_selected: isClick}"
-                    >
-                      <img
-                        v-if="isClick || supportComBtnIsHover"
-                        src="@/assets/img/icon/icon-support-hover.svg"
-                        alt
-                      />
-                      <img
-                        v-if="!(isClick || supportComBtnIsHover)"
-                        src="@/assets/img/icon/icon-support.svg"
-                        alt
-                      />
-                      {{clickNum}}
-                      </el-button>-->
                       <div
                         class="comment_unit_bottom_btn margin_left_15"
-                        @click="isShowReply = !isShowReply"
-                        v-bind:class="{comment_unit_bottom_btn_selected: isShowReply}"
+                        @click="replyFirstComBtn(firstItem._id)"
+                        v-bind:class="{comment_unit_bottom_btn_selected: firstItem.isShowReplyFirstCom}"
                       >回复</div>
                       <div
                         class="comment_unit_bottom_btn margin_left_15"
-                        v-if="userInfo._id === firstCommenterId && firstComIndex === fistIndex && deleteComBtnIsHover"
+                        v-if="userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover"
                       >删除</div>
                     </div>
-                    <div class="comment_unit_bottom_right">{{fistItem.createAt | formatDateDay}}</div>
+                    <div class="comment_unit_bottom_right">{{firstItem.createAt | formatDateDay}}</div>
                   </div>
                 </div>
-                <!-- 发表二级评论 -->
-                <div class="margin_top_40" v-if="isShowReply">
+                <!-- 发表二级评论(回复一级评论) -->
+                <div class="margin_top_40" v-if="firstItem.isShowReplyFirstCom">
                   <div class="current_user inline">
                     <img src="@/assets/img/image/code_presenter.png" />
                   </div>
@@ -235,7 +209,7 @@
                       </div>
                     </div>
                 </div>-->
-                <!-- 回复二级评论 -->
+                <!-- 发表二级评论(回复二级评论) -->
                 <!-- <div class="margin_top_40" v-if="isShowReply" :key="secondIndex">
                     <div class="current_user inline">
                       <img src="@/assets/img/image/code_presenter.png" />
@@ -295,11 +269,8 @@ export default {
       showDialog: false,
       firstComContent: "", // 一级评论内容
       haveFirstComContent: false, // 监听一级评论内容
-      isClick: false, //评论点赞
-      clickNum: 10, // 评论点赞数量
       supportComBtnIsHover: false, // 评论点赞按钮是否悬浮
       deleteComBtnIsHover: false, // 评论删除按钮是否悬浮
-      isShowReply: false, // 是否展示回复框
       userInfo: "", // 用户信息
       commentList: [], // 评论列表
       firstCommenterId: "", // 评论列表中一级评论人id
@@ -380,23 +351,39 @@ export default {
       // console.log(this.firstComContent, this.haveFirstComContent);
     },
     // 评论点赞
-    like() {
-      if (!this.isClick) {
-        this.isClick = true;
-        this.clickNum = this.clickNum + 1;
-        console.log(this.clickNum);
-      } else {
-        this.isClick = false;
-        this.clickNum = this.clickNum - 1;
-      }
+    commentLike(comId) {
+      this.commentList.forEach(item => {
+        if (item._id === comId && !item.firstComIsLike) {
+          const res = this.$axios.get(
+            `${process.env.BASE_URL}/web_api/bugCommentLike?bugId=` +
+              this.Id +
+              `&commentId=` +
+              item._id
+          );
+          item.firstComIsLike = !item.firstComIsLike;
+          item.likeNum = item.likeNum + 1;
+        }
+      });
+    },
+    // 回复一级评论按钮
+    replyFirstComBtn(comId) {
+      this.commentList.forEach(item => {
+        if (item._id === comId) {
+          item.isShowReplyFirstCom = !item.isShowReplyFirstCom;
+        }
+      });
     },
     // 获取评论
-    async getCommentList() {
+    async getCommentList(noForEach) {
       const res = await this.$axios.get(
         `${process.env.BASE_URL}/web_api/getBugComment?bugId=` + this.Id
       );
       if (res.data.status_code === 200) {
         this.commentList = res.data.data;
+        this.commentList.forEach(item => {
+          item[`firstComIsLike`] = false;
+          item[`isShowReplyFirstCom`] = false;
+        });
         console.log(this.commentList);
       } else {
         this.$notify.error({
@@ -406,7 +393,7 @@ export default {
       }
     },
     // 评论删除按钮悬浮
-    mouseHoverDelComBtn(index, id, isHover, supportBtn) {
+    mouseHoverDelComBtn(index, id, isHover) {
       this.deleteComBtnIsHover = isHover;
       this.firstCommenterId = id;
       this.firstComIndex = index;

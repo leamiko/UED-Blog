@@ -4,6 +4,7 @@ var Dic = require('../../models/dictionary');
 var bugComment = require('../../models/comment-bug.js') //引入comment表
 var bugReply = require('../../models/reply-bug.js') //引入comment表
 var bugLike = require('../../models/like-bug.js') //引入like表
+var User = require('../../models/user.js') //引入user表
 
 
 const reg = /^[0-9]*[1-9][0-9]*$/;
@@ -125,6 +126,52 @@ exports.DeleteBugById = async function (req, res, next) {
     next(error);
   }
 }
+// bug点赞
+exports.LikeBugById = async function (req, res, next) {
+  try {
+    const whereBug = {
+      _id: req.body.bugId
+    }
+    let like = new bugLike({
+      userId: req.body.userId,
+      bugId: req.body.bugId,
+      count: req.body.count
+    })
+    like.save(async function (err, like) {
+      if (err) {
+        return res.json({
+          status_code: 201,
+          message: err,
+          data: null
+        })
+      }
+      let updateBug = {
+        likeNum: req.body.likeNum ?
+          req.body.likeNum * 1 + req.body.count * 1 : req.body.count * 1
+      }
+      await Bug.updateOne(whereBug, updateBug)
+      await User.findByIdAndUpdate(req.session.user._id, {
+        bugAllLikeNum: req.session.user.bugAllLikeNum + 1
+      })
+      return res.json({
+        status_code: 200,
+        message: '点赞成功！',
+        data: null
+      })
+    })
+  } catch (error) {
+    next(error);
+  }
+}
+// 可能感兴趣的bug列表
+exports.MaybeInteresList = async function (req, res, next) {
+  try {
+    
+  } catch (error) {
+    next(error);
+  }
+}
+// tags
 // 获取tags列表
 exports.GetBugTags = async function (req, res, next) {
   try {
@@ -294,11 +341,11 @@ exports.commentBug = async function (req, res, next) {
       commenterName: req.body.commenterName,
       commenterId: req.body.commenterId,
       bugId: req.body.bugId,
-      content: req.body.content
+      content: req.body.content,
+      anonymous: req.body.anonymous
     }
     const comSaved = await bugComment.create([comment])
     if (comSaved) {
-      debugger;
       const commentNum = await bugComment.countDocuments();
       let updateBlog = {
         commentNum: commentNum ? commentNum + 1 : 1
@@ -362,7 +409,23 @@ exports.getBugComment = async function (req, res, next) {
       bugId: req.query.bugId
     }
     const comments = await bugComment.aggregate(
-      [{
+      [
+        // {
+        //   $project: {
+        //     // anonymous: 'anonymous',
+        //     commenterName: {
+        //       // $cond: ['anonymous', 0, 1]
+        //       $cond: {
+        //         if: {
+        //           $eq: ['$anonymous']
+        //         },
+        //         then: 0,
+        //         else: 1
+        //       }
+        //     }
+        //   }
+        // },
+        {
           $match: {
             bugId: whereComment.bugId
           }
@@ -389,7 +452,7 @@ exports.getBugComment = async function (req, res, next) {
 exports.deleteBugComment = async function (req, res, next) {
   try {
     var whereComment = {
-      _id: req.query.commentId
+      _id: req.body.commentId
     }
     const delComed = await bugComment.deleteOne(whereComment)
     res.json({
@@ -400,7 +463,6 @@ exports.deleteBugComment = async function (req, res, next) {
   } catch (error) {
     next(error)
   }
-
 }
 //回复
 exports.replyBug = async function (req, res, next) {
@@ -422,7 +484,7 @@ exports.replyBug = async function (req, res, next) {
 exports.deleteReply = async function (req, res, next) {
   try {
     var whereComment = {
-      _id: req.query.replyId
+      _id: req.body.replyId
     }
     const delReplyed = await bugReply.deleteOne(whereComment)
     res.json({

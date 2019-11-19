@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :visible.sync="isShow" width="610px" :custom-class="classStyle" :before-close="handleClose"
+    <el-dialog :visible.sync="show" width="610px" :custom-class="classStyle" :before-close="handleClose"
         destroy-on-close append-to-body>
         <img src="@/assets/img/bg/bg-dialog-info.png" slot="title" class="dialog-img">
         <div class="content_block">
@@ -11,8 +11,8 @@
             </div>
             <p>头像</p>
             <div class="cus-flex cus-align-center">
-                <div v-for="(item,index) in config.avatorList" @click="chooseAvator($event)" :key="index">
-                    <el-avatar :key="index" :size="50" :src="item" class="align-top" shape="square"></el-avatar>
+                <div v-for="(item,index) in avatorList" @click="chooseAvator(item)" :key="index">
+                    <el-avatar :key="index" :size="50" :src="item.url" class="align-top" shape="square"></el-avatar>
                 </div>
             </div>
         </div>
@@ -64,17 +64,19 @@
             },
         },
         watch: {
-            // isShow(newVal, oldVal) {
-            //   this.show = newVal;
-            // }
+            isShow(newVal, oldVal) {
+              this.show = newVal;
+            }
         },
         data() {
             return {
                 name: null,
+                show: false,
                 config: custom.write,
                 nameList: [],
                 memberInfo: {}, // 用户信息
-                imgUrl: null
+                imgUrl: null,
+                avatorList: [] // 头像列表
             }
         },
         mounted() {
@@ -82,12 +84,22 @@
              this.memberInfo = JSON.parse(localStorage.getItem('user'))
             this.name = this.memberInfo.nickName
             }
+            this.getAvatarList()
         },
         methods: {
             handleClose(done) {
                 this.$emit('hide', true);
-                this.isShow = false;
+                 this.show = false;
                 done();
+            },
+            // 获取头像
+            async getAvatarList() {
+                const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/getAvatarList`);
+                 if (res.status == 200) {
+                     console.log(res)
+                    this.avatorList = res.data.data
+                }
+
             },
             // 生成随机昵称
             async generate() {
@@ -102,10 +114,11 @@
             },
             // // 选择头像
             chooseAvator(item) {
-                this.uploadImgToBase64(item.srcElement.currentSrc, (res) => {
-                    this.imgUrl = res
-                    console.log(this.imgUrl)
-                })
+                this.imgUrl = item.url
+                // this.uploadImgToBase64(item.srcElement.currentSrc, (res) => {
+                //     this.imgUrl = res
+                //     console.log(this.imgUrl)
+                // })
             },
             uploadImgToBase64(img, callback) {
                 let image = new Image()
