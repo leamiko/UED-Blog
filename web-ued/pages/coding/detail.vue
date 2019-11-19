@@ -60,7 +60,9 @@
             </div>
             <div class="praise">
               <div class="praise_img pointer">
-                <img src="@/assets/img/icon/praise.png" />
+                <img src="@/assets/img/icon/praise.png" v-show="detailInfo.likeNum === 0"/>
+                <img src="@/assets/img/icon/praise_null.svg" v-show="detailInfo.likeNum !== 0 && 0 < detailInfo.likeNum < 50"/>
+                <img src="@/assets/img/icon/praise_50.svg" v-show="detailInfo.likeNum === 50"/>
               </div>
               <div class="praise_num">&nbsp;&nbsp;{{detailInfo.likeNum?detailInfo.likeNum:0}}个赞</div>
             </div>
@@ -74,11 +76,7 @@
               </router-link>
             </div>
             <div class="interest_list">
-              <div class="interest_info pointer">mysql批量插入数据，一次插入多少 行数据效率最高？</div>
-              <div class="interest_info pointer active">LUNZ+——select选择项为请选择时 表单不验证</div>
-              <div class="interest_info pointer">Vue框架在ios微信端存在input输入时 系统键盘会将整个浏览器推上去</div>
-              <div class="interest_info pointer">小程序手机端数字键盘无法输入小数</div>
-              <div class="interest_info pointer">Java如何实现五分钟内重复获取返回 同一个短信验证码</div>
+              <div class="interest_info pointer" v-for="i in interestList" @click="showDetail(i._id)">{{i.title}}</div>
             </div>
           </div>
         </div>
@@ -200,6 +198,9 @@ export default {
       loading: false,
       Id: '', // 当前问题Id
       detailInfo: {}, // 详情信息
+      interestList: [], // 感兴趣List
+      interestOriginal: [], // 原始bugList
+      interestUnfiltered: [], // 未过滤兴趣List
       isAnonymous: false,
       resultMsg: "",
       resultImage: "",
@@ -253,6 +254,76 @@ export default {
           message: data.data.message
         });
       }
+      const tagList = this.detailInfo.tags;
+      this.getInterestInfo(tagList); 
+    },
+    // 获取感兴趣信息
+    async getInterestInfo (tagList) {
+      let listParams = {
+        pageIndex: 1,
+        pageSize: 10,
+        filters: { 
+          title: "",
+        	bugStatus: "",
+	        author: "", //作者，置空
+        	tags: tagList
+        }
+      }
+      const { data } = await this.$axios.post(`${process.env.BASE_URL}/web_api/GetBugList`, listParams);
+      if (data.status_code === 200) {      
+        if (tagList === null) {
+          // tags为空时查询出的List
+          if (data.data.length > 0) {
+            this.interestOriginal = data.data;
+          }
+        } else {
+          // tags为当前详情tag时查询出的List
+          if (data.data.length > 0) {
+            this.interestUnfiltered = data.data;
+          }
+        }
+        // 当前详情tag的List.length < 4 时获取原始List
+        if (this.interestUnfiltered.length < 4 && this.interestOriginal.length === 0) {
+          this.getInterestInfo(null);
+        }
+        if (this.interestUnfiltered.length >= 4) {
+          // 去除合并的list中含有当前详情的对象
+          for (let i = 0; i < this.interestUnfiltered.length; i++) {
+            if (this.interestUnfiltered[i]._id !== this.Id) {
+              this.interestList.push(this.interestUnfiltered[i]);
+            }
+          }
+          this.interestList = this.interestList.slice(0, 4);
+        } else if (this.interestUnfiltered.length < 4 && this.interestOriginal.length > 0) {
+          // 合并两个List，当前详情tag的List在前
+          for (let o = 0; o < this.interestOriginal.length; o++) {
+            this.interestUnfiltered.push(this.interestOriginal[o]);
+          }
+          // 去除合并的list中含有当前详情的对象
+          for (let i = 0; i < this.interestUnfiltered.length; i++) {
+            if (this.interestUnfiltered[i]._id !== this.Id) {
+              this.interestList.push(this.interestUnfiltered[i]);
+            }
+          }
+          this.interestList = this.interestList.slice(0, 4);
+        }
+      } else {
+        this.$notify.error({
+          title: '错误',
+          message: data.data.message
+        });
+      }
+    },
+    // 查看感兴趣内容
+    showDetail (id) {
+      this.$router.push({
+        path: '/coding/detail',
+        query: {
+          bugId: id
+        }
+      })
+      this.Id = id;
+      this.getInfo();
     },
     // 详情点赞
     praise() {
@@ -395,6 +466,11 @@ export default {
           width: 100%;
         }
       }
+      .praise_img:active {
+        // transition-duration: 5s;
+        transform: rotate(30deg);
+        transition-timing-function: ease-in;
+      }
       .praise_num {
         margin-left: calc((100% - 102px) / 2);
         padding-left: 13px;
@@ -433,7 +509,7 @@ export default {
       .interest_info:first-child {
         border-top: none;
       }
-      .interest_info.active {
+      .interest_info:hover {
         color: #3376ff;
       }
     }
