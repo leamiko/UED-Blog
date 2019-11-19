@@ -18,6 +18,9 @@ var bugCommentSchema = new Schema({
     },
     content: {
         type: String //内容
+    },
+    anonymous: {
+        type: Boolean //是否匿名
     }
 }, {
     timestamps: {

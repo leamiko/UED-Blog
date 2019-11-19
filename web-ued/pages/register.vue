@@ -67,7 +67,7 @@
 export default {
   data () {
     var checkName = (rule, value, callback) => {
-      console.log(value);
+      // console.log(value);
       if (!value) {
         return callback(new Error("账号不能为空"));
       } else {
@@ -160,7 +160,7 @@ export default {
             `${process.env.BASE_URL}/web_api/register`,
             this.params
           );
-          console.log(data);
+          // console.log(data);
           if (data.status_code == 200) {
             // this.$store.dispatch("login", data.user).then(() => {
             //   this.$router.replace("/login");

@@ -2,26 +2,20 @@
   <div class="page">
     <a-form :form="form" @submit="handleSubmit">
       <a-form-item label="名称" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
-        <a-input
-          v-decorator="[
+        <a-input v-decorator="[
           'model.title',
           {
             rules: [{ required: true, message: '名称不能为空！' }],
             initialValue:model.title
           }
-        ]"
-          placeholder="请输入文章名称"
-        />
+        ]" placeholder="请输入文章名称" />
       </a-form-item>
       <a-form-item label="分类" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
-        <a-select
-          v-decorator="[
+        <a-select v-decorator="[
           'model.blogType',
           {rules: [{ required: true, message: '分类不能为空!' }],
                 initialValue:model.blogType}
-        ]"
-          placeholder="请选择文章分类"
-        >
+        ]" placeholder="请选择文章分类">
           <!-- 需要所有文章分类 -->
           <a-select-option value="1">技术</a-select-option>
           <a-select-option value="2">交互</a-select-option>
@@ -69,18 +63,33 @@
         </a-select>
       </a-form-item>-->
       <a-form-item label="文章简介" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
-        <a-textarea
-          v-decorator="[
+        <a-textarea v-decorator="[
           'model.info',
           {rules: [{ required: true, message: '文章简介不能为空！' }],
                 initialValue:model.info}
-        ]"
-          placeholder="请输入文章简介"
-          :autosize="{ minRows: 1, maxRows: 3 }"
-        />
+        ]" placeholder="请输入文章简介" :autosize="{ minRows: 1, maxRows: 3 }" />
       </a-form-item>
       <a-form-item label="文章内容" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
         <quill-editor v-model="model.content" ref="myTextEditor" :options="editorOption"></quill-editor>
+      </a-form-item>
+      <a-form-item label="图片上传" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
+       <a-upload listType="picture-card" :fileList="fileList" :beforeUpload="beforeUpload" :multiple="true" :remove="remove" @preview="handlePreview">
+          <div v-if="fileList.length < 2">
+            <a-icon type="plus" />
+            <div class="ant-upload-text">Upload</div>
+          </div>
+        </a-upload>
+        <!-- <viewer :images="imgList" style="margin-top: 20px;">
+          <div class="flex_center_wrap">
+            <div class="imgDiv" v-for="(src, index) in imgList" :key="index">
+              <img class="imgStyle" :src="src" />
+              <a-icon class="icon" type="close" @click="remove(index)" />
+            </div>
+          </div>
+        </viewer> -->
+        <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+          <img alt="example" style="width: 100%" :src="previewImage" />
+        </a-modal>
       </a-form-item>
       <!-- 新建按钮 -->
       <a-form-item :wrapper-col="{ span: 12, offset: 7 }">
@@ -92,6 +101,9 @@
 </template>
 
 <script>
+import {
+  client
+} from '../../assets/js/aliyun_oss'
 export default {
   data () {
     return {
@@ -99,7 +111,11 @@ export default {
       formLayout: 'horizontal',
       form: this.$form.createForm(this),
       model: {},
-      blogId: ''
+      blogId: '',
+      previewVisible: false,
+      previewImage: '',
+      fileList: [],
+      imgList: []
     }
   },
   mounted () {
@@ -118,8 +134,72 @@ export default {
       const res = await this.$http.get(url, params)
       if (res.status_code === 200) {
         this.model = res.data
+        this.fileList = [
+          {
+            uid: '-1',
+            name: 'big.png',
+            status: 'done',
+            url: this.model.bigImgUrl,
+            thumbUrl: this.model.bigImgUrl
+          }, {
+            uid: '-2',
+            name: 'small.png',
+            status: 'done',
+            url: this.model.midImgUrl,
+            thumbUrl: this.model.midImgUrl
+          }
+        ]
       }
     },
+    handleCancel () {
+      this.previewVisible = false
+    },
+    handlePreview (file) {
+      this.previewImage = file.url || file.thumbUrl
+      this.previewVisible = true
+    },
+    beforeUpload (file) {
+      this.uploadFile(file)
+      return false
+    },
+
+    uploadFile: async function (file) {
+      var timestamp = new Date().getTime()
+      await client()
+        .put('UED/' + timestamp + file.name, file)
+        .then(res => {
+          delete res.res
+          file.url = res.url
+          file.imgName = res.name
+          file.thumbUrl = res.url
+          this.fileList.push(file)
+          console.log(this.fileList)
+          this.$message.success('upload successfully.')
+          this.imgList.push(res.url)
+        }).catch(err => {
+          this.$message.error(`${err},upload failed.`)
+        })
+    },
+    remove (file) {
+      const index = this.fileList.indexOf(file)
+      const newFileList = this.fileList.slice()
+      newFileList.splice(index, 1)
+      this.fileList = newFileList
+    },
+    // async handleChange ({ file }) {
+    //   if (file.status === 'success') {
+    //     this.fileList.push(file)
+    //     console.log(file)
+    //   }
+    //   let url = Math.round(new Date().getTime() / 1000) + '.' + file.name.split('.')[1]
+    //   await client().put('ued/' + url, file.originFileObj, {
+    //   }).then(function (result) {
+    //     console.log(result)
+    //     alert('上传成功')
+    //   }).catch(function (err) {
+    //     console.log(err)
+    //   })
+    // },
     // 组件校验
     handleSubmit (e) {
       e.preventDefault()
@@ -131,6 +211,17 @@ export default {
     },
     // 保存
     save () {
+      let bigImgUrl
+      let midImgUrl
+      for (let i = 0; i < this.fileList.length - 1; i++) {
+        if (this.fileList[i].size > this.fileList[i + 1].size) {
+          bigImgUrl = this.fileList[i].url
+          midImgUrl = this.fileList[i + 1].url
+        } else {
+          bigImgUrl = this.fileList[i + 1].url
+          midImgUrl = this.fileList[i].url
+        }
+      }
       this.form.validateFields(async (err, values) => {
         if (!err) {
           const url = this.api.addEditBlog
@@ -139,7 +230,9 @@ export default {
             title: values.model.title,
             blogType: values.model.blogType,
             info: values.model.info,
-            content: this.model.content
+            content: this.model.content,
+            bigImgUrl: bigImgUrl,
+            midImgUrl: midImgUrl
           }
           const res = await this.$http.post(url, params)
           if (res.status_code === 200) {
@@ -164,14 +257,28 @@ export default {
 }
 </script>
 
-<style>
-.page {
-  padding: 50px;
-  background: #ffffff;
-}
+<style lang="scss" scoped>
+  .page {
+    padding: 50px;
+    background: #ffffff;
+  }
 
-.article_addbtn {
-  margin-top: 50px;
-  text-align: center;
-}
+  .flex_center_wrap {
+    display: flex;
+
+    .imgDiv {
+      width: 102px;
+      height: 102px;
+      display: flex;
+      margin-right: 10px;
+      img{
+        width: 100%;
+      }
+    }
+  }
+
+  .article_addbtn {
+    margin-top: 50px;
+    text-align: center;
+  }
 </style>

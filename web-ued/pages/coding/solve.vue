@@ -50,7 +50,7 @@
           <h5 class="font-size--md text-dark line-height--lg">{{resultMsg}}</h5>
         </template>
       <div class="text-center">
-        <p v-if="resultError">{{resultError}}</p>
+        <p v-show="resultError">{{resultError}}</p>
         <img :src="resultImage" class="my-img">
       </div>
     </el-dialog>

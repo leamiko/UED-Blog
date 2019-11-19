@@ -24,6 +24,18 @@ var UserSchema = new Schema(
     },
     wxUnionId: {
       type: String //微信unionid
+    },
+    blogWordNum: {
+      type: Number, //文章字数
+      default: 0
+    },
+    blogAllLikeNum: {
+      type: Number, //文章总点赞数
+      default: 0
+    },
+    bugAllLikeNum: {
+      type: Number, //打码总点赞数
+      default: 0
     }
   },
   { timestamps: { createdAt: 'createAt', updatedAt: 'updateAt' } }

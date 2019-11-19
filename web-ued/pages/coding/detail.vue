@@ -29,14 +29,21 @@
                 <div class="presenter_head flt inline">
                   <img src="@/assets/img/image/code_presenter.png" />
                 </div>
-                <span class="presenter_info inline">{{detailInfo.author}} · {{detailInfo.createAt | formatDateDay}}</span>
+                <span
+                  class="presenter_info inline"
+                >{{detailInfo.author}} · {{detailInfo.createAt | formatDateDay}}</span>
                 <div class="mark_tags inline">
-                  <span class="mark_tag" v-for="item in detailInfo.tags">{{item}}</span>
+                  <span
+                    class="mark_tag"
+                    v-for="(item,index) in detailInfo.tags"
+                    :key="index"
+                  >{{item}}</span>
                 </div>
                 <div class="browse inline" v-show="detailInfo.viewNum>0">
                   <div class="browse_icon inline">
                     <img src="@/assets/img/icon/browse.png" />
-                  </div>{{detailInfo.viewNum}}
+                  </div>
+                  {{detailInfo.viewNum}}
                 </div>
               </div>
             </div>
@@ -80,10 +87,11 @@
             </div>
           </div>
         </div>
-        <!-- 评论     -->
+        <!-- 评论 -->
         <div class="comment_container">
-          <div class="comment_title">共8条评论</div>
+          <div class="comment_title">共{{commentList.length}}条评论</div>
           <div class="comment_info bg-white">
+            <!-- 发表一级评论 -->
             <div class="comment_text">
               <div class="current_user inline">
                 <img src="@/assets/img/image/code_presenter.png" />
@@ -97,56 +105,66 @@
                     type="primary"
                     round
                     size="small"
-                    @click="submit()"
-                    v-bind:class="{comment_btn_gray: !haveCommentContent}"
+                    @click="submitFistCom()"
+                    v-bind:class="{comment_btn_gray: !haveFirstComContent}"
                   >&emsp;评&nbsp;论&emsp;</el-button>
                 </div>
               </div>
               <hr class="comment_hr" />
             </div>
-            <div class="comment_text">
+            <!-- 整条评论，包括一级二级 -->
+            <div
+              class="comment_text margin_top_40"
+              v-for="(firstItem,firstIndex) in commentList"
+              :key="firstIndex"
+            >
               <div class="current_user inline">
                 <img src="@/assets/img/image/code_presenter.png" />
               </div>
               <div class="current_edit inline">
-                <div class="comment_unit_name">Maria</div>
+                <!-- 一级评论 -->
                 <div
-                  class="comment_unit_content"
-                >写的真的很棒，虽然还远没有做到架构师的级别，但是看到了自己的不足和应该努力的方向但是看到了自己的不足和应该努力的方向。</div>
-                <div class="comment_unit_bottom">
-                  <div class="comment_unit_bottom_left">
-                    <div class="comment_unit_bottom_btn">
-                      <img src="@/assets/img/icon/icon-support.svg" />
-                      0
-                    </div>
-                    <div class="comment_unit_bottom_btn margin_left_15">删除</div>
-                  </div>
-                  <div class="comment_unit_bottom_right">2019-09-06</div>
-                </div>
-                <div class="comment_text margin_top_40">
-                  <div class="current_user inline">
-                    <img src="@/assets/img/image/code_presenter.png" />
-                  </div>
-                  <div class="current_edit inline">
-                    <div class="comment_unit_name">
-                      Nike
-                      <span>回复</span>
-                      Maria
-                    </div>
-                    <div class="comment_unit_content">写的真的很棒，虽然还远没有做到架构师的级别，但是看到了自己的不足和应该努力的方向。</div>
-                    <div class="comment_unit_bottom">
-                      <div class="comment_unit_bottom_left">
-                        <div class="comment_unit_bottom_btn">
-                          <img src="@/assets/img/icon/icon-support.svg" />
-                          0
-                        </div>
-                        <div class="comment_unit_bottom_btn margin_left_15">回复</div>
+                  @mouseenter="mouseHoverDelComBtn(firstIndex, firstItem.commenterId, true)"
+                  @mouseleave="mouseHoverDelComBtn(firstIndex, firstItem.commenterId, false)"
+                >
+                  <div class="comment_unit_name">{{firstItem.commenterName}}</div>
+                  <div class="comment_unit_content">{{firstItem.content}}</div>
+                  <div class="comment_unit_bottom">
+                    <div class="comment_unit_bottom_left">
+                      <div
+                        class="comment_unit_bottom_btn"
+                        @mouseenter="mouseHoverSupComBtn(firstIndex,true)"
+                        @mouseleave="mouseHoverSupComBtn(firstIndex,false)"
+                        @click="commentLike(firstItem._id)"
+                        v-bind:class="{comment_unit_bottom_btn_selected: firstItem.firstComIsLike}"
+                      >
+                        <img
+                          v-if="firstItem.firstComIsLike || (firstComIndex === firstIndex && supportComBtnIsHover)"
+                          src="@/assets/img/icon/icon-support-hover.svg"
+                          alt
+                        />
+                        <img
+                          v-if="!(firstItem.firstComIsLike || (firstComIndex === firstIndex && supportComBtnIsHover))"
+                          src="@/assets/img/icon/icon-support.svg"
+                          alt
+                        />
+                        {{firstItem.likeNum}}
                       </div>
-                      <div class="comment_unit_bottom_right">2019-09-06</div>
+                      <div
+                        class="comment_unit_bottom_btn margin_left_15"
+                        @click="replyFirstComBtn(firstItem._id)"
+                        v-bind:class="{comment_unit_bottom_btn_selected: firstItem.isShowReplyFirstCom}"
+                      >回复</div>
+                      <div
+                        class="comment_unit_bottom_btn margin_left_15"
+                        v-if="userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover"
+                      >删除</div>
                     </div>
+                    <div class="comment_unit_bottom_right">{{firstItem.createAt | formatDateDay}}</div>
                   </div>
                 </div>
-                <div class="comment_text">
+                <!-- 发表二级评论(回复一级评论) -->
+                <div class="margin_top_40" v-if="firstItem.isShowReplyFirstCom">
                   <div class="current_user inline">
                     <img src="@/assets/img/image/code_presenter.png" />
                   </div>
@@ -164,7 +182,52 @@
                     </div>
                   </div>
                 </div>
-                <div class="btn_blue">查看更多回复</div>
+                <!-- 二级评论 -->
+                <!-- <template v-for="(secondItem, secondIndex) in list">
+                  <div class="two_commment_div margin_top_40" :key="secondIndex">
+                    <div class="current_user inline">
+                      <img src="@/assets/img/image/code_presenter.png" />
+                    </div>
+                    <div class="comment_text inline">
+                      <div class="comment_unit_name">
+                        Nike
+                        <span>回复</span>
+                        Maria
+                      </div>
+                      <div class="comment_unit_content">写的真的很棒，虽然还远没有做到架构师的级别，但是看到了自己的不足和应该努力的方向。</div>
+                      <div class="comment_unit_bottom">
+                        <div class="comment_unit_bottom_left">
+                          <div class="comment_unit_bottom_btn">
+                            <img src="@/assets/img/icon/icon-support.svg" />
+                            0
+                          </div>
+                          <div class="comment_unit_bottom_btn margin_left_15">回复</div>
+                        </div>
+                        <div class="comment_unit_bottom_right">2019-09-06</div>
+                      </div>
+                    </div>
+                </div>-->
+                <!-- 发表二级评论(回复二级评论) -->
+                <!-- <div class="margin_top_40" v-if="isShowReply" :key="secondIndex">
+                    <div class="current_user inline">
+                      <img src="@/assets/img/image/code_presenter.png" />
+                    </div>
+                    <div class="current_edit inline">
+                      <my-editor :height="'104px'" :placeholder="'我有一个大胆的想法～'"></my-editor>
+                      <br />
+                      <div class="text-right">
+                        <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
+                        <el-button
+                          type="primary"
+                          round
+                          size="small"
+                          @click="submit()"
+                        >&emsp;评&nbsp;论&emsp;</el-button>
+                      </div>
+                    </div>
+                  </div>
+                </template>-->
+                <div class="btn_blue margin_top_30">查看更多回复</div>
               </div>
               <hr class="comment_hr" />
             </div>
@@ -196,7 +259,7 @@ export default {
   data() {
     return {
       loading: false,
-      Id: '', // 当前问题Id
+      Id: "", // 当前问题Id
       detailInfo: {}, // 详情信息
       interestList: [], // 感兴趣List
       interestOriginal: [], // 原始bugList
@@ -205,30 +268,34 @@ export default {
       resultMsg: "",
       resultImage: "",
       showDialog: false,
-      commentContent: "",
-      haveCommentContent: false,
-      name: ""
+      firstComContent: "", // 一级评论内容
+      haveFirstComContent: false, // 监听一级评论内容
+      supportComBtnIsHover: false, // 评论点赞按钮是否悬浮
+      deleteComBtnIsHover: false, // 评论删除按钮是否悬浮
+      userInfo: "", // 用户信息
+      commentList: [], // 评论列表
+      firstCommenterId: "", // 评论列表中一级评论人id
+      firstComIndex: "", // 评论列表中一级评论数组下标
+      list: [{ id: 10 }, { id: 11 }]
     };
   },
-  watch: {
-    name(val, oldval) {
-      console.log(val); //val 为input中的新值
-      // console.log(oldval); //oldval 为input中的旧值
-    }
-  },
   mounted() {
-    this.Id = this.$route.query.bugId ? this.$route.query.bugId : '';
+    console.log(this.$route, "dld");
+    this.Id = this.$route.query.id ? this.$route.query.id : "";
     if (this.Id) {
       this.getInfo();
+      this.getCommentList();
     }
+    this.userInfo = JSON.parse(localStorage.getItem("user")); // 获取当前用户信息
   },
   methods: {
     // 获取详情信息
     async getInfo() {
       let params = {
         bugId: this.Id
-      }
-      const url = `${process.env.BASE_URL}/web_api/GetBugDetail?bugId=`+ this.Id;
+      };
+      const url =
+        `${process.env.BASE_URL}/web_api/GetBugDetail?bugId=` + this.Id;
       const res = await this.$axios.get(url);
       if (res.status === 200) {
         if (res.data.data && res.data.data !== null) {
@@ -241,8 +308,8 @@ export default {
           //   this.loading = false;
           // }, 500);
           this.$notify.error({
-            title: '错误',
-            message: '未查询到相关数据，请联系管理员。'
+            title: "错误",
+            message: "未查询到相关数据，请联系管理员。"
           });
         }
       } else {
@@ -250,7 +317,7 @@ export default {
         //   this.loading = false;
         // }, 500);
         this.$notify.error({
-          title: '错误',
+          title: "错误",
           message: data.data.message
         });
       }
@@ -326,21 +393,86 @@ export default {
       this.getInfo();
     },
     // 详情点赞
-    praise() {
-
+    praise() {},
+    // 发表一级评论
+    async submitFistCom() {
+      if (!this.haveFirstComContent) return;
+      console.log(this.firstComContent);
+      const params = {
+        commenterName: this.userInfo.nickName,
+        commenterId: this.userInfo._id,
+        bugId: this.Id,
+        content: this.firstComContent
+      };
+      const res = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/commentBug`,
+        params
+      );
+      if (res.status == 200) {
+        this.resultMsg = "发布成功!";
+        this.resultImage = successImg;
+        this.showDialog = true;
+      }
     },
-    // 发布评论
-    submit() {
-      if (!this.haveCommentContent) return;
-      console.log(this.commentContent);
-      this.resultMsg = "发布成功!";
-      this.resultImage = successImg;
-      this.showDialog = true;
-    },
+    // 监听评论框
     onEditorChange({ editor, html, text }) {
-      this.commentContent = text;
-      this.haveCommentContent = html ? true : false;
-      console.log(this.commentContent, this.haveCommentContent);
+      console.log(editor, html, text);
+      this.firstComContent = text;
+      this.haveFirstComContent = html ? true : false;
+      // console.log(this.firstComContent, this.haveFirstComContent);
+    },
+    // 评论点赞
+    commentLike(comId) {
+      this.commentList.forEach(item => {
+        if (item._id === comId && !item.firstComIsLike) {
+          const res = this.$axios.get(
+            `${process.env.BASE_URL}/web_api/bugCommentLike?bugId=` +
+              this.Id +
+              `&commentId=` +
+              item._id
+          );
+          item.firstComIsLike = !item.firstComIsLike;
+          item.likeNum = item.likeNum + 1;
+        }
+      });
+    },
+    // 回复一级评论按钮
+    replyFirstComBtn(comId) {
+      this.commentList.forEach(item => {
+        if (item._id === comId) {
+          item.isShowReplyFirstCom = !item.isShowReplyFirstCom;
+        }
+      });
+    },
+    // 获取评论
+    async getCommentList(noForEach) {
+      const res = await this.$axios.get(
+        `${process.env.BASE_URL}/web_api/getBugComment?bugId=` + this.Id
+      );
+      if (res.data.status_code === 200) {
+        this.commentList = res.data.data;
+        this.commentList.forEach(item => {
+          item[`firstComIsLike`] = false;
+          item[`isShowReplyFirstCom`] = false;
+        });
+        console.log(this.commentList);
+      } else {
+        this.$notify.error({
+          title: "错误",
+          message: res.data.message
+        });
+      }
+    },
+    // 评论删除按钮悬浮
+    mouseHoverDelComBtn(index, id, isHover) {
+      this.deleteComBtnIsHover = isHover;
+      this.firstCommenterId = id;
+      this.firstComIndex = index;
+    },
+    // 评论点赞按钮悬浮
+    mouseHoverSupComBtn(index, isHover) {
+      this.supportComBtnIsHover = isHover;
+      this.firstComIndex = index;
     }
   }
 };
@@ -531,7 +663,7 @@ export default {
     box-shadow: 0px 1px 5px 0px #ececec;
     border-radius: 2px;
     .comment_text {
-      padding-bottom: 30px;
+      // padding-bottom: 30px;
       .current_user {
         width: 50px;
         margin-right: 10px;
@@ -548,6 +680,9 @@ export default {
 }
 .margin_left_15 {
   margin-left: 15px;
+}
+.margin_top_30 {
+  margin-top: 30px;
 }
 .margin_top_40 {
   margin-top: 40px;
@@ -595,9 +730,18 @@ export default {
   font-size: 16px;
   font-weight: 400;
   color: rgba(145, 153, 161, 1);
+  border: none;
   img {
     vertical-align: -2px;
   }
+}
+.comment_unit_bottom_btn_selected {
+  background: #3376ff;
+  color: #ffffff;
+}
+.comment_unit_bottom_left > :hover {
+  background: #3376ff;
+  color: #ffffff;
 }
 .comment_unit_bottom_right {
   font-size: 16px;
@@ -609,5 +753,12 @@ export default {
   background: #f2f5f6;
   color: #9199a1;
   border: none;
+}
+// 二级评论样式
+.two_commment_div {
+  display: flex;
+  .comment_text {
+    flex: 1;
+  }
 }
 </style>

@@ -3,12 +3,12 @@
     <div slot="container" class="container">
       <!-- top block -->
       <div class="top_article">
-        <el-carousel trigger="click" :height="342 + 'px'" :autoplay="false" class="set_width" v-if="topList.length > 0">
+        <el-carousel trigger="click" :height="342 + 'px'" :autoplay="false" class="set_width" v-show="topList.length > 0">
           <el-carousel-item v-for="(item,index) in topList" :key="index" class="flex">
-            <div class="left_title">
-              <img src="../../assets/img/banner/write_swiper_1.png" style="width: 100%; height: 100%;">
+            <div class="left_title" @click="goDetail(item)">
+              <img :src="item.bigImgUrl" style="width: 100%; height: 100%;">
             </div>
-            <div class="right_detail">
+            <div class="right_detail" @click="goDetail(item)">
               <img :src="require('../../assets/img/image/' + item.imgUrl)" alt="">
               <div class="title">
                 <p>{{item.title}}</p>
@@ -27,28 +27,26 @@
           </ul>
         </div>
         <div class="right_articles" v-infinite-scroll="getWriteList" infinite-scroll-disabled="disabled">
-          <router-link :to="'writing/detail'">
-            <div class="article_block" v-for="(item,index) in lists" :hidden="lists.length == 0" :key="index">
-              <img class="title_img" src="../../assets/img/banner/banner-index-banner-8.jpg" alt="">
-              <div>
-                <p>{{item.title}}</p>
-                <p v-html="$options.filters.textLength(item.info, 38)"></p>
-                <p>
-                  <img class="author_icon" src="../../assets/img/icon/icon-avator.svg" alt="">
-                  <span class="author">{{item.author}}·{{item.updateAt | formatDateDay}}</span>
-                  <span class="type">{{renderType(item.blogType)}}</span>
-                  <span class="view_amount">
-                    <img src="../../assets/img/icon/eyes.svg" alt="">
-                    {{item.viewNum}}
-                  </span>
-                  <span class="thumb_amount">
-                    <img src="../../assets/img/icon/icon-thumb-up.svg" alt="">
-                    {{item.likeNum}}
-                  </span>
-                </p>
-              </div>
+          <div class="article_block" v-for="(item,index) in lists" @click="goDetail(item)" :hidden="lists.length == 0" :key="index">
+            <img class="title_img" :src="item.midImgUrl" alt="">
+            <div>
+              <p>{{item.title}}</p>
+              <p v-html="$options.filters.textLength(item.info, 38)"></p>
+              <p>
+                <img class="author_icon" src="../../assets/img/icon/icon-avator.svg" alt="">
+                <span class="author">{{item.author}}·{{item.updateAt | formatDateDay}}</span>
+                <span class="type">{{renderType(item.blogType)}}</span>
+                <span class="view_amount">
+                  <img src="../../assets/img/icon/eyes.svg" alt="">
+                  {{item.viewNum}}
+                </span>
+                <span class="thumb_amount">
+                  <img src="../../assets/img/icon/icon-thumb-up.svg" alt="">
+                  {{item.likeNum}}
+                </span>
+              </p>
             </div>
-          </router-link>
+          </div>
         </div>
       </div>
     </div>
@@ -212,6 +210,8 @@
 import * as custom from "@/assets/js/custom.config";
 import MyScrollbar from "@/components/scroller/Scrollbar";
 import MyHeader from "@/components/header/Header";
+import Detail from "@/pages/writing/detail";
+import { log } from "util";
 export default {
   components: {
     MyScrollbar
@@ -262,6 +262,16 @@ export default {
     this.getWriteList();
   },
   methods: {
+    //跳转明细页
+    goDetail(e) {
+      var detailParams = {
+        detailId: e._id,
+        imgUrl: e.imgUrl
+      };
+      this.$router.push({
+        path: "writing/detail?detailParams=" + JSON.stringify(detailParams)
+      });
+    },
     // 选择文章类型
     chooseType(item) {
       this.typeChoose = true;
@@ -327,6 +337,7 @@ export default {
         } else {
           this.disabled = true;
         }
+        // console.log(this.lists);
       }
     },
     // 获得top3文章
@@ -340,7 +351,7 @@ export default {
           for (let i = 0; i < this.topList.length; i++) {
             this.topList[i].imgUrl = this.topImg[i];
           }
-          console.log(this.topList);
+          // console.log(this.topList);
         }
       }
     }
