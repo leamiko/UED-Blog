@@ -150,9 +150,9 @@ exports.LikeBugById = async function (req, res, next) {
           req.body.likeNum * 1 + req.body.count * 1 : req.body.count * 1
       }
       await Bug.updateOne(whereBug, updateBug)
-      await User.findByIdAndUpdate(req.session.user._id, {
-        bugAllLikeNum: req.session.user.bugAllLikeNum + 1
-      })
+      // await User.findByIdAndUpdate(req.session.user._id, {
+      //   bugAllLikeNum: req.session.user.bugAllLikeNum + 1
+      // })
       return res.json({
         status_code: 200,
         message: '点赞成功！',
