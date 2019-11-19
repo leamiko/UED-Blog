@@ -158,7 +158,7 @@ export default {
       this.previewImage = file.url || file.thumbUrl
       this.previewVisible = true
     },
-    beforeUpload: async function (file) {
+    beforeUpload (file) {
       this.uploadFile(file)
       return false
     },
