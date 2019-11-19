@@ -105,63 +105,37 @@
                 <my-editor @change="onEditorChange" :height="'104px'" :placeholder="'我有一个大胆的想法～'"></my-editor>
                 <br />
                 <div class="text-right">
-                  <el-checkbox @change="anonymousClick">1匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
-                  <el-button type="primary" round size="small" @click="submitFistCom()" v-bind:class="{comment_btn_gray: !haveFirstComContent}">评论</el-button>
+                  <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
+                  <el-button type="primary" round size="small" @click="submitFistCom()" v-bind:class="{comment_btn_gray: !haveFirstComContent}">&emsp;评&nbsp;论&emsp;</el-button>
                 </div>
               </div>
               <hr class="comment_hr" />
             </div>
             <!-- 整条评论，包括一级二级 -->
-            <div class="comment_text margin_top_40" v-for="(fistItem,fistIndex) in commentList" :key="fistIndex">
+            <div class="comment_text margin_top_40" v-for="(firstItem,firstIndex) in commentList" :key="firstIndex">
               <div class="current_user inline">
                 <img src="@/assets/img/image/code_presenter.png" />
               </div>
               <div class="current_edit inline">
                 <!-- 一级评论 -->
-                <!-- deleteComBtnIsHover = true
-                deleteComBtnIsHover = false-->
-                <div @mouseenter="mouseHoverDelComBtn(fistIndex, fistItem.commenterId, true)" @mouseleave="mouseHoverDelComBtn(fistIndex, fistItem.commenterId, false)">
-                  <div class="comment_unit_name">{{fistItem.commenterName}}</div>
-                  <div class="comment_unit_content">{{fistItem.content}}</div>
+                <div @mouseenter="mouseHoverDelComBtn(firstIndex, firstItem.commenterId, true)" @mouseleave="mouseHoverDelComBtn(firstIndex, firstItem.commenterId, false)">
+                  <div class="comment_unit_name">{{firstItem.commenterName}}</div>
+                  <div class="comment_unit_content">{{firstItem.content}}</div>
                   <div class="comment_unit_bottom">
                     <div class="comment_unit_bottom_left">
-                      <!-- @mouseenter="supportComBtnIsHover = true"
-                      @mouseleave="supportComBtnIsHover = false"-->
-                      <div class="comment_unit_bottom_btn" @mouseenter="mouseHoverSupComBtn(fistIndex,true)" @mouseleave="mouseHoverSupComBtn(fistIndex,false)" @click="like()" v-bind:class="{comment_unit_bottom_btn_selected: isClick}">
-                        <img v-if="firstComIndex === fistIndex && (isClick || supportComBtnIsHover)" src="@/assets/img/icon/icon-support-hover.svg" alt />
-                        <img v-if="!(firstComIndex === fistIndex && (isClick || supportComBtnIsHover))" src="@/assets/img/icon/icon-support.svg" alt />
-                        {{clickNum}}
+                      <div class="comment_unit_bottom_btn" @mouseenter="mouseHoverSupComBtn(firstIndex,true)" @mouseleave="mouseHoverSupComBtn(firstIndex,false)" @click="commentLike(firstItem._id)" v-bind:class="{comment_unit_bottom_btn_selected: firstItem.firstComIsLike}">
+                        <img v-if="firstItem.firstComIsLike || (firstComIndex === firstIndex && supportComBtnIsHover)" src="@/assets/img/icon/icon-support-hover.svg" alt />
+                        <img v-if="!(firstItem.firstComIsLike || (firstComIndex === firstIndex && supportComBtnIsHover))" src="@/assets/img/icon/icon-support.svg" alt />
+                        {{firstItem.likeNum}}
                       </div>
-                      <!-- <el-button
-                      @click="like()"
-                      onmouseover="supportComBtnIsHover = true"
-                      onmouseout="supportComBtnIsHover = false"
-                      type="primary"
-                      plain
-                      round
-                      class="comment_unit_bottom_btn"
-                      v-bind:class="{comment_unit_bottom_btn_selected: isClick}"
-                    >
-                      <img
-                        v-if="isClick || supportComBtnIsHover"
-                        src="@/assets/img/icon/icon-support-hover.svg"
-                        alt
-                      />
-                      <img
-                        v-if="!(isClick || supportComBtnIsHover)"
-                        src="@/assets/img/icon/icon-support.svg"
-                        alt
-                      />
-                      {{clickNum}}
-                      </el-button>-->
-                      <div class="comment_unit_bottom_btn margin_left_15" @click="isShowReply = !isShowReply" v-bind:class="{comment_unit_bottom_btn_selected: isShowReply}">回复</div>
-                      <div class="comment_unit_bottom_btn margin_left_15" v-if="userInfo._id === firstCommenterId && firstComIndex === fistIndex && deleteComBtnIsHover">删除</div>
+                      <div class="comment_unit_bottom_btn margin_left_15" @click="replyFirstComBtn(firstItem._id)" v-bind:class="{comment_unit_bottom_btn_selected: firstItem.isShowReplyFirstCom}">回复</div>
+                      <div class="comment_unit_bottom_btn margin_left_15" v-if="userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover">删除</div>
                     </div>
-                    <div class="comment_unit_bottom_right">{{fistItem.createAt | formatDateDay}}</div>
+                    <div class="comment_unit_bottom_right">{{firstItem.createAt | formatDateDay}}</div>
                   </div>
                 </div>
-                <!-- 发表二级评论 -->
-                <div class="margin_top_40" v-if="isShowReply">
+                <!-- 发表二级评论(回复一级评论) -->
+                <div class="margin_top_40" v-if="firstItem.isShowReplyFirstCom">
                   <div class="current_user inline">
                     <img src="@/assets/img/image/code_presenter.png" />
                   </div>
@@ -199,7 +173,7 @@
                       </div>
                     </div>
                 </div>-->
-                <!-- 回复二级评论 -->
+                <!-- 发表二级评论(回复二级评论) -->
                 <!-- <div class="margin_top_40" v-if="isShowReply" :key="secondIndex">
                     <div class="current_user inline">
                       <img src="@/assets/img/image/code_presenter.png" />
@@ -248,7 +222,6 @@ export default {
   },
   data() {
     return {
-      config: custom.search,
       list: custom.search.list[0],
       isAnonymous: false,
       commentContent: "",
@@ -268,11 +241,6 @@ export default {
       firstComIndex: "", // 评论列表中一级评论数组下标
       haveFirstComContent: false // 监听一级评论内容
     };
-  },
-  watch: {
-    name(val, oldval) {
-      console.log(val); //val 为input中的新值
-    }
   },
   mounted() {
     this.userInfo = JSON.parse(localStorage.getItem("user")); // 获取当前用户信息
@@ -296,8 +264,9 @@ export default {
         `${process.env.BASE_URL}/web_api/getBlogComment?blogId=${this.detailParams.detailId}`
       );
       this.commentList = res.data.data;
+      console.log( this.commentList)
     },
-    // 发布评论
+    // 发表一级评论
     async submitFistCom() {
       if (!this.haveFirstComContent) return;
       const params = {
@@ -311,8 +280,11 @@ export default {
         `${process.env.BASE_URL}/web_api/commentBlog`,
         params
       );
+      console.log(this.userInfo._id)
+      console.log(params)
+
       if (res.status == 200) {
-        window.location.reload();
+        // window.location.reload();
       }
     },
     // 监听评论框
@@ -321,7 +293,8 @@ export default {
       this.haveFirstComContent = html ? true : false;
     },
     // 评论删除按钮悬浮
-    mouseHoverDelComBtn(index, id, isHover, supportBtn) {
+    mouseHoverDelComBtn(index, id, isHover) {
+      console.log(id);
       this.deleteComBtnIsHover = isHover;
       this.firstCommenterId = id;
       this.firstComIndex = index;
@@ -332,20 +305,24 @@ export default {
       this.firstComIndex = index;
     },
     // 评论点赞
-    like() {
-      if (!this.isClick) {
-        this.isClick = true;
-        this.clickNum = this.clickNum + 1;
-        console.log(this.clickNum);
-      } else {
-        this.isClick = false;
-        this.clickNum = this.clickNum - 1;
-      }
+    commentLike(comId) {
+      this.commentList.forEach(item => {
+        if (item._id === comId && !item.firstComIsLike) {
+          const res = this.$axios.get(
+            `${process.env.BASE_URL}/web_api/commentLike?blogId=` +
+              this.detailParams.detailId +
+              `&commentId=` +
+              item._id
+          );
+          item.firstComIsLike = !item.firstComIsLike;
+          item.likeNum = item.likeNum + 1;
+        }
+      });
     },
     //是否匿名
     anonymousClick() {
       this.isAnonymous = !this.isAnonymous;
-      console.log(this.isAnonymous)
+      console.log(this.isAnonymous);
     },
     submit() {
       // if (!this.haveCommentContent) return;
@@ -610,9 +587,19 @@ export default {
   font-size: 16px;
   font-weight: 400;
   color: rgba(145, 153, 161, 1);
+  border: none;
+
   img {
     vertical-align: -2px;
   }
+}
+.comment_unit_bottom_btn_selected {
+  background: #3376ff;
+  color: #ffffff;
+}
+.comment_unit_bottom_left > :hover {
+  background: #3376ff;
+  color: #ffffff;
 }
 .comment_unit_bottom_right {
   font-size: 16px;
@@ -624,5 +611,12 @@ export default {
   background: #f2f5f6;
   color: #9199a1;
   border: none;
+}
+// 二级评论样式
+.two_commment_div {
+  display: flex;
+  .comment_text {
+    flex: 1;
+  }
 }
 </style>

@@ -96,7 +96,7 @@
             async getAvatarList() {
                 const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/getAvatarList`);
                  if (res.status == 200) {
-                     console.log(res)
+                    //  console.log(res)
                     this.avatorList = res.data.data
                 }
 
