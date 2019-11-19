@@ -3,7 +3,7 @@
     <div slot="container" class="container">
       <!-- top block -->
       <div class="top_article">
-        <el-carousel trigger="click" :height="342 + 'px'" :autoplay="false" class="set_width" v-show="topList.length > 0">
+        <el-carousel trigger="click" :height="332 + 'px'" :autoplay="false" class="set_width" v-show="topList.length > 0">
           <el-carousel-item v-for="(item,index) in topList" :key="index" class="flex">
             <div class="left_title" @click="goDetail(item)">
               <img :src="item.bigImgUrl" style="width: 100%; height: 100%;">
@@ -68,14 +68,21 @@
   margin: 0 auto;
 
   .top_article {
-    height: 342px;
+    height: 332px;
     display: flex;
-    background: url("../../assets/img/bg/white_bg.png") no-repeat;
     margin-bottom: 42px;
+    background: white;
+    border-radius: 20px;
   }
 
   .left_title {
     width: 791px;
+    img{
+      width: 100%;
+      height: 100%;
+      border-radius: 20px 0 0 20px;
+      display: block;
+    }
   }
 
   .right_detail {
@@ -254,7 +261,6 @@ export default {
         page: 0,
         limit: 10
       },
-      typeChoose: false
     };
   },
   mounted() {
@@ -274,8 +280,9 @@ export default {
     },
     // 选择文章类型
     chooseType(item) {
-      this.typeChoose = true;
+      this.lists = []
       this.blogType = item.id;
+      this.paging.page = 0
       this.getWriteList();
     },
     // 渲染文章类型
@@ -303,14 +310,9 @@ export default {
     // 获得文章列表
     async getWriteList() {
       this.disabled = true;
-      this.lists = [];
-      if (this.typeChoose) {
-        this.paging.page = 1;
-      } else {
         this.paging = {
           page: ++this.paging.page,
           limit: 10
-        };
       }
       let filters = {
         blogType: this.blogType == 0 ? null : this.blogType
