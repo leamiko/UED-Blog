@@ -128,7 +128,7 @@ export default {
         `${process.env.BASE_URL}/web_api/logOut`
       );
       localStorage.removeItem("user");
-      console.log(res);
+      // console.log(res);
     },
     //判断是否登录
     async isLogin() {
@@ -148,7 +148,7 @@ export default {
           "code"
         )}`
       );
-      console.log(res);
+      // console.log(res);
       if (res.data.status_code == 200) {
         localStorage.setItem("user", JSON.stringify(data.user));
         this.loginForm = {};
