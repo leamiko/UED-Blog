@@ -24,6 +24,17 @@
           <a-select-option value="5">其他</a-select-option>
         </a-select>
       </a-form-item>
+       <a-form-item v-if="!blogId" label="作者" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
+        <a-select v-decorator="[
+          'model.author',
+          {rules: [{ required: true, message: '分类不能为空!' }],
+                initialValue:model.author}
+        ]" placeholder="请选择作者">
+          <!-- 需要所有文章分类 -->
+          <a-select-option v-for="(item,index) in authorList" :key="index" :value="item.account">{{item.account}}</a-select-option>
+        </a-select>
+      </a-form-item>
+      
       <!-- <a-form-item label="作者" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
         <a-input v-decorator="[
           'model.author',
@@ -114,14 +125,17 @@ export default {
       blogId: '',
       previewVisible: false,
       previewImage: '',
-      fileList: [],
-      imgList: []
+      fileList: [], // 上传文件列表
+      imgList: [],
+      authorList: []
     }
   },
   mounted () {
     this.blogId = this.$route.query.blogId ? this.$route.query.blogId : ''
     if (this.blogId) {
       this.getArticleInfo()
+    } else {
+      this.getAuthorList()
     }
   },
   methods: {
@@ -151,6 +165,14 @@ export default {
         ]
       }
     },
+    // 获取作者列表
+    getAuthorList: async function() {
+      const url = await this.api.getUserList
+      const res = await this.$http.get(url)
+      if(res.status_code == 200) {
+        this.authorList = res.data
+      }
+    },
     handleCancel () {
       this.previewVisible = false
     },
@@ -162,7 +184,7 @@ export default {
       this.uploadFile(file)
       return false
     },
-
+    // 上传文件
     uploadFile: async function (file) {
       var timestamp = new Date().getTime()
       await client()
@@ -232,7 +254,8 @@ export default {
             info: values.model.info,
             content: this.model.content,
             bigImgUrl: bigImgUrl,
-            midImgUrl: midImgUrl
+            midImgUrl: midImgUrl,
+            author: this.blogId ? values.model.author : null
           }
           const res = await this.$http.post(url, params)
           if (res.status_code === 200) {
