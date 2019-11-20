@@ -3,10 +3,13 @@
     <my-scrollbar hasHead hasFoot :headStyle="{'background':'white'}" :headActive="'打码'">
       <div slot="container" v-loading="loading">
         <div class="detail_container">
-          <div class="support">
+          <div class="support" :class="{'support_back':praiseOnly}">
             <div class="support_icon pointer" @click="praise()">
-              <img src="@/assets/img/icon/praise_small_icon.svg" />
+              <!-- <img src="@/assets/img/icon/praise_small_icon.svg" /> -->
+              <img src="@/assets/img/icon/praise_small_icon.svg" v-show="praiseNum === 0"/>
+              <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0"/>
             </div>
+            <div class="praise_badge_small" v-show="praiseNum > 0">+{{praiseNum}}</div>
             <div class="support_text">
               <span>点赞</span>
               <span class="separate inline"></span>
@@ -47,31 +50,29 @@
                 </div>
               </div>
             </div>
-            <div class="detail_content">
+            <div class="detail_content" v-show="detailInfo.content!==null&&detailInfo.content!==''">
               <div class="detail_sign">
                 <span class="span_sign inline flt"></span>问题描述
               </div>
               <div class="describe">
-                <!-- <div class="word" v-html="detailInfo.content"></div> -->
-                <div class="word">{{detailInfo.content}}</div>
+                <div class="word" v-html="detailInfo.content"></div>
               </div>
             </div>
-            <div class="detail_content" v-show="detailInfo.bugSolution!==''">
+            <div class="detail_content" v-show="detailInfo.bugSolution!==null&&detailInfo.bugSolution!==''">
               <div class="detail_sign">
                 <span class="span_sign inline flt"></span>解决方案
               </div>
               <div class="describe">
-                <!-- <div class="word" v-html="detailInfo.bugSolution"></div> -->
-                <div class="word">{{detailInfo.bugSolution}}</div>
+                <div class="word" v-html="detailInfo.bugSolution"></div>
               </div>
             </div>
             <div class="praise" :class="{'praise_num50':praiseNum === 50}">
-              <div class="praise_img pointer" @click="praise()">
+              <div class="praise_img pointer" id="praise" @click="praise()">
                 <img src="@/assets/img/icon/praise.png" v-show="praiseNum === 0"/>
-                <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0 && praiseNum < 50"/>
+                <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0 && praiseNum !== 50"/>
                 <img src="@/assets/img/icon/praise_50.svg" v-show="praiseNum === 50"/>
               </div>
-              <div class="praise_badge" v-show="praiseNum > 0 && praiseNum < 50">+{{praiseNum}}</div>
+              <div class="praise_badge" v-show="praiseNum > 0 && praiseNum !== 50">+{{praiseNum}}</div>
               <div class="praise_num">&nbsp;&nbsp;{{praiseNum?praiseNum:0}}个赞</div>
             </div>
           </div>
@@ -175,7 +176,11 @@
                     <img src="@/assets/img/image/code_presenter.png" />
                   </div>
                   <div class="current_edit inline">
-                    <my-editor :height="'104px'" :placeholder="'我有一个大胆的想法～'"></my-editor>
+                    <my-editor
+                      @change="onEditorChangeSecondCom($event,firstItem)"
+                      :height="'104px'"
+                      :placeholder="'我有一个大胆的想法～'"
+                    ></my-editor>
                     <br />
                     <div class="text-right">
                       <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
@@ -183,7 +188,7 @@
                         type="primary"
                         round
                         size="small"
-                        @click="submitSecondCom()"
+                        @click="submitSecondCom(firstItem)"
                       >&emsp;评&nbsp;论&emsp;</el-button>
                     </div>
                   </div>
@@ -271,6 +276,8 @@ export default {
       interestList: [], // 感兴趣List
       interestOriginal: [], // 原始bugList
       interestUnfiltered: [], // 未过滤兴趣List
+      visualScroll: null, // 点赞滚动可视区
+      praiseOnly: false, // 左侧点赞icon回归上方
       isAnonymous: false,
       resultMsg: "",
       resultImage: "",
@@ -283,18 +290,31 @@ export default {
       commentList: [], // 评论列表
       firstCommenterId: "", // 评论列表中一级评论人id
       firstComIndex: "", // 评论列表中一级评论数组下标
-      list: [{ id: 10 }, { id: 11 }]
+      list: [{ id: 10 }, { id: 11 }],
     };
   },
   mounted() {
-    this.Id = this.$route.query.id ? this.$route.query.id : "";
+    this.Id = this.$route.query.bugId ? this.$route.query.bugId : "";
     if (this.Id) {
       this.getInfo();
       this.getCommentList();
     }
     this.userInfo = JSON.parse(localStorage.getItem("user")); // 获取当前用户信息
+    // 可视区内保留一个点赞icon
+    this.visualScroll = new IntersectionObserver(([entry]) => {
+      if (entry && entry.isIntersecting) {
+        // bigPraise已在可视范围内
+        this.praiseOnly = true;
+      } else {
+        this.praiseOnly = false;
+      }
+    }),
+    this.visualScroll.observe(document.querySelector('#praise'))
   },
-  methods: {
+  destroyed() { 
+    this.visualScroll.disconnect() 
+  },
+  methods: {    
     // 获取详情信息
     async getInfo() {
       let params = {
@@ -420,18 +440,18 @@ export default {
     },
     // 详情点赞
     async praise() {
+      clearTimeout();
       if (this.praiseNum < 50) {
         this.praiseNum++;
+        setTimeout(()=>this.setPraise(), 5000);
       }
-      clearTimeout();
-      setTimeout(this.setPraise(), 500)
     },
     async setPraise() {
       const user = JSON.parse(localStorage.getItem("user"));
       let praiseParams = {
           bugId: this.Id,
           userId: user._id,
-          count: this.praiseCount,
+          count: this.praiseNum,
           likeNum: Number(this.detailInfo.likeNum)
         }
         const { data } = await this.$axios.post(`${process.env.BASE_URL}/web_api/LikeBugById`, praiseParams);
@@ -457,36 +477,52 @@ export default {
         params
       );
       if (res.status == 200) {
-        this.resultMsg = "发布成功!";
-        this.resultImage = successImg;
-        this.showDialog = true;
+        // this.resultMsg = "评论成功!";
+        // this.resultImage = successImg;
+        // this.showDialog = true;
+        this.getCommentList();
+        this.onEditorChange({});
       }
     },
-    // 发表二级级评论
-    async submitSecondCom() {
-      this.commentList.forEach(item => {});
-      if (!this.haveFirstComContent) return;
+    // 发表二级级评论(回复一级评论)
+    async submitSecondCom(firstItem) {
+      // this.commentList.forEach(item => {});
+      // if (!this.haveFirstComContent) return;
       const params = {
-        commenterName: this.userInfo.nickName,
-        commenterId: this.userInfo._id,
-        bugId: this.Id,
-        content: this.firstComContent
+        commentId: firstItem._id,
+        replyerName: this.userInfo.nickName,
+        replyerId: this.userInfo._id,
+        replyTargetName: firstItem.commenterName,
+        replyTargetId: firstItem.commenterId,
+        bugId: firstItem.bugId,
+        content: "回复2"
       };
       const res = await this.$axios.post(
-        `${process.env.BASE_URL}/web_api/commentBug`,
+        `${process.env.BASE_URL}/web_api/replyBug`,
         params
       );
       if (res.status == 200) {
-        this.resultMsg = "发布成功!";
+        this.resultMsg = "回复成功!";
         this.resultImage = successImg;
         this.showDialog = true;
       }
     },
-    // 监听评论框
+    // 监听一级评论框
     onEditorChange({ editor, html, text }) {
       console.log(editor, html, text);
       this.firstComContent = text;
       this.haveFirstComContent = html ? true : false;
+    },
+    // 监听发表二级评论（回复一级）框
+    onEditorChangeSecondCom({ editor, html, text }, firstItem) {
+      console.log(text, firstItem);
+      // this.commentList.forEach(item => {
+      //   if (item._id === firstItem._id) {
+      //     item["replyFirstComContent"] = text;
+      //   }
+      // });
+      // this.firstComContent = text;
+      // this.haveFirstComContent = html ? true : false;
       // console.log(this.firstComContent, this.haveFirstComContent);
     },
     // 评论点赞
@@ -570,10 +606,7 @@ export default {
   position: relative;
   width: 62.5%;
   margin: 57px auto 40px;
-  .support {
-    // position: absolute;
-    // left: -91px;
-    // top: 78px;
+  .support {    
     position: fixed;
     left: 14%;
     top: 217px;
@@ -584,6 +617,15 @@ export default {
       img {
         width: 100%;
       }
+    }
+    .praise_badge_small {
+      position: absolute;
+      top: 0px;
+      left: 40px;
+      display: inline-block;
+      color: #fe4043;
+      font-size: 16px;
+      font-weight: 600;
     }
     .support_text {
       padding: 12px 11px;
@@ -596,6 +638,11 @@ export default {
         background: #dce5ed;
       }
     }
+  }
+  .support_back {
+    position: absolute;
+    left: -91px;
+    top: 78px;
   }
   .detail_info {
     width: 75%;
@@ -710,7 +757,7 @@ export default {
       .praise_num {
         margin-left: calc((100% - 102px) / 2);
         padding-left: 0px;
-      } 
+      }
     }
   }
   .interest {
@@ -864,36 +911,65 @@ export default {
   }
 }
 // 页面适配
-@media (max-width: 1720px){
-    .detail_container {
-        width: 75%;
-        .support {
-          left: calc(12.5% - 91px);
-       }
+@media (max-width: 1720px) {
+  .detail_container {
+    width: 75%;
+    .support {
+      left: calc(12.5% - 91px);
     }
+    .support_back {
+      left: 0px;
+    }
+  }
 }
-@media (max-width: 1520px){
-    .detail_container {
-        width: 78%;
-        .support {
-          left: calc(11% - 91px);
-       }
+@media (max-width: 1520px) {
+  .detail_container {
+    width: 78%;
+    .support {
+      left: calc(11% - 91px);
     }
+    .support_back {
+      left: 0px;
+    }
+  }
 }
-@media (max-width: 1320px){
-    .detail_container {
-        width: 83%;
-        .support {
-        left: calc(8.5% - 75px);
-      }
+@media (max-width: 1320px) {
+  .detail_container {
+    width: 83%;
+    .support {
+      left: calc(8.5% - 75px);
     }
+    .support_back {
+      left: -75px;
+    }
+  }
 }
-@media (max-width: 1020px){
-    .detail_container {
-      width: 88%;
-      .support {
-        left: calc(6% - 58px);
-      }
+@media (max-width: 1020px) {
+  .detail_container {
+    width: 88%;
+    .support {
+      left: calc(6% - 58px);
     }
+    .support_back {
+      left: -58px;
+    }
+  }
+}
+</style>
+<style lang="scss">
+// 非私有样式！，格式化富文本
+.describe {
+  p, ul, ol, li, pre, blockquote, strong, em, #text {
+    font-size: 16px;
+    color: #000000;
+    font-family: PingFangSC-Regular,PingFang SC;
+    word-break: break-all;
+    word-wrap: break-word;
+    white-space: normal;
+  }
+  // 图片宽度
+  p img, blockquote img {
+    width: 100%;
+  }
 }
 </style>

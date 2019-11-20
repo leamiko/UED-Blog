@@ -3,10 +3,12 @@
     <my-scrollbar hasHead hasFoot :headStyle="{'background':'white'}" :headActive="'写字'">
       <div slot="container">
         <div class="detail_container">
-          <div class="support">
-            <div class="support_icon pointer">
-              <img src="@/assets/img/icon/praise_small_icon.svg" />
+          <div class="support" :class="{'support_back':praiseOnly}">
+            <div class="support_icon pointer" @click="praise()">
+              <img src="@/assets/img/icon/praise_small_icon.svg" v-show="praiseNum === 0" />
+              <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0" />
             </div>
+            <div class="praise_badge_small" v-show="praiseNum > 0">+{{praiseNum}}</div>
             <div class="support_text">
               <span>点赞</span>
               <span class="separate inline"></span>
@@ -49,11 +51,14 @@
                 {{detailInfo.content}}
               </div>
             </div>
-            <div class="praise">
-              <div class="praise_img pointer">
-                <img src="@/assets/img/icon/praise.png" />
+            <div class="praise" :class="{'praise_num50':praiseNum === 50}">
+              <div class="praise_img pointer" id="praise" @click="praise()">
+                <img src="@/assets/img/icon/praise.png" v-show="praiseNum === 0" />
+                <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0 && praiseNum !== 50" />
+                <img src="@/assets/img/icon/praise_50.svg" v-show="praiseNum === 50" />
               </div>
-              <div class="praise_num">{{detailInfo.likeNum?detailInfo.likeNum:0}}个赞</div>
+              <div class="praise_badge" v-show="praiseNum > 0 && praiseNum !== 50">+{{praiseNum}}</div>
+              <div class="praise_num">&nbsp;&nbsp;{{praiseNum?praiseNum:0}}个赞</div>
             </div>
           </div>
           <div class="interest inline">
@@ -227,10 +232,13 @@ export default {
       commentContent: "",
       haveCommentContent: false,
       name: "",
+      praiseNum: 0, // 点赞数
       detailParams: JSON.parse(this.$route.query.detailParams),
       userInfo: "", // 用户信息
       detailInfo: {}, //明细列表
       isShowReply: false, // 是否展示回复框
+      praiseOnly: false, // 左侧点赞icon回归上方
+      visualScroll: null, // 点赞滚动可视区
       commentList: [], // 评论列表
       isClick: false, //评论点赞
       supportComBtnIsHover: false, // 评论点赞按钮是否悬浮
@@ -244,10 +252,23 @@ export default {
   },
   mounted() {
     this.userInfo = JSON.parse(localStorage.getItem("user")); // 获取当前用户信息
+    // 可视区内保留一个点赞icon
+    (this.visualScroll = new IntersectionObserver(([entry]) => {
+      if (entry && entry.isIntersecting) {
+        // bigPraise已在可视范围内
+        this.praiseOnly = true;
+      } else {
+        this.praiseOnly = false;
+      }
+    })),
+      this.visualScroll.observe(document.querySelector("#praise"));
   },
   created() {
     this.getBlog();
     this.getBlogComment();
+  },
+  destroyed() {
+    this.visualScroll.disconnect();
   },
   methods: {
     //获取详情列表
@@ -256,19 +277,42 @@ export default {
         `${process.env.BASE_URL}/web_api/getBlog?blogId=${this.detailParams.detailId}`
       );
       this.detailInfo = res.data.data;
-      // console.log(this.detailInfo);
+      this.praiseNum = this.detailInfo.likeNum;
+      console.log(this.detailInfo);
+    },
+    // 详情点赞
+    async praise() {
+      if (this.praiseNum < 50) {
+        this.praiseNum++;
+      }
+      clearTimeout();
+      setTimeout(this.setPraise(), 500);
+    },
+    async setPraise() {
+      let praiseParams = {
+        blogId: this.detailParams.detailId,
+        userId: this.userInfo._id,
+        count: this.praiseCount,
+        likeNum: Number(this.detailInfo.likeNum)
+      };
+      const { data } = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/likeBlog`,
+        praiseParams
+      );
+      console.log(data);
     },
     //获取评论列表
     async getBlogComment() {
       const res = await this.$axios.get(
         `${process.env.BASE_URL}/web_api/getBlogComment?blogId=${this.detailParams.detailId}`
       );
+      console.log(res);
+      console.log(111);
       this.commentList = res.data.data;
-      this.commentList.forEach(item => {
-        item[`firstComIsLike`] = false;
-        item[`isShowReplyFirstCom`] = false;
-      });
-      // console.log( this.commentList)
+      // this.commentList.forEach(item => {
+      //   item[`firstComIsLike`] = false;
+      //   item[`isShowReplyFirstCom`] = false;
+      // });
     },
     // 发表一级评论
     async submitFistCom() {
@@ -327,6 +371,16 @@ export default {
         }
       });
     },
+    // 删除一级评论
+    async deleteFirstCom(comId) {
+      const res = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/deleteComment`,
+        { commentId: comId }
+      );
+      if (res.data.status_code === 200) {
+        this.getBlogComment();
+      }
+    },
     //是否匿名
     anonymousClick() {
       this.isAnonymous = !this.isAnonymous;
@@ -353,13 +407,25 @@ export default {
   margin: 57px auto 40px;
   .support {
     width: 55px;
-    margin-right: 36px;
+    // margin-right: 36px;
+    position: fixed;
+    left: 14%;
+    top: 217px;
     .support_icon {
       width: 55px;
       height: 54px;
       img {
         width: 100%;
       }
+    }
+    .praise_badge_small {
+      position: absolute;
+      top: 0px;
+      left: 40px;
+      display: inline-block;
+      color: #fe4043;
+      font-size: 16px;
+      font-weight: 600;
     }
     .support_text {
       padding: 12px 11px;
@@ -372,6 +438,11 @@ export default {
         background: #dce5ed;
       }
     }
+  }
+  .support_back {
+    position: absolute;
+    left: -91px;
+    top: 78px;
   }
   .detail_info {
     position: relative;
@@ -439,6 +510,12 @@ export default {
       }
     }
     .praise {
+      // position: relative;
+      // margin: 0 57px;
+      // padding-top: 37px;
+      // padding-bottom: 41px;
+      // border-top: 1px solid #eff3f7;
+
       width: 730px;
       position: absolute;
       left: 50%;
@@ -453,11 +530,30 @@ export default {
           width: 100%;
         }
       }
+      .praise_badge {
+        position: absolute;
+        top: 37px;
+        left: calc((100% - 102px) / 2 + 76px);
+        display: inline-block;
+        color: #fe4043;
+        font-size: 20px;
+        font-weight: 600;
+      }
       .praise_num {
         margin-left: calc((100% - 102px) / 2);
         padding-left: 13px;
         font-size: 18px;
         color: #394a58;
+      }
+    }
+    .praise_num50 {
+      .praise_img {
+        width: 226px;
+        margin-left: calc((100% - 226px) / 2);
+      }
+      .praise_num {
+        margin-left: calc((100% - 102px) / 2);
+        padding-left: 0px;
       }
     }
   }
@@ -631,6 +727,51 @@ export default {
   display: flex;
   .comment_text {
     flex: 1;
+  }
+}
+// 页面适配
+@media (max-width: 1720px) {
+  .detail_container {
+    width: 75%;
+    .support {
+      left: calc(12.5% - 91px);
+    }
+    .support_back {
+      left: 0px;
+    }
+  }
+}
+@media (max-width: 1520px) {
+  .detail_container {
+    width: 78%;
+    .support {
+      left: calc(11% - 91px);
+    }
+    .support_back {
+      left: 0px;
+    }
+  }
+}
+@media (max-width: 1320px) {
+  .detail_container {
+    width: 83%;
+    .support {
+      left: calc(8.5% - 75px);
+    }
+    .support_back {
+      left: -75px;
+    }
+  }
+}
+@media (max-width: 1020px) {
+  .detail_container {
+    width: 88%;
+    .support {
+      left: calc(6% - 58px);
+    }
+    .support_back {
+      left: -58px;
+    }
   }
 }
 </style>
