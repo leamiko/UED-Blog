@@ -7,7 +7,7 @@ var bugLikeSchema = new Schema({
         type: String //用户objectId
     },
     bugId: {
-        type: String //文章objectId
+        type: String //条目objectId
     },
     commentId: {
         type: String //评论objectId

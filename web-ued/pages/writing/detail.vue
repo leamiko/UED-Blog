@@ -4,7 +4,7 @@
       <div slot="container">
         <div class="detail_container">
           <div class="support">
-            <div class="support_icon pointer">
+            <div class="support_icon pointer" @click="praise()">
               <img src="@/assets/img/icon/praise_small_icon.svg" />
             </div>
             <div class="support_text">
@@ -49,11 +49,14 @@
                 {{detailInfo.content}}
               </div>
             </div>
-            <div class="praise">
-              <div class="praise_img pointer">
-                <img src="@/assets/img/icon/praise.png" />
+            <div class="praise" :class="{'praise_num50':praiseNum === 50}">
+              <div class="praise_img pointer" @click="praise()">
+                <img src="@/assets/img/icon/praise.png" v-show="praiseNum === 0" />
+                <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0 && praiseNum < 50" />
+                <img src="@/assets/img/icon/praise_50.svg" v-show="praiseNum === 50" />
               </div>
-              <div class="praise_num">{{detailInfo.likeNum?detailInfo.likeNum:0}}个赞</div>
+              <div class="praise_badge" v-show="praiseNum > 0 && praiseNum < 50">+{{praiseNum}}</div>
+              <div class="praise_num">&nbsp;&nbsp;{{praiseNum?praiseNum:0}}个赞</div>
             </div>
           </div>
           <div class="interest inline">
@@ -118,7 +121,7 @@
               </div>
               <div class="current_edit inline">
                 <!-- 一级评论 -->
-                <div @mouseenter="mouseHoverDelComBtn(firstIndex, firstItem.commenterId, true)" @mouseleave="mouseHoverDelComBtn(firstIndex, firstItem.commenterId, false)">
+                <div @mouseenter="mouseHoverDelComBtn(firstIndex, firstItem.commentUserId, true)" @mouseleave="mouseHoverDelComBtn(firstIndex, firstItem.commentUserId, false)">
                   <div class="comment_unit_name">{{firstItem.commenterName}}</div>
                   <div class="comment_unit_content">{{firstItem.content}}</div>
                   <div class="comment_unit_bottom">
@@ -227,6 +230,7 @@ export default {
       commentContent: "",
       haveCommentContent: false,
       name: "",
+      praiseNum: 0, // 点赞数
       detailParams: JSON.parse(this.$route.query.detailParams),
       userInfo: "", // 用户信息
       detailInfo: {}, //明细列表
@@ -256,7 +260,37 @@ export default {
         `${process.env.BASE_URL}/web_api/getBlog?blogId=${this.detailParams.detailId}`
       );
       this.detailInfo = res.data.data;
-      // console.log(this.detailInfo);
+      this.praiseNum = this.detailInfo.likeNum;
+      console.log(this.detailInfo);
+    },
+    // 详情点赞
+    async praise() {
+      if (this.praiseNum < 50) {
+        this.praiseNum++;
+      }
+      clearTimeout();
+      setTimeout(this.setPraise(), 500);
+    },
+    async setPraise() {
+      const user = JSON.parse(localStorage.getItem("user"));
+      let praiseParams = {
+        blogId: this.detailParams.detailId,
+        userId: user._id,
+        count: this.praiseCount,
+        likeNum: Number(this.detailInfo.likeNum)
+      };
+      const { data } = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/likeBlog`,
+        praiseParams
+      );
+      console.log(data);
+
+      // if (data.status_code !== 200) {
+      //   this.$notify.error({
+      //     title: "错误",
+      //     message: data.data.message
+      //   });
+      // }
     },
     //获取评论列表
     async getBlogComment() {
@@ -264,14 +298,18 @@ export default {
         `${process.env.BASE_URL}/web_api/getBlogComment?blogId=${this.detailParams.detailId}`
       );
       this.commentList = res.data.data;
-      console.log( this.commentList)
+      this.commentList.forEach(item => {
+        item[`firstComIsLike`] = false;
+        item[`isShowReplyFirstCom`] = false;
+      });
+      // console.log( this.commentList)
     },
     // 发表一级评论
     async submitFistCom() {
       if (!this.haveFirstComContent) return;
       const params = {
-        commenterName: this.userInfo.nickName,
-        commenterId: this.userInfo._id,
+        commentName: this.userInfo.nickName,
+        commentUserId: this.userInfo._id,
         blogId: this.detailParams.detailId,
         content: this.firstComContent,
         anonymous: this.isAnonymous
@@ -280,11 +318,8 @@ export default {
         `${process.env.BASE_URL}/web_api/commentBlog`,
         params
       );
-      console.log(this.userInfo._id)
-      console.log(params)
-
       if (res.status == 200) {
-        // window.location.reload();
+        window.location.reload();
       }
     },
     // 监听评论框
@@ -294,7 +329,6 @@ export default {
     },
     // 评论删除按钮悬浮
     mouseHoverDelComBtn(index, id, isHover) {
-      console.log(id);
       this.deleteComBtnIsHover = isHover;
       this.firstCommenterId = id;
       this.firstComIndex = index;
@@ -319,10 +353,17 @@ export default {
         }
       });
     },
+    // 回复一级评论按钮
+    replyFirstComBtn(comId) {
+      this.commentList.forEach(item => {
+        if (item._id === comId) {
+          item.isShowReplyFirstCom = !item.isShowReplyFirstCom;
+        }
+      });
+    },
     //是否匿名
     anonymousClick() {
       this.isAnonymous = !this.isAnonymous;
-      console.log(this.isAnonymous);
     },
     submit() {
       // if (!this.haveCommentContent) return;
@@ -367,6 +408,7 @@ export default {
     }
   }
   .detail_info {
+    position: relative;
     width: 874px;
     box-shadow: 0px 1px 5px 0px #ececec;
     border-radius: 2px;
@@ -431,10 +473,18 @@ export default {
       }
     }
     .praise {
+      position: relative;
       margin: 0 57px;
       padding-top: 37px;
       padding-bottom: 41px;
       border-top: 1px solid #eff3f7;
+      // width: 730px;
+      // position: absolute;
+      // left: 50%;
+      // bottom: 40px;
+      // transform: translate(-50%);
+      // padding-top: 37px;
+      // border-top: 1px solid #eff3f7;
       .praise_img {
         width: 102px;
         margin-left: calc((100% - 102px) / 2);
@@ -442,11 +492,30 @@ export default {
           width: 100%;
         }
       }
+      .praise_badge {
+        position: absolute;
+        top: 37px;
+        left: calc((100% - 102px) / 2 + 76px);
+        display: inline-block;
+        color: #fe4043;
+        font-size: 20px;
+        font-weight: 600;
+      }
       .praise_num {
         margin-left: calc((100% - 102px) / 2);
         padding-left: 13px;
         font-size: 18px;
         color: #394a58;
+      }
+    }
+    .praise_num50 {
+      .praise_img {
+        width: 226px;
+        margin-left: calc((100% - 226px) / 2);
+      }
+      .praise_num {
+        margin-left: calc((100% - 102px) / 2);
+        padding-left: 0px;
       }
     }
   }
@@ -540,6 +609,9 @@ export default {
 }
 .margin_left_15 {
   margin-left: 15px;
+}
+.margin_top_30 {
+  margin-top: 30px;
 }
 .margin_top_40 {
   margin-top: 40px;
