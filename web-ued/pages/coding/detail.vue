@@ -52,17 +52,17 @@
                 <span class="span_sign inline flt"></span>问题描述
               </div>
               <div class="describe">
-                <!-- <div class="word" v-html="detailInfo.content"></div> -->
-                <div class="word">{{detailInfo.content}}</div>
+                <div class="word" v-html="detailInfo.content"></div>
+                <!-- <div class="word">{{detailInfo.content}}</div> -->
               </div>
             </div>
-            <div class="detail_content" v-show="detailInfo.bugSolution!==''">
+            <div class="detail_content" v-show="detailInfo.bugSolution!==null">
               <div class="detail_sign">
                 <span class="span_sign inline flt"></span>解决方案
               </div>
               <div class="describe">
-                <!-- <div class="word" v-html="detailInfo.bugSolution"></div> -->
-                <div class="word">{{detailInfo.bugSolution}}</div>
+                <div class="word" v-html="detailInfo.bugSolution"></div>
+                <!-- <div class="word">{{detailInfo.bugSolution}}</div> -->
               </div>
             </div>
             <div class="praise" :class="{'praise_num50':praiseNum === 50}">

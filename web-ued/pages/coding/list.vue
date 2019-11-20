@@ -46,7 +46,7 @@
               <div class="code_content" v-for="x in bugList" :key="x._id">
                 <div class="pointer" @click="showDetail(x._id)">
                   <div class="content_title">{{x.title}}</div>
-                  <div class="content_question">{{x.content}}</div>
+                  <div class="content_question" v-html="x.content"></div>
                 </div>                
                 <div class="content_mark inline">
                   <div class="presenter flt">
@@ -459,6 +459,10 @@ export default {
         margin-bottom: 36px;
         font-size: 18px;
         color: #394145;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
       }
       .content_mark {
         width: 100%;
