@@ -67,9 +67,12 @@
             </div>
             <div class="praise">
               <div class="praise_img pointer">
-                <img src="@/assets/img/icon/praise.png" v-show="detailInfo.likeNum === 0"/>
-                <img src="@/assets/img/icon/praise_null.svg" v-show="detailInfo.likeNum !== 0 && 0 < detailInfo.likeNum < 50"/>
-                <img src="@/assets/img/icon/praise_50.svg" v-show="detailInfo.likeNum === 50"/>
+                <img src="@/assets/img/icon/praise.png" v-show="detailInfo.likeNum === 0" />
+                <img
+                  src="@/assets/img/icon/praise_null.svg"
+                  v-show="detailInfo.likeNum !== 0 && 0 < detailInfo.likeNum < 50"
+                />
+                <img src="@/assets/img/icon/praise_50.svg" v-show="detailInfo.likeNum === 50" />
               </div>
               <div class="praise_num">&nbsp;&nbsp;{{detailInfo.likeNum?detailInfo.likeNum:0}}个赞</div>
             </div>
@@ -83,7 +86,11 @@
               </router-link>
             </div>
             <div class="interest_list">
-              <div class="interest_info pointer" v-for="i in interestList" @click="showDetail(i._id)">{{i.title}}</div>
+              <div
+                class="interest_info pointer"
+                v-for="i in interestList"
+                @click="showDetail(i._id)"
+              >{{i.title}}</div>
             </div>
           </div>
         </div>
@@ -158,6 +165,7 @@
                       <div
                         class="comment_unit_bottom_btn margin_left_15"
                         v-if="userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover"
+                        @click="deleteFirstCom(firstItem._id)"
                       >删除</div>
                     </div>
                     <div class="comment_unit_bottom_right">{{firstItem.createAt | formatDateDay}}</div>
@@ -177,7 +185,7 @@
                         type="primary"
                         round
                         size="small"
-                        @click="submit()"
+                        @click="submitSecondCom()"
                       >&emsp;评&nbsp;论&emsp;</el-button>
                     </div>
                   </div>
@@ -280,7 +288,6 @@ export default {
     };
   },
   mounted() {
-    console.log(this.$route, "dld");
     this.Id = this.$route.query.id ? this.$route.query.id : "";
     if (this.Id) {
       this.getInfo();
@@ -322,22 +329,25 @@ export default {
         });
       }
       const tagList = this.detailInfo.tags;
-      this.getInterestInfo(tagList); 
+      this.getInterestInfo(tagList);
     },
     // 获取感兴趣信息
-    async getInterestInfo (tagList) {
+    async getInterestInfo(tagList) {
       let listParams = {
         pageIndex: 1,
         pageSize: 10,
-        filters: { 
+        filters: {
           title: "",
-        	bugStatus: "",
-	        author: "", //作者，置空
-        	tags: tagList
+          bugStatus: "",
+          author: "", //作者，置空
+          tags: tagList
         }
-      }
-      const { data } = await this.$axios.post(`${process.env.BASE_URL}/web_api/GetBugList`, listParams);
-      if (data.status_code === 200) {      
+      };
+      const { data } = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/GetBugList`,
+        listParams
+      );
+      if (data.status_code === 200) {
         if (tagList === null) {
           // tags为空时查询出的List
           if (data.data.length > 0) {
@@ -350,7 +360,10 @@ export default {
           }
         }
         // 当前详情tag的List.length < 4 时获取原始List
-        if (this.interestUnfiltered.length < 4 && this.interestOriginal.length === 0) {
+        if (
+          this.interestUnfiltered.length < 4 &&
+          this.interestOriginal.length === 0
+        ) {
           this.getInterestInfo(null);
         }
         if (this.interestUnfiltered.length >= 4) {
@@ -361,7 +374,10 @@ export default {
             }
           }
           this.interestList = this.interestList.slice(0, 4);
-        } else if (this.interestUnfiltered.length < 4 && this.interestOriginal.length > 0) {
+        } else if (
+          this.interestUnfiltered.length < 4 &&
+          this.interestOriginal.length > 0
+        ) {
           // 合并两个List，当前详情tag的List在前
           for (let o = 0; o < this.interestOriginal.length; o++) {
             this.interestUnfiltered.push(this.interestOriginal[o]);
@@ -376,19 +392,19 @@ export default {
         }
       } else {
         this.$notify.error({
-          title: '错误',
+          title: "错误",
           message: data.data.message
         });
       }
     },
     // 查看感兴趣内容
-    showDetail (id) {
+    showDetail(id) {
       this.$router.push({
-        path: '/coding/detail',
+        path: "/coding/detail",
         query: {
           bugId: id
         }
-      })
+      });
       this.Id = id;
       this.getInfo();
     },
@@ -398,6 +414,26 @@ export default {
     async submitFistCom() {
       if (!this.haveFirstComContent) return;
       console.log(this.firstComContent);
+      const params = {
+        commenterName: this.userInfo.nickName,
+        commenterId: this.userInfo._id,
+        bugId: this.Id,
+        content: this.firstComContent
+      };
+      const res = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/commentBug`,
+        params
+      );
+      if (res.status == 200) {
+        this.resultMsg = "发布成功!";
+        this.resultImage = successImg;
+        this.showDialog = true;
+      }
+    },
+    // 发表二级级评论
+    async submitSecondCom() {
+      this.commentList.forEach(item => {});
+      if (!this.haveFirstComContent) return;
       const params = {
         commenterName: this.userInfo.nickName,
         commenterId: this.userInfo._id,
@@ -436,16 +472,8 @@ export default {
         }
       });
     },
-    // 回复一级评论按钮
-    replyFirstComBtn(comId) {
-      this.commentList.forEach(item => {
-        if (item._id === comId) {
-          item.isShowReplyFirstCom = !item.isShowReplyFirstCom;
-        }
-      });
-    },
     // 获取评论
-    async getCommentList(noForEach) {
+    async getCommentList() {
       const res = await this.$axios.get(
         `${process.env.BASE_URL}/web_api/getBugComment?bugId=` + this.Id
       );
@@ -463,6 +491,14 @@ export default {
         });
       }
     },
+    // 回复一级评论按钮
+    replyFirstComBtn(comId) {
+      this.commentList.forEach(item => {
+        if (item._id === comId) {
+          item.isShowReplyFirstCom = !item.isShowReplyFirstCom;
+        }
+      });
+    },
     // 评论删除按钮悬浮
     mouseHoverDelComBtn(index, id, isHover) {
       this.deleteComBtnIsHover = isHover;
@@ -473,6 +509,19 @@ export default {
     mouseHoverSupComBtn(index, isHover) {
       this.supportComBtnIsHover = isHover;
       this.firstComIndex = index;
+    },
+    // 删除一级评论
+    async deleteFirstCom(comId) {
+      const res = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/deleteBugComment`,
+        { commentId: comId }
+      );
+      if (res.data.status_code === 200) {
+        this.resultMsg = "删除成功!";
+        this.resultImage = successImg;
+        this.showDialog = true;
+        this.getCommentList();
+      }
     }
   }
 };
