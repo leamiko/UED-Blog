@@ -52,17 +52,17 @@
                 <span class="span_sign inline flt"></span>问题描述
               </div>
               <div class="describe">
-                <!-- <div class="word" v-html="detailInfo.content"></div> -->
-                <div class="word">{{detailInfo.content}}</div>
+                <div class="word" v-html="detailInfo.content"></div>
+                <!-- <div class="word">{{detailInfo.content}}</div> -->
               </div>
             </div>
-            <div class="detail_content" v-show="detailInfo.bugSolution!==''">
+            <div class="detail_content" v-show="detailInfo.bugSolution!==null">
               <div class="detail_sign">
                 <span class="span_sign inline flt"></span>解决方案
               </div>
               <div class="describe">
-                <!-- <div class="word" v-html="detailInfo.bugSolution"></div> -->
-                <div class="word">{{detailInfo.bugSolution}}</div>
+                <div class="word" v-html="detailInfo.bugSolution"></div>
+                <!-- <div class="word">{{detailInfo.bugSolution}}</div> -->
               </div>
             </div>
             <div class="praise" :class="{'praise_num50':praiseNum === 50}">
@@ -175,7 +175,11 @@
                     <img src="@/assets/img/image/code_presenter.png" />
                   </div>
                   <div class="current_edit inline">
-                    <my-editor :height="'104px'" :placeholder="'我有一个大胆的想法～'"></my-editor>
+                    <my-editor
+                      @change="onEditorChangeSecondCom($event,firstItem)"
+                      :height="'104px'"
+                      :placeholder="'我有一个大胆的想法～'"
+                    ></my-editor>
                     <br />
                     <div class="text-right">
                       <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
@@ -457,10 +461,11 @@ export default {
         params
       );
       if (res.status == 200) {
-        this.resultMsg = "评论成功!";
-        this.resultImage = successImg;
-        this.showDialog = true;
+        // this.resultMsg = "评论成功!";
+        // this.resultImage = successImg;
+        // this.showDialog = true;
         this.getCommentList();
+        this.onEditorChange({});
       }
     },
     // 发表二级级评论(回复一级评论)
@@ -486,11 +491,22 @@ export default {
         this.showDialog = true;
       }
     },
-    // 监听评论框
+    // 监听一级评论框
     onEditorChange({ editor, html, text }) {
       console.log(editor, html, text);
       this.firstComContent = text;
       this.haveFirstComContent = html ? true : false;
+    },
+    // 监听发表二级评论（回复一级）框
+    onEditorChangeSecondCom({ editor, html, text }, firstItem) {
+      console.log(text, firstItem);
+      // this.commentList.forEach(item => {
+      //   if (item._id === firstItem._id) {
+      //     item["replyFirstComContent"] = text;
+      //   }
+      // });
+      // this.firstComContent = text;
+      // this.haveFirstComContent = html ? true : false;
       // console.log(this.firstComContent, this.haveFirstComContent);
     },
     // 评论点赞
