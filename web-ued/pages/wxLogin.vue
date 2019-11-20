@@ -37,7 +37,7 @@ export default {
     };
   },
   mounted() {
-    this.wxHandle();
+    // this.wxHandle();
   },
   methods: {
     wxHandle() {
