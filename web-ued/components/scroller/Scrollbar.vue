@@ -1,20 +1,35 @@
 <template>
   <div class="content">
-    <my-header :activeLabel="headActive" v-show="hasHead" :innerStyle="headStyle">
+    <my-header
+      :activeLabel="headActive"
+      v-show="hasHead"
+      :innerStyle="headStyle"
+    >
       <div slot="box_cus">
         <slot name="head_custom"></slot>
       </div>
     </my-header>
-    <div class="main" ref="main" :style="{'height': hasHead ? 'calc(100% - 82px)' : '100%'}">
-      <el-backtop target=".main" :bottom="bottom"></el-backtop>
+    <div
+      class="main"
+      ref="main"
+      :style="{'height': hasHead ? 'calc(100% - 82px)' : '100%'}"
+    >
+      <el-backtop
+        target=".main"
+        :bottom="bottom"
+      ><img :src="backImg" /></el-backtop>
       <slot name="container"></slot>
-      <my-footer :hasMenu="isFootMenu" v-show="hasFoot"></my-footer>
+      <my-footer
+        :hasMenu="isFootMenu"
+        v-show="hasFoot"
+      ></my-footer>
     </div>
   </div>
 </template>
 <script>
 import MyHeader from '@/components/header/Header';
 import MyFooter from '@/components/footer/Footer';
+import * as custom from "@/assets/js/custom.config";
 export default {
   components: {
     MyHeader,
@@ -57,7 +72,12 @@ export default {
       required: false
     }
   },
-  mounted() {
+  data () {
+    return {
+      backImg: custom.index.backTopUrl,
+    }
+  },
+  mounted () {
     if (this.mainStyle) {
       Object.keys(this.mainStyle).forEach(key => {
         this.$refs.main.style[key] = this.mainStyle[key];

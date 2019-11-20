@@ -226,7 +226,8 @@ module.exports = {
         skim: 6713,
         id: 10000107
       }
-    ]
+    ],
+    backTopUrl: require('../img/icon/back_top.png'),
   },
   editorOption: {
     placeholder: '请在这里输入',
