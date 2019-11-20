@@ -959,10 +959,13 @@ export default {
 <style lang="scss">
 // 非私有样式！，格式化富文本
 .describe {
-  p, ul, ol, li, pre, blockquote, strong, em {
+  p, ul, ol, li, pre, blockquote, strong, em, #text {
     font-size: 16px;
     color: #000000;
     font-family: PingFangSC-Regular,PingFang SC;
+    word-break: break-all;
+    word-wrap: break-word;
+    white-space: normal;
   }
   // 图片宽度
   p img, blockquote img {
