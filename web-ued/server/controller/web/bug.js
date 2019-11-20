@@ -193,6 +193,23 @@ exports.LikeBugById = async function (req, res, next) {
     next(error);
   }
 }
+// 获取该用户对某个条目的点赞数量
+exports.getThisBugUserLikeNum = async function (req, res, next) {
+  try {
+    const whereUserBugLike = {
+      userId: req.body.userId,
+      bugId: req.body.bugId
+    }
+    const userBugLike = await bugLike.findOne(whereUserBugLike);
+    return res.json({
+      status_code: 200,
+      message: '请求成功！',
+      data: userBugLike
+    })
+  } catch (error) {
+    next(error)
+  }
+}
 // 可能感兴趣的bug列表
 exports.MaybeInteresList = async function (req, res, next) {
   try {
