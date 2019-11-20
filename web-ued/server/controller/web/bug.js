@@ -4,7 +4,6 @@ var Dic = require('../../models/dictionary');
 var bugComment = require('../../models/comment-bug.js') //引入comment表
 var bugReply = require('../../models/reply-bug.js') //引入comment表
 var bugLike = require('../../models/like-bug.js') //引入like表
-var User = require('../../models/user.js') //引入user表
 
 
 const reg = /^[0-9]*[1-9][0-9]*$/;
@@ -42,13 +41,24 @@ exports.AddBugItems = async function (req, res, next) {
 exports.GetBugDetail = async function (req, res, next) {
   try {
     let bid = req.query.bugId;
-    const foundDetail = await Bug.findOne({
+    const whereBug = {
       _id: bid
+    }
+    const thisComment = await bugComment.find({
+      bugId: req.query.bugId
+    });
+    const viewed = await Bug.where(whereBug).updateOne({
+      $inc: {
+        viewNum: 1
+      },
+      commentNum: thisComment.length
     })
+
+    const findOne = await Bug.findOne(whereBug);
     res.json({
       status_code: 200,
       message: 'success',
-      data: foundDetail
+      data: findOne
     })
   } catch (error) {
     next(error)
@@ -132,32 +142,52 @@ exports.LikeBugById = async function (req, res, next) {
     const whereBug = {
       _id: req.body.bugId
     }
-    let like = new bugLike({
+    const whereUserBugLike = {
       userId: req.body.userId,
-      bugId: req.body.bugId,
-      count: req.body.count
-    })
-    like.save(async function (err, like) {
-      if (err) {
-        return res.json({
-          status_code: 201,
-          message: err,
-          data: null
+      bugId: req.body.bugId
+    }
+    const userBugLike = await bugLike.findOne(whereUserBugLike);
+    if (userBugLike) {
+      let totalN = userBugLike.count + req.body.count;
+      if (totalN > 50) {
+        await Bug.where(whereBug).updateOne({
+          $inc: {
+            likeNum: (50 - userBugLike.count)
+          }
+        })
+        await userBugLike.updateOne({
+          count: 50
+        })
+      } else {
+        await Bug.where(whereBug).updateOne({
+          $inc: {
+            likeNum: req.body.count
+          }
+        })
+        await userBugLike.updateOne({
+          $inc: {
+            count: req.body.count
+          }
         })
       }
-      let updateBug = {
-        likeNum: req.body.likeNum ?
-          req.body.likeNum * 1 + req.body.count * 1 : req.body.count * 1
-      }
-      await Bug.updateOne(whereBug, updateBug)
-      // await User.findByIdAndUpdate(req.session.user._id, {
-      //   bugAllLikeNum: req.session.user.bugAllLikeNum + 1
-      // })
-      return res.json({
-        status_code: 200,
-        message: '点赞成功！',
-        data: null
+    } else {
+      const upnum = req.body.count > 50 ? 50 : req.body.count;
+      let like = new bugLike({
+        userId: req.body.userId,
+        bugId: req.body.bugId,
+        count: upnum
       })
+      await like.save();
+      await Bug.where(whereBug).updateOne({
+        $inc: {
+          likeNum: upnum
+        }
+      })
+    }
+    return res.json({
+      status_code: 200,
+      message: '点赞成功！',
+      data: null
     })
   } catch (error) {
     next(error);
@@ -166,7 +196,7 @@ exports.LikeBugById = async function (req, res, next) {
 // 可能感兴趣的bug列表
 exports.MaybeInteresList = async function (req, res, next) {
   try {
-    
+
   } catch (error) {
     next(error);
   }
@@ -490,6 +520,32 @@ exports.deleteReply = async function (req, res, next) {
     res.json({
       status_code: 200,
       message: '删除成功！',
+      data: null
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+// rank定时任务
+exports.rankTask = async function (req, res, next) {
+  try {
+    const bugs = await Blog.find()
+    for (let i = 0; i < bugs.length; i++) {
+      const rank =
+        ((4 * Math.log(bugs[i].viewNum) / Math.LN10 +
+          (4 * Math.log(bugs[i].commentNum)) / Math.LN10 +
+          (3 * Math.log(bugs[i].commentLikeNum)) / Math.LN10) / count(bugs[i].createAt))
+      const whereBug = {
+        _id: bugs[i]._id
+      }
+      const updateBug = {
+        rank: rank
+      }
+      await Bug.updateOne(whereBug, updateBug)
+    }
+    return res.json({
+      status_code: 200,
+      message: '更新排序成功！',
       data: null
     })
   } catch (error) {

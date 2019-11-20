@@ -18,6 +18,7 @@ export default {
   addEditBlog: `${baseUrl}/addEditBlog`,
   deleteBlog: `${baseUrl}/deleteBlog`,
   getBlog: `${baseUrl}/getBlog`,
+  getUserList: `${baseUrl}/getUserList`,
 
   // 字典管理
   CreateOrEditDictionary: `${baseUrl}/CreateOrEditDictionary`,
