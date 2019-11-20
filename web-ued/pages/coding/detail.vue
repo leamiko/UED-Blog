@@ -4,7 +4,7 @@
       <div slot="container" v-loading="loading">
         <div class="detail_container">
           <div class="support">
-            <div class="support_icon pointer">
+            <div class="support_icon pointer" @click="praise()">
               <img src="@/assets/img/icon/praise_small_icon.svg" />
             </div>
             <div class="support_text">
@@ -65,6 +65,7 @@
                 <div class="word">{{detailInfo.bugSolution}}</div>
               </div>
             </div>
+<<<<<<< HEAD
             <div class="praise">
               <div class="praise_img pointer">
                 <img src="@/assets/img/icon/praise.png" v-show="detailInfo.likeNum === 0" />
@@ -73,8 +74,16 @@
                   v-show="detailInfo.likeNum !== 0 && 0 < detailInfo.likeNum < 50"
                 />
                 <img src="@/assets/img/icon/praise_50.svg" v-show="detailInfo.likeNum === 50" />
+=======
+            <div class="praise" :class="{'praise_num50':praiseNum === 50}">
+              <div class="praise_img pointer" @click="praise()">
+                <img src="@/assets/img/icon/praise.png" v-show="praiseNum === 0"/>
+                <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0 && praiseNum < 50"/>
+                <img src="@/assets/img/icon/praise_50.svg" v-show="praiseNum === 50"/>
+>>>>>>> dc2fffeba4e4371b8e2094f67af37b846fb506e0
               </div>
-              <div class="praise_num">&nbsp;&nbsp;{{detailInfo.likeNum?detailInfo.likeNum:0}}个赞</div>
+              <div class="praise_badge" v-show="praiseNum > 0 && praiseNum < 50">+{{praiseNum}}</div>
+              <div class="praise_num">&nbsp;&nbsp;{{praiseNum?praiseNum:0}}个赞</div>
             </div>
           </div>
           <div class="interest inline frt">
@@ -269,6 +278,7 @@ export default {
       loading: false,
       Id: "", // 当前问题Id
       detailInfo: {}, // 详情信息
+      praiseNum: 0, // 点赞数
       interestList: [], // 感兴趣List
       interestOriginal: [], // 原始bugList
       interestUnfiltered: [], // 未过滤兴趣List
@@ -288,7 +298,12 @@ export default {
     };
   },
   mounted() {
+<<<<<<< HEAD
     this.Id = this.$route.query.id ? this.$route.query.id : "";
+=======
+    console.log(this.$route, "dld");
+    this.Id = this.$route.query.bugId ? this.$route.query.bugId : "";
+>>>>>>> dc2fffeba4e4371b8e2094f67af37b846fb506e0
     if (this.Id) {
       this.getInfo();
       this.getCommentList();
@@ -307,6 +322,7 @@ export default {
       if (res.status === 200) {
         if (res.data.data && res.data.data !== null) {
           this.detailInfo = res.data.data;
+          this.praiseNum = this.detailInfo.likeNum;
           // setTimeout(() => {
           //   this.loading = false;
           // }, 500);
@@ -379,8 +395,18 @@ export default {
           this.interestOriginal.length > 0
         ) {
           // 合并两个List，当前详情tag的List在前
+          const copyUnfiltered = JSON.stringify(this.interestUnfiltered);
+          const deepcopyUnfiltered = JSON.parse(copyUnfiltered);
           for (let o = 0; o < this.interestOriginal.length; o++) {
-            this.interestUnfiltered.push(this.interestOriginal[o]);
+            const flag = false;
+            for (let u = 0; u < deepcopyUnfiltered.length; u++) {
+              if (this.interestOriginal[o]._id === deepcopyUnfiltered[u]._id) {
+                flag = true;
+              }
+            }
+            if (!flag) {
+              this.interestUnfiltered.push(this.interestOriginal[o]);
+            }
           }
           // 去除合并的list中含有当前详情的对象
           for (let i = 0; i < this.interestUnfiltered.length; i++) {
@@ -409,7 +435,29 @@ export default {
       this.getInfo();
     },
     // 详情点赞
-    praise() {},
+    async praise() {
+      if (this.praiseNum < 50) {
+        this.praiseNum++;
+      }
+      clearTimeout();
+      setTimeout(this.setPraise(), 500)
+    },
+    async setPraise() {
+      const user = JSON.parse(localStorage.getItem("user"));
+      let praiseParams = {
+          bugId: this.Id,
+          userId: user._id,
+          count: this.praiseCount,
+          likeNum: Number(this.detailInfo.likeNum)
+        }
+        const { data } = await this.$axios.post(`${process.env.BASE_URL}/web_api/LikeBugById`, praiseParams);
+        if (data.status_code !== 200) {
+          this.$notify.error({
+            title: '错误',
+            message: data.data.message
+          });
+        }
+    },
     // 发表一级评论
     async submitFistCom() {
       if (!this.haveFirstComContent) return;
@@ -539,9 +587,12 @@ export default {
   width: 62.5%;
   margin: 57px auto 40px;
   .support {
-    position: absolute;
-    left: -91px;
-    top: 78px;
+    // position: absolute;
+    // left: -91px;
+    // top: 78px;
+    position: fixed;
+    left: 14%;
+    top: 217px;
     width: 55px;
     .support_icon {
       width: 55px;
@@ -636,6 +687,7 @@ export default {
       }
     }
     .praise {
+      position: relative;
       margin: 0 57px;
       padding-top: 37px;
       padding-bottom: 41px;
@@ -647,10 +699,17 @@ export default {
           width: 100%;
         }
       }
-      .praise_img:active {
-        // transition-duration: 5s;
-        transform: rotate(30deg);
-        transition-timing-function: ease-in;
+      .praise_badge {
+        position: absolute;
+        top: 37px;
+        left: calc((100% - 102px) / 2 + 76px);
+        display: inline-block;
+        color: #fe4043;
+        font-size: 20px;
+        font-weight: 600;
+        // background: linear-gradient(185deg, rgba(255,186,89,1) 0%, rgba(255,24,46,1) 100%);
+        // -webkit-background-clip: text;
+        // -webkit-text-fill-color: transparent;
       }
       .praise_num {
         margin-left: calc((100% - 102px) / 2);
@@ -658,6 +717,16 @@ export default {
         font-size: 18px;
         color: #394a58;
       }
+    }
+    .praise_num50 {
+      .praise_img {
+        width: 226px;
+        margin-left: calc((100% - 226px) / 2);
+      }
+      .praise_num {
+        margin-left: calc((100% - 102px) / 2);
+        padding-left: 0px;
+      } 
     }
   }
   .interest {
@@ -679,7 +748,7 @@ export default {
       color: #000000;
       .interest_info {
         margin-bottom: 20px;
-        padding: 20px 33px 0 0;
+        padding-top: 20px;
         border-top: 1px solid #eff3f7;
         text-overflow: ellipsis;
         display: -webkit-box;
@@ -809,5 +878,38 @@ export default {
   .comment_text {
     flex: 1;
   }
+}
+// 页面适配
+@media (max-width: 1720px){
+    .detail_container {
+        width: 75%;
+        .support {
+          left: calc(12.5% - 91px);
+       }
+    }
+}
+@media (max-width: 1520px){
+    .detail_container {
+        width: 78%;
+        .support {
+          left: calc(11% - 91px);
+       }
+    }
+}
+@media (max-width: 1320px){
+    .detail_container {
+        width: 83%;
+        .support {
+        left: calc(8.5% - 75px);
+      }
+    }
+}
+@media (max-width: 1020px){
+    .detail_container {
+      width: 88%;
+      .support {
+        left: calc(6% - 58px);
+      }
+    }
 }
 </style>
