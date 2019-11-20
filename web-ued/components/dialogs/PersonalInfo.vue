@@ -52,21 +52,21 @@
     import * as custom from "../../assets/js/custom.config";
     export default {
         props: {
-            isShow: {
-                default: false,
-                type: Boolean,
-                required: true
-            },
+            // isShow: {
+            //     default: false,
+            //     type: Boolean,
+            //     required: true
+            // },
             classStyle: {
                 default: null,
                 type: String,
                 required: false
             },
         },
-        watch: {
-            isShow(newVal, oldVal) {
+        computed: {
+          isShow(newVal, oldVal) {
               this.show = newVal;
-            }
+            }  
         },
         data() {
             return {
