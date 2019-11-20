@@ -118,7 +118,7 @@
               </div>
               <div class="current_edit inline">
                 <!-- 一级评论 -->
-                <div @mouseenter="mouseHoverDelComBtn(firstIndex, firstItem.commenterId, true)" @mouseleave="mouseHoverDelComBtn(firstIndex, firstItem.commenterId, false)">
+                <div @mouseenter="mouseHoverDelComBtn(firstIndex, firstItem.commentUserId, true)" @mouseleave="mouseHoverDelComBtn(firstIndex, firstItem.commentUserId, false)">
                   <div class="comment_unit_name">{{firstItem.commenterName}}</div>
                   <div class="comment_unit_content">{{firstItem.content}}</div>
                   <div class="comment_unit_bottom">
@@ -264,14 +264,18 @@ export default {
         `${process.env.BASE_URL}/web_api/getBlogComment?blogId=${this.detailParams.detailId}`
       );
       this.commentList = res.data.data;
-      console.log( this.commentList)
+      this.commentList.forEach(item => {
+        item[`firstComIsLike`] = false;
+        item[`isShowReplyFirstCom`] = false;
+      });
+      // console.log( this.commentList)
     },
     // 发表一级评论
     async submitFistCom() {
       if (!this.haveFirstComContent) return;
       const params = {
-        commenterName: this.userInfo.nickName,
-        commenterId: this.userInfo._id,
+        commentName: this.userInfo.nickName,
+        commentUserId: this.userInfo._id,
         blogId: this.detailParams.detailId,
         content: this.firstComContent,
         anonymous: this.isAnonymous
@@ -280,11 +284,8 @@ export default {
         `${process.env.BASE_URL}/web_api/commentBlog`,
         params
       );
-      console.log(this.userInfo._id)
-      console.log(params)
-
       if (res.status == 200) {
-        // window.location.reload();
+        window.location.reload();
       }
     },
     // 监听评论框
@@ -294,7 +295,6 @@ export default {
     },
     // 评论删除按钮悬浮
     mouseHoverDelComBtn(index, id, isHover) {
-      console.log(id);
       this.deleteComBtnIsHover = isHover;
       this.firstCommenterId = id;
       this.firstComIndex = index;
@@ -319,10 +319,17 @@ export default {
         }
       });
     },
+    // 回复一级评论按钮
+    replyFirstComBtn(comId) {
+      this.commentList.forEach(item => {
+        if (item._id === comId) {
+          item.isShowReplyFirstCom = !item.isShowReplyFirstCom;
+        }
+      });
+    },
     //是否匿名
     anonymousClick() {
       this.isAnonymous = !this.isAnonymous;
-      console.log(this.isAnonymous);
     },
     submit() {
       // if (!this.haveCommentContent) return;
@@ -367,6 +374,7 @@ export default {
     }
   }
   .detail_info {
+    position: relative;
     width: 874px;
     box-shadow: 0px 1px 5px 0px #ececec;
     border-radius: 2px;
@@ -431,9 +439,12 @@ export default {
       }
     }
     .praise {
-      margin: 0 57px;
+      width: 730px;
+      position: absolute;
+      left: 50%;
+      bottom: 40px;
+      transform: translate(-50%);
       padding-top: 37px;
-      padding-bottom: 41px;
       border-top: 1px solid #eff3f7;
       .praise_img {
         width: 102px;
@@ -540,6 +551,9 @@ export default {
 }
 .margin_left_15 {
   margin-left: 15px;
+}
+.margin_top_30 {
+  margin-top: 30px;
 }
 .margin_top_40 {
   margin-top: 40px;
