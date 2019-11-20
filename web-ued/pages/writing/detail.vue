@@ -3,10 +3,12 @@
     <my-scrollbar hasHead hasFoot :headStyle="{'background':'white'}" :headActive="'写字'">
       <div slot="container">
         <div class="detail_container">
-          <div class="support">
+          <div class="support" :class="{'support_back':praiseOnly}">
             <div class="support_icon pointer" @click="praise()">
-              <img src="@/assets/img/icon/praise_small_icon.svg" />
+              <img src="@/assets/img/icon/praise_small_icon.svg" v-show="praiseNum === 0" />
+              <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0" />
             </div>
+            <div class="praise_badge_small" v-show="praiseNum > 0">+{{praiseNum}}</div>
             <div class="support_text">
               <span>点赞</span>
               <span class="separate inline"></span>
@@ -50,12 +52,12 @@
               </div>
             </div>
             <div class="praise" :class="{'praise_num50':praiseNum === 50}">
-              <div class="praise_img pointer" @click="praise()">
+              <div class="praise_img pointer" id="praise" @click="praise()">
                 <img src="@/assets/img/icon/praise.png" v-show="praiseNum === 0" />
-                <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0 && praiseNum < 50" />
+                <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0 && praiseNum !== 50" />
                 <img src="@/assets/img/icon/praise_50.svg" v-show="praiseNum === 50" />
               </div>
-              <div class="praise_badge" v-show="praiseNum > 0 && praiseNum < 50">+{{praiseNum}}</div>
+              <div class="praise_badge" v-show="praiseNum > 0 && praiseNum !== 50">+{{praiseNum}}</div>
               <div class="praise_num">&nbsp;&nbsp;{{praiseNum?praiseNum:0}}个赞</div>
             </div>
           </div>
@@ -132,7 +134,7 @@
                         {{firstItem.likeNum}}
                       </div>
                       <div class="comment_unit_bottom_btn margin_left_15" @click="replyFirstComBtn(firstItem._id)" v-bind:class="{comment_unit_bottom_btn_selected: firstItem.isShowReplyFirstCom}">回复</div>
-                      <div class="comment_unit_bottom_btn margin_left_15" @click="deleteFirstCom(firstItem._id)" v-if="userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover">删除</div>
+                      <div class="comment_unit_bottom_btn margin_left_15" v-if="userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover">删除</div>
                     </div>
                     <div class="comment_unit_bottom_right">{{firstItem.createAt | formatDateDay}}</div>
                   </div>
@@ -235,6 +237,8 @@ export default {
       userInfo: "", // 用户信息
       detailInfo: {}, //明细列表
       isShowReply: false, // 是否展示回复框
+      praiseOnly: false, // 左侧点赞icon回归上方
+      visualScroll: null, // 点赞滚动可视区
       commentList: [], // 评论列表
       isClick: false, //评论点赞
       supportComBtnIsHover: false, // 评论点赞按钮是否悬浮
@@ -248,10 +252,23 @@ export default {
   },
   mounted() {
     this.userInfo = JSON.parse(localStorage.getItem("user")); // 获取当前用户信息
+    // 可视区内保留一个点赞icon
+    (this.visualScroll = new IntersectionObserver(([entry]) => {
+      if (entry && entry.isIntersecting) {
+        // bigPraise已在可视范围内
+        this.praiseOnly = true;
+      } else {
+        this.praiseOnly = false;
+      }
+    })),
+      this.visualScroll.observe(document.querySelector("#praise"));
   },
   created() {
     this.getBlog();
     this.getBlogComment();
+  },
+  destroyed() {
+    this.visualScroll.disconnect();
   },
   methods: {
     //获取详情列表
@@ -274,7 +291,7 @@ export default {
     async setPraise() {
       let praiseParams = {
         blogId: this.detailParams.detailId,
-        userId:this.userInfo._id,
+        userId: this.userInfo._id,
         count: this.praiseCount,
         likeNum: Number(this.detailInfo.likeNum)
       };
@@ -283,25 +300,19 @@ export default {
         praiseParams
       );
       console.log(data);
-
-      // if (data.status_code !== 200) {
-      //   this.$notify.error({
-      //     title: "错误",
-      //     message: data.data.message
-      //   });
-      // }
     },
     //获取评论列表
     async getBlogComment() {
       const res = await this.$axios.get(
         `${process.env.BASE_URL}/web_api/getBlogComment?blogId=${this.detailParams.detailId}`
       );
+      console.log(res);
+      console.log(111);
       this.commentList = res.data.data;
-      this.commentList.forEach(item => {
-        item[`firstComIsLike`] = false;
-        item[`isShowReplyFirstCom`] = false;
-      });
-      // console.log( this.commentList)
+      // this.commentList.forEach(item => {
+      //   item[`firstComIsLike`] = false;
+      //   item[`isShowReplyFirstCom`] = false;
+      // });
     },
     // 发表一级评论
     async submitFistCom() {
@@ -360,18 +371,15 @@ export default {
         }
       });
     },
-     // 删除一级评论
+    // 删除一级评论
     async deleteFirstCom(comId) {
-      // const res = await this.$axios.post(
-      //   `${process.env.BASE_URL}/web_api/deleteBugComment`,
-      //   { commentId: comId }
-      // );
-      // if (res.data.status_code === 200) {
-      //   this.resultMsg = "删除成功!";
-      //   this.resultImage = successImg;
-      //   this.showDialog = true;
-      //   this.getCommentList();
-      // }
+      const res = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/deleteComment`,
+        { commentId: comId }
+      );
+      if (res.data.status_code === 200) {
+        this.getBlogComment();
+      }
     },
     //是否匿名
     anonymousClick() {
@@ -399,13 +407,25 @@ export default {
   margin: 57px auto 40px;
   .support {
     width: 55px;
-    margin-right: 36px;
+    // margin-right: 36px;
+    position: fixed;
+    left: 14%;
+    top: 217px;
     .support_icon {
       width: 55px;
       height: 54px;
       img {
         width: 100%;
       }
+    }
+    .praise_badge_small {
+      position: absolute;
+      top: 0px;
+      left: 40px;
+      display: inline-block;
+      color: #fe4043;
+      font-size: 16px;
+      font-weight: 600;
     }
     .support_text {
       padding: 12px 11px;
@@ -418,6 +438,11 @@ export default {
         background: #dce5ed;
       }
     }
+  }
+  .support_back {
+    position: absolute;
+    left: -91px;
+    top: 78px;
   }
   .detail_info {
     position: relative;
@@ -702,6 +727,51 @@ export default {
   display: flex;
   .comment_text {
     flex: 1;
+  }
+}
+// 页面适配
+@media (max-width: 1720px) {
+  .detail_container {
+    width: 75%;
+    .support {
+      left: calc(12.5% - 91px);
+    }
+    .support_back {
+      left: 0px;
+    }
+  }
+}
+@media (max-width: 1520px) {
+  .detail_container {
+    width: 78%;
+    .support {
+      left: calc(11% - 91px);
+    }
+    .support_back {
+      left: 0px;
+    }
+  }
+}
+@media (max-width: 1320px) {
+  .detail_container {
+    width: 83%;
+    .support {
+      left: calc(8.5% - 75px);
+    }
+    .support_back {
+      left: -75px;
+    }
+  }
+}
+@media (max-width: 1020px) {
+  .detail_container {
+    width: 88%;
+    .support {
+      left: calc(6% - 58px);
+    }
+    .support_back {
+      left: -58px;
+    }
   }
 }
 </style>

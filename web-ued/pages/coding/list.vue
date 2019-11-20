@@ -137,6 +137,7 @@ export default {
           this.noData = false;
           this.bugList = data.data;
           this.count = data.count;
+          this.listShow = true;
         } else {
           this.noData = true;
           if (this.solveState !== null) {
@@ -456,9 +457,13 @@ export default {
       }
       .content_question {
         width: 85%;
+        max-height: 56px;
         margin-bottom: 36px;
         font-size: 18px;
         color: #394145;
+        font-weight: normal;
+        font-style: normal;
+        font-family: PingFangSC-Regular,PingFang SC;
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
@@ -512,4 +517,36 @@ export default {
   }
 
 }
-</style>>
+</style>
+<style lang="scss">
+// 非私有样式！，格式化富文本
+.content_question {
+  width: 85%;
+  max-height: 56px;
+  margin-bottom: 36px;
+  font-size: 18px;
+  color: #394145;
+  font-weight: normal;
+  font-style: normal;
+  font-family: PingFangSC-Regular,PingFang SC;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  // 统一富文本样式
+  p, ul, ol, li, pre, blockquote, strong, em {
+    list-style: none;
+    padding-left: 0px;
+    font-size: 18px;
+    color: #394145;
+    font-weight: normal;
+    font-style: normal;
+    font-family: PingFangSC-Regular,PingFang SC;
+    background: #ffffff;
+  }
+  // 隐藏富文本中的图片
+  p img, blockquote img {
+    display: none;
+  }
+}
+</style>
