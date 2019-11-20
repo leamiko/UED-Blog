@@ -62,6 +62,60 @@ exports.getList = async function(req, res) {
   if (req.body.filters.blogType) {
     filters.blogType = req.body.filters.blogType
   }
+
+  // Comment.aggregate(
+  //   [
+  //     {
+  //       $match: filters
+  //     },
+  //     {
+  //       $lookup: {
+  //         from: 'user',
+  //         localField: 'userId',
+  //         foreignField: '_id',
+  //         as: 'users'
+  //       }
+  //     }
+  //   ],
+  //   async (err, comments) => {
+  //     if (err) {
+  //       return res.json({
+  //         status_code: 201,
+  //         message: err,
+  //         data: null
+  //       })
+  //     }
+  //     for (let i = 0; i < comments.length; i++) {
+  //       let whereCommentLike = {
+  //         userId: req.session.user._id,
+  //         commentId: comments[i]._id
+  //       }
+  //       const likeNum = await Like.countDocuments(whereCommentLike)
+  //       if (likeNum > 0) {
+  //         comments[i]['isLike'] = true
+  //       } else {
+  //         comments[i]['isLike'] = false
+  //       }
+  //       for (let n = 0; i < comments[i].replies.length; n++) {
+  //         let whereReplyLike = {
+  //           userId: req.session.user._id,
+  //           replyId: comments[i].replies[n]._id
+  //         }
+  //         const likeNum = await Like.countDocuments(whereReplyLike)
+  //         if (likeNum > 0) {
+  //           comments[i].replies[n]['isLike'] = true
+  //         } else {
+  //           comments[i].replies[n]['isLike'] = false
+  //         }
+  //       }
+  //     }
+  //     return res.json({
+  //       status_code: 200,
+  //       message: '获取评论成功！',
+  //       data: comments
+  //     })
+  //   }
+  // )
   Blog.find(
     filters,
     null,

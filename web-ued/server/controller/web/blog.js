@@ -68,18 +68,28 @@ exports.getHomeList = async function(req, res) {
   })
   let data = []
   if (technology) {
+    const userInfo = await technology.findById(technology.userId)
+    technology['userInfo'] = userInfo
     data.push(technology)
   }
   if (interaction) {
+    const userInfo = await interaction.findById(interaction.userId)
+    interaction['userInfo'] = userInfo
     data.push(interaction)
   }
   if (design) {
+    const userInfo = await design.findById(design.userId)
+    design['userInfo'] = userInfo
     data.push(design)
   }
   if (manage) {
+    const userInfo = await manage.findById(manage.userId)
+    manage['userInfo'] = userInfo
     data.push(manage)
   }
   if (other) {
+    const userInfo = await other.findById(other.userId)
+    other['userInfo'] = userInfo
     data.push(other)
   }
   return res.json({
@@ -102,12 +112,18 @@ exports.getWriteBest = async function(req, res) {
   })
   let data = []
   if (popular) {
+    const userInfo = await popular.findById(popular.userId)
+    popular['userInfo'] = userInfo
     data.push(popular)
   }
   if (best) {
+    const userInfo = await best.findById(best.userId)
+    best['userInfo'] = userInfo
     data.push(best)
   }
   if (comment) {
+    const userInfo = await comment.findById(comment.userId)
+    comment['userInfo'] = userInfo
     data.push(comment)
   }
   // data.push(popular, best, comment)
@@ -392,27 +408,29 @@ exports.getBlogComment = function(req, res) {
           data: null
         })
       }
-      for (let i = 0; i < comments.length; i++) {
-        let whereCommentLike = {
-          userId: req.session.user._id,
-          commentId: comments[i]._id
-        }
-        const likeNum = await Like.countDocuments(whereCommentLike)
-        if (likeNum > 0) {
-          comments[i]['isLike'] = true
-        } else {
-          comments[i]['isLike'] = false
-        }
-        for (let n = 0; i < comments[i].replies.length; n++) {
-          let whereReplyLike = {
+      if (req.session.user) {
+        for (let i = 0; i < comments.length; i++) {
+          let whereCommentLike = {
             userId: req.session.user._id,
-            replyId: comments[i].replies[n]._id
+            commentId: comments[i]._id
           }
-          const likeNum = await Like.countDocuments(whereReplyLike)
+          const likeNum = await Like.countDocuments(whereCommentLike)
           if (likeNum > 0) {
-            comments[i].replies[n]['isLike'] = true
+            comments[i]['isLike'] = true
           } else {
-            comments[i].replies[n]['isLike'] = false
+            comments[i]['isLike'] = false
+          }
+          for (let n = 0; i < comments[i].replies.length; n++) {
+            let whereReplyLike = {
+              userId: req.session.user._id,
+              replyId: comments[i].replies[n]._id
+            }
+            const likeNum = await Like.countDocuments(whereReplyLike)
+            if (likeNum > 0) {
+              comments[i].replies[n]['isLike'] = true
+            } else {
+              comments[i].replies[n]['isLike'] = false
+            }
           }
         }
       }
