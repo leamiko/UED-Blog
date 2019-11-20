@@ -31,7 +31,7 @@
             </div>
             <ul>
               <li v-for="item in hotList" :key="item.id">
-                <el-link :underline="false" :href="'/coding/detail?id=' + item._id">{{item.title}}</el-link>
+                <el-link :underline="false" :href="'/coding/detail?bugId=' + item._id">{{item.title}}</el-link>
               </li>
             </ul>
           </div>
