@@ -4,7 +4,7 @@
       <div slot="container" v-loading="loading">
         <div class="detail_container">
           <div class="support">
-            <div class="support_icon pointer">
+            <div class="support_icon pointer" @click="praise()">
               <img src="@/assets/img/icon/praise_small_icon.svg" />
             </div>
             <div class="support_text">
@@ -65,11 +65,14 @@
                 <div class="word">{{detailInfo.bugSolution}}</div>
               </div>
             </div>
-            <div class="praise">
-              <div class="praise_img pointer">
-                <img src="@/assets/img/icon/praise.png" />
+            <div class="praise" :class="{'praise_num50':praiseNum === 50}">
+              <div class="praise_img pointer" @click="praise()">
+                <img src="@/assets/img/icon/praise.png" v-show="praiseNum === 0"/>
+                <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0 && praiseNum !== 50"/>
+                <img src="@/assets/img/icon/praise_50.svg" v-show="praiseNum === 50"/>
               </div>
-              <div class="praise_num">&nbsp;&nbsp;{{detailInfo.likeNum?detailInfo.likeNum:0}}个赞</div>
+              <div class="praise_badge" v-show="praiseNum > 0 && praiseNum !== 50">+{{praiseNum}}</div>
+              <div class="praise_num">&nbsp;&nbsp;{{praiseNum?praiseNum:0}}个赞</div>
             </div>
           </div>
           <div class="interest inline frt">
@@ -81,11 +84,11 @@
               </router-link>
             </div>
             <div class="interest_list">
-              <div class="interest_info pointer">mysql批量插入数据，一次插入多少 行数据效率最高？</div>
-              <div class="interest_info pointer active">LUNZ+——select选择项为请选择时 表单不验证</div>
-              <div class="interest_info pointer">Vue框架在ios微信端存在input输入时 系统键盘会将整个浏览器推上去</div>
-              <div class="interest_info pointer">小程序手机端数字键盘无法输入小数</div>
-              <div class="interest_info pointer">Java如何实现五分钟内重复获取返回 同一个短信验证码</div>
+              <div
+                class="interest_info pointer"
+                v-for="i in interestList"
+                @click="showDetail(i._id)"
+              >{{i.title}}</div>
             </div>
           </div>
         </div>
@@ -160,6 +163,7 @@
                       <div
                         class="comment_unit_bottom_btn margin_left_15"
                         v-if="userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover"
+                        @click="deleteFirstCom(firstItem._id)"
                       >删除</div>
                     </div>
                     <div class="comment_unit_bottom_right">{{firstItem.createAt | formatDateDay}}</div>
@@ -179,7 +183,7 @@
                         type="primary"
                         round
                         size="small"
-                        @click="submit()"
+                        @click="submitSecondCom(firstItem)"
                       >&emsp;评&nbsp;论&emsp;</el-button>
                     </div>
                   </div>
@@ -263,6 +267,10 @@ export default {
       loading: false,
       Id: "", // 当前问题Id
       detailInfo: {}, // 详情信息
+      praiseNum: 0, // 点赞数
+      interestList: [], // 感兴趣List
+      interestOriginal: [], // 原始bugList
+      interestUnfiltered: [], // 未过滤兴趣List
       isAnonymous: false,
       resultMsg: "",
       resultImage: "",
@@ -279,8 +287,7 @@ export default {
     };
   },
   mounted() {
-    console.log(this.$route, "dld");
-    this.Id = this.$route.query.id ? this.$route.query.id : "";
+    this.Id = this.$route.query.bugId ? this.$route.query.bugId : "";
     if (this.Id) {
       this.getInfo();
       this.getCommentList();
@@ -299,6 +306,7 @@ export default {
       if (res.status === 200) {
         if (res.data.data && res.data.data !== null) {
           this.detailInfo = res.data.data;
+          this.praiseNum = this.detailInfo.likeNum;
           // setTimeout(() => {
           //   this.loading = false;
           // }, 500);
@@ -320,9 +328,120 @@ export default {
           message: data.data.message
         });
       }
+      const tagList = this.detailInfo.tags;
+      this.getInterestInfo(tagList);
+    },
+    // 获取感兴趣信息
+    async getInterestInfo(tagList) {
+      let listParams = {
+        pageIndex: 1,
+        pageSize: 10,
+        filters: {
+          title: "",
+          bugStatus: "",
+          author: "", //作者，置空
+          tags: tagList
+        }
+      };
+      const { data } = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/GetBugList`,
+        listParams
+      );
+      if (data.status_code === 200) {
+        if (tagList === null) {
+          // tags为空时查询出的List
+          if (data.data.length > 0) {
+            this.interestOriginal = data.data;
+          }
+        } else {
+          // tags为当前详情tag时查询出的List
+          if (data.data.length > 0) {
+            this.interestUnfiltered = data.data;
+          }
+        }
+        // 当前详情tag的List.length < 4 时获取原始List
+        if (
+          this.interestUnfiltered.length < 4 &&
+          this.interestOriginal.length === 0
+        ) {
+          this.getInterestInfo(null);
+        }
+        if (this.interestUnfiltered.length >= 4) {
+          // 去除合并的list中含有当前详情的对象
+          for (let i = 0; i < this.interestUnfiltered.length; i++) {
+            if (this.interestUnfiltered[i]._id !== this.Id) {
+              this.interestList.push(this.interestUnfiltered[i]);
+            }
+          }
+          this.interestList = this.interestList.slice(0, 4);
+        } else if (
+          this.interestUnfiltered.length < 4 &&
+          this.interestOriginal.length > 0
+        ) {
+          // 合并两个List，当前详情tag的List在前
+          const copyUnfiltered = JSON.stringify(this.interestUnfiltered);
+          const deepcopyUnfiltered = JSON.parse(copyUnfiltered);
+          for (let o = 0; o < this.interestOriginal.length; o++) {
+            const flag = false;
+            for (let u = 0; u < deepcopyUnfiltered.length; u++) {
+              if (this.interestOriginal[o]._id === deepcopyUnfiltered[u]._id) {
+                flag = true;
+              }
+            }
+            if (!flag) {
+              this.interestUnfiltered.push(this.interestOriginal[o]);
+            }
+          }
+          // 去除合并的list中含有当前详情的对象
+          for (let i = 0; i < this.interestUnfiltered.length; i++) {
+            if (this.interestUnfiltered[i]._id !== this.Id) {
+              this.interestList.push(this.interestUnfiltered[i]);
+            }
+          }
+          this.interestList = this.interestList.slice(0, 4);
+        }
+      } else {
+        this.$notify.error({
+          title: "错误",
+          message: data.data.message
+        });
+      }
+    },
+    // 查看感兴趣内容
+    showDetail(id) {
+      this.$router.push({
+        path: "/coding/detail",
+        query: {
+          bugId: id
+        }
+      });
+      this.Id = id;
+      this.getInfo();
     },
     // 详情点赞
-    praise() {},
+    async praise() {
+      clearTimeout();
+      if (this.praiseNum < 50) {
+        this.praiseNum++;
+        setTimeout(()=>this.setPraise(), 5000);
+      }
+    },
+    async setPraise() {
+      const user = JSON.parse(localStorage.getItem("user"));
+      let praiseParams = {
+          bugId: this.Id,
+          userId: user._id,
+          count: this.praiseNum,
+          likeNum: Number(this.detailInfo.likeNum)
+        }
+        const { data } = await this.$axios.post(`${process.env.BASE_URL}/web_api/LikeBugById`, praiseParams);
+        if (data.status_code !== 200) {
+          this.$notify.error({
+            title: '错误',
+            message: data.data.message
+          });
+        }
+    },
     // 发表一级评论
     async submitFistCom() {
       if (!this.haveFirstComContent) return;
@@ -338,7 +457,31 @@ export default {
         params
       );
       if (res.status == 200) {
-        this.resultMsg = "发布成功!";
+        this.resultMsg = "评论成功!";
+        this.resultImage = successImg;
+        this.showDialog = true;
+        this.getCommentList();
+      }
+    },
+    // 发表二级级评论(回复一级评论)
+    async submitSecondCom(firstItem) {
+      // this.commentList.forEach(item => {});
+      // if (!this.haveFirstComContent) return;
+      const params = {
+        commentId: firstItem._id,
+        replyerName: this.userInfo.nickName,
+        replyerId: this.userInfo._id,
+        replyTargetName: firstItem.commenterName,
+        replyTargetId: firstItem.commenterId,
+        bugId: firstItem.bugId,
+        content: "回复2"
+      };
+      const res = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/replyBug`,
+        params
+      );
+      if (res.status == 200) {
+        this.resultMsg = "回复成功!";
         this.resultImage = successImg;
         this.showDialog = true;
       }
@@ -365,16 +508,8 @@ export default {
         }
       });
     },
-    // 回复一级评论按钮
-    replyFirstComBtn(comId) {
-      this.commentList.forEach(item => {
-        if (item._id === comId) {
-          item.isShowReplyFirstCom = !item.isShowReplyFirstCom;
-        }
-      });
-    },
     // 获取评论
-    async getCommentList(noForEach) {
+    async getCommentList() {
       const res = await this.$axios.get(
         `${process.env.BASE_URL}/web_api/getBugComment?bugId=` + this.Id
       );
@@ -392,6 +527,14 @@ export default {
         });
       }
     },
+    // 回复一级评论按钮
+    replyFirstComBtn(comId) {
+      this.commentList.forEach(item => {
+        if (item._id === comId) {
+          item.isShowReplyFirstCom = !item.isShowReplyFirstCom;
+        }
+      });
+    },
     // 评论删除按钮悬浮
     mouseHoverDelComBtn(index, id, isHover) {
       this.deleteComBtnIsHover = isHover;
@@ -402,6 +545,19 @@ export default {
     mouseHoverSupComBtn(index, isHover) {
       this.supportComBtnIsHover = isHover;
       this.firstComIndex = index;
+    },
+    // 删除一级评论
+    async deleteFirstCom(comId) {
+      const res = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/deleteBugComment`,
+        { commentId: comId }
+      );
+      if (res.data.status_code === 200) {
+        this.resultMsg = "删除成功!";
+        this.resultImage = successImg;
+        this.showDialog = true;
+        this.getCommentList();
+      }
     }
   }
 };
@@ -419,9 +575,12 @@ export default {
   width: 62.5%;
   margin: 57px auto 40px;
   .support {
-    position: absolute;
-    left: -91px;
-    top: 78px;
+    // position: absolute;
+    // left: -91px;
+    // top: 78px;
+    position: fixed;
+    left: 14%;
+    top: 217px;
     width: 55px;
     .support_icon {
       width: 55px;
@@ -516,6 +675,7 @@ export default {
       }
     }
     .praise {
+      position: relative;
       margin: 0 57px;
       padding-top: 37px;
       padding-bottom: 41px;
@@ -527,11 +687,33 @@ export default {
           width: 100%;
         }
       }
+      .praise_badge {
+        position: absolute;
+        top: 37px;
+        left: calc((100% - 102px) / 2 + 76px);
+        display: inline-block;
+        color: #fe4043;
+        font-size: 20px;
+        font-weight: 600;
+        // background: linear-gradient(185deg, rgba(255,186,89,1) 0%, rgba(255,24,46,1) 100%);
+        // -webkit-background-clip: text;
+        // -webkit-text-fill-color: transparent;
+      }
       .praise_num {
         margin-left: calc((100% - 102px) / 2);
         padding-left: 13px;
         font-size: 18px;
         color: #394a58;
+      }
+    }
+    .praise_num50 {
+      .praise_img {
+        width: 226px;
+        margin-left: calc((100% - 226px) / 2);
+      }
+      .praise_num {
+        margin-left: calc((100% - 102px) / 2);
+        padding-left: 0px;
       }
     }
   }
@@ -554,7 +736,7 @@ export default {
       color: #000000;
       .interest_info {
         margin-bottom: 20px;
-        padding: 20px 33px 0 0;
+        padding-top: 20px;
         border-top: 1px solid #eff3f7;
         text-overflow: ellipsis;
         display: -webkit-box;
@@ -565,7 +747,7 @@ export default {
       .interest_info:first-child {
         border-top: none;
       }
-      .interest_info.active {
+      .interest_info:hover {
         color: #3376ff;
       }
     }
@@ -683,6 +865,39 @@ export default {
   display: flex;
   .comment_text {
     flex: 1;
+  }
+}
+// 页面适配
+@media (max-width: 1720px) {
+  .detail_container {
+    width: 75%;
+    .support {
+      left: calc(12.5% - 91px);
+    }
+  }
+}
+@media (max-width: 1520px) {
+  .detail_container {
+    width: 78%;
+    .support {
+      left: calc(11% - 91px);
+    }
+  }
+}
+@media (max-width: 1320px) {
+  .detail_container {
+    width: 83%;
+    .support {
+      left: calc(8.5% - 75px);
+    }
+  }
+}
+@media (max-width: 1020px) {
+  .detail_container {
+    width: 88%;
+    .support {
+      left: calc(6% - 58px);
+    }
   }
 }
 </style>

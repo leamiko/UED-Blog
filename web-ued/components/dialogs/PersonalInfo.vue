@@ -59,14 +59,14 @@
             },
             classStyle: {
                 default: null,
-                type: String,
+                type: String, 
                 required: false
             },
         },
         watch: {
-            isShow(newVal, oldVal) {
+         isShow(newVal, oldVal) {
               this.show = newVal;
-            }
+            }     
         },
         data() {
             return {
@@ -149,7 +149,7 @@
                     if (user) {
                         localStorage.removeItem('user')
                         localStorage.setItem("user", JSON.stringify(user));
-                        this.isShow = false
+                        this.show = false
                         this.$message({
                             message: '信息更新成功',
                             type: 'success'

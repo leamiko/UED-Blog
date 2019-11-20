@@ -38,7 +38,7 @@
             </div>
           </div>
           <!-- 数据列表 -->
-          <div class="code_list bg-white">
+          <div class="code_list bg-white" v-show="listShow">
             <div class="category_tabs inline">
               <span class="category_tab pointer" :class="{'active':m.isActive}" v-for="m in stateList" @click="changeState(m)">{{m.text}}</span>
             </div>
@@ -109,6 +109,7 @@ export default {
       ],
       solveState: null, // 解决状态
       noData: true, // 无数据
+      listShow: true, // 是否展示列表数据，解决状态搜索出无数据时不展示
       pageIndex: 1,
       bugList: [], // bug
       count: '', // bug总条数
@@ -138,6 +139,9 @@ export default {
           this.count = data.count;
         } else {
           this.noData = true;
+          if (this.solveState !== null) {
+            this.listShow = false;
+          }
         }
       } else {
         this.$notify.error({
