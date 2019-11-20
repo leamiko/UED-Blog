@@ -52,10 +52,10 @@
             <div class="praise" :class="{'praise_num50':praiseNum === 50}">
               <div class="praise_img pointer" @click="praise()">
                 <img src="@/assets/img/icon/praise.png" v-show="praiseNum === 0" />
-                <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0 && praiseNum < 50" />
+                <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0 && praiseNum !== 50" />
                 <img src="@/assets/img/icon/praise_50.svg" v-show="praiseNum === 50" />
               </div>
-              <div class="praise_badge" v-show="praiseNum > 0 && praiseNum < 50">+{{praiseNum}}</div>
+              <div class="praise_badge" v-show="praiseNum > 0 && praiseNum !== 50">+{{praiseNum}}</div>
               <div class="praise_num">&nbsp;&nbsp;{{praiseNum?praiseNum:0}}个赞</div>
             </div>
           </div>
@@ -132,7 +132,7 @@
                         {{firstItem.likeNum}}
                       </div>
                       <div class="comment_unit_bottom_btn margin_left_15" @click="replyFirstComBtn(firstItem._id)" v-bind:class="{comment_unit_bottom_btn_selected: firstItem.isShowReplyFirstCom}">回复</div>
-                      <div class="comment_unit_bottom_btn margin_left_15" @click="deleteFirstCom(firstItem._id)" v-if="userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover">删除</div>
+                      <div class="comment_unit_bottom_btn margin_left_15" v-if="userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover">删除</div>
                     </div>
                     <div class="comment_unit_bottom_right">{{firstItem.createAt | formatDateDay}}</div>
                   </div>
@@ -252,6 +252,7 @@ export default {
   created() {
     this.getBlog();
     this.getBlogComment();
+    console.log(this.detailParams.detailId);
   },
   methods: {
     //获取详情列表
@@ -274,7 +275,7 @@ export default {
     async setPraise() {
       let praiseParams = {
         blogId: this.detailParams.detailId,
-        userId:this.userInfo._id,
+        userId: this.userInfo._id,
         count: this.praiseCount,
         likeNum: Number(this.detailInfo.likeNum)
       };
@@ -283,25 +284,20 @@ export default {
         praiseParams
       );
       console.log(data);
-
-      // if (data.status_code !== 200) {
-      //   this.$notify.error({
-      //     title: "错误",
-      //     message: data.data.message
-      //   });
-      // }
     },
     //获取评论列表
     async getBlogComment() {
       const res = await this.$axios.get(
         `${process.env.BASE_URL}/web_api/getBlogComment?blogId=${this.detailParams.detailId}`
       );
+      console.log(res);
+      console.log(111);
+
       this.commentList = res.data.data;
       this.commentList.forEach(item => {
         item[`firstComIsLike`] = false;
         item[`isShowReplyFirstCom`] = false;
       });
-      // console.log( this.commentList)
     },
     // 发表一级评论
     async submitFistCom() {
@@ -360,18 +356,15 @@ export default {
         }
       });
     },
-     // 删除一级评论
+    // 删除一级评论
     async deleteFirstCom(comId) {
-      // const res = await this.$axios.post(
-      //   `${process.env.BASE_URL}/web_api/deleteBugComment`,
-      //   { commentId: comId }
-      // );
-      // if (res.data.status_code === 200) {
-      //   this.resultMsg = "删除成功!";
-      //   this.resultImage = successImg;
-      //   this.showDialog = true;
-      //   this.getCommentList();
-      // }
+      const res = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/deleteComment`,
+        { commentId: comId }
+      );
+      if (res.data.status_code === 200) {
+        this.getBlogComment();
+      }
     },
     //是否匿名
     anonymousClick() {
