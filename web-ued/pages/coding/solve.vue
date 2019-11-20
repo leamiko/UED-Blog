@@ -99,7 +99,7 @@ export default {
       this.showDialog = false;
       // 如果发布成功直接跳到列表
       if (!this.resultError) {
-        this.$route.push({
+        this.$route.replace({
           path: '/coding/list'
         });
       }
