@@ -74,10 +74,25 @@ router.get('/commentLike', function(req, res, next) {
   //调用controller方法
   web_blog.commentLike(req, res)
 })
-//blog评论
+//评论删除
+router.get('/deleteComment', function(req, res, next) {
+  //调用controller方法
+  web_blog.deleteComment(req, res)
+})
+//blog回复
 router.post('/replyBlog', function(req, res, next) {
   //调用controller方法
   web_blog.replyBlog(req, res)
+})
+//blog回复点赞
+router.post('/replyLike', function(req, res, next) {
+  //调用controller方法
+  web_blog.replyLike(req, res)
+})
+//blog回复删除
+router.get('/deleteReply', function(req, res, next) {
+  //调用controller方法
+  web_blog.deleteReply(req, res)
 })
 //获取blog评论
 router.get('/getBlogComment', function(req, res, next) {

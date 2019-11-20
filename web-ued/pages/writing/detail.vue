@@ -132,7 +132,7 @@
                         {{firstItem.likeNum}}
                       </div>
                       <div class="comment_unit_bottom_btn margin_left_15" @click="replyFirstComBtn(firstItem._id)" v-bind:class="{comment_unit_bottom_btn_selected: firstItem.isShowReplyFirstCom}">回复</div>
-                      <div class="comment_unit_bottom_btn margin_left_15" v-if="userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover">删除</div>
+                      <div class="comment_unit_bottom_btn margin_left_15" @click="deleteFirstCom(firstItem._id)" v-if="userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover">删除</div>
                     </div>
                     <div class="comment_unit_bottom_right">{{firstItem.createAt | formatDateDay}}</div>
                   </div>
@@ -272,10 +272,9 @@ export default {
       setTimeout(this.setPraise(), 500);
     },
     async setPraise() {
-      const user = JSON.parse(localStorage.getItem("user"));
       let praiseParams = {
         blogId: this.detailParams.detailId,
-        userId: user._id,
+        userId:this.userInfo._id,
         count: this.praiseCount,
         likeNum: Number(this.detailInfo.likeNum)
       };
@@ -360,6 +359,19 @@ export default {
           item.isShowReplyFirstCom = !item.isShowReplyFirstCom;
         }
       });
+    },
+     // 删除一级评论
+    async deleteFirstCom(comId) {
+      // const res = await this.$axios.post(
+      //   `${process.env.BASE_URL}/web_api/deleteBugComment`,
+      //   { commentId: comId }
+      // );
+      // if (res.data.status_code === 200) {
+      //   this.resultMsg = "删除成功!";
+      //   this.resultImage = successImg;
+      //   this.showDialog = true;
+      //   this.getCommentList();
+      // }
     },
     //是否匿名
     anonymousClick() {
@@ -473,18 +485,19 @@ export default {
       }
     }
     .praise {
-      position: relative;
-      margin: 0 57px;
-      padding-top: 37px;
-      padding-bottom: 41px;
-      border-top: 1px solid #eff3f7;
-      // width: 730px;
-      // position: absolute;
-      // left: 50%;
-      // bottom: 40px;
-      // transform: translate(-50%);
+      // position: relative;
+      // margin: 0 57px;
       // padding-top: 37px;
+      // padding-bottom: 41px;
       // border-top: 1px solid #eff3f7;
+
+      width: 730px;
+      position: absolute;
+      left: 50%;
+      bottom: 40px;
+      transform: translate(-50%);
+      padding-top: 37px;
+      border-top: 1px solid #eff3f7;
       .praise_img {
         width: 102px;
         margin-left: calc((100% - 102px) / 2);

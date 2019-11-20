@@ -28,7 +28,7 @@ var BlogSchema = new Schema(
       type: String //作者  登录用户昵称
     },
     userId: {
-      type: String //作者objectId也是登录用户objectId
+      type: mongoose.Schema.Types.ObjectId //作者objectId也是登录用户objectId
     },
     smallImgUrl: {
       type: String //小图
