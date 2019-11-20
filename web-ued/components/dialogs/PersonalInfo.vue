@@ -52,21 +52,21 @@
     import * as custom from "../../assets/js/custom.config";
     export default {
         props: {
-            // isShow: {
-            //     default: false,
-            //     type: Boolean,
-            //     required: true
-            // },
+            isShow: {
+                default: false,
+                type: Boolean,
+                required: true
+            },
             classStyle: {
                 default: null,
-                type: String,
+                type: String, 
                 required: false
             },
         },
-        computed: {
-          isShow(newVal, oldVal) {
+        watch: {
+         isShow(newVal, oldVal) {
               this.show = newVal;
-            }  
+            }     
         },
         data() {
             return {
@@ -149,7 +149,7 @@
                     if (user) {
                         localStorage.removeItem('user')
                         localStorage.setItem("user", JSON.stringify(user));
-                        this.isShow = false
+                        this.show = false
                         this.$message({
                             message: '信息更新成功',
                             type: 'success'
