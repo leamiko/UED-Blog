@@ -68,10 +68,10 @@
             <div class="praise" :class="{'praise_num50':praiseNum === 50}">
               <div class="praise_img pointer" @click="praise()">
                 <img src="@/assets/img/icon/praise.png" v-show="praiseNum === 0"/>
-                <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0 && praiseNum < 50"/>
+                <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0 && praiseNum !== 50"/>
                 <img src="@/assets/img/icon/praise_50.svg" v-show="praiseNum === 50"/>
               </div>
-              <div class="praise_badge" v-show="praiseNum > 0 && praiseNum < 50">+{{praiseNum}}</div>
+              <div class="praise_badge" v-show="praiseNum > 0 && praiseNum !== 50">+{{praiseNum}}</div>
               <div class="praise_num">&nbsp;&nbsp;{{praiseNum?praiseNum:0}}个赞</div>
             </div>
           </div>
@@ -407,18 +407,18 @@ export default {
     },
     // 详情点赞
     async praise() {
+      clearTimeout();
       if (this.praiseNum < 50) {
         this.praiseNum++;
+        setTimeout(()=>this.setPraise(), 5000);
       }
-      clearTimeout();
-      setTimeout(this.setPraise(), 500)
     },
     async setPraise() {
       const user = JSON.parse(localStorage.getItem("user"));
       let praiseParams = {
           bugId: this.Id,
           userId: user._id,
-          count: this.praiseCount,
+          count: this.praiseNum,
           likeNum: Number(this.detailInfo.likeNum)
         }
         const { data } = await this.$axios.post(`${process.env.BASE_URL}/web_api/LikeBugById`, praiseParams);
