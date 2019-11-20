@@ -23,6 +23,8 @@ exports.getBlog = function(req, res) {
     }
     await Blog.updateOne(whereBlog, updateBlog)
     blog.viewNum = blog.viewNum ? blog.viewNum + 1 : 1
+    const userInfo = await User.findById(blog.userId)
+    blog['userInfo'] = userInfo
     const whereLike = {
       userId: blog.userId,
       blogId: blog._id

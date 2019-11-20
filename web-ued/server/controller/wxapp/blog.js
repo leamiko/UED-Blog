@@ -2,6 +2,7 @@ var Blog = require('../../models/blog.js') //引入blog表
 var Like = require('../../models/like.js') //引入like表
 var Comment = require('../../models/comment.js') //引入comment表
 var Reply = require('../../models/reply.js') //引入comment表
+var User = require('../../models/user.js') //引入user表
 
 //blog详情
 exports.getBlog = function(req, res) {
@@ -22,6 +23,8 @@ exports.getBlog = function(req, res) {
     }
     await Blog.updateOne(whereBlog, updateBlog)
     blog.viewNum = blog.viewNum ? blog.viewNum + 1 : 1
+    const userInfo = await User.findById(blog.userId)
+    blog['userInfo'] = userInfo
     const whereLike = {
       userId: blog.userId,
       blogId: blog._id
