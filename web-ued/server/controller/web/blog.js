@@ -145,17 +145,27 @@ exports.getWriteList = async function(req, res) {
     filters.blogType = req.body.filters.blogType
   }
   const count = await Blog.countDocuments(filters)
-  Blog.find(
-    filters,
-    null,
-    {
-      skip: (page * 1 - 1) * limit,
-      limit: limit,
-      sort: { createdAt: -1 }
-    },
-    function(err, books) {
+  Blog.aggregate(
+    [
+      {
+        $match: filters
+      },
+      {
+        $lookup: {
+          from: 'user',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'userInfo'
+        }
+      },
+      {
+        skip: (page * 1 - 1) * limit,
+        limit: limit,
+        sort: { createdAt: -1 }
+      }
+    ],
+    (err, books) => {
       if (err) {
-        console.log(err)
         return res.json({
           status_code: 201,
           message: err,
@@ -172,6 +182,32 @@ exports.getWriteList = async function(req, res) {
       })
     }
   )
+  // Blog.find(
+  //   filters,
+  //   null,
+  //   {
+  //     skip: (page * 1 - 1) * limit,
+  //     limit: limit,
+  //     sort: { createdAt: -1 }
+  //   },
+  //   function(err, books) {
+  //     if (err) {
+  //       return res.json({
+  //         status_code: 201,
+  //         message: err,
+  //         data: null
+  //       })
+  //     }
+  //     return res.json({
+  //       status_code: 200,
+  //       message: '获取列表成功！',
+  //       data: {
+  //         total: count,
+  //         data: books
+  //       }
+  //     })
+  //   }
+  // )
 }
 
 //点赞
