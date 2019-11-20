@@ -3,10 +3,13 @@
     <my-scrollbar hasHead hasFoot :headStyle="{'background':'white'}" :headActive="'打码'">
       <div slot="container" v-loading="loading">
         <div class="detail_container">
-          <div class="support">
+          <div class="support" :class="{'support_back':praiseOnly}">
             <div class="support_icon pointer" @click="praise()">
-              <img src="@/assets/img/icon/praise_small_icon.svg" />
+              <!-- <img src="@/assets/img/icon/praise_small_icon.svg" /> -->
+              <img src="@/assets/img/icon/praise_small_icon.svg" v-show="praiseNum === 0"/>
+              <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0"/>
             </div>
+            <div class="praise_badge_small" v-show="praiseNum > 0">+{{praiseNum}}</div>
             <div class="support_text">
               <span>点赞</span>
               <span class="separate inline"></span>
@@ -47,26 +50,24 @@
                 </div>
               </div>
             </div>
-            <div class="detail_content">
+            <div class="detail_content" v-show="detailInfo.content!==null&&detailInfo.content!==''">
               <div class="detail_sign">
                 <span class="span_sign inline flt"></span>问题描述
               </div>
               <div class="describe">
                 <div class="word" v-html="detailInfo.content"></div>
-                <!-- <div class="word">{{detailInfo.content}}</div> -->
               </div>
             </div>
-            <div class="detail_content" v-show="detailInfo.bugSolution!==null">
+            <div class="detail_content" v-show="detailInfo.bugSolution!==null&&detailInfo.bugSolution!==''">
               <div class="detail_sign">
                 <span class="span_sign inline flt"></span>解决方案
               </div>
               <div class="describe">
                 <div class="word" v-html="detailInfo.bugSolution"></div>
-                <!-- <div class="word">{{detailInfo.bugSolution}}</div> -->
               </div>
             </div>
             <div class="praise" :class="{'praise_num50':praiseNum === 50}">
-              <div class="praise_img pointer" @click="praise()">
+              <div class="praise_img pointer" id="praise" @click="praise()">
                 <img src="@/assets/img/icon/praise.png" v-show="praiseNum === 0"/>
                 <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0 && praiseNum !== 50"/>
                 <img src="@/assets/img/icon/praise_50.svg" v-show="praiseNum === 50"/>
@@ -271,6 +272,8 @@ export default {
       interestList: [], // 感兴趣List
       interestOriginal: [], // 原始bugList
       interestUnfiltered: [], // 未过滤兴趣List
+      visualScroll: null, // 点赞滚动可视区
+      praiseOnly: false, // 左侧点赞icon回归上方
       isAnonymous: false,
       resultMsg: "",
       resultImage: "",
@@ -283,7 +286,7 @@ export default {
       commentList: [], // 评论列表
       firstCommenterId: "", // 评论列表中一级评论人id
       firstComIndex: "", // 评论列表中一级评论数组下标
-      list: [{ id: 10 }, { id: 11 }]
+      list: [{ id: 10 }, { id: 11 }],
     };
   },
   mounted() {
@@ -293,8 +296,21 @@ export default {
       this.getCommentList();
     }
     this.userInfo = JSON.parse(localStorage.getItem("user")); // 获取当前用户信息
+    // 可视区内保留一个点赞icon
+    this.visualScroll = new IntersectionObserver(([entry]) => {
+      if (entry && entry.isIntersecting) {
+        // bigPraise已在可视范围内
+        this.praiseOnly = true;
+      } else {
+        this.praiseOnly = false;
+      }
+    }),
+    this.visualScroll.observe(document.querySelector('#praise'))
   },
-  methods: {
+  destroyed() { 
+    this.visualScroll.disconnect() 
+  },
+  methods: {    
     // 获取详情信息
     async getInfo() {
       let params = {
@@ -574,10 +590,7 @@ export default {
   position: relative;
   width: 62.5%;
   margin: 57px auto 40px;
-  .support {
-    // position: absolute;
-    // left: -91px;
-    // top: 78px;
+  .support {    
     position: fixed;
     left: 14%;
     top: 217px;
@@ -588,6 +601,15 @@ export default {
       img {
         width: 100%;
       }
+    }
+    .praise_badge_small {
+      position: absolute;
+      top: 0px;
+      left: 40px;
+      display: inline-block;
+      color: #fe4043;
+      font-size: 16px;
+      font-weight: 600;
     }
     .support_text {
       padding: 12px 11px;
@@ -600,6 +622,11 @@ export default {
         background: #dce5ed;
       }
     }
+  }
+  .support_back {
+    position: absolute;
+    left: -91px;
+    top: 78px;
   }
   .detail_info {
     width: 75%;
@@ -874,6 +901,9 @@ export default {
     .support {
       left: calc(12.5% - 91px);
     }
+    .support_back {
+      left: 0px;
+    }
   }
 }
 @media (max-width: 1520px) {
@@ -881,6 +911,9 @@ export default {
     width: 78%;
     .support {
       left: calc(11% - 91px);
+    }
+    .support_back {
+      left: 0px;
     }
   }
 }
@@ -890,6 +923,9 @@ export default {
     .support {
       left: calc(8.5% - 75px);
     }
+    .support_back {
+      left: -75px;
+    }
   }
 }
 @media (max-width: 1020px) {
@@ -898,6 +934,23 @@ export default {
     .support {
       left: calc(6% - 58px);
     }
+    .support_back {
+      left: -58px;
+    }
+  }
+}
+</style>
+<style lang="scss">
+// 非私有样式！，格式化富文本
+.describe {
+  p, ul, ol, li, pre, blockquote, strong, em {
+    font-size: 16px;
+    color: #000000;
+    font-family: PingFangSC-Regular,PingFang SC;
+  }
+  // 图片宽度
+  p img, blockquote img {
+    width: 100%;
   }
 }
 </style>
