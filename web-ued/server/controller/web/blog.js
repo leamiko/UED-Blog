@@ -159,9 +159,35 @@ exports.getWriteList = async function(req, res) {
         }
       },
       {
-        skip: (page * 1 - 1) * limit,
-        limit: limit,
-        sort: { createdAt: -1 }
+        $project: {
+          title: 1,
+          blogType: 1,
+          info: 1,
+          content: 1,
+          isGood: 1,
+          isAudit: 1,
+          author: 1,
+          userId: 1,
+          smallImgUrl: 1,
+          midImgUrl: 1,
+          bigImgUrl: 1,
+          likeNum: 1,
+          viewNum: 1,
+          commentNum: 1,
+          commentLikeNum: 1,
+          rank: 1,
+          createAt: 1,
+          userInfo: { nickName: 1, account: 1, avatar: 1 }
+        }
+      },
+      {
+        $skip: (page * 1 - 1) * limit
+      },
+      {
+        $limit: limit
+      },
+      {
+        $sort: { rank: -1 }
       }
     ],
     (err, books) => {
@@ -182,32 +208,6 @@ exports.getWriteList = async function(req, res) {
       })
     }
   )
-  // Blog.find(
-  //   filters,
-  //   null,
-  //   {
-  //     skip: (page * 1 - 1) * limit,
-  //     limit: limit,
-  //     sort: { createdAt: -1 }
-  //   },
-  //   function(err, books) {
-  //     if (err) {
-  //       return res.json({
-  //         status_code: 201,
-  //         message: err,
-  //         data: null
-  //       })
-  //     }
-  //     return res.json({
-  //       status_code: 200,
-  //       message: '获取列表成功！',
-  //       data: {
-  //         total: count,
-  //         data: books
-  //       }
-  //     })
-  //   }
-  // )
 }
 
 //点赞
@@ -434,6 +434,39 @@ exports.getBlogComment = function(req, res) {
           foreignField: 'commentId',
           as: 'replies'
         }
+      },{
+        $lookup: {
+          from: 'user',
+          localField: 'commentUserId',
+          foreignField: '_id',
+          as: 'userInfo'
+        }
+      },
+      {
+        $lookup: {
+          from: 'like',
+          localField: req.session.user ? req.session.user : '',
+          foreignField: 'userId',
+          as: 'userInfo'
+        }
+      },
+      {
+        $project: {
+          commentUserId: {
+            $cond: [{
+              $eq: ["$anonymous", true]
+            }, "", "$commentUserId"]
+          },
+          blogId: 1,
+          likeNum: 1,
+          content: 1,
+          anonymous: 1,
+          commentName: {
+            $cond: [{
+              $eq: ["$anonymous", true]
+            }, "", "$commentName"]
+          }
+        }
       }
     ],
     async (err, comments) => {
@@ -446,16 +479,6 @@ exports.getBlogComment = function(req, res) {
       }
       if (req.session.user) {
         for (let i = 0; i < comments.length; i++) {
-          let whereCommentLike = {
-            userId: req.session.user._id,
-            commentId: comments[i]._id
-          }
-          const likeNum = await Like.countDocuments(whereCommentLike)
-          if (likeNum > 0) {
-            comments[i]['isLike'] = true
-          } else {
-            comments[i]['isLike'] = false
-          }
           for (let n = 0; i < comments[i].replies.length; n++) {
             let whereReplyLike = {
               userId: req.session.user._id,
