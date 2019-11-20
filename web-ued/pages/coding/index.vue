@@ -14,14 +14,21 @@
         <div>
           <div class="my-search">
             <h1 class="text-center">Bug避坑专用搜索引擎</h1>
-            <my-search @search="getSearch"></my-search>
-            <div>
+            <my-search @select="getSearch" :isAsync="true"></my-search>
+            <div v-if="list && list.length > 0">
               <br><br>
               <h4 class="text-dark">大家都在搜</h4><br>
               <div>
                 <my-tag class="my-tag" v-for="item in list" :key="item.name" :text="item.name" @active="getSearch(item.name)"></my-tag>
-                <!-- <el-tag :type="item.type" v-for="item in list" :key="item.name"> {{item.name}} </el-tag> -->
               </div>
+              <!-- <div class="design_bar">
+                <div class="design_classI inline" v-for="item in list" :key="item._id">
+                  <el-link :underline="false" :key="item._id" @click="changeType(item)">{{item.name}}</el-link>
+                </div>
+                <div class="design_classII">
+                  <el-tag type="info" class="type_select pointer" v-for="tag in tagChild" :key="tag.id" @click="getSearch(tag.name)">{{tag.name}}</el-tag>
+                </div>
+              </div> -->
             </div>
           </div>
           <div class="my-card">
@@ -65,8 +72,11 @@ export default {
         'boxShadow': '0 0 2px rgba(0, 0, 0, 0.12)',
         'marginBottom': '4px'
       },
-      list: custom.search.hotLabel,
-      hotList: custom.search.hotList,
+      // list: custom.search.hotLabel,
+      // hotList: custom.search.hotList,
+      list: [],
+      tagChild: [],
+      hotList: [],
       askShow: false,
       className: 'custom-dialog'
     }
@@ -96,22 +106,59 @@ export default {
     async getHotData() {
       const parmas = {
         pageIndex: 1,
-        pageSize: 10,
+        pageSize: 5,
         filters:{}
       };
       const res = await this.$axios.post(`${process.env.BASE_URL}/web_api/GetBugList`, parmas);
       if (res.status === 200 && res.data.message === 'success') {
-        this.hotList = res.data.data;
+        if (res.data.data && res.data.data.length > 0) {
+          this.hotList = res.data.data;
+        }
       } else {
         this.$notify.error({
           title: '错误',
           message: res.data.message
         });
       }
+    },
+    async getTags() {
+      const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/GetBugTags`);
+      if (res.status === 200 && res.data.message === 'success') {
+        if (res.data.data && res.data.data.length > 0) {
+          const tagList = [];
+          this.myRecursion(res.data.data, tagList);
+          this.list = tagList;
+          // 长度限制
+          if (this.list.length > 9) {
+            this.list.length = 9;
+          }
+          // this.list = res.data.data;
+          // this.tagChild = res.data.data[0].children;
+        }
+      } else {
+        this.$notify.error({
+          title: '错误',
+          message: res.data.message
+        });
+      }
+    },
+    // 切换分类
+    // changeType(val) {
+    //   this.tagChild = val.children;
+    // },
+    myRecursion(tagList, result) {
+      tagList.forEach((item) => {
+        if (item.children && item.children.length > 0) {
+          item.children.forEach(tag => {
+            result.push(tag);
+          })
+        }
+      });
     }
   },
   mounted() {
     this.getHotData();
+    this.getTags();
   }
 }
 </script>
@@ -160,4 +207,37 @@ export default {
     margin-right: 0;
   }
 }
+
+// .design_bar {
+
+//   .design_classI {
+//     margin-right: 45px;
+//     .el-link {
+//       font-weight: 600;
+//       .el-link--default{
+//         color: #34485E;
+//       }
+//     }
+//   }
+//   .design_classI:active {
+//     color: #3376FF;
+//   }
+//   .design_classII {
+//     .el-tag.el-tag--info {
+//       display: inline-block;
+//       margin-top: 16px;
+//       margin-right: 20px;
+//       padding: 0 16px;
+//       color: #A3B3BF;
+//       font-size: 14px;
+//       background:#F0F5F9;
+//       border-radius:16px;
+//       border: none;
+//     }
+//     .type_select:active {
+//       background: #3376FF;
+//       color: #ffffff;
+//     }
+//   }
+// }
 </style>>

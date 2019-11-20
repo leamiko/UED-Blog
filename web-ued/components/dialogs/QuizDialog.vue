@@ -90,6 +90,9 @@ export default {
       this.$emit('hide', true);
       this.showContent = false;
       this.show = false;
+      this.$route.replace({
+        path: '/coding/list'
+      })
       // done();
     },
     innerClose(done) {
