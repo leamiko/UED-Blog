@@ -67,9 +67,12 @@
             </div>
             <div class="praise" :class="{'praise_num50':praiseNum === 50}">
               <div class="praise_img pointer" @click="praise()">
-                <img src="@/assets/img/icon/praise.png" v-show="praiseNum === 0"/>
-                <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0 && praiseNum < 50"/>
-                <img src="@/assets/img/icon/praise_50.svg" v-show="praiseNum === 50"/>
+                <img src="@/assets/img/icon/praise.png" v-show="praiseNum === 0" />
+                <img
+                  src="@/assets/img/icon/praise_null.svg"
+                  v-show="praiseNum > 0 && praiseNum < 50"
+                />
+                <img src="@/assets/img/icon/praise_50.svg" v-show="praiseNum === 50" />
               </div>
               <div class="praise_badge" v-show="praiseNum > 0 && praiseNum < 50">+{{praiseNum}}</div>
               <div class="praise_num">&nbsp;&nbsp;{{praiseNum?praiseNum:0}}个赞</div>
@@ -183,7 +186,7 @@
                         type="primary"
                         round
                         size="small"
-                        @click="submitSecondCom()"
+                        @click="submitSecondCom(firstItem)"
                       >&emsp;评&nbsp;论&emsp;</el-button>
                     </div>
                   </div>
@@ -287,7 +290,7 @@ export default {
     };
   },
   mounted() {
-    this.Id = this.$route.query.id ? this.$route.query.id : "";
+    this.Id = this.$route.query.bugId ? this.$route.query.bugId : "";
     if (this.Id) {
       this.getInfo();
       this.getCommentList();
@@ -424,23 +427,26 @@ export default {
         this.praiseNum++;
       }
       clearTimeout();
-      setTimeout(this.setPraise(), 500)
+      setTimeout(this.setPraise(), 500);
     },
     async setPraise() {
       const user = JSON.parse(localStorage.getItem("user"));
       let praiseParams = {
-          bugId: this.Id,
-          userId: user._id,
-          count: this.praiseCount,
-          likeNum: Number(this.detailInfo.likeNum)
-        }
-        const { data } = await this.$axios.post(`${process.env.BASE_URL}/web_api/LikeBugById`, praiseParams);
-        if (data.status_code !== 200) {
-          this.$notify.error({
-            title: '错误',
-            message: data.data.message
-          });
-        }
+        bugId: this.Id,
+        userId: user._id,
+        count: this.praiseCount,
+        likeNum: Number(this.detailInfo.likeNum)
+      };
+      const { data } = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/LikeBugById`,
+        praiseParams
+      );
+      if (data.status_code !== 200) {
+        this.$notify.error({
+          title: "错误",
+          message: data.data.message
+        });
+      }
     },
     // 发表一级评论
     async submitFistCom() {
@@ -457,27 +463,31 @@ export default {
         params
       );
       if (res.status == 200) {
-        this.resultMsg = "发布成功!";
+        this.resultMsg = "评论成功!";
         this.resultImage = successImg;
         this.showDialog = true;
+        this.getCommentList();
       }
     },
-    // 发表二级级评论
-    async submitSecondCom() {
-      this.commentList.forEach(item => {});
-      if (!this.haveFirstComContent) return;
+    // 发表二级级评论(回复一级评论)
+    async submitSecondCom(firstItem) {
+      // this.commentList.forEach(item => {});
+      // if (!this.haveFirstComContent) return;
       const params = {
-        commenterName: this.userInfo.nickName,
-        commenterId: this.userInfo._id,
-        bugId: this.Id,
-        content: this.firstComContent
+        commentId: firstItem._id,
+        replyerName: this.userInfo.nickName,
+        replyerId: this.userInfo._id,
+        replyTargetName: firstItem.commenterName,
+        replyTargetId: firstItem.commenterId,
+        bugId: firstItem.bugId,
+        content: "回复2"
       };
       const res = await this.$axios.post(
-        `${process.env.BASE_URL}/web_api/commentBug`,
+        `${process.env.BASE_URL}/web_api/replyBug`,
         params
       );
       if (res.status == 200) {
-        this.resultMsg = "发布成功!";
+        this.resultMsg = "回复成功!";
         this.resultImage = successImg;
         this.showDialog = true;
       }
@@ -710,7 +720,7 @@ export default {
       .praise_num {
         margin-left: calc((100% - 102px) / 2);
         padding-left: 0px;
-      } 
+      }
     }
   }
   .interest {
@@ -864,36 +874,36 @@ export default {
   }
 }
 // 页面适配
-@media (max-width: 1720px){
-    .detail_container {
-        width: 75%;
-        .support {
-          left: calc(12.5% - 91px);
-       }
+@media (max-width: 1720px) {
+  .detail_container {
+    width: 75%;
+    .support {
+      left: calc(12.5% - 91px);
     }
+  }
 }
-@media (max-width: 1520px){
-    .detail_container {
-        width: 78%;
-        .support {
-          left: calc(11% - 91px);
-       }
+@media (max-width: 1520px) {
+  .detail_container {
+    width: 78%;
+    .support {
+      left: calc(11% - 91px);
     }
+  }
 }
-@media (max-width: 1320px){
-    .detail_container {
-        width: 83%;
-        .support {
-        left: calc(8.5% - 75px);
-      }
+@media (max-width: 1320px) {
+  .detail_container {
+    width: 83%;
+    .support {
+      left: calc(8.5% - 75px);
     }
+  }
 }
-@media (max-width: 1020px){
-    .detail_container {
-      width: 88%;
-      .support {
-        left: calc(6% - 58px);
-      }
+@media (max-width: 1020px) {
+  .detail_container {
+    width: 88%;
+    .support {
+      left: calc(6% - 58px);
     }
+  }
 }
 </style>
