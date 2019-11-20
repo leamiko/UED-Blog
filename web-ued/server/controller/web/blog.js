@@ -68,27 +68,27 @@ exports.getHomeList = async function(req, res) {
   })
   let data = []
   if (technology) {
-    const userInfo = await technology.findById(technology.userId)
+    const userInfo = await Blog.findById(technology.userId)
     technology['userInfo'] = userInfo
     data.push(technology)
   }
   if (interaction) {
-    const userInfo = await interaction.findById(interaction.userId)
+    const userInfo = await Blog.findById(interaction.userId)
     interaction['userInfo'] = userInfo
     data.push(interaction)
   }
   if (design) {
-    const userInfo = await design.findById(design.userId)
+    const userInfo = await Blog.findById(design.userId)
     design['userInfo'] = userInfo
     data.push(design)
   }
   if (manage) {
-    const userInfo = await manage.findById(manage.userId)
+    const userInfo = await Blog.findById(manage.userId)
     manage['userInfo'] = userInfo
     data.push(manage)
   }
   if (other) {
-    const userInfo = await other.findById(other.userId)
+    const userInfo = await Blog.findById(other.userId)
     other['userInfo'] = userInfo
     data.push(other)
   }
@@ -112,17 +112,17 @@ exports.getWriteBest = async function(req, res) {
   })
   let data = []
   if (popular) {
-    const userInfo = await popular.findById(popular.userId)
+    const userInfo = await Blog.findById(popular.userId)
     popular['userInfo'] = userInfo
     data.push(popular)
   }
   if (best) {
-    const userInfo = await best.findById(best.userId)
+    const userInfo = await Blog.findById(best.userId)
     best['userInfo'] = userInfo
     data.push(best)
   }
   if (comment) {
-    const userInfo = await comment.findById(comment.userId)
+    const userInfo = await Blog.findById(comment.userId)
     comment['userInfo'] = userInfo
     data.push(comment)
   }
