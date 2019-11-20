@@ -65,22 +65,11 @@
                 <div class="word">{{detailInfo.bugSolution}}</div>
               </div>
             </div>
-<<<<<<< HEAD
-            <div class="praise">
-              <div class="praise_img pointer">
-                <img src="@/assets/img/icon/praise.png" v-show="detailInfo.likeNum === 0" />
-                <img
-                  src="@/assets/img/icon/praise_null.svg"
-                  v-show="detailInfo.likeNum !== 0 && 0 < detailInfo.likeNum < 50"
-                />
-                <img src="@/assets/img/icon/praise_50.svg" v-show="detailInfo.likeNum === 50" />
-=======
             <div class="praise" :class="{'praise_num50':praiseNum === 50}">
               <div class="praise_img pointer" @click="praise()">
                 <img src="@/assets/img/icon/praise.png" v-show="praiseNum === 0"/>
                 <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0 && praiseNum < 50"/>
                 <img src="@/assets/img/icon/praise_50.svg" v-show="praiseNum === 50"/>
->>>>>>> dc2fffeba4e4371b8e2094f67af37b846fb506e0
               </div>
               <div class="praise_badge" v-show="praiseNum > 0 && praiseNum < 50">+{{praiseNum}}</div>
               <div class="praise_num">&nbsp;&nbsp;{{praiseNum?praiseNum:0}}个赞</div>
@@ -298,12 +287,7 @@ export default {
     };
   },
   mounted() {
-<<<<<<< HEAD
     this.Id = this.$route.query.id ? this.$route.query.id : "";
-=======
-    console.log(this.$route, "dld");
-    this.Id = this.$route.query.bugId ? this.$route.query.bugId : "";
->>>>>>> dc2fffeba4e4371b8e2094f67af37b846fb506e0
     if (this.Id) {
       this.getInfo();
       this.getCommentList();
