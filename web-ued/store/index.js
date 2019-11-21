@@ -42,7 +42,8 @@ export const state = () => ({
   isLogin: true,
   modalVisible: false,
   qrcodeBindBox: false,
-  wxUnionId: null,
+  wxUnionId: null, 
+  flag:null,
 })
 
 export const mutations = {
@@ -61,6 +62,9 @@ export const mutations = {
   },
   wxUnionId(state, data) {
     state.wxUnionId = data
+  },
+  flag(state, data){
+    state.flag = data
   }
 }
 

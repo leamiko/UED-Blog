@@ -1,26 +1,71 @@
 <template>
   <div class="el-form cus-fix-center">
-    <el-form :model="loginForm" status-icon :rules="rules2" ref="loginForm" label-width="0" v-show="!iscodeBox">
+    <el-form
+      :model="loginForm"
+      status-icon
+      :rules="rules2"
+      ref="loginForm"
+      label-width="0"
+      v-show="!iscodeBox"
+    >
       <el-form-item prop="account">
-        <el-input v-model="loginForm.account" placeholder="请输入账号" prefix-icon="el-icon-user" maxlength="20"></el-input>
+        <el-input
+          v-model="loginForm.account"
+          placeholder="请输入账号"
+          prefix-icon="el-icon-user"
+          maxlength="20"
+        ></el-input>
       </el-form-item>
       <el-form-item prop="passWord">
-        <el-input type="passWord" v-model="loginForm.passWord" placeholder="请输入密码" auto-complete="off" prefix-icon="el-icon-lock" minlength="6" maxlength="16"></el-input>
+        <el-input
+          type="passWord"
+          v-model="loginForm.passWord"
+          placeholder="请输入密码"
+          auto-complete="off"
+          prefix-icon="el-icon-lock"
+          minlength="6"
+          maxlength="16"
+        ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('loginForm')" class="cus-full-width" :loading="submitLoading">登录</el-button>
+        <el-button
+          type="primary"
+          @click="submitForm('loginForm')"
+          class="cus-full-width"
+          :loading="submitLoading"
+        >登录</el-button>
         <div class="login">
-          没有账号，<el-button type="text" @click="Visible">立即注册</el-button>
+          没有账号，<el-button
+            type="text"
+            @click="Visible"
+          >立即注册</el-button>
         </div>
       </el-form-item>
     </el-form>
-    <div class="codePic" @click="Qrcode">
-      <img v-show="!iscodeBox" src="@/assets/img/image/code1.png" alt="" />
-      <img v-show="iscodeBox" src="@/assets/img/image/code2.png" alt="" />
+    <div
+      class="codePic"
+      @click="Qrcode"
+    >
+      <img
+        v-show="!iscodeBox"
+        src="@/assets/img/image/code1.png"
+        alt=""
+      />
+      <img
+        v-show="iscodeBox"
+        src="@/assets/img/image/code2.png"
+        alt=""
+      />
     </div>
-    <div class="codeBox" v-show="iscodeBox">
+    <div
+      class="codeBox"
+      v-show="iscodeBox"
+    >
       <div class="text">请使用微信扫码二维码登录</div>
-      <div class="box" id="wxLoginQrcode"></div>
+      <div
+        class="box"
+        id="wxLoginQrcode"
+      ></div>
     </div>
     <!-- <div class="codeBox" v-show="$store.state.qrcodeBindBox">
       <div class="text">您还没有绑定过微信，请绑定后再登录</div>
@@ -37,7 +82,7 @@ export default {
       required: false
     }
   },
-  data() {
+  data () {
     var checkName = (rule, value, callback) => {
       if (!value) {
         return callback(new Error("账号不能为空"));
@@ -80,18 +125,18 @@ export default {
       isError: false
     };
   },
-  mounted() {
+  mounted () {
     this.wxHandle();
     this.wxBindHandle();
   },
   methods: {
-    Qrcode() {
+    Qrcode () {
       this.iscodeBox = !this.iscodeBox;
       // this.$store.state.qrcodeBindBox = false;
       this.$emit("titleChanged", "登录");
     },
     //登录二维码
-    wxHandle() {
+    wxHandle () {
       var obj = new WxLogin({
         id: "wxLoginQrcode",
         appid: process.env.WX_WEB_ID,
@@ -105,7 +150,7 @@ export default {
       });
     },
     //绑定二维码
-    wxBindHandle() {
+    wxBindHandle () {
       var obj = new WxLogin({
         id: "wxLoginQrcode",
         appid: process.env.WX_WEB_ID,
@@ -119,11 +164,11 @@ export default {
       });
     },
     //注册框隐藏登录框显示
-    Visible() {
+    Visible () {
       this.$emit("titleChanged", "注册");
       this.$store.commit("isLogin", false);
     },
-    submitForm(formName) {
+    submitForm (formName) {
       this.submitLoading = true;
       this.$refs[formName].validate(async valid => {
         this.submitLoading = false;
@@ -143,16 +188,17 @@ export default {
               this.$router.replace("/");
             });
             this.loginForm = {};
+            this.$store.commit("flag", new Date().toLocaleTimeString());
           } else {
             //登录失败
             this.isError = true;
-            this.$refs[formName].validate(async valid => {});
+            this.$refs[formName].validate(async valid => { });
           }
         }
       });
     },
     // 清空数据
-    resetForm(formName) {
+    resetForm (formName) {
       this.$refs[formName].resetFields();
     }
   }

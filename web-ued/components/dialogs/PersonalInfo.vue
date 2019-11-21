@@ -178,6 +178,7 @@
                             type: 'success'
                         });
                     }
+                    this.$store.commit("flag", new Date().toLocaleTimeString());
                 }
             }
         }
