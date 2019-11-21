@@ -185,15 +185,12 @@
                             type: 'success'
                         });
                     }
-<<<<<<< HEAD
                     this.$store.commit("flag", new Date().toLocaleTimeString());
-=======
                 } else {
                     this.$notify.error({
                         title: '错误',
                         message: res.data.message
                     });
->>>>>>> 2fde39d4bf76017eb40e071fcb447bfac0daea1c
                 }
             }
         }
