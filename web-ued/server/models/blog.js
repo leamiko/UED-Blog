@@ -24,9 +24,6 @@ var BlogSchema = new Schema(
       type: Boolean, //是否审核通过
       default: false
     },
-    author: {
-      type: String //作者  登录用户昵称
-    },
     userId: {
       type: mongoose.Schema.Types.ObjectId //作者objectId也是登录用户objectId
     },

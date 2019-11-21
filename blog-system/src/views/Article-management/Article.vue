@@ -286,10 +286,23 @@ export default {
         // 数据显示形式的转换
         this.data[i].isGood = this.data[i].isGood ? '是' : '否'
         this.data[i].isAudit = this.data[i].isAudit ? '是' : '否'
-        this.data[i].createAt = moment('2019-04-28T06:54:31.914Z').format(
+        this.data[i].blogType = this.renderblogType(this.data[i].blogType)
+        this.data[i].createAt = moment(this.data[i].createAt).format(
           'YYYY-MM-DD HH:MM'
         )
       }
+    },
+
+    renderblogType (type) {
+      let str = ''
+      switch (type) {
+        case 1: str = '技术'; break
+        case 2: str = '交互'; break
+        case 3: str = '设计'; break
+        case 4: str = '管理'; break
+        case 5: str = '其他'; break
+      }
+      return str
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
