@@ -2,6 +2,7 @@ var Blog = require('../../models/blog.js') //引入blog表
 var Like = require('../../models/like.js') //引入like表
 var Comment = require('../../models/comment.js') //引入comment表
 var User = require('../../models/user.js') //引入user表
+var mongoose = require('mongoose')
 
 //blog新增编辑
 exports.addEditBlog = function(req, res) {
@@ -101,7 +102,7 @@ exports.getBlogList = async function(req, res) {
     filters.blogType = req.body.filters.blogType
   }
   if (req.body.filters.userId) {
-    filters.userId = req.body.filters.userId
+    filters.userId = mongoose.Types.ObjectId(req.body.filters.userId)
   }
   if (req.body.filters.isGood) {
     filters.isGood = req.body.filters.isGood
