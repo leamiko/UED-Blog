@@ -93,6 +93,7 @@ exports.getList = async function(req, res) {
           commentNum: 1,
           commentLikeNum: 1,
           rank: 1,
+          createAt: 1,
           userInfo: { nickName: 1, account: 1, avatar: 1 }
         }
       },

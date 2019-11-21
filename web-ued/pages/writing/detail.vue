@@ -134,7 +134,7 @@
                         {{firstItem.likeNum}}
                       </div>
                       <div class="comment_unit_bottom_btn margin_left_15" @click="replyFirstComBtn(firstItem._id)" v-bind:class="{comment_unit_bottom_btn_selected: firstItem.isShowReplyFirstCom}">回复</div>
-                      <div class="comment_unit_bottom_btn margin_left_15" v-if="userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover">删除</div>
+                      <div class="comment_unit_bottom_btn margin_left_15" v-if="userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover" @click="deleteFirstCom(firstItem._id)">删除</div>
                     </div>
                     <div class="comment_unit_bottom_right">{{firstItem.createAt | formatDateDay}}</div>
                   </div>
@@ -243,7 +243,6 @@ export default {
       isClick: false, //评论点赞
       supportComBtnIsHover: false, // 评论点赞按钮是否悬浮
       deleteComBtnIsHover: false, // 评论删除按钮是否悬浮
-      clickNum: 10, // 评论点赞数量
       firstComContent: "", // 一级评论内容
       firstCommenterId: "", // 评论列表中一级评论人id
       firstComIndex: "", // 评论列表中一级评论数组下标
@@ -284,35 +283,35 @@ export default {
     async praise() {
       if (this.praiseNum < 50) {
         this.praiseNum++;
+        this.setPraise();
       }
-      clearTimeout();
-      setTimeout(this.setPraise(), 500);
     },
     async setPraise() {
       let praiseParams = {
         blogId: this.detailParams.detailId,
         userId: this.userInfo._id,
-        count: this.praiseCount,
-        likeNum: Number(this.detailInfo.likeNum)
+        count: this.praiseNum,
+        // likeNum: Number(this.detailInfo.likeNum)
       };
-      const { data } = await this.$axios.post(
-        `${process.env.BASE_URL}/web_api/likeBlog`,
-        praiseParams
+      console.log(praiseParams)
+      console.log(this.detailInfo);
+      const { data } = await this.$axios.get(
+        `${process.env.BASE_URL}/web_api/likeBlog?praiseParams=${praiseParams}`
       );
       console.log(data);
+      console.log(111);
     },
     //获取评论列表
     async getBlogComment() {
       const res = await this.$axios.get(
         `${process.env.BASE_URL}/web_api/getBlogComment?blogId=${this.detailParams.detailId}`
       );
-      console.log(res);
-      console.log(111);
       this.commentList = res.data.data;
-      // this.commentList.forEach(item => {
-      //   item[`firstComIsLike`] = false;
-      //   item[`isShowReplyFirstCom`] = false;
-      // });
+      // console.log(this.commentList);
+      this.commentList.forEach(item => {
+        item[`firstComIsLike`] = false;
+        item[`isShowReplyFirstCom`] = false;
+      });
     },
     // 发表一级评论
     async submitFistCom() {
@@ -328,13 +327,15 @@ export default {
         `${process.env.BASE_URL}/web_api/commentBlog`,
         params
       );
-      if (res.status == 200) {
-        window.location.reload();
+      if (res.data.status_code === 200) {
+        this.getBlogComment();
       }
     },
     // 监听评论框
     onEditorChange({ editor, html, text }) {
+      // console.log(editor, html, text);
       this.firstComContent = text;
+      this.commentHtml = html;
       this.haveFirstComContent = html ? true : false;
     },
     // 评论删除按钮悬浮
@@ -373,9 +374,8 @@ export default {
     },
     // 删除一级评论
     async deleteFirstCom(comId) {
-      const res = await this.$axios.post(
-        `${process.env.BASE_URL}/web_api/deleteComment`,
-        { commentId: comId }
+      const res = await this.$axios.get(
+        `${process.env.BASE_URL}/web_api/deleteComment?commentId=${comId}`
       );
       if (res.data.status_code === 200) {
         this.getBlogComment();
@@ -385,10 +385,7 @@ export default {
     anonymousClick() {
       this.isAnonymous = !this.isAnonymous;
     },
-    submit() {
-      // if (!this.haveCommentContent) return;
-      // console.log(this.commentContent);
-    }
+    submit() {}
   }
 };
 </script>
@@ -407,10 +404,10 @@ export default {
   margin: 57px auto 40px;
   .support {
     width: 55px;
-    // margin-right: 36px;
-    position: fixed;
-    left: 14%;
-    top: 217px;
+    margin-right: 36px;
+    // position: fixed;
+    // left: 14%;
+    // top: 217px;
     .support_icon {
       width: 55px;
       height: 54px;
@@ -440,9 +437,9 @@ export default {
     }
   }
   .support_back {
-    position: absolute;
-    left: -91px;
-    top: 78px;
+    // position: absolute;
+    // left: -91px;
+    // top: 78px;
   }
   .detail_info {
     position: relative;
@@ -727,51 +724,6 @@ export default {
   display: flex;
   .comment_text {
     flex: 1;
-  }
-}
-// 页面适配
-@media (max-width: 1720px) {
-  .detail_container {
-    width: 75%;
-    .support {
-      left: calc(12.5% - 91px);
-    }
-    .support_back {
-      left: 0px;
-    }
-  }
-}
-@media (max-width: 1520px) {
-  .detail_container {
-    width: 78%;
-    .support {
-      left: calc(11% - 91px);
-    }
-    .support_back {
-      left: 0px;
-    }
-  }
-}
-@media (max-width: 1320px) {
-  .detail_container {
-    width: 83%;
-    .support {
-      left: calc(8.5% - 75px);
-    }
-    .support_back {
-      left: -75px;
-    }
-  }
-}
-@media (max-width: 1020px) {
-  .detail_container {
-    width: 88%;
-    .support {
-      left: calc(6% - 58px);
-    }
-    .support_back {
-      left: -58px;
-    }
   }
 }
 </style>
