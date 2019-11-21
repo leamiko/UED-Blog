@@ -275,6 +275,7 @@ export default {
       const res = await this.$axios.get(
         `${process.env.BASE_URL}/web_api/getBlog?blogId=${this.detailParams.detailId}`
       );
+      console.log(res)
       this.detailInfo = res.data.data;
       this.praiseNum = this.detailInfo.likeNum;
       console.log(this.detailInfo);
@@ -287,6 +288,7 @@ export default {
       }
     },
     async setPraise() {
+
       let praiseParams = {
         blogId: this.detailParams.detailId,
         userId: this.userInfo._id,
@@ -294,9 +296,8 @@ export default {
         // likeNum: Number(this.detailInfo.likeNum)
       };
       console.log(praiseParams)
-      console.log(this.detailInfo);
       const { data } = await this.$axios.get(
-        `${process.env.BASE_URL}/web_api/likeBlog?praiseParams=${praiseParams}`
+        `${process.env.BASE_URL}/web_api/likeBlog?userId=${praiseParams.userId}?blogId=${praiseParams.blogId}?count=${praiseParams.count}`
       );
       console.log(data);
       console.log(111);
@@ -307,7 +308,7 @@ export default {
         `${process.env.BASE_URL}/web_api/getBlogComment?blogId=${this.detailParams.detailId}`
       );
       this.commentList = res.data.data;
-      // console.log(this.commentList);
+      console.log(res);
       this.commentList.forEach(item => {
         item[`firstComIsLike`] = false;
         item[`isShowReplyFirstCom`] = false;
@@ -400,14 +401,15 @@ export default {
   display: flex;
   justify-content: space-between;
   position: relative;
-  width: 1291px;
+  width: 1200px;
   margin: 57px auto 40px;
   .support {
+    z-index: 1000;
     width: 55px;
-    margin-right: 36px;
-    // position: fixed;
-    // left: 14%;
-    // top: 217px;
+    // margin-right: 36px;
+    position: fixed;
+    left: 0;
+    top: 217px;
     .support_icon {
       width: 55px;
       height: 54px;
@@ -442,6 +444,8 @@ export default {
     // top: 78px;
   }
   .detail_info {
+    margin-left: 91px;
+
     position: relative;
     width: 874px;
     box-shadow: 0px 1px 5px 0px #ececec;
@@ -726,4 +730,5 @@ export default {
     flex: 1;
   }
 }
+
 </style>
