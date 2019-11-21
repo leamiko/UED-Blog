@@ -68,18 +68,28 @@ exports.getHomeList = async function(req, res) {
   })
   let data = []
   if (technology) {
+    const userInfo = await Blog.findById(technology.userId)
+    technology['userInfo'] = userInfo
     data.push(technology)
   }
   if (interaction) {
+    const userInfo = await Blog.findById(interaction.userId)
+    interaction['userInfo'] = userInfo
     data.push(interaction)
   }
   if (design) {
+    const userInfo = await Blog.findById(design.userId)
+    design['userInfo'] = userInfo
     data.push(design)
   }
   if (manage) {
+    const userInfo = await Blog.findById(manage.userId)
+    manage['userInfo'] = userInfo
     data.push(manage)
   }
   if (other) {
+    const userInfo = await Blog.findById(other.userId)
+    other['userInfo'] = userInfo
     data.push(other)
   }
   return res.json({
@@ -102,12 +112,18 @@ exports.getWriteBest = async function(req, res) {
   })
   let data = []
   if (popular) {
+    const userInfo = await Blog.findById(popular.userId)
+    popular['userInfo'] = userInfo
     data.push(popular)
   }
   if (best) {
+    const userInfo = await Blog.findById(best.userId)
+    best['userInfo'] = userInfo
     data.push(best)
   }
   if (comment) {
+    const userInfo = await Blog.findById(comment.userId)
+    comment['userInfo'] = userInfo
     data.push(comment)
   }
   // data.push(popular, best, comment)
@@ -129,17 +145,53 @@ exports.getWriteList = async function(req, res) {
     filters.blogType = req.body.filters.blogType
   }
   const count = await Blog.countDocuments(filters)
-  Blog.find(
-    filters,
-    null,
-    {
-      skip: (page * 1 - 1) * limit,
-      limit: limit,
-      sort: { createdAt: -1 }
-    },
-    function(err, books) {
+  Blog.aggregate(
+    [
+      {
+        $match: filters
+      },
+      {
+        $lookup: {
+          from: 'user',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'userInfo'
+        }
+      },
+      {
+        $project: {
+          title: 1,
+          blogType: 1,
+          info: 1,
+          content: 1,
+          isGood: 1,
+          isAudit: 1,
+          author: 1,
+          userId: 1,
+          smallImgUrl: 1,
+          midImgUrl: 1,
+          bigImgUrl: 1,
+          likeNum: 1,
+          viewNum: 1,
+          commentNum: 1,
+          commentLikeNum: 1,
+          rank: 1,
+          createAt: 1,
+          userInfo: { nickName: 1, account: 1, avatar: 1 }
+        }
+      },
+      {
+        $skip: (page * 1 - 1) * limit
+      },
+      {
+        $limit: limit
+      },
+      {
+        $sort: { rank: -1 }
+      }
+    ],
+    (err, books) => {
       if (err) {
-        console.log(err)
         return res.json({
           status_code: 201,
           message: err,
@@ -382,6 +434,39 @@ exports.getBlogComment = function(req, res) {
           foreignField: 'commentId',
           as: 'replies'
         }
+      },{
+        $lookup: {
+          from: 'user',
+          localField: 'commentUserId',
+          foreignField: '_id',
+          as: 'userInfo'
+        }
+      },
+      {
+        $lookup: {
+          from: 'like',
+          localField: req.session.user ? req.session.user : '',
+          foreignField: 'userId',
+          as: 'userInfo'
+        }
+      },
+      {
+        $project: {
+          commentUserId: {
+            $cond: [{
+              $eq: ["$anonymous", true]
+            }, "", "$commentUserId"]
+          },
+          blogId: 1,
+          likeNum: 1,
+          content: 1,
+          anonymous: 1,
+          commentName: {
+            $cond: [{
+              $eq: ["$anonymous", true]
+            }, "", "$commentName"]
+          }
+        }
       }
     ],
     async (err, comments) => {
@@ -392,27 +477,19 @@ exports.getBlogComment = function(req, res) {
           data: null
         })
       }
-      for (let i = 0; i < comments.length; i++) {
-        let whereCommentLike = {
-          userId: req.session.user._id,
-          commentId: comments[i]._id
-        }
-        const likeNum = await Like.countDocuments(whereCommentLike)
-        if (likeNum > 0) {
-          comments[i]['isLike'] = true
-        } else {
-          comments[i]['isLike'] = false
-        }
-        for (let n = 0; i < comments[i].replies.length; n++) {
-          let whereReplyLike = {
-            userId: req.session.user._id,
-            replyId: comments[i].replies[n]._id
-          }
-          const likeNum = await Like.countDocuments(whereReplyLike)
-          if (likeNum > 0) {
-            comments[i].replies[n]['isLike'] = true
-          } else {
-            comments[i].replies[n]['isLike'] = false
+      if (req.session.user) {
+        for (let i = 0; i < comments.length; i++) {
+          for (let n = 0; i < comments[i].replies.length; n++) {
+            let whereReplyLike = {
+              userId: req.session.user._id,
+              replyId: comments[i].replies[n]._id
+            }
+            const likeNum = await Like.countDocuments(whereReplyLike)
+            if (likeNum > 0) {
+              comments[i].replies[n]['isLike'] = true
+            } else {
+              comments[i].replies[n]['isLike'] = false
+            }
           }
         }
       }

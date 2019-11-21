@@ -23,4 +23,4 @@ var LikeSchema = new Schema(
   { timestamps: { createdAt: 'createAt', updatedAt: 'updateAt' } }
 )
 
-module.exports = blog.model('Like', LikeSchema)
+module.exports = blog.model('Like', LikeSchema, 'like')
