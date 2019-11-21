@@ -273,6 +273,7 @@ export default {
       Id: "", // 当前问题Id
       detailInfo: {}, // 详情信息
       praiseNum: 0, // 点赞数
+      praiseIncrement: 0, // 点赞增量
       interestList: [], // 感兴趣List
       interestOriginal: [], // 原始bugList
       interestUnfiltered: [], // 未过滤兴趣List
@@ -461,7 +462,8 @@ export default {
       clearTimeout();
       if (this.praiseNum < 50) {
         this.praiseNum++;
-        setTimeout(()=>this.setPraise(), 5000);
+        this.praiseIncrement++;
+        setTimeout(()=>this.setPraise(), 3000);
       }
     },
     async setPraise() {
@@ -469,10 +471,12 @@ export default {
       let praiseParams = {
           bugId: this.Id,
           userId: user._id,
-          count: this.praiseNum,
+          count: this.praiseIncrement,
         }
         const { data } = await this.$axios.post(`${process.env.BASE_URL}/web_api/LikeBugById`, praiseParams);
-        if (data.status_code !== 200) {
+        if (data.status_code === 200) {          
+          this.praiseIncrement = 0;
+        } else {
           this.$notify.error({
             title: '错误',
             message: data.message

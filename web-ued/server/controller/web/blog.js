@@ -434,8 +434,7 @@ exports.getBlogComment = function(req, res) {
           foreignField: 'commentId',
           as: 'replies'
         }
-      },
-      {
+      },{
         $lookup: {
           from: 'user',
           localField: 'commentUserId',
@@ -449,6 +448,24 @@ exports.getBlogComment = function(req, res) {
           localField: req.session.user ? req.session.user : '',
           foreignField: 'userId',
           as: 'userInfo'
+        }
+      },
+      {
+        $project: {
+          commentUserId: {
+            $cond: [{
+              $eq: ["$anonymous", true]
+            }, "", "$commentUserId"]
+          },
+          blogId: 1,
+          likeNum: 1,
+          content: 1,
+          anonymous: 1,
+          commentName: {
+            $cond: [{
+              $eq: ["$anonymous", true]
+            }, "", "$commentName"]
+          }
         }
       }
     ],
