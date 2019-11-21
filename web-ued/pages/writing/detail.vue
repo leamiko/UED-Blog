@@ -99,7 +99,7 @@
         </div>
         <div class="comment_container">
           <div class="comment_title">共{{detailInfo.blog.commentNum}}条评论</div>
-          <div class="comment_info bg-white">
+          <div class="comment_info bg-white" v-if="isComment">
             <div class="comment_text">
               <div class="current_user inline">
                 <img src="@/assets/img/image/code_presenter.png" />
@@ -130,7 +130,7 @@
                         {{firstItem.likeNum}}
                       </div>
                       <div class="comment_unit_bottom_btn margin_left_15" @click="replyFirstComBtn(firstItem._id)" v-bind:class="{comment_unit_bottom_btn_selected: firstItem.isShowReplyFirstCom}">回复</div>
-                      <div class="comment_unit_bottom_btn margin_left_15" v-if="detailInfo.userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover" @click="deleteFirstCom(firstItem._id)">删除</div>
+                      <div class="comment_unit_bottom_btn margin_left_15" v-if="user._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover" @click="deleteFirstCom(firstItem._id)">删除</div>
                     </div>
                     <div class="comment_unit_bottom_right">{{firstItem.createAt | formatDateDay}}</div>
                   </div>
@@ -152,6 +152,14 @@
                 <div class="btn_blue margin_top_30">查看更多回复</div>
               </div>
               <hr class="comment_hr" />
+            </div>
+          </div>
+          <div class="noComment" v-if="!isComment">
+            <div class="pic">
+              <img src="@/assets/img/image/noComment.png" />
+            </div>
+            <div class="text">
+              评论区这么热闹，不想来看看嘛？<span @click="modalLogin()">看看就看看</span>
             </div>
           </div>
         </div>
@@ -200,10 +208,18 @@ export default {
       firstComContent: "", // 一级评论内容
       firstCommenterId: "", // 评论列表中一级评论人id
       firstComIndex: "", // 评论列表中一级评论数组下标
-      haveFirstComContent: false // 监听一级评论内容
+      haveFirstComContent: false, // 监听一级评论内容
+      user: "",
+      isComment: false
     };
   },
   mounted() {
+    console.log(this.$store.state.modalVisible);
+    this.user = JSON.parse(localStorage.getItem("user")); // 获取当前用户信息
+    if (this.user) {
+      this.getBlogComment();
+    }
+    this.getBlog();
     // 可视区内保留一个点赞icon
     (this.visualScroll = new IntersectionObserver(([entry]) => {
       if (entry && entry.isIntersecting) {
@@ -215,14 +231,13 @@ export default {
     })),
       this.visualScroll.observe(document.querySelector("#praise"));
   },
-  created() {
-    this.getBlog();
-    this.getBlogComment();
-  },
   destroyed() {
     this.visualScroll.disconnect();
   },
   methods: {
+    modalLogin() {
+      this.$store.commit("modalVisible", true);
+    },
     //获取详情列表
     async getBlog() {
       const res = await this.$axios.get(
@@ -230,7 +245,7 @@ export default {
       );
       this.detailInfo = res.data.data;
       this.praiseNum = this.detailInfo.blog.likeNum;
-      console.log(this.detailInfo);
+      // console.log(this.detailInfo);
     },
     // 详情点赞
     async praise() {
@@ -242,24 +257,25 @@ export default {
     async setPraise() {
       let praiseParams = {
         blogId: this.detailParams.detailId,
-        userId: this.detailInfo.userInfo._id,
+        userId: this.user._id,
         count: this.praiseNum
         // likeNum: Number(this.detailInfo.likeNum)
       };
-      console.log(praiseParams);
+      // console.log(praiseParams);
       const { data } = await this.$axios.get(
-        `${process.env.BASE_URL}/web_api/likeBlog?userId=${praiseParams.userId}?blogId=${praiseParams.blogId}?count=${praiseParams.count}`
+        `${process.env.BASE_URL}/web_api/likeBlog?userId=${praiseParams.userId}$blogId=${praiseParams.blogId}$count=${praiseParams.count}`
       );
       console.log(data);
       console.log(111);
     },
     //获取评论列表
     async getBlogComment() {
+      console.log(this.user);
       const res = await this.$axios.get(
         `${process.env.BASE_URL}/web_api/getBlogComment?blogId=${this.detailParams.detailId}`
       );
-      console.log(res.data);
       this.commentList = res.data.data;
+      // console.log(this.commentList);
       // console.log(this.commentList);
       // this.commentList.forEach(item => {
       //   item[`firstComIsLike`] = false;
@@ -270,8 +286,8 @@ export default {
     async submitFistCom() {
       if (!this.haveFirstComContent) return;
       const params = {
-        commentName: this.detailInfo.userInfo.nickName,
-        commentUserId: this.detailInfo.userInfo._id,
+        commentName: this.user.nickName,
+        commentUserId: this.user._id,
         blogId: this.detailParams.detailId,
         content: this.firstComContent,
         anonymous: this.isAnonymous
@@ -625,6 +641,38 @@ export default {
     font-size: 22px;
     font-weight: 600;
     color: #000000;
+  }
+  .noComment {
+    padding: 40px 0 50px;
+    background: white;
+    width: 874px;
+    margin-left: 91px;
+    text-align: center;
+    box-shadow: 0px 1px 5px 0px #ececec;
+    border-radius: 2px;
+    box-sizing: border-box;
+    .pic {
+      img {
+        width: 152px;
+        height: 158px;
+      }
+      margin-bottom: 15px;
+    }
+    .text {
+      color: #000000;
+      font-size: 14px;
+      span {
+        cursor: pointer;
+        display: inline-block;
+        width: 104px;
+        text-align: center;
+        border: 1px solid #3376ff;
+        border-radius: 16px;
+        color: #3376ff;
+        margin-left: 10px;
+        padding: 4px 0;
+      }
+    }
   }
   .comment_info {
     margin-left: 91px;
