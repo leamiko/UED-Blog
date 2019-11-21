@@ -36,7 +36,7 @@ exports.getBlog = async function(req, res) {
           data: {
             blog: blog,
             userInfo: userInfo,
-            isLike: true
+            like: like
           }
         })
       } else {
@@ -46,7 +46,7 @@ exports.getBlog = async function(req, res) {
           data: {
             blog: blog,
             userInfo: userInfo,
-            isLike: true
+            like: like
           }
         })
       }
@@ -214,38 +214,70 @@ exports.getWriteList = async function(req, res) {
 }
 
 //点赞
-exports.likeBlog = function(req, res) {
+exports.likeBlog = async function(req, res) {
   const whereBlog = {
-    _id: req.query.blogId
+    _id: req.body.blogId
   }
-  let like = new Like({
-    userId: req.query.userId,
-    blogId: req.query.blogId,
-    count: req.query.count
-  })
-  like.save(async function(err, like) {
-    if (err) {
-      return res.json({
-        status_code: 201,
-        message: err,
-        data: null
-      })
-    }
-    let updateBlog = {
-      likeNum: req.query.likeNum
-        ? req.query.likeNum * 1 + req.query.count * 1
-        : req.query.count * 1
-    }
-    await Blog.updateOne(whereBlog, updateBlog)
-    await User.findByIdAndUpdate(req.session.user._id, {
-      blogAllLikeNum: req.session.user.blogAllLikeNum + 1
+  const whereUser = {
+    _id: req.body.authorId
+  }
+  const whereLike = {
+    userId: req.body.userId,
+    blogId: req.body.blogId
+  }
+  const like = await Like.find(whereLike)
+  if (like.length != 0) {
+    await Like.where(whereLike).updateOne({
+      $inc: {
+        count: req.body.count
+      }
+    })
+    await Blog.where(whereBlog).updateOne({
+      $inc: {
+        likeNum: req.body.count
+      }
+    })
+    await User.where(whereUser).updateOne({
+      $inc: {
+        blogAllLikeNum: req.body.count
+      }
     })
     return res.json({
       status_code: 200,
       message: '点赞成功！',
       data: null
     })
-  })
+  } else {
+    let like = new Like({
+      userId: req.body.userId,
+      blogId: req.body.blogId,
+      count: req.body.count
+    })
+    like.save(async function(err, like) {
+      if (err) {
+        return res.json({
+          status_code: 201,
+          message: err,
+          data: null
+        })
+      }
+      await Blog.where(whereBlog).updateOne({
+        $inc: {
+          likeNum: req.body.count
+        }
+      })
+      await User.where(whereUser).updateOne({
+        $inc: {
+          blogAllLikeNum: req.body.count
+        }
+      })
+      return res.json({
+        status_code: 200,
+        message: '点赞成功！',
+        data: null
+      })
+    })
+  }
 }
 
 //评论
@@ -268,11 +300,11 @@ exports.commentBlog = function(req, res) {
         data: null
       })
     }
-    const commentNum = await Comment.countDocuments()
-    let updateBlog = {
-      commentNum: commentNum ? commentNum + 1 : 1
-    }
-    await Blog.updateOne(whereBlog, updateBlog)
+    await Blog.where(whereBlog).updateOne({
+      $inc: {
+        commentNum: 1
+      }
+    })
     return res.json({
       status_code: 200,
       message: '添加成功！',
@@ -284,17 +316,17 @@ exports.commentBlog = function(req, res) {
 //评论点赞
 exports.commentLike = function(req, res) {
   const whereBlog = {
-    _id: req.query.blogId
+    _id: req.body.blogId
   }
   const whereComment = {
-    blogId: req.query.blogId
+    blogId: req.body.blogId
   }
   const whereUpdateComment = {
-    _id: req.query.commentId
+    _id: req.body.commentId
   }
   let like = new Like({
-    userId: req.query.userId,
-    commentId: req.query.commentId
+    userId: req.body.userId,
+    commentId: req.body.commentId
   })
   like.save(async function(err, like) {
     if (err) {
@@ -304,18 +336,16 @@ exports.commentLike = function(req, res) {
         data: null
       })
     }
-    const likeNum = await Like.countDocuments({
-      commentId: req.query.commentId
+    await Comment.where(whereUpdateComment).updateOne({
+      $inc: {
+        likeNum: 1
+      }
     })
-    let updateComment = {
-      likeNum: likeNum
-    }
-    await Comment.updateOne(whereUpdateComment, updateComment)
-    const comments = await Comment.find(whereComment).sort({
+    const comments = await Comment.findOne(whereComment).sort({
       likeNum: -1
     })
     const updateBlog = {
-      commentLikeNum: comments[0].likeNum
+      commentLikeNum: comments.likeNum
     }
     await Blog.updateOne(whereBlog, updateBlog)
     return res.json({
@@ -329,9 +359,13 @@ exports.commentLike = function(req, res) {
 //删除评论
 exports.deleteComment = function(req, res) {
   var whereComment = {
-    _id: req.query.commentId
+    _id: req.body.commentId,
+    commentUserId: req.body.userId
   }
-  Comment.deleteOne(whereComment, function(err) {
+  const whereBlog = {
+    _id: req.body.blogId
+  }
+  Comment.deleteOne(whereComment, async function(err) {
     if (err) {
       return res.json({
         code: 201,
@@ -339,9 +373,57 @@ exports.deleteComment = function(req, res) {
         data: null
       })
     }
+    const comments = await Comment.find().sort({
+      likeNum: -1
+    })
+    const updateBlog = {
+      commentLikeNum: comments[0].likeNum,
+      commentNum: comments.length
+    }
+    await Blog.updateOne(whereBlog, updateBlog)
     return res.json({
       status_code: 200,
       message: '删除成功！',
+      data: null
+    })
+  })
+}
+
+//取消评论点赞
+exports.deleteCommentLike = function(req, res) {
+  const whereLike = {
+    commentId: req.body.commentId,
+    userId: req.body.userId
+  }
+  const whereComment = {
+    _id: req.body.commentId
+  }
+  const whereBlog = {
+    _id: req.body.blogId
+  }
+  Like.deleteOne(whereLike, async function(err) {
+    if (err) {
+      return res.json({
+        code: 201,
+        message: err,
+        data: null
+      })
+    }
+    await Comment.where(whereComment).updateOne({
+      $inc: {
+        likeNum: -1
+      }
+    })
+    const comments = await Comment.findOne(whereComment).sort({
+      likeNum: -1
+    })
+    const updateBlog = {
+      commentLikeNum: comments.likeNum
+    }
+    await Blog.updateOne(whereBlog, updateBlog)
+    return res.json({
+      status_code: 200,
+      message: '取消点赞成功！',
       data: null
     })
   })
@@ -370,11 +452,11 @@ exports.replyBlog = function(req, res) {
 //回复点赞
 exports.replyLike = function(req, res) {
   const whereUpdateReply = {
-    _id: req.query.replyId
+    _id: req.body.replyId
   }
   let like = new Like({
-    userId: req.query.userId,
-    replyId: req.query.replyId
+    userId: req.body.userId,
+    replyId: req.body.replyId
   })
   like.save(async function(err, like) {
     if (err) {
@@ -384,13 +466,11 @@ exports.replyLike = function(req, res) {
         data: null
       })
     }
-    const likeNum = await Like.countDocuments({
-      replyId: req.query.replyId
+    await Reply.where(whereUpdateReply).updateOne({
+      $inc: {
+        likeNum: 1
+      }
     })
-    let updatereply = {
-      likeNum: likeNum
-    }
-    await Reply.updateOne(whereUpdateReply, updatereply)
     return res.json({
       status_code: 200,
       message: '点赞成功！',
@@ -420,98 +500,186 @@ exports.deleteReply = function(req, res) {
   })
 }
 
+//取消回复点赞
+exports.deleteReplyLike = function(req, res) {
+  const whereLike = {
+    replyId: req.body.replyId,
+    userId: req.body.userId
+  }
+  const whereReply = {
+    _id: req.body.replyId
+  }
+  Like.deleteOne(whereLike, async function(err) {
+    if (err) {
+      return res.json({
+        code: 201,
+        message: err,
+        data: null
+      })
+    }
+    await Reply.where(whereReply).updateOne({
+      $inc: {
+        likeNum: -1
+      }
+    })
+    return res.json({
+      status_code: 200,
+      message: '取消点赞成功！',
+      data: null
+    })
+  })
+}
+
 //获取评论
-exports.getBlogComment = function(req, res) {
+exports.getBlogComment = async function(req, res) {
   const whereComment = {
     blogId: req.query.blogId
   }
-  Comment.aggregate(
-    [
-      {
-        $match: whereComment
-      },
-      {
-        $lookup: {
-          from: 'reply',
-          localField: '_id',
-          foreignField: 'commentId',
-          as: 'replies'
-        }
-      },
-      {
-        $lookup: {
-          from: 'user',
-          localField: 'commentUserId',
-          foreignField: '_id',
-          as: 'userInfo'
-        }
-      },
-      {
-        $lookup: {
-          from: 'like',
-          localField: req.session.user ? req.session.user : '',
-          foreignField: 'userId',
-          as: 'userInfo'
-        }
-      },
-      {
-        $project: {
-          commentUserId: {
-            $cond: [
-              {
-                $eq: ['$anonymous', true]
-              },
-              '',
-              '$commentUserId'
-            ]
-          },
-          blogId: 1,
-          likeNum: 1,
-          content: 1,
-          anonymous: 1,
-          commentName: {
-            $cond: [
-              {
-                $eq: ['$anonymous', true]
-              },
-              '',
-              '$commentName'
-            ]
-          }
-        }
+
+  // 获取列表
+  let comments = await Comment.aggregate([
+    {
+      $match: whereComment
+    },
+    {
+      $lookup: {
+        from: 'user',
+        localField: 'commentUserId',
+        foreignField: '_id',
+        as: 'userInfo'
       }
-    ],
-    async (err, comments) => {
-      if (err) {
-        return res.json({
-          status_code: 201,
-          message: err,
-          data: null
-        })
+    },
+    {
+      $project: {
+        commentUserId: {
+          $cond: [
+            {
+              $eq: ['$anonymous', true]
+            },
+            '',
+            '$commentUserId'
+          ]
+        },
+        blogId: 1,
+        likeNum: 1,
+        content: 1,
+        anonymous: 1,
+        commentName: {
+          $cond: [
+            {
+              $eq: ['$anonymous', true]
+            },
+            '',
+            '$commentName'
+          ]
+        },
+        userInfo: { avatar: 1 }
       }
-      if (req.session.user) {
-        for (let i = 0; i < comments.length; i++) {
-          for (let n = 0; i < comments[i].replies.length; n++) {
-            let whereReplyLike = {
-              userId: req.session.user._id,
-              replyId: comments[i].replies[n]._id
-            }
-            const likeNum = await Like.countDocuments(whereReplyLike)
-            if (likeNum > 0) {
-              comments[i].replies[n]['isLike'] = true
-            } else {
-              comments[i].replies[n]['isLike'] = false
-            }
-          }
-        }
-      }
-      return res.json({
-        status_code: 200,
-        message: '获取评论成功！',
-        data: comments
-      })
     }
-  )
+  ])
+  let replys = await Reply.aggregate([
+    {
+      $match: whereComment
+    },
+    {
+      $lookup: {
+        from: 'user',
+        localField: 'replyId',
+        foreignField: '_id',
+        as: 'userInfo'
+      }
+    },
+    {
+      $project: {
+        replyId: {
+          $cond: [
+            {
+              $eq: ['$anonymous', true]
+            },
+            '',
+            '$replyId'
+          ]
+        },
+        blogId: 1,
+        likeNum: 1,
+        content: 1,
+        anonymous: 1,
+        replyName: {
+          $cond: [
+            {
+              $eq: ['$anonymous', true]
+            },
+            '',
+            '$replyName'
+          ]
+        },
+        userInfo: { avatar: 1 }
+      }
+    }
+  ])
+
+  //转换id数组
+  let commentids = comments.filter(item => {
+    item._id
+  })
+  let replyids = replys.filter(item => {
+    item._id
+  })
+
+  // 获取当前用户点赞列表
+  const commentsLikes = await Like.find({
+    commentId: { $in: commentids },
+    userId: req.query.userId
+  })
+  const replysLikes = await Like.find({
+    replyId: { $in: replyids },
+    userId: req.query.userId
+  })
+
+  // 当前用户点赞列表转换id数组
+  const commentsLikesids = commentsLikes.filter(item => {
+    return item.commentId
+  })
+  const replysLikesids = replysLikes.filter(item => {
+    return item.replyId
+  })
+
+  // 循环判断是否点赞
+  let commentArr = []
+  let replyArr = []
+  for (let i = 0; i < comments.length; i++) {
+    if (commentsLikesids.indexOf(comments[i]._id) != -1) {
+      comments[i]['isLike'] = true
+      commentArr.push(comments[i])
+    } else {
+      comments[i]['isLike'] = false
+      commentArr.push(comments[i])
+    }
+  }
+  for (let i = 0; i < replys.length; i++) {
+    if (replysLikesids.indexOf(replys[i]._id) != -1) {
+      replys[i]['isLike'] = true
+      replyArr.push(replys[i])
+    } else {
+      replys[i]['isLike'] = true
+      replyArr.push(replys[i])
+    }
+  }
+
+  // 合并评论回复
+  for (let i = 0; i < replyArr.length; i++) {
+    if (commentids.indexOf(replyArr[i]._id) != -1) {
+      commentArr[commentids.indexOf(replyArr[i]._id)]['replys'].push(
+        replyArr[i]
+      )
+    }
+  }
+
+  return res.json({
+    status_code: 200,
+    message: '评论获取成功！',
+    data: commentArr
+  })
 }
 
 // rank定时任务

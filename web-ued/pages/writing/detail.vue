@@ -130,7 +130,7 @@
                         {{firstItem.likeNum}}
                       </div>
                       <div class="comment_unit_bottom_btn margin_left_15" @click="replyFirstComBtn(firstItem._id)" v-bind:class="{comment_unit_bottom_btn_selected: firstItem.isShowReplyFirstCom}">回复</div>
-                      <div class="comment_unit_bottom_btn margin_left_15" v-if="user._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover" @click="deleteFirstCom(firstItem._id)">删除</div>
+                      <div class="comment_unit_bottom_btn margin_left_15" v-if="detailInfo.userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover" @click="deleteFirstCom(firstItem._id)">删除</div>
                     </div>
                     <div class="comment_unit_bottom_right">{{firstItem.createAt | formatDateDay}}</div>
                   </div>
@@ -184,7 +184,7 @@ export default {
       required: false
     }
   },
-  data() {
+  data () {
     return {
       list: custom.search.list[0],
       isAnonymous: false,
@@ -231,7 +231,11 @@ export default {
     })),
       this.visualScroll.observe(document.querySelector("#praise"));
   },
-  destroyed() {
+  created () {
+    this.getBlog();
+    this.getBlogComment();
+  },
+  destroyed () {
     this.visualScroll.disconnect();
   },
   methods: {
@@ -239,7 +243,7 @@ export default {
       this.$store.commit("modalVisible", true);
     },
     //获取详情列表
-    async getBlog() {
+    async getBlog () {
       const res = await this.$axios.get(
         `${process.env.BASE_URL}/web_api/getBlog?blogId=${this.detailParams.detailId}`
       );
@@ -248,13 +252,13 @@ export default {
       // console.log(this.detailInfo);
     },
     // 详情点赞
-    async praise() {
+    async praise () {
       if (this.praiseNum < 50) {
         this.praiseNum++;
         this.setPraise();
       }
     },
-    async setPraise() {
+    async setPraise () {
       let praiseParams = {
         blogId: this.detailParams.detailId,
         userId: this.user._id,
@@ -263,14 +267,13 @@ export default {
       };
       // console.log(praiseParams);
       const { data } = await this.$axios.get(
-        `${process.env.BASE_URL}/web_api/likeBlog?userId=${praiseParams.userId}$blogId=${praiseParams.blogId}$count=${praiseParams.count}`
+        `${process.env.BASE_URL}/web_api/likeBlog?userId=${praiseParams.userId}&blogId=${praiseParams.blogId}&count=${praiseParams.count}`
       );
       console.log(data);
       console.log(111);
     },
     //获取评论列表
-    async getBlogComment() {
-      console.log(this.user);
+    async getBlogComment () {
       const res = await this.$axios.get(
         `${process.env.BASE_URL}/web_api/getBlogComment?blogId=${this.detailParams.detailId}`
       );
@@ -283,7 +286,7 @@ export default {
       // });
     },
     // 发表一级评论
-    async submitFistCom() {
+    async submitFistCom () {
       if (!this.haveFirstComContent) return;
       const params = {
         commentName: this.user.nickName,
@@ -303,32 +306,32 @@ export default {
       }
     },
     // 监听评论框
-    onEditorChange({ editor, html, text }) {
+    onEditorChange ({ editor, html, text }) {
       // console.log(editor, html, text);
       this.firstComContent = text;
       this.commentHtml = html;
       this.haveFirstComContent = html ? true : false;
     },
     // 评论删除按钮悬浮
-    mouseHoverDelComBtn(index, id, isHover) {
+    mouseHoverDelComBtn (index, id, isHover) {
       this.deleteComBtnIsHover = isHover;
       this.firstCommenterId = id;
       this.firstComIndex = index;
     },
     // 评论点赞按钮悬浮
-    mouseHoverSupComBtn(index, isHover) {
+    mouseHoverSupComBtn (index, isHover) {
       this.supportComBtnIsHover = isHover;
       this.firstComIndex = index;
     },
     // 评论点赞
-    commentLike(comId) {
+    commentLike (comId) {
       this.commentList.forEach(item => {
         if (item._id === comId && !item.firstComIsLike) {
           const res = this.$axios.get(
             `${process.env.BASE_URL}/web_api/commentLike?blogId=` +
-              this.detailParams.detailId +
-              `&commentId=` +
-              item._id
+            this.detailParams.detailId +
+            `&commentId=` +
+            item._id
           );
           item.firstComIsLike = !item.firstComIsLike;
           item.likeNum = item.likeNum + 1;
@@ -336,7 +339,7 @@ export default {
       });
     },
     // 回复一级评论按钮
-    replyFirstComBtn(comId) {
+    replyFirstComBtn (comId) {
       this.commentList.forEach(item => {
         if (item._id === comId) {
           item.isShowReplyFirstCom = !item.isShowReplyFirstCom;
@@ -344,7 +347,7 @@ export default {
       });
     },
     // 删除一级评论
-    async deleteFirstCom(comId) {
+    async deleteFirstCom (comId) {
       const res = await this.$axios.get(
         `${process.env.BASE_URL}/web_api/deleteComment?commentId=${comId}`
       );
@@ -353,10 +356,10 @@ export default {
       }
     },
     //是否匿名
-    anonymousClick() {
+    anonymousClick () {
       this.isAnonymous = !this.isAnonymous;
     },
-    submit() {}
+    submit () { }
   }
 };
 </script>
