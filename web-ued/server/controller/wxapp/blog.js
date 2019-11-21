@@ -5,11 +5,16 @@ var Reply = require('../../models/reply.js') //引入comment表
 var User = require('../../models/user.js') //引入user表
 
 //blog详情
-exports.getBlog = function(req, res) {
+exports.getBlog = async function(req, res) {
   const bid = req.query.blogId
   const whereBlog = {
     _id: bid
   }
+  await Blog.where(whereBlog).updateOne({
+    $inc: {
+      viewNum: 1
+    }
+  })
   Blog.findOne(whereBlog, async function(err, blog) {
     if (err) {
       return res.json({
@@ -18,31 +23,31 @@ exports.getBlog = function(req, res) {
         data: null
       })
     }
-    let updateBlog = {
-      viewNum: blog.viewNum ? blog.viewNum + 1 : 1
-    }
-    await Blog.updateOne(whereBlog, updateBlog)
-    blog.viewNum = blog.viewNum ? blog.viewNum + 1 : 1
     const userInfo = await User.findById(blog.userId)
-    blog['userInfo'] = userInfo
     const whereLike = {
       userId: blog.userId,
       blogId: blog._id
     }
     Like.findOne(whereLike, function(err, like) {
       if (like) {
-        blog['isLike'] = true
         return res.json({
           status_code: 200,
           message: '获取成功！',
-          data: blog
+          data: {
+            blog: blog,
+            userInfo: userInfo,
+            isLike: true
+          }
         })
       } else {
-        blog['isLike'] = false
         return res.json({
           status_code: 200,
           message: '获取成功！',
-          data: blog
+          data: {
+            blog: blog,
+            userInfo: userInfo,
+            isLike: true
+          }
         })
       }
     })
@@ -83,8 +88,6 @@ exports.getList = async function(req, res) {
           content: 1,
           isGood: 1,
           isAudit: 1,
-          author: 1,
-          userId: 1,
           smallImgUrl: 1,
           midImgUrl: 1,
           bigImgUrl: 1,
@@ -98,13 +101,13 @@ exports.getList = async function(req, res) {
         }
       },
       {
+        $sort: { rank: -1 }
+      },
+      {
         $skip: (page * 1 - 1) * limit
       },
       {
         $limit: limit
-      },
-      {
-        $sort: { rank: -1 }
       }
     ],
     (err, books) => {

@@ -92,7 +92,7 @@ var isLogin = function(req, res, next) {
             data: null
           })
         } else {
-          next() 
+          next()
         }
       } else {
         next()
