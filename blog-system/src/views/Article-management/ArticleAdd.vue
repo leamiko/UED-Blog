@@ -136,11 +136,10 @@ export default {
   },
   mounted () {
     this.blogId = this.$route.query.blogId ? this.$route.query.blogId : ''
-    this.getAuthorList()
     if (this.blogId) {
       this.getArticleInfo()
     } else {
-      // this.getAuthorList()
+      this.getAuthorList()
     }
   },
   methods: {
