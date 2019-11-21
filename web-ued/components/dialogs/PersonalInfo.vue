@@ -11,8 +11,8 @@
             </div>
             <p>头像</p>
             <div class="cus-flex cus-align-center">
-                <div v-for="(item,index) in avatorList" @click="chooseAvator(item)" :key="index">
-                    <el-avatar :key="index" :size="50" :src="item.url" class="align-top" shape="square"></el-avatar>
+                <div v-for="item in avatorList" @click="chooseAvator(item)" :key="item._id">
+                    <el-avatar :size="50" :src="item.url" class="align-top" shape="square" :class="{'img_selected': item.isSelect}"></el-avatar>
                 </div>
             </div>
         </div>
@@ -20,6 +20,8 @@
             <el-button type="primary" round size="large" @click="submit">确定</el-button>
         </div>
     </el-dialog>
+
+    
 </template>
 <style lang="scss" scoped>
     .info_dialog {
@@ -38,6 +40,14 @@
                 line-height: 16px;
                 cursor: pointer;
             }
+        }
+
+        .img_selected{
+            border-radius: 50%;
+            border:3px solid #3376FF;
+            width: 54px!important;
+            height: 54px!important;
+            line-height: 54px!important;
         }
 
         p {
@@ -76,7 +86,7 @@
                 nameList: [],
                 memberInfo: {}, // 用户信息
                 imgUrl: null,
-                avatorList: [] // 头像列表
+                avatorList: [], // 头像列表
             }
         },
         mounted() {
@@ -90,14 +100,22 @@
             handleClose(done) {
                 this.$emit('hide', true);
                  this.show = false;
-                done();
+               // done();
             },
             // 获取头像
             async getAvatarList() {
                 const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/getAvatarList`);
                  if (res.status == 200) {
-                    //  console.log(res)
                     this.avatorList = res.data.data
+                    // this.avatorList.forEach(e => {
+                    //     this.newList.push({
+                    //         isSelect: false,
+                    //         url: e.url
+                    //     })
+                    // })
+                    for(let i = 0 ; i< this.avatorList.length ; i++) {
+                        this.$set(this.avatorList, i,{isSelect: false, url: this.avatorList[i].url})
+                    }
                 }
 
             },
@@ -114,6 +132,10 @@
             },
             // // 选择头像
             chooseAvator(item) {
+                this.avatorList.forEach(e => {
+                    e.isSelect =false
+                })
+                item.isSelect = true
                 this.imgUrl = item.url
                 // this.uploadImgToBase64(item.srcElement.currentSrc, (res) => {
                 //     this.imgUrl = res
@@ -149,7 +171,8 @@
                     if (user) {
                         localStorage.removeItem('user')
                         localStorage.setItem("user", JSON.stringify(user));
-                        this.show = false
+                       this.$emit('hide', true);
+                       this.show = false;
                         this.$message({
                             message: '信息更新成功',
                             type: 'success'

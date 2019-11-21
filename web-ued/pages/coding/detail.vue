@@ -273,6 +273,7 @@ export default {
       Id: "", // 当前问题Id
       detailInfo: {}, // 详情信息
       praiseNum: 0, // 点赞数
+      praiseIncrement: 0, // 点赞增量
       interestList: [], // 感兴趣List
       interestOriginal: [], // 原始bugList
       interestUnfiltered: [], // 未过滤兴趣List
@@ -326,7 +327,25 @@ export default {
       if (res.status === 200) {
         if (res.data.data && res.data.data !== null) {
           this.detailInfo = res.data.data;
-          this.praiseNum = this.detailInfo.likeNum;
+          // 获取当前登录人对当前详情的点赞数
+          const user = JSON.parse(localStorage.getItem("user"));
+          let userParams = {            
+            userId: user._id,
+            bugId: this.Id,
+          }
+          const { data } = await this.$axios.post(`${process.env.BASE_URL}/web_api/getThisBugUserLikeNum`, userParams);
+          if (data.status_code === 200) {
+            if (data.data !== null) {
+               this.praiseNum = data.data.count ? data.data.count : 0;
+            } else {
+              this.praiseNum = 0;
+            }           
+          } else {
+            this.$notify.error({
+              title: '错误',
+              message: data.message
+            });
+          }
           // setTimeout(() => {
           //   this.loading = false;
           // }, 500);
@@ -345,7 +364,7 @@ export default {
         // }, 500);
         this.$notify.error({
           title: "错误",
-          message: data.data.message
+          message: res.data.message
         });
       }
       const tagList = this.detailInfo.tags;
@@ -423,7 +442,7 @@ export default {
       } else {
         this.$notify.error({
           title: "错误",
-          message: data.data.message
+          message: data.message
         });
       }
     },
@@ -443,7 +462,8 @@ export default {
       clearTimeout();
       if (this.praiseNum < 50) {
         this.praiseNum++;
-        setTimeout(()=>this.setPraise(), 5000);
+        this.praiseIncrement++;
+        setTimeout(()=>this.setPraise(), 3000);
       }
     },
     async setPraise() {
@@ -451,14 +471,15 @@ export default {
       let praiseParams = {
           bugId: this.Id,
           userId: user._id,
-          count: this.praiseNum,
-          likeNum: Number(this.detailInfo.likeNum)
+          count: this.praiseIncrement,
         }
         const { data } = await this.$axios.post(`${process.env.BASE_URL}/web_api/LikeBugById`, praiseParams);
-        if (data.status_code !== 200) {
+        if (data.status_code === 200) {          
+          this.praiseIncrement = 0;
+        } else {
           this.$notify.error({
             title: '错误',
-            message: data.data.message
+            message: data.message
           });
         }
     },

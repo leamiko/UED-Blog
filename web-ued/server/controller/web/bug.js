@@ -19,7 +19,8 @@ exports.AddBugItems = async function (req, res, next) {
       bugStatus: req.body.bugStatus,
       bugSolution: req.body.bugSolution,
       author: req.body.author,
-      userId: req.body.userId
+      userId: req.body.userId,
+      anonymous: req.body.anonymous
     }
     const foundthis = await Bug.findOne({
       title: postData.title
@@ -456,23 +457,7 @@ exports.getBugComment = async function (req, res, next) {
       bugId: req.query.bugId
     }
     const comments = await bugComment.aggregate(
-      [
-        // {
-        //   $project: {
-        //     // anonymous: 'anonymous',
-        //     commenterName: {
-        //       // $cond: ['anonymous', 0, 1]
-        //       $cond: {
-        //         if: {
-        //           $eq: ['$anonymous']
-        //         },
-        //         then: 0,
-        //         else: 1
-        //       }
-        //     }
-        //   }
-        // },
-        {
+      [{
           $match: {
             bugId: whereComment.bugId
           }
@@ -484,7 +469,25 @@ exports.getBugComment = async function (req, res, next) {
             foreignField: 'commentId',
             as: 'replies'
           }
-        }
+        },
+        {
+          $project: {
+            commentUserId: {
+              $cond: [{
+                $eq: ["$anonymous", true]
+              }, "", "$commentUserId"]
+            },
+            blogId: 1,
+            likeNum: 1,
+            content: 1,
+            anonymous: 1,
+            commenterName: {
+              $cond: [{
+                $eq: ["$anonymous", true]
+              }, "", "$commenterName"]
+            }
+          }
+        },
       ])
     res.json({
       status_code: 200,

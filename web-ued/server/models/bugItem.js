@@ -47,6 +47,10 @@ var BugSchema = new Schema({
     type: Number, //评论最高点赞数
     default: 0
   },
+  anonymous: {
+    type: Number, // 匿名
+    default: 0
+  },
   rank: {
     type: Number, //rank
     default: 0

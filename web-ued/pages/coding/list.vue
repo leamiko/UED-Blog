@@ -137,6 +137,7 @@ export default {
           this.noData = false;
           this.bugList = data.data;
           this.count = data.count;
+          this.listShow = true;
         } else {
           this.noData = true;
           if (this.solveState !== null) {

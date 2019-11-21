@@ -62,17 +62,52 @@ exports.getList = async function(req, res) {
   if (req.body.filters.blogType) {
     filters.blogType = req.body.filters.blogType
   }
-  Blog.find(
-    filters,
-    null,
-    {
-      skip: (page * 1 - 1) * 10,
-      limit: limit,
-      sort: { createdAt: -1 }
-    },
-    function(err, books) {
+  Blog.aggregate(
+    [
+      {
+        $match: filters
+      },
+      {
+        $lookup: {
+          from: 'user',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'userInfo'
+        }
+      },
+      {
+        $project: {
+          title: 1,
+          blogType: 1,
+          info: 1,
+          content: 1,
+          isGood: 1,
+          isAudit: 1,
+          author: 1,
+          userId: 1,
+          smallImgUrl: 1,
+          midImgUrl: 1,
+          bigImgUrl: 1,
+          likeNum: 1,
+          viewNum: 1,
+          commentNum: 1,
+          commentLikeNum: 1,
+          rank: 1,
+          userInfo: { nickName: 1, account: 1, avatar: 1 }
+        }
+      },
+      {
+        $skip: (page * 1 - 1) * limit
+      },
+      {
+        $limit: limit
+      },
+      {
+        $sort: { rank: -1 }
+      }
+    ],
+    (err, books) => {
       if (err) {
-        console.log(err)
         return res.json({
           status_code: 201,
           message: err,
@@ -82,7 +117,9 @@ exports.getList = async function(req, res) {
       return res.json({
         status_code: 200,
         message: '获取列表成功！',
-        data: books
+        data: {
+          data: books
+        }
       })
     }
   )
