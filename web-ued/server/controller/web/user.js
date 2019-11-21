@@ -177,12 +177,15 @@ exports.editInfo = function(req, res) {
           data: null
         })
       }
-      if (user && (user._id !== req.body._id)) {
-        return res.json({
-          status_code: 201,
-          message: '该昵称已存在！',
-          data: null
-        })
+      if (user)  {
+        if(user._id != req.body._id) {
+          console.log(user._id)
+          return res.json({
+            status_code: 201,
+            message: '该昵称已存在！',
+            data: null
+          })
+        }
       }
       User.findByIdAndUpdate(req.body._id, req.body, { new: true }, function(
           errors,
@@ -196,7 +199,6 @@ exports.editInfo = function(req, res) {
             })
           }
           if (result) {
-            console.log(result)
             return res.json({
               status_code: 200,
               message: '修改成功！',
