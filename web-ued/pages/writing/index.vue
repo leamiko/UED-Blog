@@ -31,7 +31,8 @@
         <div class="right_articles" v-infinite-scroll="getWriteList" infinite-scroll-disabled="disabled">
           <div class="article_block" v-for="(item,index) in lists" @click="goDetail(item)" :hidden="lists.length == 0"
             :key="index">
-            <img class="title_img" :src="item.midImgUrl" alt="" :style="{'visibility': item.bigImgUrl ? 'visible': 'hidden'}">
+            <img class="title_img" :src="item.midImgUrl" alt=""
+              :style="{'visibility': item.bigImgUrl ? 'visible': 'hidden'}">
             <div>
               <p>{{item.title}}</p>
               <p v-html="$options.filters.textLength(item.info, 38)"></p>
@@ -50,7 +51,13 @@
               </p>
             </div>
           </div>
+          <!-- no result -->
+          <div class="no_result" v-if="lists.length == 0">
+            <img src="../../assets/img/image/img-write-blank.png" alt="">
+            <span>暂时没有文章，赶快联系我们投稿吧！投稿邮箱：wangbing@zhongruigroup.com</span>
+          </div>
         </div>
+
       </div>
     </div>
   </my-scrollbar>
@@ -65,7 +72,18 @@
     display: flex;
   }
 
+  .no_result {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
 
+    span {
+      font-size: 14px;
+      color: #A0A0A0;
+      margin-left: 30px;
+    }
+  }
 
   .container {
     padding: 48px 0;

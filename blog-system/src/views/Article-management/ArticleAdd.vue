@@ -31,10 +31,10 @@
                 initialValue:model.author}
         ]" placeholder="请选择作者">
           <!-- 需要所有文章分类 -->
-          <a-select-option v-for="(item,index) in authorList" :key="index" :value="item.account">{{item.account}}</a-select-option>
+          <a-select-option v-for="item in authorList" :key="item._id">{{item.nickName}}</a-select-option>
         </a-select>
       </a-form-item>
-      
+
       <!-- <a-form-item label="作者" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
         <a-input v-decorator="[
           'model.author',
@@ -83,21 +83,24 @@
       <a-form-item label="文章内容" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
         <quill-editor v-model="model.content" ref="myTextEditor" :options="editorOption"></quill-editor>
       </a-form-item>
-      <a-form-item label="图片上传" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
-       <a-upload listType="picture-card" :fileList="fileList" :beforeUpload="beforeUpload" :multiple="true" :remove="remove" @preview="handlePreview">
-          <div v-if="fileList.length < 2">
+      <a-form-item label="图片上传(大图)" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
+       <a-upload listType="picture-card" :fileList="bigList" :beforeUpload="beforeUpload"  :remove="remove" @preview="handlePreview">
+          <div v-if="bigList.length < 1">
             <a-icon type="plus" />
             <div class="ant-upload-text">Upload</div>
           </div>
         </a-upload>
-        <!-- <viewer :images="imgList" style="margin-top: 20px;">
-          <div class="flex_center_wrap">
-            <div class="imgDiv" v-for="(src, index) in imgList" :key="index">
-              <img class="imgStyle" :src="src" />
-              <a-icon class="icon" type="close" @click="remove(index)" />
-            </div>
+        <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+          <img alt="example" style="width: 100%" :src="previewImage" />
+        </a-modal>
+      </a-form-item>
+      <a-form-item label="图片上传(小图)" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
+       <a-upload listType="picture-card" :fileList="smallList" :beforeUpload="beforeUploadSmall" :remove="removeSmall" @preview="handlePreview">
+          <div v-if="smallList.length < 1">
+            <a-icon type="plus" />
+            <div class="ant-upload-text">Upload</div>
           </div>
-        </viewer> -->
+        </a-upload>
         <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
           <img alt="example" style="width: 100%" :src="previewImage" />
         </a-modal>
@@ -121,21 +124,23 @@ export default {
       editorOption: {},
       formLayout: 'horizontal',
       form: this.$form.createForm(this),
-      model: {},
+      model: {
+      },
       blogId: '',
       previewVisible: false,
       previewImage: '',
-      fileList: [], // 上传文件列表
-      imgList: [],
+      bigList: [], // 上传图片大图
+      smallList: [], // 上传图片小图
       authorList: []
     }
   },
   mounted () {
     this.blogId = this.$route.query.blogId ? this.$route.query.blogId : ''
+    this.getAuthorList()
     if (this.blogId) {
       this.getArticleInfo()
     } else {
-      this.getAuthorList()
+      // this.getAuthorList()
     }
   },
   methods: {
@@ -148,28 +153,28 @@ export default {
       const res = await this.$http.get(url, params)
       if (res.status_code === 200) {
         this.model = res.data
-        this.fileList = [
-          {
-            uid: '-1',
-            name: 'big.png',
-            status: 'done',
-            url: this.model.bigImgUrl,
-            thumbUrl: this.model.bigImgUrl
-          }, {
-            uid: '-2',
-            name: 'small.png',
-            status: 'done',
-            url: this.model.midImgUrl,
-            thumbUrl: this.model.midImgUrl
-          }
-        ]
+        this.model.blogType = this.model.blogType.toString()
+        this.bigList = [{ uid: '-1',
+          name: 'big.png',
+          status: 'done',
+          url: this.model.bigImgUrl,
+          thumbUrl: this.model.bigImgUrl
+        }]
+        this.smallList = [{
+          uid: '-2',
+          name: 'small.png',
+          status: 'done',
+          url: this.model.midImgUrl,
+          thumbUrl: this.model.midImgUrl
+        }]
       }
     },
     // 获取作者列表
-    getAuthorList: async function() {
+    getAuthorList: async function () {
       const url = await this.api.getUserList
       const res = await this.$http.get(url)
-      if(res.status_code == 200) {
+      console.log(res)
+      if (res.status_code === 200) {
         this.authorList = res.data
       }
     },
@@ -181,11 +186,15 @@ export default {
       this.previewVisible = true
     },
     beforeUpload (file) {
-      this.uploadFile(file)
+      this.uploadFile(0, file)
+      return false
+    },
+    beforeUploadSmall (file) {
+      this.uploadFile(1, file)
       return false
     },
     // 上传文件
-    uploadFile: async function (file) {
+    uploadFile: async function (type, file) {
       var timestamp = new Date().getTime()
       await client()
         .put('UED/' + timestamp + file.name, file)
@@ -194,34 +203,30 @@ export default {
           file.url = res.url
           file.imgName = res.name
           file.thumbUrl = res.url
-          this.fileList.push(file)
-          console.log(this.fileList)
+          if (type === 0) {
+            this.bigList.push(file)
+          } else {
+            this.smallList.push(file)
+          }
           this.$message.success('upload successfully.')
-          this.imgList.push(res.url)
         }).catch(err => {
           this.$message.error(`${err},upload failed.`)
         })
     },
     remove (file) {
-      const index = this.fileList.indexOf(file)
-      const newFileList = this.fileList.slice()
-      newFileList.splice(index, 1)
-      this.fileList = newFileList
+      const newFileList = this.bigList.slice()
+      newFileList.splice(0, 1)
+      this.bigList = newFileList
+      // const index = this.fileList.indexOf(file)
+      // const newFileList = this.fileList.slice()
+      // newFileList.splice(index, 1)
+      // this.fileList = newFileList
     },
-    // async handleChange ({ file }) {
-    //   if (file.status === 'success') {
-    //     this.fileList.push(file)
-    //     console.log(file)
-    //   }
-    //   let url = Math.round(new Date().getTime() / 1000) + '.' + file.name.split('.')[1]
-    //   await client().put('ued/' + url, file.originFileObj, {
-    //   }).then(function (result) {
-    //     console.log(result)
-    //     alert('上传成功')
-    //   }).catch(function (err) {
-    //     console.log(err)
-    //   })
-    // },
+    removeSmall (file) {
+      const newFileList = this.smallList.slice()
+      newFileList.splice(0, 1)
+      this.smallList = newFileList
+    },
     // 组件校验
     handleSubmit (e) {
       e.preventDefault()
@@ -233,29 +238,31 @@ export default {
     },
     // 保存
     save () {
-      let bigImgUrl
-      let midImgUrl
-      for (let i = 0; i < this.fileList.length - 1; i++) {
-        if (this.fileList[i].size > this.fileList[i + 1].size) {
-          bigImgUrl = this.fileList[i].url
-          midImgUrl = this.fileList[i + 1].url
-        } else {
-          bigImgUrl = this.fileList[i + 1].url
-          midImgUrl = this.fileList[i].url
-        }
-      }
+      // let bigImgUrl
+      // let midImgUrl
+      // for (let i = 0; i < this.fileList.length - 1; i++) {
+      //   if (this.fileList[i].size > this.fileList[i + 1].size) {
+      //     bigImgUrl = this.fileList[i].url
+      //     midImgUrl = this.fileList[i + 1].url
+      //   } else {
+      //     bigImgUrl = this.fileList[i + 1].url
+      //     midImgUrl = this.fileList[i].url
+      //   }
+      // }
       this.form.validateFields(async (err, values) => {
+        console.log(values.model.author)
         if (!err) {
           const url = this.api.addEditBlog
           const params = {
-            _id: this.blogId,
+            _id: this.blogId ? this.blogId : null,
             title: values.model.title,
             blogType: values.model.blogType,
             info: values.model.info,
             content: this.model.content,
-            bigImgUrl: bigImgUrl,
-            midImgUrl: midImgUrl,
-            author: this.blogId ? values.model.author : null
+            bigImgUrl: this.bigList[0].url,
+            midImgUrl: this.smallList[0].url,
+            //   author: !this.blogId ? values.model.author.author : null,
+            userId: !this.blogId ? values.model.author : null
           }
           const res = await this.$http.post(url, params)
           if (res.status_code === 200) {

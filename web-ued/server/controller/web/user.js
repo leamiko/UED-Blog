@@ -170,38 +170,42 @@ exports.editInfo = function(req, res) {
     },
     function(err, user) {
       if (err) {
+        console.log(err)
         return res.json({
           status_code: 201,
           message: err,
           data: null
         })
       }
-      if (user) {
-        // 如果有该昵称的用户，则昵称重复
-        if (user._id != req.body.id) {
-          res.send('该昵称已存在！')
-          return
-        }
-      }
-      User.findByIdAndUpdate(req.body.id, req.body, { new: true }, function(
-        errors,
-        result
-      ) {
-        if (errors) {
+      if (user)  {
+        if(user._id != req.body._id) {
+          console.log(user._id)
           return res.json({
             status_code: 201,
-            message: errors,
+            message: '该昵称已存在！',
             data: null
           })
         }
-        if (result) {
-          return res.json({
-            status_code: 200,
-            message: '修改成功！',
-            data: result
-          })
-        }
-      })
+      }
+      User.findByIdAndUpdate(req.body._id, req.body, { new: true }, function(
+          errors,
+          result
+        ) {
+          if (errors) {
+            return res.json({
+              status_code: 201,
+              message: errors,
+              data: null
+            })
+          }
+          if (result) {
+            return res.json({
+              status_code: 200,
+              message: '修改成功！',
+              data: result
+            })
+          }
+        })
     }
   )
 }
