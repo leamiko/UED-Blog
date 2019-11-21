@@ -185,6 +185,7 @@
                             type: 'success'
                         });
                     }
+                    this.$store.commit("flag", new Date().toLocaleTimeString());
                 } else {
                     this.$notify.error({
                         title: '错误',

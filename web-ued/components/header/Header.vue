@@ -53,9 +53,14 @@
           <el-button
             type="text"
             @click="modalVisible = true"
-            @mouseenter.native="showMsg = true"
-            @mouseleave.native="showMsg = false"
+            v-if="$store.state.flag===null"
           ><span :class="{ login_text: isChange, login_text_02: !isChange }">登录</span></el-button>
+          <div
+            class="avatar"
+            @mouseenter="showMsg = true"
+            @mouseleave="showMsg = false"
+            v-if="$store.state.flag!==null"
+          ><span>{{userName}}</span><img :src="avatar" /></div>
           <!-- <el-button
             type="text"
             @click="infoShow = true"
@@ -155,10 +160,19 @@ export default {
       showBadge: 2,
       showMsg: "",
       infoShow: false, // 个人信息弹窗
-      className: "info_dialog"
+      className: "info_dialog",
+      userName: '',
+      avatar: '',
     };
   },
-
+  watch: {
+    '$store.state.flag': function () {
+      if (this.$store.state.flag !== null) {
+        this.avatar = JSON.parse(localStorage.getItem('user')).avatar;
+        this.userName = JSON.parse(localStorage.getItem('user')).nickName;
+      }
+    }
+  },
   mounted () {
     if (this.innerStyle) {
       Object.keys(this.innerStyle).forEach(key => {
@@ -186,7 +200,7 @@ export default {
         `${process.env.BASE_URL}/web_api/logOut`
       );
       localStorage.removeItem("user");
-      // console.log(res);
+      this.$store.commit("flag", null);
     },
     //判断是否登录
     async isLogin () {
@@ -196,6 +210,11 @@ export default {
       if (!res.data && localStorage.getItem("user")) {
         localStorage.removeItem("user");
         window.location.reload();
+      }
+      if (localStorage.getItem('user') !== null) {
+        this.$store.commit("flag", new Date().toLocaleTimeString());
+        this.avatar = JSON.parse(localStorage.getItem('user')).avatar;
+        this.userName = JSON.parse(localStorage.getItem('user')).nickName;
       }
     },
     // 调用微信扫码API
@@ -423,5 +442,20 @@ a {
 }
 .margin_right {
   margin-left: -450px !important;
+}
+.avatar {
+  margin-bottom: 10px;
+  span {
+    display: inline-block;
+    margin-bottom: 18px;
+  }
+  img {
+    position: relative;
+    top: 10px;
+    margin-left: 28px;
+  }
+  &:hover {
+    cursor: pointer;
+  }
 }
 </style>
