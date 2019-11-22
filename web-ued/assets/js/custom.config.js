@@ -34,7 +34,7 @@ module.exports = {
         {label: '中瑞集团', redirectUrl: '/'}
       ]}
     ],
-    desc: '©2014 All rights reserved. 青岛中瑞集团 版权所有 法律声明 鲁ICP备14035434号-1'
+    desc: '©2019 All rights reserved. 青岛中瑞集团 版权所有 法律声明 鲁ICP备14035434号-1'
   },
   search: {
     list: [
