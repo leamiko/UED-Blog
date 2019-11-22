@@ -331,7 +331,7 @@ a {
 .badge_hover {
   z-index: 99;
   position: absolute;
-  top: 58px;
+  top: 63px;
   padding: 171px 131px;
   width: 440px;
   height: 530px;
@@ -388,15 +388,18 @@ a {
   margin-left: -450px !important;
 }
 .avatar {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   span {
+    width: 80px;
     display: inline-block;
-    margin-bottom: 18px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: keep-all;
   }
   img {
+    top: 3px;
     position: relative;
-    top: 10px;
-    margin-left: 28px;
   }
   &:hover {
     cursor: pointer;
