@@ -92,8 +92,4 @@ export const actions = {
   }) {
     commit('SET_TOKEN', null)
   },
-  // isLogin({ commit }, data) {
-  //   console.log(data)
-  //   commit('isLogin', data)
-  // }
 }
