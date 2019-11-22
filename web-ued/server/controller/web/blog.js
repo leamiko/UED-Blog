@@ -74,29 +74,39 @@ exports.getHomeList = async function(req, res) {
   })
   let data = []
   if (technology) {
-    const userInfo = await Blog.findById(technology.userId)
-    technology['userInfo'] = userInfo
-    data.push(technology)
+    const userInfo = await User.findById(technology.userId)
+    data.push({
+      blog: technology,
+      userInfo: userInfo
+    })
   }
   if (interaction) {
-    const userInfo = await Blog.findById(interaction.userId)
-    interaction['userInfo'] = userInfo
-    data.push(interaction)
+    const userInfo = await User.findById(interaction.userId)
+    data.push({
+      blog: interaction,
+      userInfo: userInfo
+    })
   }
   if (design) {
-    const userInfo = await Blog.findById(design.userId)
-    design['userInfo'] = userInfo
-    data.push(design)
+    const userInfo = await User.findById(design.userId)
+    data.push({
+      blog: design,
+      userInfo: userInfo
+    })
   }
   if (manage) {
-    const userInfo = await Blog.findById(manage.userId)
-    manage['userInfo'] = userInfo
-    data.push(manage)
+    const userInfo = await User.findById(manage.userId)
+    data.push({
+      blog: manage,
+      userInfo: userInfo
+    })
   }
   if (other) {
-    const userInfo = await Blog.findById(other.userId)
-    other['userInfo'] = userInfo
-    data.push(other)
+    const userInfo = await User.findById(other.userId)
+    data.push({
+      blog: other,
+      userInfo: userInfo
+    })
   }
   return res.json({
     status_code: 200,
@@ -118,19 +128,25 @@ exports.getWriteBest = async function(req, res) {
   })
   let data = []
   if (popular) {
-    const userInfo = await Blog.findById(popular.userId)
-    popular['userInfo'] = userInfo
-    data.push(popular)
+    const userInfo = await User.findById(popular.userId)
+    data.push({
+      blog: popular,
+      userInfo: userInfo
+    })
   }
   if (best) {
-    const userInfo = await Blog.findById(best.userId)
-    best['userInfo'] = userInfo
-    data.push(best)
+    const userInfo = await User.findById(best.userId)
+    data.push({
+      blog: best,
+      userInfo: userInfo
+    })
   }
   if (comment) {
-    const userInfo = await Blog.findById(comment.userId)
-    comment['userInfo'] = userInfo
-    data.push(comment)
+    const userInfo = await User.findById(comment.userId)
+    data.push({
+      blog: comment,
+      userInfo: userInfo
+    })
   }
   // data.push(popular, best, comment)
   return res.json({
