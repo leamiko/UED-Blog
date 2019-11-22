@@ -34,22 +34,22 @@
             @click="goDetail(item)"
           >
             <img
-              :src="item.midImgUrl"
+              :src="item.blog.midImgUrl"
               class="my-img"
             >
             <div>
-              <span class="list_title">{{item.title}}</span>
-              <span class="desc">{{item.info}}</span>
+              <span class="list_title">{{item.blog.title}}</span>
+              <span class="desc">{{item.blog.info}}</span>
               <div class="cus-flex cus-align-center">
                 <el-avatar
                   size="small"
-                  :src="avatar"
+                  :src="item.userInfo.avatar"
                   class="avatar"
                 ></el-avatar>
-                <span class="text_color_time">没有作者 · {{item.updateAt | datetimeFormat}}</span>&emsp;&emsp;
-                <span class="text_color">{{ item.blogType == 1 ? "技术" : item.blogType == 2 ? "交互" :item.blogType == 3 ? "设计" :item.blogType == 4 ? "管理" :"其它" }}</span>&emsp;&emsp;
-                <span class="text_color"><img src="@/assets/img/icon/eyes.svg">{{item.viewNum}}</span>&emsp;&emsp;
-                <span class="text_color"><img src="@/assets/img/icon/like.svg">{{item.likeNum}}</span>
+                <span class="text_color_time">{{item.userInfo.nickName}} · {{item.userInfo.updateAt | datetimeFormat}}</span>&emsp;&emsp;
+                <span class="text_color">{{ item.blog.blogType == 1 ? "技术" : item.blog.blogType == 2 ? "交互" :item.blog.blogType == 3 ? "设计" :item.blog.blogType == 4 ? "管理" :"其它" }}</span>&emsp;&emsp;
+                <span class="text_color"><img src="@/assets/img/icon/eyes.svg">{{item.blog.viewNum}}</span>&emsp;&emsp;
+                <span class="text_color"><img src="@/assets/img/icon/like.svg">{{item.blog.likeNum}}</span>
               </div>
             </div>
           </li>
