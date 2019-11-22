@@ -1,109 +1,81 @@
 <template>
-  <div
-    class="my-header"
-    ref="header"
-  >
+  <div class="my-header"
+       ref="header">
     <div class="cus-flex cus-flex-between cus-align-center">
       <div>
-        <el-avatar
-          :size="42"
-          :src="logoURL"
-          class="middle"
-        ></el-avatar>
+        <el-avatar :size="42"
+                   :src="logoURL"
+                   class="middle"></el-avatar>
         <router-link :to="custom.menu[0].redirectUrl">
           <h2 class="inline middle">{{ custom.title }}</h2>
         </router-link>
         <ul>
-          <li
-            v-for="(item, index) in custom.menu"
-            :key="index"
-            :class="{'active': activeLabel === item.label}"
-          >
-            <router-link
-              :to="item.redirectUrl"
-              class="font-size-18"
-            >{{ item.label }}</router-link>
+          <li v-for="(item, index) in custom.menu"
+              :key="index"
+              :class="{'active': activeLabel === item.label}">
+            <router-link :to="item.redirectUrl"
+                         class="font-size-18">{{ item.label }}</router-link>
           </li>
         </ul>
       </div>
       <div class="cus-flex cus-align-center">
         <slot name="box_cus"></slot>&emsp;&emsp;
-        <el-badge
-          is-dot
-          class="item"
-        >
-          <div
-            class="inline pointer"
-            @mouseenter="showBadge = 1"
-            @mouseleave="showBadge = 2"
-          >
-            <img
-              :src="
+        <el-badge is-dot
+                  class="item">
+          <div class="inline pointer"
+               @mouseenter="showBadge = 1"
+               @mouseleave="showBadge = 2">
+            <img :src="
                 showBadge === 2
                   ? isChange === true
                     ? msgURL
                     : msgUrl02
                   : msgURLHover
               "
-              class="message"
-            />
+                 class="message" />
           </div>
         </el-badge>
         <div class="logModal">
-          <el-button
-            type="text"
-            @click="modalLogin()"
-            v-if="$store.state.flag===null"
-          ><span :class="{ login_text: isChange, login_text_02: !isChange }">登录</span></el-button>
-          <div
-            class="avatar"
-            @mouseenter="showMsg = true"
-            @mouseleave="showMsg = false"
-            v-if="$store.state.flag!==null"
-          ><span v-if="userName">{{userName}}</span><span v-else>{{account}}</span><img :src="avatar" /></div>
+          <el-button type="text"
+                     @click="modalLogin()"
+                     v-if="$store.state.flag===null"><span :class="{ login_text: isChange, login_text_02: !isChange }">登录</span></el-button>
+          <div class="avatar"
+               @mouseenter="showMsg = true"
+               @mouseleave="showMsg = false"
+               v-if="$store.state.flag!==null"><span v-if="userName">{{userName}}</span><span v-else>{{account}}</span><img :src="avatar" /></div>
           <!-- <el-button
             type="text"
             @click="infoShow = true"
           >个人信息</el-button> -->
-          <el-dialog
-            :title="title"
-            :visible.sync="$store.state.modalVisible"
-            :append-to-body="true"
-            custom-class="logDialog"
-            :center="true"
-            :close-on-click-modal="false"
-            :before-close="handleClose"
-          >
-            <my-login
-              v-show="$store.state.isLogin"
-              :title="title"
-              @titleChanged="registerTitle($event)"
-              @modalChanged="modalChanged($event)"
-            ></my-login>
-            <my-register
-              v-show="!$store.state.isLogin"
-              @titleChanged="loginTitle($event)"
-            ></my-register>
+          <el-dialog :title="title"
+                     :visible.sync="$store.state.modalVisible"
+                     :append-to-body="true"
+                     custom-class="logDialog"
+                     :center="true"
+                     :close-on-click-modal="false"
+                     :before-close="handleClose">
+            <my-login v-show="$store.state.isLogin"
+                      :title="title"
+                      @titleChanged="registerTitle($event)"
+                      @modalChanged="modalChanged($event)"></my-login>
+            <my-register v-show="!$store.state.isLogin"
+                         @titleChanged="loginTitle($event)"></my-register>
           </el-dialog>
           <!-- <router-link
           :to="'login'"
           class="text_size_18"
         >登录</router-link> -->
-          <div
-            class="badge_hover margin_right"
-            v-show="showBadge === 1"
-            @mouseenter="showBadge = 1"
-            @mouseleave="showBadge = 2"
-          >
+          <div class="badge_hover margin_right"
+               v-show="showBadge === 1"
+               @mouseenter="showBadge = 1"
+               @mouseleave="showBadge = 2">
             <img :src="msgNull" />
             <span>还没有消息哦</span>
           </div>
-          <div
-            class="badge_hover msg_hover"
-            @mouseenter="showMsg = true"
-            @mouseleave="showMsg = false"
-            v-show="showMsg"
-          >
+          <div class="badge_hover msg_hover"
+               @mouseenter="showMsg = true"
+               @mouseleave="showMsg = false"
+               v-show="showMsg">
             <span @click="infoShow = true">个人信息</span>
             <span @click="logOut">退出账号</span>
           </div>
@@ -111,11 +83,9 @@
       </div>
     </div>
     <!-- 模态框 -->
-    <person-dialog
-      :isShow="infoShow"
-      :classStyle="className"
-      @hide="infoShow = false"
-    ></person-dialog>
+    <person-dialog :isShow="infoShow"
+                   :classStyle="className"
+                   @hide="infoShow = false"></person-dialog>
   </div>
 </template>
 
@@ -212,7 +182,7 @@ export default {
     },
     //判断是否登录
     async isLogin () {
-      this.account = JSON.parse(localStorage.getItem("user")).account;
+      this.account = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).account : '';
       const res = await this.$axios.get(
         `${process.env.BASE_URL}/web_api/isLogin`
       );
@@ -238,7 +208,7 @@ export default {
       if (res.data.status_code == 200) {
         localStorage.setItem("user", JSON.stringify(data.user));
         this.loginForm = {};
-      } else {
+      } else if (res.data.status_code == 401) {
         //登录失败
         this.$store.state.wxUnionId = res.data.data.wxUnionId;
         // this.title = "登录失败";

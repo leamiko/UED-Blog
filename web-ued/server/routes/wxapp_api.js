@@ -56,12 +56,12 @@ router.post('/commentLike', function(req, res, next) {
 //评论删除
 router.post('/deleteComment', function(req, res, next) {
   //调用controller方法
-  web_blog.deleteComment(req, res)
+  wxapp_blog.deleteComment(req, res)
 })
 //取消评论点赞
 router.post('/deleteCommentLike', function(req, res, next) {
   //调用controller方法
-  web_blog.deleteCommentLike(req, res)
+  wxapp_blog.deleteCommentLike(req, res)
 })
 //blog回复
 router.post('/replyBlog', function(req, res, next) {
@@ -71,17 +71,17 @@ router.post('/replyBlog', function(req, res, next) {
 //blog回复点赞
 router.post('/replyLike', function(req, res, next) {
   //调用controller方法
-  web_blog.replyLike(req, res)
+  wxapp_blog.replyLike(req, res)
 })
 //blog回复删除
 router.get('/deleteReply', function(req, res, next) {
   //调用controller方法
-  web_blog.deleteReply(req, res)
+  wxapp_blog.deleteReply(req, res)
 })
 //获取blog评论
 router.get('/getBlogComment', function(req, res, next) {
   //调用controller方法
-  web_blog.getBlogComment(req, res)
+  wxapp_blog.getBlogComment(req, res)
 })
 //我的文章
 router.post('/getMyBlog', function(req, res, next) {

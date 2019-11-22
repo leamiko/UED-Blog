@@ -230,6 +230,66 @@ exports.getWriteList = async function(req, res) {
   )
 }
 
+//写字详情感兴趣
+exports.getWriteIntresting = async function(req, res) {
+  let filters = {
+    deleted: false,
+    blogType: parseInt(req.query.blogType)
+  }
+  Blog.aggregate(
+    [
+      {
+        $match: filters
+      },
+      {
+        $lookup: {
+          from: 'user',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'userInfo'
+        }
+      },
+      {
+        $project: {
+          title: 1,
+          blogType: 1,
+          info: 1,
+          content: 1,
+          isGood: 1,
+          isAudit: 1,
+          smallImgUrl: 1,
+          midImgUrl: 1,
+          bigImgUrl: 1,
+          likeNum: 1,
+          viewNum: 1,
+          commentNum: 1,
+          commentLikeNum: 1,
+          rank: 1,
+          createAt: 1,
+          userInfo: { nickName: 1, account: 1, avatar: 1 }
+        }
+      },
+      {
+        $sort: { rank: -1 }
+      }
+    ],
+    (err, books) => {
+      if (err) {
+        return res.json({
+          status_code: 201,
+          message: err,
+          data: null
+        })
+      }
+      return res.json({
+        status_code: 200,
+        message: '获取列表成功！',
+        data: books
+      })
+    }
+  )
+}
+
 //点赞
 exports.likeBlog = async function(req, res) {
   const whereBlog = {
@@ -552,7 +612,6 @@ exports.getBlogComment = async function(req, res) {
   const whereComment = {
     blogId: mongoose.Types.ObjectId(req.query.blogId)
   }
-
   // 获取列表
   let comments = await Comment.aggregate([
     {
@@ -581,6 +640,7 @@ exports.getBlogComment = async function(req, res) {
         likeNum: 1,
         content: 1,
         anonymous: 1,
+        createAt: 1,
         commentName: {
           $cond: [
             {
@@ -590,8 +650,11 @@ exports.getBlogComment = async function(req, res) {
             '$commentName'
           ]
         },
-        userInfo: { avatar: 1 }
+        userInfo: { avatar: 1, _id: 1, nickName: 1 }
       }
+    },
+    {
+      $sort: { createAt: -1 }
     }
   ])
   let replys = await Reply.aggregate([
@@ -618,9 +681,13 @@ exports.getBlogComment = async function(req, res) {
           ]
         },
         blogId: 1,
+        commentId: 1,
         likeNum: 1,
         content: 1,
         anonymous: 1,
+        reReplyName: 1,
+        reReplyId: 1,
+        createAt: 1,
         replyName: {
           $cond: [
             {
@@ -630,17 +697,23 @@ exports.getBlogComment = async function(req, res) {
             '$replyName'
           ]
         },
-        userInfo: { avatar: 1 }
+        userInfo: { avatar: 1, _id: 1, nickName: 1 }
       }
+    },
+    {
+      $sort: { createAt: -1 }
     }
   ])
 
   //转换id数组
-  let commentids = comments.filter(item => {
-    item._id
+  let commentids = comments.map(item => {
+    return item._id
   })
-  let replyids = replys.filter(item => {
-    item._id
+  let commentStringids = comments.map(item => {
+    return item._id.toString()
+  })
+  let replyids = replys.map(item => {
+    return item._id
   })
 
   // 获取当前用户点赞列表
@@ -654,18 +727,19 @@ exports.getBlogComment = async function(req, res) {
   })
 
   // 当前用户点赞列表转换id数组
-  const commentsLikesids = commentsLikes.filter(item => {
-    return item.commentId
+  const commentsLikesids = commentsLikes.map(item => {
+    return item.commentId.toString()
   })
-  const replysLikesids = replysLikes.filter(item => {
-    return item.replyId
+  const replysLikesids = replysLikes.map(item => {
+    return item.replyId.toString()
   })
 
   // 循环判断是否点赞
   let commentArr = []
   let replyArr = []
   for (let i = 0; i < comments.length; i++) {
-    if (commentsLikesids.indexOf(comments[i]._id) != -1) {
+    comments[i]['replies'] = []
+    if (commentsLikesids.indexOf(comments[i]._id.toString()) != -1) {
       comments[i]['isLike'] = true
       commentArr.push(comments[i])
     } else {
@@ -674,21 +748,21 @@ exports.getBlogComment = async function(req, res) {
     }
   }
   for (let i = 0; i < replys.length; i++) {
-    if (replysLikesids.indexOf(replys[i]._id) != -1) {
+    if (replysLikesids.indexOf(replys[i]._id.toString()) != -1) {
       replys[i]['isLike'] = true
       replyArr.push(replys[i])
     } else {
-      replys[i]['isLike'] = true
+      replys[i]['isLike'] = false
       replyArr.push(replys[i])
     }
   }
 
   // 合并评论回复
   for (let i = 0; i < replyArr.length; i++) {
-    if (commentids.indexOf(replyArr[i]._id) != -1) {
-      commentArr[commentids.indexOf(replyArr[i]._id)]['replys'].push(
-        replyArr[i]
-      )
+    if (commentStringids.indexOf(replyArr[i].commentId.toString()) != -1) {
+      commentArr[commentStringids.indexOf(replyArr[i].commentId.toString())][
+        'replies'
+      ].push(replyArr[i])
     }
   }
 
