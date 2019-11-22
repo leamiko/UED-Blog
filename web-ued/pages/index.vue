@@ -46,7 +46,7 @@
                   :src="avatar"
                   class="avatar"
                 ></el-avatar>
-                <span class="text_color_time">{{item.author}} · {{item.updateAt | datetimeFormat}}</span>&emsp;&emsp;
+                <span class="text_color_time">没有作者 · {{item.updateAt | datetimeFormat}}</span>&emsp;&emsp;
                 <span class="text_color">{{ item.blogType == 1 ? "技术" : item.blogType == 2 ? "交互" :item.blogType == 3 ? "设计" :item.blogType == 4 ? "管理" :"其它" }}</span>&emsp;&emsp;
                 <span class="text_color"><img src="@/assets/img/icon/eyes.svg">{{item.viewNum}}</span>&emsp;&emsp;
                 <span class="text_color"><img src="@/assets/img/icon/like.svg">{{item.likeNum}}</span>
