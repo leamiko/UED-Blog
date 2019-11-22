@@ -230,11 +230,11 @@ exports.getWriteList = async function(req, res) {
   )
 }
 
-//写字列表
+//写字详情感兴趣
 exports.getWriteIntresting = async function(req, res) {
   let filters = {
     deleted: false,
-    blogType: req.query.blogType
+    blogType: parseInt(req.query.blogType)
   }
   Blog.aggregate(
     [
@@ -271,12 +271,6 @@ exports.getWriteIntresting = async function(req, res) {
       },
       {
         $sort: { rank: -1 }
-      },
-      {
-        $skip: 0
-      },
-      {
-        $limit: 4
       }
     ],
     (err, books) => {
