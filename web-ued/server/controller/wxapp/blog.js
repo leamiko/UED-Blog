@@ -490,7 +490,7 @@ exports.getBlogComment = async function(req, res) {
             '$commentName'
           ]
         },
-        userInfo: { avatar: 1 }
+        userInfo: { avatar: 1, _id: 1, nickName: 1 }
       }
     }
   ])
@@ -530,7 +530,7 @@ exports.getBlogComment = async function(req, res) {
             '$replyName'
           ]
         },
-        userInfo: { avatar: 1 }
+        userInfo: { avatar: 1, _id: 1, nickName: 1 }
       }
     }
   ])
