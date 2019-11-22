@@ -18,7 +18,7 @@ module.exports = {
     logoUrl: require('../img/logo/logo-system-large.svg'),
     menu: [
       {label: '产品', redirectUrl: '', children: [
-        {label: '面试题库', redirectUrl: '/'},
+        {label: '面试题库', redirectUrl: 'http://interview-ued.lunz.cn/login'},
         {label: '产品反馈', redirectUrl: '/'},
         {label: '会议室', redirectUrl: '/'}
       ]},
@@ -31,7 +31,7 @@ module.exports = {
         {label: '加入我们', redirectUrl: '/'}
       ]},
       {label: '联系我们', redirectUrl: '', children: [
-        {label: '中瑞集团', redirectUrl: '/'}
+        {label: '中瑞集团', redirectUrl: 'http://www.zhongruigroup.com/index.html'}
       ]}
     ],
     desc: '©2019 All rights reserved. 青岛中瑞集团 版权所有 法律声明 鲁ICP备14035434号-1'
