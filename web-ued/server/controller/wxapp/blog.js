@@ -480,6 +480,7 @@ exports.getBlogComment = async function(req, res) {
         likeNum: 1,
         content: 1,
         anonymous: 1,
+        createAt: 1,
         commentName: {
           $cond: [
             {
@@ -523,6 +524,7 @@ exports.getBlogComment = async function(req, res) {
         anonymous: 1,
         reReplyName: 1,
         reReplyId: 1,
+        createAt: 1,
         replyName: {
           $cond: [
             {
