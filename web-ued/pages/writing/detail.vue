@@ -105,9 +105,9 @@
                 <img :src="user.avatar" />
               </div>
               <div class="current_edit inline">
-                <my-editor @change="onEditorChange" :height="'104px'" :placeholder="'我有一个大胆的想法～'"></my-editor>
-                <br />
-                <div class="text-right">
+                <el-input type="textarea" @input="onEditorChange1" v-model="firstComContent" maxlength="800" :placeholder="'我有一个大胆的想法～'">
+                </el-input>
+                <div class="text-right margin_top_15">
                   <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
                   <el-button type="primary" round size="small" @click="submitFistCom()" v-bind:class="{comment_btn_gray: !haveFirstComContent}">&emsp;评&nbsp;论&emsp;</el-button>
                 </div>
@@ -129,7 +129,7 @@
                         <img v-if="!(firstItem.firstComIsLike || (firstComIndex === firstIndex && supportComBtnIsHover))" src="@/assets/img/icon/icon-support.svg" alt />
                         {{firstItem.likeNum}}
                       </div>
-                      <div class="comment_unit_bottom_btn margin_left_15" @click="replyFirstComBtn(firstItem._id)" v-bind:class="{comment_unit_bottom_btn_selected: firstItem.isShowReplyFirstCom}">回复</div>
+                      <div class="comment_unit_bottom_btn margin_left_15" @click="replyFirstComBtn(firstItem)" v-bind:class="{comment_unit_bottom_btn_selected: firstItem.isShowReplyFirstCom}">回复</div>
                       <div class="comment_unit_bottom_btn margin_left_15" v-if="user._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover" @click="deleteFirstCom(firstItem._id)">删除</div>
                     </div>
                     <div class="comment_unit_bottom_right">{{firstItem.createAt | formatDateDay}}</div>
@@ -140,19 +140,65 @@
                     <img :src="user.avatar" />
                   </div>
                   <div class="current_edit inline">
-                    <my-editor @change="onEditorChangeSecondCom($event,firstItem)" :height="'104px'" :placeholder="'我有一个大胆的想法～'"></my-editor>
-                    <br />
-                    <div class="text-right">
+                    <el-input type="textarea" @input="onEditorChange2" v-model="secondComContent" maxlength="800" :placeholder="'我有一个大胆的想法～'"></el-input>
+                    <div class="text-right margin_top_15">
                       <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
                       <el-button type="primary" round size="small" @click="submitSecondCom(firstItem)">&emsp;评&nbsp;论&emsp;</el-button>
                     </div>
                   </div>
                 </div>
+                <!-- 二级评论 -->
+                <div v-for="(secondItem, secondIndex) in firstItem.replies" :key="secondIndex">
+                  <div class="two_commment_div margin_top_40">
+                    <div class="current_user inline">
+                      <img src="@/assets/img/image/code_presenter.png" />
+                    </div>
+                    <div class="comment_text inline">
+                      <div class="comment_unit_name">
+                        {{user.nickName}}
+                        <span>回复</span>
+                        {{firstItem.userInfo[0].nickName}}
+                      </div>
+                      <div class="comment_unit_content">{{secondItem.content}}</div>
+                      <div class="comment_unit_bottom">
+                        <div class="comment_unit_bottom_left">
+                          <div class="comment_unit_bottom_btn">
+                            <img src="@/assets/img/icon/icon-support.svg" />
+                            0
+                          </div>
+                          <div class="comment_unit_bottom_btn margin_left_15" @click="submitReSecondCom(secondItem)">回复1</div>
+                        </div>
+                        <div class="comment_unit_bottom_right">{{secondItem.createAt | formatDateDay}}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- 回复二级评论 -->
+                 <!-- <div class="margin_top_40" v-if="firstItem.isShowReplyFirstCom">
+                  <div class="current_user inline">
+                    <img :src="user.avatar" />
+                  </div>
+                  <div class="current_edit inline">
+                    <el-input type="textarea" @input="onEditorChange2" v-model="secondComContent" maxlength="800" :placeholder="'我有一个大胆的想法～'"></el-input>
+                    <div class="text-right margin_top_15">
+                      <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
+                      <el-button type="primary" round size="small" @click="submitSecondCom(firstItem)">&emsp;评&nbsp;论&emsp;</el-button>
+                    </div>
+                  </div>
+                </div> -->
               </div>
               <hr class="comment_hr" />
             </div>
+            <div class="noComment2" v-if="commentList.length==0">
+              <div class="pic">
+                <img src="@/assets/img/image/noComment2.png" />
+              </div>
+              <div class="text">
+                成为第一个评论的人
+              </div>
+            </div>
           </div>
-          <div class="noComment" v-if="!isComment">
+          <div class="noComment1" v-if="!isComment">
             <div class="pic">
               <img src="@/assets/img/image/noComment.png" />
             </div>
@@ -204,9 +250,11 @@ export default {
       supportComBtnIsHover: false, // 评论点赞按钮是否悬浮
       deleteComBtnIsHover: false, // 评论删除按钮是否悬浮
       firstComContent: "", // 一级评论内容
+      haveFirstComContent: false, // 监听一级评论内容
+      secondComContent: "", // 二级级评论内容
+      haveSecondComContent: false, // 监听二级评论内容
       firstCommenterId: "", // 评论列表中一级评论人id
       firstComIndex: "", // 评论列表中一级评论数组下标
-      haveFirstComContent: false, // 监听一级评论内容
       user: "",
       isComment: false
     };
@@ -293,14 +341,24 @@ export default {
       );
       if (res.data.status_code === 200) {
         this.getBlogComment();
+        this.firstComContent = "";
       }
     },
-    // 监听评论框
-    onEditorChange({ editor, html, text }) {
-      // console.log(editor, html, text);
-      this.firstComContent = text;
-      this.commentHtml = html;
-      this.haveFirstComContent = html ? true : false;
+    // 监听一级评论框
+    onEditorChange1() {
+      if (this.firstComContent) {
+        this.haveFirstComContent = true;
+      } else {
+        this.haveFirstComContent = false;
+      }
+    },
+    // 监听二级评论框
+    onEditorChange2() {
+      if (this.secondComContent) {
+        this.haveSecondComContent = true;
+      } else {
+        this.haveSecondComContent = false;
+      }
     },
     // 评论删除按钮悬浮
     mouseHoverDelComBtn(index, id, isHover) {
@@ -331,12 +389,9 @@ export default {
       });
     },
     // 回复一级评论按钮
-    replyFirstComBtn(comId) {
-      this.commentList.forEach(item => {
-        if (item._id === comId) {
-          item.isShowReplyFirstCom = !item.isShowReplyFirstCom;
-        }
-      });
+    replyFirstComBtn(e) {
+      e.isShowReplyFirstCom = !e.isShowReplyFirstCom;
+      // console.log(e);
     },
     // 删除一级评论
     async deleteFirstCom(comId) {
@@ -353,31 +408,47 @@ export default {
         this.getBlogComment();
       }
     },
-    //是否匿名
-    anonymousClick() {
-      this.isAnonymous = !this.isAnonymous;
-      console.log(this.isAnonymous);
-    },
-    // 发表二级级评论(回复一级评论)
+
+    //回复一级评论
     async submitSecondCom(firstItem) {
       const params = {
-        replyName: user.nickName,
-        prelyId: user._id,
-        reReplyname: this.commentList.userInfo,
-        reReplyId: this.commentList.userInfo,
+        replyName: this.user.nickName,
+        replyId: this.user._id,
+        reReplyname: firstItem.userInfo[0].nickName,
+        reReplyId: firstItem.userInfo[0]._id,
         blogId: this.detailParams.detailId,
         commentId: firstItem._id,
-        content: "111",
+        content: this.secondComContent,
         anonymous: this.isAnonymous
       };
+      // console.log(params);
       const res = await this.$axios.post(
         `${process.env.BASE_URL}/web_api/replyBlog`,
         params
       );
       if (res.status == 200) {
-        this.resultMsg = "回复成功!";
-        this.resultImage = successImg;
-        this.showDialog = true;
+        this.getBlogComment();
+      }
+    },
+    //回复二级评论
+    async submitReSecondCom(secondItem) {
+      const params = {
+        replyName: this.user.nickName,
+        prelyId: this.user._id,
+        reReplyname: secondItem.userInfo[0].nickName,
+        reReplyId: secondItem.userInfo[0]._id,
+        blogId: this.detailParams.detailId,
+        commentId: secondItem._id,
+        content: this.secondComContent,
+        anonymous: this.isAnonymous
+      };
+      // console.log(params);
+      const res = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/replyBlog`,
+        params
+      );
+      if (res.status == 200) {
+        this.getBlogComment();
       }
     }
   }
@@ -389,6 +460,9 @@ export default {
 }
 .frt {
   float: right;
+}
+.margin_top_15 {
+  margin-top: 15px;
 }
 @keyframes fadeIn {
   from {
@@ -665,7 +739,7 @@ export default {
     font-weight: 600;
     color: #000000;
   }
-  .noComment {
+  .noComment1 {
     padding: 40px 0 50px;
     background: white;
     width: 874px;
@@ -697,6 +771,24 @@ export default {
       }
     }
   }
+  .noComment2 {
+    background: white;
+    width: 100%;
+    text-align: center;
+    border-radius: 2px;
+    box-sizing: border-box;
+    .pic {
+      img {
+        width: 152px;
+        height: 158px;
+      }
+      margin-bottom: 15px;
+    }
+    .text {
+      color: #000000;
+      font-size: 14px;
+    }
+  }
   .comment_info {
     margin-left: 91px;
     width: 874px;
@@ -705,6 +797,9 @@ export default {
     border-radius: 2px;
     box-sizing: border-box;
     .comment_text {
+      textarea {
+        background: #f2f5f6 !important;
+      }
       padding-bottom: 30px;
       .current_user {
         width: 50px;
