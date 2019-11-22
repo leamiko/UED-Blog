@@ -230,6 +230,72 @@ exports.getWriteList = async function(req, res) {
   )
 }
 
+//写字列表
+exports.getWriteIntresting = async function(req, res) {
+  let filters = {
+    deleted: false,
+    blogType: req.query.blogType
+  }
+  Blog.aggregate(
+    [
+      {
+        $match: filters
+      },
+      {
+        $lookup: {
+          from: 'user',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'userInfo'
+        }
+      },
+      {
+        $project: {
+          title: 1,
+          blogType: 1,
+          info: 1,
+          content: 1,
+          isGood: 1,
+          isAudit: 1,
+          smallImgUrl: 1,
+          midImgUrl: 1,
+          bigImgUrl: 1,
+          likeNum: 1,
+          viewNum: 1,
+          commentNum: 1,
+          commentLikeNum: 1,
+          rank: 1,
+          createAt: 1,
+          userInfo: { nickName: 1, account: 1, avatar: 1 }
+        }
+      },
+      {
+        $sort: { rank: -1 }
+      },
+      {
+        $skip: 0
+      },
+      {
+        $limit: 4
+      }
+    ],
+    (err, books) => {
+      if (err) {
+        return res.json({
+          status_code: 201,
+          message: err,
+          data: null
+        })
+      }
+      return res.json({
+        status_code: 200,
+        message: '获取列表成功！',
+        data: books
+      })
+    }
+  )
+}
+
 //点赞
 exports.likeBlog = async function(req, res) {
   const whereBlog = {

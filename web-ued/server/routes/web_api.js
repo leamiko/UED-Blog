@@ -59,6 +59,11 @@ router.post('/getWriteList', function(req, res, next) {
   //调用controller方法
   web_blog.getWriteList(req, res)
 })
+//写字详情感兴趣
+router.get('/getWriteIntresting', function(req, res, next) {
+  //调用controller方法
+  web_blog.getWriteIntresting(req, res)
+})
 //blog点赞
 router.post('/likeBlog', function(req, res, next) {
   //调用controller方法
