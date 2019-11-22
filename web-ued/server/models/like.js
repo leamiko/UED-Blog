@@ -5,16 +5,16 @@ var Schema = mongoose.Schema
 var LikeSchema = new Schema(
   {
     userId: {
-      type: String //用户objectId
+      type: mongoose.Schema.Types.ObjectId //用户objectId
     },
     blogId: {
-      type: String //文章objectId
+      type: mongoose.Schema.Types.ObjectId //文章objectId
     },
     commentId: {
-      type: String //评论objectId
+      type: mongoose.Schema.Types.ObjectId //评论objectId
     },
     replyId: {
-      type: String //回复objectId
+      type: mongoose.Schema.Types.ObjectId //回复objectId
     },
     count: {
       type: Number //单词点赞数
