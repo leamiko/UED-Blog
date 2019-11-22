@@ -116,11 +116,11 @@
             </div>
             <div class="comment_text margin_top_40" v-for="(firstItem,firstIndex) in commentList" :key="firstIndex">
               <div class="current_user inline">
-                <img :src="user.avatar" />
+                <img :src="firstItem.userInfo[0].avatar" />
               </div>
               <div class="current_edit inline">
                 <div @mouseenter="mouseHoverDelComBtn(firstIndex, firstItem.commentUserId, true)" @mouseleave="mouseHoverDelComBtn(firstIndex, firstItem.commentUserId, false)">
-                  <div class="comment_unit_name">{{firstItem.commenterName}}</div>
+                  <div class="comment_unit_name" v-if="firstItem.anonymous==false">{{user.nickName}}</div>
                   <div class="comment_unit_content">{{firstItem.content}}</div>
                   <div class="comment_unit_bottom">
                     <div class="comment_unit_bottom_left">
@@ -137,7 +137,7 @@
                 </div>
                 <div class="margin_top_40" v-if="firstItem.isShowReplyFirstCom">
                   <div class="current_user inline">
-                    <img src="@/assets/img/image/code_presenter.png" />
+                    <img :src="user.avatar" />
                   </div>
                   <div class="current_edit inline">
                     <my-editor @change="onEditorChangeSecondCom($event,firstItem)" :height="'104px'" :placeholder="'我有一个大胆的想法～'"></my-editor>
@@ -213,7 +213,7 @@ export default {
   },
   mounted() {
     this.user = JSON.parse(localStorage.getItem("user")); // 获取当前用户信息
-    console.log(this.user);
+    console.log(this.user, "user");
     if (this.user) {
       this.isComment = true;
       this.getBlogComment();
@@ -255,17 +255,15 @@ export default {
     },
     async setPraise() {
       let praiseParams = {
+        authorId: this.detailInfo.userInfo._id,
         blogId: this.detailParams.detailId,
         userId: this.user._id,
         count: this.praiseNum
-        // likeNum: Number(this.detailInfo.likeNum)
       };
-      // console.log(praiseParams);
-      const { data } = await this.$axios.get(
-        `${process.env.BASE_URL}/web_api/likeBlog?userId=${praiseParams.userId}&blogId=${praiseParams.blogId}&count=${praiseParams.count}`
+      const { data } = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/likeBlog`,
+        praiseParams
       );
-      console.log(data);
-      console.log(111);
     },
     //获取评论列表
     async getBlogComment() {
@@ -273,7 +271,7 @@ export default {
         `${process.env.BASE_URL}/web_api/getBlogComment?blogId=${this.detailParams.detailId}`
       );
       this.commentList = res.data.data;
-      // console.log(this.commentList);
+      console.log(this.commentList, "评论列表");
       this.commentList.forEach(item => {
         item[`firstComIsLike`] = false;
         item[`isShowReplyFirstCom`] = false;
@@ -293,8 +291,6 @@ export default {
         `${process.env.BASE_URL}/web_api/commentBlog`,
         params
       );
-      console.log(params);
-
       if (res.data.status_code === 200) {
         this.getBlogComment();
       }
@@ -319,23 +315,20 @@ export default {
     },
     // 评论点赞
     commentLike(comId) {
-      // const params = {
-      //   commentName: this.user.nickName,
-      //   commentUserId: this.user._id,
-      //   blogId: this.detailParams.detailId,
-      //   content: this.firstComContent,
-      //   anonymous: this.isAnonymous
-      // };
-      // this.commentList.forEach(item => {
-      //   if (item._id === comId && !item.firstComIsLike) {
-      //     const res = this.$axios.post(
-      //       `${process.env.BASE_URL}/web_api/commentLike`,
-      //       params
-      //     );
-      //     item.firstComIsLike = !item.firstComIsLike;
-      //     item.likeNum = item.likeNum + 1;
-      //   }
-      // });
+      const params = {
+        blogId: this.detailParams.detailId,
+        commentId: comId
+      };
+      this.commentList.forEach(item => {
+        if (item._id === comId && !item.firstComIsLike) {
+          const res = this.$axios.post(
+            `${process.env.BASE_URL}/web_api/commentLike`,
+            params
+          );
+          item.firstComIsLike = !item.firstComIsLike;
+          item.likeNum = item.likeNum + 1;
+        }
+      });
     },
     // 回复一级评论按钮
     replyFirstComBtn(comId) {
@@ -356,7 +349,6 @@ export default {
         `${process.env.BASE_URL}/web_api/deleteComment`,
         params
       );
-      console.log(params);
       if (res.data.status_code === 200) {
         this.getBlogComment();
       }
@@ -364,6 +356,7 @@ export default {
     //是否匿名
     anonymousClick() {
       this.isAnonymous = !this.isAnonymous;
+      console.log(this.isAnonymous);
     },
     // 发表二级级评论(回复一级评论)
     async submitSecondCom(firstItem) {
