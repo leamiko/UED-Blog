@@ -102,7 +102,7 @@
           <div class="comment_info bg-white" v-if="isComment">
             <div class="comment_text">
               <div class="current_user inline">
-                <img src="@/assets/img/image/code_presenter.png" />
+                <img :src="user.avatar" />
               </div>
               <div class="current_edit inline">
                 <my-editor @change="onEditorChange" :height="'104px'" :placeholder="'我有一个大胆的想法～'"></my-editor>
@@ -116,7 +116,7 @@
             </div>
             <div class="comment_text margin_top_40" v-for="(firstItem,firstIndex) in commentList" :key="firstIndex">
               <div class="current_user inline">
-                <img src="@/assets/img/image/code_presenter.png" />
+                <img :src="user.avatar" />
               </div>
               <div class="current_edit inline">
                 <div @mouseenter="mouseHoverDelComBtn(firstIndex, firstItem.commentUserId, true)" @mouseleave="mouseHoverDelComBtn(firstIndex, firstItem.commentUserId, false)">
@@ -130,7 +130,7 @@
                         {{firstItem.likeNum}}
                       </div>
                       <div class="comment_unit_bottom_btn margin_left_15" @click="replyFirstComBtn(firstItem._id)" v-bind:class="{comment_unit_bottom_btn_selected: firstItem.isShowReplyFirstCom}">回复</div>
-                      <div class="comment_unit_bottom_btn margin_left_15" v-if="detailInfo.userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover" @click="deleteFirstCom(firstItem._id)">删除</div>
+                      <div class="comment_unit_bottom_btn margin_left_15" v-if="user._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover" @click="deleteFirstCom(firstItem._id)">删除</div>
                     </div>
                     <div class="comment_unit_bottom_right">{{firstItem.createAt | formatDateDay}}</div>
                   </div>
@@ -140,16 +140,14 @@
                     <img src="@/assets/img/image/code_presenter.png" />
                   </div>
                   <div class="current_edit inline">
-                    <my-editor :height="'104px'" :placeholder="'我有一个大胆的想法～'"></my-editor>
+                    <my-editor @change="onEditorChangeSecondCom($event,firstItem)" :height="'104px'" :placeholder="'我有一个大胆的想法～'"></my-editor>
                     <br />
                     <div class="text-right">
                       <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
-                      <el-button type="primary" round size="small" @click="submit()">&emsp;评&nbsp;论&emsp;</el-button>
+                      <el-button type="primary" round size="small" @click="submitSecondCom(firstItem)">&emsp;评&nbsp;论&emsp;</el-button>
                     </div>
                   </div>
                 </div>
-
-                <div class="btn_blue margin_top_30">查看更多回复</div>
               </div>
               <hr class="comment_hr" />
             </div>
@@ -214,8 +212,8 @@ export default {
     };
   },
   mounted() {
-    console.log(this.$store.state.modalVisible);
     this.user = JSON.parse(localStorage.getItem("user")); // 获取当前用户信息
+    console.log(this.user);
     if (this.user) {
       this.isComment = true;
       this.getBlogComment();
@@ -231,10 +229,6 @@ export default {
       }
     })),
       this.visualScroll.observe(document.querySelector("#praise"));
-  },
-  created() {
-    this.getBlog();
-    this.getBlogComment();
   },
   destroyed() {
     this.visualScroll.disconnect();
@@ -325,18 +319,23 @@ export default {
     },
     // 评论点赞
     commentLike(comId) {
-      this.commentList.forEach(item => {
-        if (item._id === comId && !item.firstComIsLike) {
-          const res = this.$axios.get(
-            `${process.env.BASE_URL}/web_api/commentLike?blogId=` +
-              this.detailParams.detailId +
-              `&commentId=` +
-              item._id
-          );
-          item.firstComIsLike = !item.firstComIsLike;
-          item.likeNum = item.likeNum + 1;
-        }
-      });
+      // const params = {
+      //   commentName: this.user.nickName,
+      //   commentUserId: this.user._id,
+      //   blogId: this.detailParams.detailId,
+      //   content: this.firstComContent,
+      //   anonymous: this.isAnonymous
+      // };
+      // this.commentList.forEach(item => {
+      //   if (item._id === comId && !item.firstComIsLike) {
+      //     const res = this.$axios.post(
+      //       `${process.env.BASE_URL}/web_api/commentLike`,
+      //       params
+      //     );
+      //     item.firstComIsLike = !item.firstComIsLike;
+      //     item.likeNum = item.likeNum + 1;
+      //   }
+      // });
     },
     // 回复一级评论按钮
     replyFirstComBtn(comId) {
@@ -348,11 +347,16 @@ export default {
     },
     // 删除一级评论
     async deleteFirstCom(comId) {
+      const params = {
+        commentId: comId,
+        userId: this.user._id,
+        blogId: this.detailParams.detailId
+      };
       const res = await this.$axios.post(
         `${process.env.BASE_URL}/web_api/deleteComment`,
-        { commentId: comId }
+        params
       );
-      console.log(res)
+      console.log(params);
       if (res.data.status_code === 200) {
         this.getBlogComment();
       }
@@ -361,7 +365,28 @@ export default {
     anonymousClick() {
       this.isAnonymous = !this.isAnonymous;
     },
-    submit() {}
+    // 发表二级级评论(回复一级评论)
+    async submitSecondCom(firstItem) {
+      const params = {
+        replyName: user.nickName,
+        prelyId: user._id,
+        reReplyname: this.commentList.userInfo,
+        reReplyId: this.commentList.userInfo,
+        blogId: this.detailParams.detailId,
+        commentId: firstItem._id,
+        content: "111",
+        anonymous: this.isAnonymous
+      };
+      const res = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/replyBlog`,
+        params
+      );
+      if (res.status == 200) {
+        this.resultMsg = "回复成功!";
+        this.resultImage = successImg;
+        this.showDialog = true;
+      }
+    }
   }
 };
 </script>

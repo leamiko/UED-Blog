@@ -3,6 +3,7 @@ var Like = require('../../models/like.js') //引入like表
 var Comment = require('../../models/comment.js') //引入comment表
 var Reply = require('../../models/reply.js') //引入comment表
 var User = require('../../models/user.js') //引入user表
+var mongoose = require('mongoose')
 
 //blog详情
 exports.getBlog = async function(req, res) {
@@ -56,46 +57,56 @@ exports.getBlog = async function(req, res) {
 
 //首页列表
 exports.getHomeList = async function(req, res) {
-  const technology = await Blog.findOne({ blogType: 1 }).sort({
+  let technology = await Blog.findOne({ blogType: 1 }).sort({
     rank: -1
   })
-  const interaction = await Blog.findOne({ blogType: 2 }).sort({
+  let interaction = await Blog.findOne({ blogType: 2 }).sort({
     rank: -1
   })
-  const design = await Blog.findOne({ blogType: 3 }).sort({
+  let design = await Blog.findOne({ blogType: 3 }).sort({
     rank: -1
   })
-  const manage = await Blog.findOne({ blogType: 4 }).sort({
+  let manage = await Blog.findOne({ blogType: 4 }).sort({
     rank: -1
   })
-  const other = await Blog.findOne({ blogType: 5 }).sort({
+  let other = await Blog.findOne({ blogType: 5 }).sort({
     rank: -1
   })
   let data = []
   if (technology) {
-    const userInfo = await Blog.findById(technology.userId)
-    technology['userInfo'] = userInfo
-    data.push(technology)
+    const userInfo = await User.findById(technology.userId)
+    data.push({
+      blog: technology,
+      userInfo: userInfo
+    })
   }
   if (interaction) {
-    const userInfo = await Blog.findById(interaction.userId)
-    interaction['userInfo'] = userInfo
-    data.push(interaction)
+    const userInfo = await User.findById(interaction.userId)
+    data.push({
+      blog: interaction,
+      userInfo: userInfo
+    })
   }
   if (design) {
-    const userInfo = await Blog.findById(design.userId)
-    design['userInfo'] = userInfo
-    data.push(design)
+    const userInfo = await User.findById(design.userId)
+    data.push({
+      blog: design,
+      userInfo: userInfo
+    })
   }
   if (manage) {
-    const userInfo = await Blog.findById(manage.userId)
-    manage['userInfo'] = userInfo
-    data.push(manage)
+    const userInfo = await User.findById(manage.userId)
+    data.push({
+      blog: manage,
+      userInfo: userInfo
+    })
   }
   if (other) {
-    const userInfo = await Blog.findById(other.userId)
-    other['userInfo'] = userInfo
-    data.push(other)
+    const userInfo = await User.findById(other.userId)
+    data.push({
+      blog: other,
+      userInfo: userInfo
+    })
   }
   return res.json({
     status_code: 200,
@@ -117,19 +128,25 @@ exports.getWriteBest = async function(req, res) {
   })
   let data = []
   if (popular) {
-    const userInfo = await Blog.findById(popular.userId)
-    popular['userInfo'] = userInfo
-    data.push(popular)
+    const userInfo = await User.findById(popular.userId)
+    data.push({
+      blog: popular,
+      userInfo: userInfo
+    })
   }
   if (best) {
-    const userInfo = await Blog.findById(best.userId)
-    best['userInfo'] = userInfo
-    data.push(best)
+    const userInfo = await User.findById(best.userId)
+    data.push({
+      blog: best,
+      userInfo: userInfo
+    })
   }
   if (comment) {
-    const userInfo = await Blog.findById(comment.userId)
-    comment['userInfo'] = userInfo
-    data.push(comment)
+    const userInfo = await User.findById(comment.userId)
+    data.push({
+      blog: comment,
+      userInfo: userInfo
+    })
   }
   // data.push(popular, best, comment)
   return res.json({
@@ -222,8 +239,8 @@ exports.likeBlog = async function(req, res) {
     _id: req.body.authorId
   }
   const whereLike = {
-    userId: req.body.userId,
-    blogId: req.body.blogId
+    userId: mongoose.Types.ObjectId(req.body.userId),
+    blogId: mongoose.Types.ObjectId(req.body.blogId)
   }
   const like = await Like.find(whereLike)
   if (like.length != 0) {
@@ -319,7 +336,7 @@ exports.commentLike = function(req, res) {
     _id: req.body.blogId
   }
   const whereComment = {
-    blogId: req.body.blogId
+    blogId: mongoose.Types.ObjectId(req.body.blogId)
   }
   const whereUpdateComment = {
     _id: req.body.commentId
@@ -360,7 +377,7 @@ exports.commentLike = function(req, res) {
 exports.deleteComment = function(req, res) {
   var whereComment = {
     _id: req.body.commentId,
-    commentUserId: req.body.userId
+    commentUserId: mongoose.Types.ObjectId(req.body.userId)
   }
   const whereBlog = {
     _id: req.body.blogId
@@ -392,8 +409,8 @@ exports.deleteComment = function(req, res) {
 //取消评论点赞
 exports.deleteCommentLike = function(req, res) {
   const whereLike = {
-    commentId: req.body.commentId,
-    userId: req.body.userId
+    commentId: mongoose.Types.ObjectId(req.body.commentId),
+    userId: mongoose.Types.ObjectId(req.body.userId)
   }
   const whereComment = {
     _id: req.body.commentId
@@ -503,8 +520,8 @@ exports.deleteReply = function(req, res) {
 //取消回复点赞
 exports.deleteReplyLike = function(req, res) {
   const whereLike = {
-    replyId: req.body.replyId,
-    userId: req.body.userId
+    replyId: mongoose.Types.ObjectId(req.body.replyId),
+    userId: mongoose.Types.ObjectId(req.body.userId)
   }
   const whereReply = {
     _id: req.body.replyId
@@ -533,7 +550,7 @@ exports.deleteReplyLike = function(req, res) {
 //获取评论
 exports.getBlogComment = async function(req, res) {
   const whereComment = {
-    blogId: req.query.blogId
+    blogId: mongoose.Types.ObjectId(req.query.blogId)
   }
 
   // 获取列表
@@ -629,11 +646,11 @@ exports.getBlogComment = async function(req, res) {
   // 获取当前用户点赞列表
   const commentsLikes = await Like.find({
     commentId: { $in: commentids },
-    userId: req.query.userId
+    userId: mongoose.Types.ObjectId(req.query.userId)
   })
   const replysLikes = await Like.find({
     replyId: { $in: replyids },
-    userId: req.query.userId
+    userId: mongoose.Types.ObjectId(req.query.userId)
   })
 
   // 当前用户点赞列表转换id数组

@@ -3,6 +3,7 @@ var Like = require('../../models/like.js') //引入like表
 var Comment = require('../../models/comment.js') //引入comment表
 var Reply = require('../../models/reply.js') //引入comment表
 var User = require('../../models/user.js') //引入user表
+var mongoose = require('mongoose')
 
 //blog详情
 exports.getBlog = async function(req, res) {
@@ -138,8 +139,8 @@ exports.likeBlog = async function(req, res) {
     _id: req.body.authorId
   }
   const whereLike = {
-    userId: req.body.userId,
-    blogId: req.body.blogId
+    userId: mongoose.Types.ObjectId(req.body.userId),
+    blogId: mongoose.Types.ObjectId(req.body.blogId)
   }
   const like = await Like.find(whereLike)
   if (like.length != 0) {
@@ -235,14 +236,14 @@ exports.commentLike = function(req, res) {
     _id: req.body.blogId
   }
   const whereComment = {
-    blogId: req.body.blogId
+    blogId: mongoose.Types.ObjectId(req.body.blogId)
   }
   const whereUpdateComment = {
     _id: req.body.commentId
   }
   let like = new Like({
-    userId: req.body.userId,
-    commentId: req.body.commentId
+    userId: mongoose.Types.ObjectId(req.body.userId),
+    commentId: mongoose.Types.ObjectId(req.body.commentId)
   })
   like.save(async function(err, like) {
     if (err) {
@@ -276,7 +277,7 @@ exports.commentLike = function(req, res) {
 exports.deleteComment = function(req, res) {
   var whereComment = {
     _id: req.body.commentId,
-    commentUserId: req.body.userId
+    commentUserId: mongoose.Types.ObjectId(req.body.userId)
   }
   const whereBlog = {
     _id: req.body.blogId
@@ -308,8 +309,8 @@ exports.deleteComment = function(req, res) {
 //取消评论点赞
 exports.deleteCommentLike = function(req, res) {
   const whereLike = {
-    commentId: req.body.commentId,
-    userId: req.body.userId
+    commentId: mongoose.Types.ObjectId(req.body.commentId),
+    userId: mongoose.Types.ObjectId(req.body.userId)
   }
   const whereComment = {
     _id: req.body.commentId
@@ -419,8 +420,8 @@ exports.deleteReply = function(req, res) {
 //取消回复点赞
 exports.deleteReplyLike = function(req, res) {
   const whereLike = {
-    replyId: req.body.replyId,
-    userId: req.body.userId
+    replyId: mongoose.Types.ObjectId(req.body.replyId),
+    userId: mongoose.Types.ObjectId(req.body.userId)
   }
   const whereReply = {
     _id: req.body.replyId
@@ -670,7 +671,7 @@ exports.getMyLike = function(req, res) {
       }
       let blogs = []
       for (let i = 0; i < likes.length; i++) {
-        blogs.push(likes[i].blog)
+        blogs.push(likes[i].blog[0])
       }
       return res.json({
         status_code: 200,
