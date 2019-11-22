@@ -26,36 +26,36 @@
           </div>
           <div class="detail_info inline bg-white">
             <div class="detail_title">
-              {{detailInfo.title}}
+              {{detailInfo.blog.title}}
               <div class="detail_presenter">
                 <div class="presenter_head flt inline">
-                  <img src="@/assets/img/image/code_presenter.png" />
+                  <img :src="detailInfo.userInfo.avatar" />
                 </div>
-                <span class="presenter_info inline">{{detailInfo.author}} · {{detailInfo.updateAt | formatDateDay}}</span>
+                <span class="presenter_info inline">{{detailInfo.userInfo.nickName}} · {{detailInfo.blog.updateAt | formatDateDay}}</span>
                 <div class="mark_tags inline">
-                  <span class="mark_tag">{{ detailInfo.blogType == 1 ? "技术" : detailInfo.blogType == 2 ? "交互" :detailInfo.blogType == 3 ? "设计" :detailInfo.blogType == 4 ? "管理" :"其它" }}</span>
+                  <span class="mark_tag">{{ detailInfo.blog.blogType == 1 ? "技术" : detailInfo.blog.blogType == 2 ? "交互" :detailInfo.blog.blogType == 3 ? "设计" :detailInfo.blog.blogType == 4 ? "管理" :"其它" }}</span>
                 </div>
                 <div class="browse inline">
                   <div class="browse_icon inline">
                     <img src="@/assets/img/icon/browse.png" />
-                  </div>{{detailInfo.viewNum}}
+                  </div>{{detailInfo.blog.viewNum}}
                 </div>
               </div>
               <img class="topImg" v-if="detailParams.imgUrl" :src="require('../../assets/img/image/' + detailParams.imgUrl)" alt="">
             </div>
             <div class="detail_content">
               <div class="infoBox">
-                {{detailInfo.info}}
+                {{detailInfo.blog.info}}
               </div>
-              <div class="contentBox" v-html="detailInfo.content">
-                {{detailInfo.content}}
+              <div class="contentBox" v-html="detailInfo.blog.content">
+                {{detailInfo.blog.content}}
               </div>
             </div>
             <div class="praise" :class="{'praise_num50':praiseNum === 50}">
               <div class="praise_img pointer" id="praise" @click="praise()">
                 <img src="@/assets/img/icon/praise.png" v-show="praiseNum === 0" />
                 <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0 && praiseNum !== 50" />
-                <img src="@/assets/img/icon/praise_50.svg" v-show="praiseNum === 50" />
+                <img class="transition" src="@/assets/img/icon/praise_50.svg" v-show="praiseNum === 50" />
               </div>
               <div class="praise_badge" v-show="praiseNum > 0 && praiseNum !== 50">+{{praiseNum}}</div>
               <div class="praise_num">&nbsp;&nbsp;{{praiseNum?praiseNum:0}}个赞</div>
@@ -64,7 +64,7 @@
           <div class="interest inline">
             <div class="interest_title">
               你可能感兴趣
-              <router-link class="more frt" :to="'/coding/list'">
+              <router-link class="more frt" :to="'/writing'">
                 更多
                 <i class="el-icon-arrow-right"></i>
               </router-link>
@@ -97,11 +97,9 @@
             </div>
           </div>
         </div>
-        <!-- 评论     -->
         <div class="comment_container">
-          <div class="comment_title">共{{detailInfo.commentNum}}条评论</div>
-          <div class="comment_info bg-white">
-            <!-- 发表一级评论 -->
+          <div class="comment_title">共{{detailInfo.blog.commentNum}}条评论</div>
+          <div class="comment_info bg-white" v-if="isComment">
             <div class="comment_text">
               <div class="current_user inline">
                 <img src="@/assets/img/image/code_presenter.png" />
@@ -116,13 +114,11 @@
               </div>
               <hr class="comment_hr" />
             </div>
-            <!-- 整条评论，包括一级二级 -->
             <div class="comment_text margin_top_40" v-for="(firstItem,firstIndex) in commentList" :key="firstIndex">
               <div class="current_user inline">
                 <img src="@/assets/img/image/code_presenter.png" />
               </div>
               <div class="current_edit inline">
-                <!-- 一级评论 -->
                 <div @mouseenter="mouseHoverDelComBtn(firstIndex, firstItem.commentUserId, true)" @mouseleave="mouseHoverDelComBtn(firstIndex, firstItem.commentUserId, false)">
                   <div class="comment_unit_name">{{firstItem.commenterName}}</div>
                   <div class="comment_unit_content">{{firstItem.content}}</div>
@@ -134,12 +130,11 @@
                         {{firstItem.likeNum}}
                       </div>
                       <div class="comment_unit_bottom_btn margin_left_15" @click="replyFirstComBtn(firstItem._id)" v-bind:class="{comment_unit_bottom_btn_selected: firstItem.isShowReplyFirstCom}">回复</div>
-                      <div class="comment_unit_bottom_btn margin_left_15" v-if="userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover" @click="deleteFirstCom(firstItem._id)">删除</div>
+                      <div class="comment_unit_bottom_btn margin_left_15" v-if="detailInfo.userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover" @click="deleteFirstCom(firstItem._id)">删除</div>
                     </div>
                     <div class="comment_unit_bottom_right">{{firstItem.createAt | formatDateDay}}</div>
                   </div>
                 </div>
-                <!-- 发表二级评论(回复一级评论) -->
                 <div class="margin_top_40" v-if="firstItem.isShowReplyFirstCom">
                   <div class="current_user inline">
                     <img src="@/assets/img/image/code_presenter.png" />
@@ -153,54 +148,18 @@
                     </div>
                   </div>
                 </div>
-                <!-- 二级评论 -->
-                <!-- <template v-for="(secondItem, secondIndex) in list">
-                  <div class="two_commment_div margin_top_40" :key="secondIndex">
-                    <div class="current_user inline">
-                      <img src="@/assets/img/image/code_presenter.png" />
-                    </div>
-                    <div class="comment_text inline">
-                      <div class="comment_unit_name">
-                        Nike
-                        <span>回复</span>
-                        Maria
-                      </div>
-                      <div class="comment_unit_content">写的真的很棒，虽然还远没有做到架构师的级别，但是看到了自己的不足和应该努力的方向。</div>
-                      <div class="comment_unit_bottom">
-                        <div class="comment_unit_bottom_left">
-                          <div class="comment_unit_bottom_btn">
-                            <img src="@/assets/img/icon/icon-support.svg" />
-                            0
-                          </div>
-                          <div class="comment_unit_bottom_btn margin_left_15">回复</div>
-                        </div>
-                        <div class="comment_unit_bottom_right">2019-09-06</div>
-                      </div>
-                    </div>
-                </div>-->
-                <!-- 发表二级评论(回复二级评论) -->
-                <!-- <div class="margin_top_40" v-if="isShowReply" :key="secondIndex">
-                    <div class="current_user inline">
-                      <img src="@/assets/img/image/code_presenter.png" />
-                    </div>
-                    <div class="current_edit inline">
-                      <my-editor :height="'104px'" :placeholder="'我有一个大胆的想法～'"></my-editor>
-                      <br />
-                      <div class="text-right">
-                        <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
-                        <el-button
-                          type="primary"
-                          round
-                          size="small"
-                          @click="submit()"
-                        >&emsp;评&nbsp;论&emsp;</el-button>
-                      </div>
-                    </div>
-                  </div>
-                </template>-->
+
                 <div class="btn_blue margin_top_30">查看更多回复</div>
               </div>
               <hr class="comment_hr" />
+            </div>
+          </div>
+          <div class="noComment" v-if="!isComment">
+            <div class="pic">
+              <img src="@/assets/img/image/noComment.png" />
+            </div>
+            <div class="text">
+              评论区这么热闹，不想来看看嘛？<span @click="modalLogin()">看看就看看</span>
             </div>
           </div>
         </div>
@@ -234,8 +193,11 @@ export default {
       name: "",
       praiseNum: 0, // 点赞数
       detailParams: JSON.parse(this.$route.query.detailParams),
-      userInfo: "", // 用户信息
-      detailInfo: {}, //明细列表
+      detailInfo: {
+        blog: {},
+        isLike: Boolean,
+        userInfo: {}
+      }, //明细列表
       isShowReply: false, // 是否展示回复框
       praiseOnly: false, // 左侧点赞icon回归上方
       visualScroll: null, // 点赞滚动可视区
@@ -246,11 +208,19 @@ export default {
       firstComContent: "", // 一级评论内容
       firstCommenterId: "", // 评论列表中一级评论人id
       firstComIndex: "", // 评论列表中一级评论数组下标
-      haveFirstComContent: false // 监听一级评论内容
+      haveFirstComContent: false, // 监听一级评论内容
+      user: "",
+      isComment: false
     };
   },
   mounted() {
-    this.userInfo = JSON.parse(localStorage.getItem("user")); // 获取当前用户信息
+    console.log(this.$store.state.modalVisible);
+    this.user = JSON.parse(localStorage.getItem("user")); // 获取当前用户信息
+    if (this.user) {
+      this.isComment = true;
+      this.getBlogComment();
+    }
+    this.getBlog();
     // 可视区内保留一个点赞icon
     (this.visualScroll = new IntersectionObserver(([entry]) => {
       if (entry && entry.isIntersecting) {
@@ -270,15 +240,17 @@ export default {
     this.visualScroll.disconnect();
   },
   methods: {
+    modalLogin() {
+      this.$store.commit("modalVisible", true);
+    },
     //获取详情列表
     async getBlog() {
       const res = await this.$axios.get(
         `${process.env.BASE_URL}/web_api/getBlog?blogId=${this.detailParams.detailId}`
       );
-      console.log(res)
       this.detailInfo = res.data.data;
-      this.praiseNum = this.detailInfo.likeNum;
-      console.log(this.detailInfo);
+      this.praiseNum = this.detailInfo.blog.likeNum;
+      // console.log(this.detailInfo);
     },
     // 详情点赞
     async praise() {
@@ -288,16 +260,15 @@ export default {
       }
     },
     async setPraise() {
-
       let praiseParams = {
         blogId: this.detailParams.detailId,
-        userId: this.userInfo._id,
-        count: this.praiseNum,
+        userId: this.user._id,
+        count: this.praiseNum
         // likeNum: Number(this.detailInfo.likeNum)
       };
-      console.log(praiseParams)
+      // console.log(praiseParams);
       const { data } = await this.$axios.get(
-        `${process.env.BASE_URL}/web_api/likeBlog?userId=${praiseParams.userId}?blogId=${praiseParams.blogId}?count=${praiseParams.count}`
+        `${process.env.BASE_URL}/web_api/likeBlog?userId=${praiseParams.userId}&blogId=${praiseParams.blogId}&count=${praiseParams.count}`
       );
       console.log(data);
       console.log(111);
@@ -308,7 +279,7 @@ export default {
         `${process.env.BASE_URL}/web_api/getBlogComment?blogId=${this.detailParams.detailId}`
       );
       this.commentList = res.data.data;
-      console.log(res);
+      // console.log(this.commentList);
       this.commentList.forEach(item => {
         item[`firstComIsLike`] = false;
         item[`isShowReplyFirstCom`] = false;
@@ -318,8 +289,8 @@ export default {
     async submitFistCom() {
       if (!this.haveFirstComContent) return;
       const params = {
-        commentName: this.userInfo.nickName,
-        commentUserId: this.userInfo._id,
+        commentName: this.user.nickName,
+        commentUserId: this.user._id,
         blogId: this.detailParams.detailId,
         content: this.firstComContent,
         anonymous: this.isAnonymous
@@ -328,6 +299,8 @@ export default {
         `${process.env.BASE_URL}/web_api/commentBlog`,
         params
       );
+      console.log(params);
+
       if (res.data.status_code === 200) {
         this.getBlogComment();
       }
@@ -375,9 +348,11 @@ export default {
     },
     // 删除一级评论
     async deleteFirstCom(comId) {
-      const res = await this.$axios.get(
-        `${process.env.BASE_URL}/web_api/deleteComment?commentId=${comId}`
+      const res = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/deleteComment`,
+        { commentId: comId }
       );
+      console.log(res)
       if (res.data.status_code === 200) {
         this.getBlogComment();
       }
@@ -397,18 +372,67 @@ export default {
 .frt {
   float: right;
 }
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+@-moz-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+@-o-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+.transition {
+  animation-name: fadeIn;
+  -webkit-animation-name: fadeIn;
+  -moz-animation-name: fadeIn;
+  -o-animation-name: fadeIn;
+  animation-timing-function: ease-in;
+  -webkit-animation-timing-function: ease-in;
+  -moz-animation-timing-function: ease-in;
+  -o-animation-timing-function: ease-in;
+  animation-duration: 0.5s;
+  -webkit-animation-duration: 0.5s;
+  -moz-animation-duration: 0.5s;
+  -o-animation-duration: 0.5s;
+}
+
 .detail_container {
   display: flex;
   justify-content: space-between;
   position: relative;
-  width: 1200px;
+  width: 1291px;
   margin: 57px auto 40px;
   .support {
     z-index: 1000;
     width: 55px;
-    // margin-right: 36px;
     position: fixed;
-    left: 0;
     top: 217px;
     .support_icon {
       width: 55px;
@@ -623,6 +647,38 @@ export default {
     font-weight: 600;
     color: #000000;
   }
+  .noComment {
+    padding: 40px 0 50px;
+    background: white;
+    width: 874px;
+    margin-left: 91px;
+    text-align: center;
+    box-shadow: 0px 1px 5px 0px #ececec;
+    border-radius: 2px;
+    box-sizing: border-box;
+    .pic {
+      img {
+        width: 152px;
+        height: 158px;
+      }
+      margin-bottom: 15px;
+    }
+    .text {
+      color: #000000;
+      font-size: 14px;
+      span {
+        cursor: pointer;
+        display: inline-block;
+        width: 104px;
+        text-align: center;
+        border: 1px solid #3376ff;
+        border-radius: 16px;
+        color: #3376ff;
+        margin-left: 10px;
+        padding: 4px 0;
+      }
+    }
+  }
   .comment_info {
     margin-left: 91px;
     width: 874px;
@@ -730,5 +786,4 @@ export default {
     flex: 1;
   }
 }
-
 </style>
