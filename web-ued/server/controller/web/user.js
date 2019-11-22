@@ -101,7 +101,7 @@ exports.register = function(req, res) {
 exports.wxLogin = function(req, res) {
   // 这里接收前端的 redirect_url 传递的 code
   const { code } = req.query
-  if (code) {
+  if (code != 'false') {
     wxPcClient.getAccessToken(code, (err, result) => {
       if (!err) {
         const openId = result.data.openid

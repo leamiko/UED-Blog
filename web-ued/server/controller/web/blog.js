@@ -652,6 +652,9 @@ exports.getBlogComment = async function(req, res) {
         },
         userInfo: { avatar: 1, _id: 1, nickName: 1 }
       }
+    },
+    {
+      $sort: { createAt: -1 }
     }
   ])
   let replys = await Reply.aggregate([
@@ -696,6 +699,9 @@ exports.getBlogComment = async function(req, res) {
         },
         userInfo: { avatar: 1, _id: 1, nickName: 1 }
       }
+    },
+    {
+      $sort: { createAt: -1 }
     }
   ])
 
