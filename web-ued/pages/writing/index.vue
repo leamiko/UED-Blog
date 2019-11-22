@@ -7,14 +7,14 @@
           v-show="topList.length > 0">
           <el-carousel-item v-for="(item,index) in topList" :key="index" class="flex">
             <div class="left_title" @click="goDetail(item)">
-              <img :src="item.bigImgUrl" :style="{'visibility': item.bigImgUrl ? 'visible': 'hidden'}">
+              <img :src="item.blog.bigImgUrl" :style="{'visibility': item.blog.bigImgUrl ? 'visible': 'hidden'}">
             </div>
             <div class="right_detail" @click="goDetail(item)">
-              <img :src="require('../../assets/img/image/' + item.imgUrl)" alt="">
+              <img :src="require('../../assets/img/image/' + item.blog.imgUrl)" alt="">
               <div class="title">
-                <p>{{item.title}}</p>
+                <p>{{item.blog.title}}</p>
               </div>
-              <div class="subtitle">{{item.info}}</div>
+              <div class="subtitle">{{item.blog.info}}</div>
             </div>
           </el-carousel-item>
         </el-carousel>
@@ -381,8 +381,9 @@
           if (data.data.data.length > 0) {
             this.topList = data.data.data;
             for (let i = 0; i < this.topList.length; i++) {
-              this.topList[i].imgUrl = this.topImg[i];
+              this.topList[i].blog.imgUrl = this.topImg[i];
             }
+            console.log(this.topList)
           }
         }
       }
