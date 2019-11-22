@@ -184,7 +184,7 @@ export default {
       required: false
     }
   },
-  data () {
+  data() {
     return {
       list: custom.search.list[0],
       isAnonymous: false,
@@ -217,6 +217,7 @@ export default {
     console.log(this.$store.state.modalVisible);
     this.user = JSON.parse(localStorage.getItem("user")); // 获取当前用户信息
     if (this.user) {
+      this.isComment = true;
       this.getBlogComment();
     }
     this.getBlog();
@@ -231,11 +232,11 @@ export default {
     })),
       this.visualScroll.observe(document.querySelector("#praise"));
   },
-  created () {
+  created() {
     this.getBlog();
     this.getBlogComment();
   },
-  destroyed () {
+  destroyed() {
     this.visualScroll.disconnect();
   },
   methods: {
@@ -243,7 +244,7 @@ export default {
       this.$store.commit("modalVisible", true);
     },
     //获取详情列表
-    async getBlog () {
+    async getBlog() {
       const res = await this.$axios.get(
         `${process.env.BASE_URL}/web_api/getBlog?blogId=${this.detailParams.detailId}`
       );
@@ -252,13 +253,13 @@ export default {
       // console.log(this.detailInfo);
     },
     // 详情点赞
-    async praise () {
+    async praise() {
       if (this.praiseNum < 50) {
         this.praiseNum++;
         this.setPraise();
       }
     },
-    async setPraise () {
+    async setPraise() {
       let praiseParams = {
         blogId: this.detailParams.detailId,
         userId: this.user._id,
@@ -273,20 +274,19 @@ export default {
       console.log(111);
     },
     //获取评论列表
-    async getBlogComment () {
+    async getBlogComment() {
       const res = await this.$axios.get(
         `${process.env.BASE_URL}/web_api/getBlogComment?blogId=${this.detailParams.detailId}`
       );
       this.commentList = res.data.data;
       // console.log(this.commentList);
-      // console.log(this.commentList);
-      // this.commentList.forEach(item => {
-      //   item[`firstComIsLike`] = false;
-      //   item[`isShowReplyFirstCom`] = false;
-      // });
+      this.commentList.forEach(item => {
+        item[`firstComIsLike`] = false;
+        item[`isShowReplyFirstCom`] = false;
+      });
     },
     // 发表一级评论
-    async submitFistCom () {
+    async submitFistCom() {
       if (!this.haveFirstComContent) return;
       const params = {
         commentName: this.user.nickName,
@@ -306,32 +306,32 @@ export default {
       }
     },
     // 监听评论框
-    onEditorChange ({ editor, html, text }) {
+    onEditorChange({ editor, html, text }) {
       // console.log(editor, html, text);
       this.firstComContent = text;
       this.commentHtml = html;
       this.haveFirstComContent = html ? true : false;
     },
     // 评论删除按钮悬浮
-    mouseHoverDelComBtn (index, id, isHover) {
+    mouseHoverDelComBtn(index, id, isHover) {
       this.deleteComBtnIsHover = isHover;
       this.firstCommenterId = id;
       this.firstComIndex = index;
     },
     // 评论点赞按钮悬浮
-    mouseHoverSupComBtn (index, isHover) {
+    mouseHoverSupComBtn(index, isHover) {
       this.supportComBtnIsHover = isHover;
       this.firstComIndex = index;
     },
     // 评论点赞
-    commentLike (comId) {
+    commentLike(comId) {
       this.commentList.forEach(item => {
         if (item._id === comId && !item.firstComIsLike) {
           const res = this.$axios.get(
             `${process.env.BASE_URL}/web_api/commentLike?blogId=` +
-            this.detailParams.detailId +
-            `&commentId=` +
-            item._id
+              this.detailParams.detailId +
+              `&commentId=` +
+              item._id
           );
           item.firstComIsLike = !item.firstComIsLike;
           item.likeNum = item.likeNum + 1;
@@ -339,7 +339,7 @@ export default {
       });
     },
     // 回复一级评论按钮
-    replyFirstComBtn (comId) {
+    replyFirstComBtn(comId) {
       this.commentList.forEach(item => {
         if (item._id === comId) {
           item.isShowReplyFirstCom = !item.isShowReplyFirstCom;
@@ -347,19 +347,21 @@ export default {
       });
     },
     // 删除一级评论
-    async deleteFirstCom (comId) {
-      const res = await this.$axios.get(
-        `${process.env.BASE_URL}/web_api/deleteComment?commentId=${comId}`
+    async deleteFirstCom(comId) {
+      const res = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/deleteComment`,
+        { commentId: comId }
       );
+      console.log(res)
       if (res.data.status_code === 200) {
         this.getBlogComment();
       }
     },
     //是否匿名
-    anonymousClick () {
+    anonymousClick() {
       this.isAnonymous = !this.isAnonymous;
     },
-    submit () { }
+    submit() {}
   }
 };
 </script>
