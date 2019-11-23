@@ -4,6 +4,7 @@ var Dic = require('../../models/dictionary');
 var bugComment = require('../../models/comment-bug.js') //引入comment表
 var bugReply = require('../../models/reply-bug.js') //引入comment表
 var bugLike = require('../../models/like-bug.js') //引入like表
+var adoptBugComment = require('../../models/adopt-bugComment')
 
 
 const reg = /^[0-9]*[1-9][0-9]*$/;
@@ -88,19 +89,60 @@ exports.GetBugList = async function (req, res, next) {
   }
   try {
     const count = await Bug.countDocuments(filters)
-    const reslut = await Bug.find(
-      filters,
-      null, {
-        skip: (req.body.pageIndex - 1) * req.body.pageSize,
-        limit: req.body.pageSize,
-        sort: {
-          createAt: -1
+    const result = await Bug.aggregate(
+      [{
+          $match: filters
+        },
+        {
+          $lookup: {
+            from: 'user',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'authorInfo'
+          }
+        },
+        // {
+        //   $project: {
+        //     // title: 1,
+        //     // keyword: 0,
+        //     // tags: 1,
+        //     // content: 1,
+        //     // bugStatus: 1,
+        //     // bugSolution: 1,
+        //     // author: 1,
+        //     // userId: 0,
+        //     // likeNum: 1,
+        //     // viewNum: 1,
+        //     // commentNum: 1,
+        //     // comtTallestLikeNum: 1,
+        //     // anonymous: 1,
+        //     // adopt: 1,
+        //     // rank: 1,
+        //     // deleted: 1,
+        //     // createAt: 1,
+        //     // authorInfo: {
+        //     //   nickName: 1,
+        //     //   account: 1,
+        //     //   avatar: 1
+        //     // }
+        //   }
+        // },
+        {
+          $sort: {
+            rank: -1
+          }
+        },
+        {
+          $skip: (req.body.pageIndex * 1 - 1) * req.body.pageSize,
+        },
+        {
+          $limit: req.body.pageSize
         }
-      })
+      ])
     res.json({
       status_code: 200, //状态码   200是成功   其他的码是错误
       message: 'success', //返回的信息
-      data: reslut, ///返回的数据
+      data: result, ///返回的数据
       count: count
     })
   } catch (error) {
@@ -209,14 +251,6 @@ exports.getThisBugUserLikeNum = async function (req, res, next) {
     })
   } catch (error) {
     next(error)
-  }
-}
-// 可能感兴趣的bug列表
-exports.MaybeInteresList = async function (req, res, next) {
-  try {
-
-  } catch (error) {
-    next(error);
   }
 }
 // tags
@@ -382,9 +416,6 @@ exports.SearchBug = async function (req, res, next) {
 //评论
 exports.commentBug = async function (req, res, next) {
   try {
-    const whereBlog = {
-      _id: req.body.bugId
-    }
     let comment = {
       commenterName: req.body.commenterName,
       commenterId: req.body.commenterId,
@@ -394,11 +425,14 @@ exports.commentBug = async function (req, res, next) {
     }
     const comSaved = await bugComment.create([comment])
     if (comSaved) {
-      const commentNum = await bugComment.countDocuments();
-      let updateBlog = {
-        commentNum: commentNum ? commentNum + 1 : 1
+      const whereBug = {
+        _id: req.body.bugId
       }
-      const upBuged = await Bug.updateOne(whereBlog, updateBlog);
+      await Bug.where(whereBug).updateOne({
+        $inc: {
+          commentNum: 1
+        }
+      })
       res.json({
         status_code: 200,
         message: '添加成功！',
@@ -472,20 +506,22 @@ exports.getBugComment = async function (req, res, next) {
         },
         {
           $project: {
-            commentUserId: {
+            commenterId: {
               $cond: [{
                 $eq: ["$anonymous", true]
-              }, "", "$commentUserId"]
+              }, "", "$commenterId"]
             },
-            blogId: 1,
-            likeNum: 1,
-            content: 1,
-            anonymous: 1,
             commenterName: {
               $cond: [{
                 $eq: ["$anonymous", true]
               }, "", "$commenterName"]
-            }
+            },
+            bugId: 1,
+            likeNum: 1,
+            content: 1,
+            anonymous: 1,
+            adopt: 1,
+            createdAt: 1
           }
         },
       ])
@@ -498,6 +534,7 @@ exports.getBugComment = async function (req, res, next) {
     next(error);
   }
 }
+
 //删除评论
 exports.deleteBugComment = async function (req, res, next) {
   try {
@@ -526,6 +563,58 @@ exports.replyBug = async function (req, res, next) {
       message: '添加成功！',
       data: null
     })
+  } catch (error) {
+    next(error)
+  }
+}
+// 采纳评论
+exports.adoptComment = async function (req, res, next) {
+  try {
+    const whereCmt = {
+      _id: req.body.commentId
+    }
+    const whereBug = {
+      _id: req.body.bugId
+    }
+    const findthisCmt = await bugComment.findOne(whereCmt);
+    const findthisBug = await Bug.findOne(whereBug);
+
+    if (findthisCmt && findthisBug) {
+      if (findthisBug.userId == req.body.userId) {
+        const isAdopted = await adoptBugComment.findOne({
+          userId: req.body.userId,
+          bugId: req.body.bugId
+        })
+        if (isAdopted) {
+          await adoptBugComment.deleteOne({
+            userId: req.body.userId,
+            bugId: req.body.bugId
+          })
+        } else {
+          const adopt = new adoptBugComment({
+            userId: req.body.userId,
+            bugId: req.body.bugId,
+            commentId: req.body.commentId
+          })
+          await adopt.save();
+        }
+        await bugComment.where(whereCmt).updateOne({
+          adopt: req.body.adopt
+        });
+        await Bug.where(whereBug).updateOne({
+          adopt: req.body.adopt
+        });
+        return res.json({
+          status_code: 200,
+          message: req.body.adopt == 'true' ? '采纳成功' : '取消采纳成功',
+          data: null
+        })
+      } else {
+        next('采纳失败！');
+      }
+    } else {
+      next('评论失败！');
+    }
   } catch (error) {
     next(error)
   }

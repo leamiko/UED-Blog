@@ -161,6 +161,10 @@ router.post('/SearchByKeywords', (req, res, next) => {
 router.post('/commentBug', (req, res, next) => {
   web_bugCtrler.commentBug(req, res, next)
 })
+// Bug采纳评论
+router.post('/adoptComment', (req, res, next) => {
+  web_bugCtrler.adoptComment(req, res, next)
+})
 // 获取Bug评论
 router.get('/getBugComment', (req, res, next) => {
   web_bugCtrler.getBugComment(req, res, next)

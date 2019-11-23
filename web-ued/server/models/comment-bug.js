@@ -19,6 +19,10 @@ var bugCommentSchema = new Schema({
     content: {
         type: String //内容
     },
+    adopt: {
+        type: Boolean, //是否采纳
+        default: false
+    },
     anonymous: {
         type: Boolean //是否匿名
     }
