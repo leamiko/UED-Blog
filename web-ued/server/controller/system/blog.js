@@ -2,6 +2,7 @@ var Blog = require('../../models/blog.js') //引入blog表
 var Like = require('../../models/like.js') //引入like表
 var Comment = require('../../models/comment.js') //引入comment表
 var User = require('../../models/user.js') //引入user表
+var mongoose = require('mongoose')
 
 //blog新增编辑
 exports.addEditBlog = function(req, res) {
@@ -100,8 +101,8 @@ exports.getBlogList = async function(req, res) {
   if (req.body.filters.blogType) {
     filters.blogType = req.body.filters.blogType
   }
-  if (req.body.filters.author) {
-    filters.author = req.body.filters.author
+  if (req.body.filters.userId) {
+    filters.userId = mongoose.Types.ObjectId(req.body.filters.userId)
   }
   if (req.body.filters.isGood) {
     filters.isGood = req.body.filters.isGood
@@ -110,15 +111,50 @@ exports.getBlogList = async function(req, res) {
     filters.isAudit = req.body.filters.isAudit
   }
   const count = await Blog.countDocuments(filters)
-  Blog.find(
-    filters,
-    null,
-    {
-      skip: (page * 1 - 1) * 15,
-      limit: limit,
-      sort: { createdAt: -1 }
-    },
-    function(err, books) {
+  Blog.aggregate(
+    [
+      {
+        $match: filters
+      },
+      {
+        $lookup: {
+          from: 'user',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'userInfo'
+        }
+      },
+      {
+        $project: {
+          title: 1,
+          blogType: 1,
+          info: 1,
+          content: 1,
+          isGood: 1,
+          isAudit: 1,
+          smallImgUrl: 1,
+          midImgUrl: 1,
+          bigImgUrl: 1,
+          likeNum: 1,
+          viewNum: 1,
+          commentNum: 1,
+          commentLikeNum: 1,
+          rank: 1,
+          createAt: 1,
+          userInfo: { nickName: 1, account: 1, avatar: 1 }
+        }
+      },
+      {
+        $sort: { rank: -1 }
+      },
+      {
+        $skip: (page * 1 - 1) * limit
+      },
+      {
+        $limit: limit
+      }
+    ],
+    (err, books) => {
       if (err) {
         return res.json({
           status_code: 201,

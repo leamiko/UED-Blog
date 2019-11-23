@@ -8,10 +8,10 @@ var CommentSchema = new Schema(
       type: String //评论人
     },
     commentUserId: {
-      type: String //评论人objectid
+      type: mongoose.Schema.Types.ObjectId //评论人objectid
     },
     blogId: {
-      type: String //文章objectid
+      type: mongoose.Schema.Types.ObjectId //文章objectid
     },
     likeNum: {
       type: Number, //点赞数

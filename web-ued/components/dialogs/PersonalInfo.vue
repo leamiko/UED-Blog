@@ -11,8 +11,10 @@
             </div>
             <p>头像</p>
             <div class="cus-flex cus-align-center">
-                <div v-for="(item,index) in avatorList" @click="chooseAvator(item)" :key="index">
-                    <el-avatar :key="index" :size="50" :src="item.url" class="align-top" shape="square"></el-avatar>
+                <div class="avator_list" v-for="item in avatorList" @click="chooseAvator(item)" :key="item._id">
+                    <el-avatar :size="50" :src="item.url" class="align-top" shape="square"
+                        :class="{'img_selected': item.isSelect}"></el-avatar>
+                    <img class="selected" src="../../assets/img/icon/avator-checked.png" alt="" v-if="item.isSelect">
                 </div>
             </div>
         </div>
@@ -20,6 +22,8 @@
             <el-button type="primary" round size="large" @click="submit">确定</el-button>
         </div>
     </el-dialog>
+
+
 </template>
 <style lang="scss" scoped>
     .info_dialog {
@@ -37,6 +41,24 @@
                 border-bottom: 1px solid #3376FF;
                 line-height: 16px;
                 cursor: pointer;
+            }
+        }
+
+        .img_selected {
+            border-radius: 50%;
+            border: 3px solid #3376FF;
+            width: 54px !important;
+            height: 54px !important;
+            line-height: 54px !important;
+        }
+
+        .avator_list {
+            position: relative;
+
+            img.selected {
+                position: absolute;
+                bottom: 2px;
+                right: 16px;
             }
         }
 
@@ -59,14 +81,14 @@
             },
             classStyle: {
                 default: null,
-                type: String, 
+                type: String,
                 required: false
             },
         },
         watch: {
-         isShow(newVal, oldVal) {
-              this.show = newVal;
-            }     
+            isShow(newVal, oldVal) {
+                this.show = newVal;
+            }
         },
         data() {
             return {
@@ -76,28 +98,30 @@
                 nameList: [],
                 memberInfo: {}, // 用户信息
                 imgUrl: null,
-                avatorList: [] // 头像列表
+                avatorList: [], // 头像列表
             }
         },
         mounted() {
-            if(localStorage.user) {
-             this.memberInfo = JSON.parse(localStorage.getItem('user'))
-            this.name = this.memberInfo.nickName
+            if (localStorage.user) {
+                this.memberInfo = JSON.parse(localStorage.getItem('user'))
+                this.name = this.memberInfo.nickName
             }
             this.getAvatarList()
         },
         methods: {
             handleClose(done) {
                 this.$emit('hide', true);
-                 this.show = false;
+                this.show = false;
                 done();
             },
             // 获取头像
             async getAvatarList() {
                 const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/getAvatarList`);
-                 if (res.status == 200) {
-                    //  console.log(res)
+                if (res.status == 200) {
                     this.avatorList = res.data.data
+                    this.avatorList.forEach(e => {
+                        this.$set(e, 'isSelect', false)
+                    })
                 }
 
             },
@@ -114,6 +138,10 @@
             },
             // // 选择头像
             chooseAvator(item) {
+                this.avatorList.forEach(e => {
+                    e.isSelect = false
+                })
+                item.isSelect = true
                 this.imgUrl = item.url
                 // this.uploadImgToBase64(item.srcElement.currentSrc, (res) => {
                 //     this.imgUrl = res
@@ -138,23 +166,31 @@
 
             async submit() {
                 const params = {
-                    id: this.memberInfo._id,
+                    _id: this.memberInfo._id,
                     nickName: this.name,
                     avatar: this.imgUrl
                 }
                 const res = await this.$axios.post(`${process.env.BASE_URL}/web_api/editInfo`, params);
-                if (res.status == 200) {
+                if (res.data.status_code == 200) {
                     let user = res.data.data
                     console.log(user)
                     if (user) {
                         localStorage.removeItem('user')
                         localStorage.setItem("user", JSON.stringify(user));
-                        this.show = false
-                        this.$message({
+                        this.$emit('hide', true);
+                        this.show = false;
+                        this.$notify({
+                            title: '成功',
                             message: '信息更新成功',
                             type: 'success'
                         });
                     }
+                    this.$store.commit("flag", new Date().toLocaleTimeString());
+                } else {
+                    this.$notify.error({
+                        title: '错误',
+                        message: res.data.message
+                    });
                 }
             }
         }

@@ -2,23 +2,14 @@
   <div>
     <div class="add_row">
       <span>文章管理</span>
-      <a-button type="primary"
-                icon="plus"
-                @click="addBlog()">新增</a-button>
+      <a-button type="primary" icon="plus" @click="addBlog()">新增</a-button>
     </div>
     <!-- 筛选 -->
-    <div class="select_block"
-         id="ant-advanced-search-form">
-      <a-form class="ant-advanced-search-form"
-              :form="form"
-              @submit="handleSearch">
+    <div class="select_block" id="ant-advanced-search-form">
+      <a-form class="ant-advanced-search-form" :form="form" @submit="handleSearch">
         <a-row :gutter="24">
-          <a-col v-for="i in fiedls"
-                 :key="i.id"
-                 :span="7"
-                 :style="{ display: i.id < count ? 'block' : 'none' }">
-            <a-form-item v-if="i.name!=='分类' && i.name!=='精选' && i.name!=='审核'"
-                         :label="`${i.name}`">
+          <a-col v-for="i in fiedls" :key="i.id" :span="7" :style="{ display: i.id < count ? 'block' : 'none' }">
+            <a-form-item v-if="i.name!=='分类' && i.name !== '作者' && i.name!=='精选' && i.name!=='审核'" :label="`${i.name}`">
               <a-input v-decorator="[
                   `${i.field}`,
                   {
@@ -29,17 +20,24 @@
                       }
                     ]
                   }
-                ]"
-                       v-bind:placeholder="'请输入' + i.name" />
+                ]" v-bind:placeholder="'请输入' + i.name" />
             </a-form-item>
-            <a-form-item v-if="i.name==='分类'"
-                         :label="`${i.name}`">
-              <a-select mode="multiple"
-                        notFoundContent="无匹配项"
-                        v-bind:placeholder="'请选择' + i.name"
-                        :tokenSeparators="[',']"
-                        @change="handleChange"
-                        v-decorator="[
+            <a-form-item v-if="i.name==='作者'" :label="`${i.name}`">
+              <a-select allowClear showSearch  notFoundContent="无匹配项" v-bind:placeholder="'请选择' + i.name"
+                :tokenSeparators="[',']" @change="handleChange" v-decorator="[
+            `${i.field}`,
+            {
+                rules: [{
+                required: false, message: '请输入作者',
+                }]
+            }
+            ]">
+                <a-select-option v-for="item in authorList" :key="item._id">{{item.nickName}}</a-select-option>
+              </a-select>
+            </a-form-item>
+            <a-form-item v-if="i.name==='分类'" :label="`${i.name}`">
+              <a-select mode="multiple" notFoundContent="无匹配项" v-bind:placeholder="'请选择' + i.name"
+                :tokenSeparators="[',']" @change="handleChange" v-decorator="[
             `${i.field}`,
             {
                 rules: [{
@@ -47,12 +45,10 @@
                 }]
             }
             ]">
-                <a-select-option v-for="item in keywordsData"
-                                 :key="item">{{item}}</a-select-option>
+                <a-select-option v-for="item in keywordsData" :key="item">{{item}}</a-select-option>
               </a-select>
             </a-form-item>
-            <a-form-item v-if="i.name==='精选'"
-                         :label="`${i.name}`">
+            <a-form-item v-if="i.name==='精选'" :label="`${i.name}`">
               <a-select v-decorator="[
                 `${i.field}`,
                 {
@@ -61,15 +57,12 @@
                     message: 'Input something!',
                   }],
                 }
-              ]"
-                        style="width: 120px"
-                        v-bind:placeholder="'请选择'">
+              ]" style="width: 120px" v-bind:placeholder="'请选择'">
                 <a-select-option value="false">否</a-select-option>
                 <a-select-option value="true">是</a-select-option>
               </a-select>
             </a-form-item>
-            <a-form-item v-if="i.name==='审核'"
-                         :label="`${i.name}`">
+            <a-form-item v-if="i.name==='审核'" :label="`${i.name}`">
               <a-select v-decorator="[
                 `${i.field}`,
                 {
@@ -78,9 +71,7 @@
                     message: 'Input something!',
                   }],
                 }
-              ]"
-                        style="width: 120px"
-                        v-bind:placeholder="'请选择'">
+              ]" style="width: 120px" v-bind:placeholder="'请选择'">
                 <a-select-option value="false">否</a-select-option>
                 <a-select-option value="true">是</a-select-option>
               </a-select>
@@ -88,14 +79,10 @@
           </a-col>
         </a-row>
         <a-row>
-          <a-col :span="24"
-                 :style="{ textAlign: 'right' }">
-            <a-button type="primary"
-                      html-type="submit">查询</a-button>
-            <a-button :style="{ marginLeft: '8px' }"
-                      @click="handleReset">清空</a-button>
-            <a :style="{ marginLeft: '8px', fontSize: '12px' }"
-               @click="toggle">
+          <a-col :span="24" :style="{ textAlign: 'right' }">
+            <a-button type="primary" html-type="submit">查询</a-button>
+            <a-button :style="{ marginLeft: '8px' }" @click="handleReset">清空</a-button>
+            <a :style="{ marginLeft: '8px', fontSize: '12px' }" @click="toggle">
               {{expand?'折叠':'展开'}}
               <a-icon :type="expand ? 'up' : 'down'" />
             </a>
@@ -105,22 +92,13 @@
     </div>
     <div class="tables">
       <!-- <a-input /> -->
-      <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-               :dataSource="data"
-               :columns="columns"
-               :rowKey:="data.key"
-               :locale="{emptyText: '暂无数据'}">
-        <template slot="operation"
-                  slot-scope="text, record">
-          <a class="right_gap"
-             @click="showItems(record.key)">查看</a>
-          <a class="right_gap"
-             @click="editItems(record.key)">编辑</a>
-          <a-popconfirm v-if="data.length"
-                        title="确定删除这条信息吗？"
-                        okText="确定"
-                        cancelText="取消"
-                        @confirm="() => onDelete(record.key)">
+      <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :dataSource="data"
+        :columns="columns" :rowKey:="data.key" :locale="{emptyText: '暂无数据'}">
+        <template slot="operation" slot-scope="text, record">
+          <a class="right_gap" @click="showItems(record.key)">查看</a>
+          <a class="right_gap" @click="editItems(record.key)">编辑</a>
+          <a-popconfirm v-if="data.length" title="确定删除这条信息吗？" okText="确定" cancelText="取消"
+            @confirm="() => onDelete(record.key)">
             <a>删除</a>
           </a-popconfirm>
         </template>
@@ -135,72 +113,92 @@ export default {
     return {
       expand: false,
       form: this.$form.createForm(this),
-      fiedls: [
-        { id: 1, name: '名称', field: 'title' },
-        { id: 2, name: '作者', field: 'author' },
-        { id: 3, name: '分类', field: 'blogType' },
-        { id: 4, name: '精选', field: 'isGood' },
-        { id: 5, name: '审核', field: 'isAudit' }
+      fiedls: [{
+        id: 1,
+        name: '名称',
+        field: 'title'
+      },
+      {
+        id: 2,
+        name: '作者',
+        field: 'userId'
+      },
+      {
+        id: 3,
+        name: '分类',
+        field: 'blogType'
+      },
+      {
+        id: 4,
+        name: '精选',
+        field: 'isGood'
+      },
+      {
+        id: 5,
+        name: '审核',
+        field: 'isAudit'
+      }
       ],
       data: [],
       queryParams: {},
       searchText: '',
       searchInput: null,
       selectedRowKeys: [],
-      columns: [
-        {
-          title: '名称',
-          dataIndex: 'title'
-        },
-        {
-          title: '分类',
-          dataIndex: 'blogType',
-          scopedSlots: {
-            customRender: 'blogType'
-          }
-        },
-        {
-          title: '作者',
-          dataIndex: 'author'
-        },
-        {
-          title: '点赞数',
-          dataIndex: 'likeNum',
-          scopedSlots: {
-            customRender: 'likeNum'
-          }
-        },
-        {
-          title: '精选',
-          dataIndex: 'isGood',
-          scopedSlots: {
-            customRender: 'isGood'
-          }
-        },
-        {
-          title: '审核',
-          dataIndex: 'isAudit',
-          scopedSlots: {
-            customRender: 'isAudit'
-          }
-        },
-        {
-          title: '创建时间',
-          dataIndex: 'createAt'
-        },
-        {
-          title: '操作',
-          dataIndex: 'operation',
-          scopedSlots: {
-            customRender: 'operation'
-          }
+      columns: [{
+        title: '名称',
+        dataIndex: 'title'
+      },
+      {
+        title: '分类',
+        dataIndex: 'blogType',
+        scopedSlots: {
+          customRender: 'blogType'
         }
+      },
+      {
+        title: '作者',
+        dataIndex: 'userInfo[0].nickName'
+      },
+      {
+        title: '点赞数',
+        dataIndex: 'likeNum',
+        scopedSlots: {
+          customRender: 'likeNum'
+        }
+      },
+      {
+        title: '精选',
+        dataIndex: 'isGood',
+        scopedSlots: {
+          customRender: 'isGood'
+        }
+      },
+      {
+        title: '审核',
+        dataIndex: 'isAudit',
+        scopedSlots: {
+          customRender: 'isAudit'
+        }
+      },
+      {
+        title: '创建时间',
+        dataIndex: 'createAt'
+      },
+      {
+        title: '操作',
+        dataIndex: 'operation',
+        scopedSlots: {
+          customRender: 'operation'
+        }
+      }
       ],
-      keywordsData: []
+      keywordsData: [],
+      authorList: []
     }
   },
   mounted () {
     this.getList()
+    this.getAuthorList()
   },
   computed: {
     count () {
@@ -270,10 +268,14 @@ export default {
         },
         filters: {
           title: this.queryParams ? JSON.stringify(this.queryParams) !== '{}' ? this.queryParams.title : '' : '',
-          author: this.queryParams ? JSON.stringify(this.queryParams) !== '{}' ? this.queryParams.author : '' : '',
-          blogType: this.queryParams ? JSON.stringify(this.queryParams) !== '{}' ? this.queryParams.blogType : '' : '',
-          isGood: this.queryParams ? JSON.stringify(this.queryParams) !== '{}' ? this.queryParams.isGood : '' : '',
-          isAudit: this.queryParams ? JSON.stringify(this.queryParams) !== '{}' ? this.queryParams.isAudit : '' : ''
+          userId: this.queryParams ? JSON.stringify(this.queryParams) !== '{}' ? this.queryParams.userId : ''
+            : '',
+          blogType: this.queryParams ? JSON.stringify(this.queryParams) !== '{}' ? this.queryParams.blogType
+            : '' : '',
+          isGood: this.queryParams ? JSON.stringify(this.queryParams) !== '{}' ? this.queryParams.isGood : ''
+            : '',
+          isAudit: this.queryParams ? JSON.stringify(this.queryParams) !== '{}' ? this.queryParams.isAudit : ''
+            : ''
         }
       }
       let url = this.api.blogList
@@ -286,18 +288,53 @@ export default {
         // 数据显示形式的转换
         this.data[i].isGood = this.data[i].isGood ? '是' : '否'
         this.data[i].isAudit = this.data[i].isAudit ? '是' : '否'
-        this.data[i].createAt = moment('2019-04-28T06:54:31.914Z').format(
+        this.data[i].blogType = this.renderblogType(this.data[i].blogType)
+        this.data[i].createAt = moment(this.data[i].createAt).format(
           'YYYY-MM-DD HH:MM'
         )
       }
+    },
+    // 获取作者列表
+    getAuthorList: async function () {
+      const url = await this.api.getUserList
+      const res = await this.$http.get(url)
+      console.log(res)
+      if (res.status_code === 200) {
+        this.authorList = res.data
+      }
+    },
+
+    renderblogType (type) {
+      let str = ''
+      switch (type) {
+        case 1:
+          str = '技术'
+          break
+        case 2:
+          str = '交互'
+          break
+        case 3:
+          str = '设计'
+          break
+        case 4:
+          str = '管理'
+          break
+        case 5:
+          str = '其他'
+          break
+      }
+      return str
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
     handleSearch (e) {
       e.preventDefault()
-      this.form.validateFields((values) => {
-        this.queryParams = values
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          this.queryParams = values
+          console.log('Received values of form: ', values)
+        }
       })
       this.getList()
     },
@@ -351,7 +388,9 @@ export default {
       }
     },
     addBlog () {
-      this.$router.push({ name: 'articleAdd' })
+      this.$router.push({
+        name: 'articleAdd'
+      })
     }
   }
 }

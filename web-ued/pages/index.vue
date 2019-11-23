@@ -31,24 +31,25 @@
             v-for="item in list"
             :key="item.id"
             class="cus-flex"
+            @click="goDetail(item)"
           >
             <img
-              :src="img"
+              :src="item.blog.midImgUrl"
               class="my-img"
             >
             <div>
-              <span class="list_title">{{item.title}}</span>
-              <span class="desc">{{item.content}}</span>
+              <span class="list_title">{{item.blog.title}}</span>
+              <span class="desc">{{item.blog.info}}</span>
               <div class="cus-flex cus-align-center">
                 <el-avatar
                   size="small"
-                  :src="avatar"
+                  :src="item.userInfo.avatar"
                   class="avatar"
                 ></el-avatar>
-                <span class="text_color_time">{{item.author}} · {{item.updateAt | datetimeFormat}}</span>&emsp;&emsp;
-                <span class="text_color">{{item.blogType}}</span>&emsp;&emsp;
-                <span class="text_color"><img src="@/assets/img/icon/eyes.svg">{{item.viewNum}}</span>&emsp;&emsp;
-                <span class="text_color"><img src="@/assets/img/icon/like.svg">{{item.likeNum}}</span>
+                <span class="text_color_time">{{item.userInfo.nickName}} · {{item.userInfo.updateAt | datetimeFormat}}</span>&emsp;&emsp;
+                <span class="text_color">{{ item.blog.blogType == 1 ? "技术" : item.blog.blogType == 2 ? "交互" :item.blog.blogType == 3 ? "设计" :item.blog.blogType == 4 ? "管理" :"其它" }}</span>&emsp;&emsp;
+                <span class="text_color"><img src="@/assets/img/icon/eyes.svg">{{item.blog.viewNum}}</span>&emsp;&emsp;
+                <span class="text_color"><img src="@/assets/img/icon/like.svg">{{item.blog.likeNum}}</span>
               </div>
             </div>
           </li>
@@ -57,7 +58,10 @@
           <el-button
             round
             class="btn_style"
-          > 查看更多 </el-button>
+          >
+            <router-link :to="custom.menu[1].redirectUrl">查看更多
+            </router-link>
+          </el-button>
         </div>
       </div>
     </div>
@@ -83,6 +87,7 @@ export default {
   },
   data () {
     return {
+      custom: custom.head,
       config: custom.index,
       height: Number,
       isAddClass: true,
@@ -115,6 +120,16 @@ export default {
     }
   },
   methods: {
+    //跳转明细页
+    goDetail (e) {
+      var detailParams = {
+        detailId: e._id,
+        imgUrl: e.imgUrl
+      };
+      this.$router.push({
+        path: "writing/detail?detailParams=" + JSON.stringify(detailParams)
+      });
+    },
     getScrollTop (val) {
       if (val > this.height - 100) {
         this.isAddClass = false;
@@ -197,6 +212,9 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   word-break: keep-all;
+  &:hover {
+    cursor: pointer;
+  }
 }
 .avatar {
   margin-right: 10px;
@@ -224,6 +242,10 @@ export default {
   background: rgba(238, 238, 239, 1);
   font-size: 14px;
   margin-bottom: 68px;
+  a {
+    color: rgba(52, 72, 94, 1);
+    text-decoration-line: none;
+  }
 }
 .list_title {
   font-weight: 600;

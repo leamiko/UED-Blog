@@ -101,50 +101,57 @@ exports.register = function(req, res) {
 exports.wxLogin = function(req, res) {
   // 这里接收前端的 redirect_url 传递的 code
   const { code } = req.query
-  wxPcClient.getAccessToken(code, (err, result) => {
-    if (!err) {
-      const openId = result.data.openid
-      wxPcClient.getUser(openId, (err, result) => {
-        // 这里获取到了用户的信息, 可以存储在数据库中
-        const { unionid } = result
-        // console.log(unionid)
-        User.findOne({ wxUnionId: unionid }, function(err, user) {
-          if (user) {
-            // 登录
-            req.session.user = user
-            return res.json({
-              status_code: 200,
-              message: '登录成功！',
-              user: user
-            })
-          } else {
-            // 绑定
-            if (req.session.user) {
-              User.findByIdAndUpdate(
-                req.session.user._id,
-                { wxUnionId: unionid },
-                function(err, user) {
-                  if (user) {
-                    return res.json({
-                      status_code: 200,
-                      message: '绑定成功！',
-                      user: user
-                    })
-                  }
-                }
-              )
-            } else {
+  if (code != 'false') {
+    wxPcClient.getAccessToken(code, (err, result) => {
+      if (!err) {
+        const openId = result.data.openid
+        wxPcClient.getUser(openId, (err, result) => {
+          // 这里获取到了用户的信息, 可以存储在数据库中
+          const { unionid } = result
+          // console.log(unionid)
+          User.findOne({ wxUnionId: unionid }, function(err, user) {
+            if (user) {
+              // 登录
+              req.session.user = user
               return res.json({
-                status_code: 401,
-                message: '请先登录绑定账号！',
-                data: { wxUnionId: unionid }
+                status_code: 200,
+                message: '登录成功！',
+                user: user
               })
+            } else {
+              // 绑定
+              if (req.session.user) {
+                User.findByIdAndUpdate(
+                  req.session.user._id,
+                  { wxUnionId: unionid },
+                  function(err, user) {
+                    if (user) {
+                      return res.json({
+                        status_code: 200,
+                        message: '绑定成功！',
+                        user: user
+                      })
+                    }
+                  }
+                )
+              } else {
+                return res.json({
+                  status_code: 401,
+                  message: '请先登录绑定账号！',
+                  data: { wxUnionId: unionid }
+                })
+              }
             }
-          }
+          })
         })
-      })
-    }
-  })
+      }
+    })
+  } else {
+    return res.json({
+      status_code: 402,
+      message: '请先登录绑定账号！'
+    })
+  }
 }
 
 exports.isLogin = function(req, res) {
@@ -170,6 +177,7 @@ exports.editInfo = function(req, res) {
     },
     function(err, user) {
       if (err) {
+        console.log(err)
         return res.json({
           status_code: 201,
           message: err,
@@ -177,13 +185,16 @@ exports.editInfo = function(req, res) {
         })
       }
       if (user) {
-        // 如果有该昵称的用户，则昵称重复
-        if (user._id != req.body.id) {
-          res.send('该昵称已存在！')
-          return
+        if (user._id != req.body._id) {
+          console.log(user._id)
+          return res.json({
+            status_code: 201,
+            message: '该昵称已存在！',
+            data: null
+          })
         }
       }
-      User.findByIdAndUpdate(req.body.id, req.body, { new: true }, function(
+      User.findByIdAndUpdate(req.body._id, req.body, { new: true }, function(
         errors,
         result
       ) {

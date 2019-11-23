@@ -42,7 +42,8 @@ export const state = () => ({
   isLogin: true,
   modalVisible: false,
   qrcodeBindBox: false,
-  wxUnionId: null,
+  wxUnionId: null, 
+  flag:null,
 })
 
 export const mutations = {
@@ -61,6 +62,9 @@ export const mutations = {
   },
   wxUnionId(state, data) {
     state.wxUnionId = data
+  },
+  flag(state, data){
+    state.flag = data
   }
 }
 
@@ -88,8 +92,4 @@ export const actions = {
   }) {
     commit('SET_TOKEN', null)
   },
-  // isLogin({ commit }, data) {
-  //   console.log(data)
-  //   commit('isLogin', data)
-  // }
 }
