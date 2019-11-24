@@ -25,11 +25,8 @@ var BugSchema = new Schema({
     type: String, //bug解决方案
     default: ''
   },
-  author: {
-    type: String //作者  登录用户昵称
-  },
   userId: {
-    type: String //作者objectId也是登录用户objectId
+    type: mongoose.Schema.Types.ObjectId //作者objectId也是登录用户objectId
   },
   likeNum: {
     type: Number, //点赞数
