@@ -130,7 +130,7 @@
                         {{firstItem.likeNum}}
                       </div>
                       <div class="comment_unit_bottom_btn margin_left_15" @click="replyFirstComBtn(firstItem)" v-bind:class="{comment_unit_bottom_btn_selected: firstItem.isShowReplyFirstCom}">回复</div>
-                      <div class="comment_unit_bottom_btn margin_left_15" v-if="user._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover" @click="deleteFirstCom(firstItem._id)">删除</div>
+                      <div class="comment_unit_bottom_btn margin_left_15" v-if="user._id ==firstItem.userInfo[0]._id && (firstComIndex == firstIndex && deleteComBtnIsHover)" @click="deleteFirstCom(firstItem._id)">删除</div>
                     </div>
                     <div class="comment_unit_bottom_right">{{firstItem.createAt | formatDateDay}}</div>
                   </div>
@@ -151,7 +151,7 @@
                 <div v-for="(secondItem, secondIndex) in firstItem.replies" :key="secondIndex">
                   <div class="two_commment_div margin_top_40">
                     <div class="current_user inline">
-                      <img src="@/assets/img/image/code_presenter.png" />
+                      <img :src="user.avatar" />
                     </div>
                     <div class="comment_text inline">
                       <div class="comment_unit_name">
@@ -162,30 +162,33 @@
                       <div class="comment_unit_content">{{secondItem.content}}</div>
                       <div class="comment_unit_bottom">
                         <div class="comment_unit_bottom_left">
-                          <div class="comment_unit_bottom_btn">
-                            <img src="@/assets/img/icon/icon-support.svg" />
-                            0
+                          <div class="comment_unit_bottom_btn" @click="replyLike(secondItem)" v-bind:class="{comment_unit_bottom_btn_selected: secondItem.secondComIsLike}">
+                            <img v-if="secondItem.secondComIsLike " src="@/assets/img/icon/icon-support-hover.svg" alt />
+                            <img v-if="!secondItem.secondComIsLike " src="@/assets/img/icon/icon-support.svg" alt />
+                            {{secondItem.likeNum}}
                           </div>
-                          <div class="comment_unit_bottom_btn margin_left_15" @click="submitReSecondCom(secondItem)">回复1</div>
+                          <div class="comment_unit_bottom_btn margin_left_15" @click="replySecondComBtn(secondItem)" v-bind:class="{comment_unit_bottom_btn_selected: secondItem.isShowReplyRecondCom}">回复</div>
+                          <div class="comment_unit_bottom_btn margin_left_15" v-if="user._id == firstItem.userInfo[0]._id" @click="deleteReply(secondItem._id)">删除</div>
                         </div>
                         <div class="comment_unit_bottom_right">{{secondItem.createAt | formatDateDay}}</div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <!-- 回复二级评论 -->
-                 <!-- <div class="margin_top_40" v-if="firstItem.isShowReplyFirstCom">
-                  <div class="current_user inline">
-                    <img :src="user.avatar" />
-                  </div>
-                  <div class="current_edit inline">
-                    <el-input type="textarea" @input="onEditorChange2" v-model="secondComContent" maxlength="800" :placeholder="'我有一个大胆的想法～'"></el-input>
-                    <div class="text-right margin_top_15">
-                      <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
-                      <el-button type="primary" round size="small" @click="submitSecondCom(firstItem)">&emsp;评&nbsp;论&emsp;</el-button>
+                  <!-- 回复二级评论 -->
+                  <div class="margin_top_40" v-if="secondItem.isShowReplyRecondCom">
+                    <div class="current_user inline">
+                      <img :src="user.avatar" />
+                    </div>
+                    <div class="current_edit inline">
+                      <el-input type="textarea" @input="onEditorChange2" v-model="secondComContent" maxlength="800" :placeholder="'我有一个大胆的想法～'"></el-input>
+                      <div class="text-right margin_top_15">
+                        <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
+                        <el-button type="primary" round size="small" @click="submitReSecondCom(secondItem,firstItem)">&emsp;评&nbsp;论&emsp;</el-button>
+                      </div>
                     </div>
                   </div>
-                </div> -->
+
+                </div>
               </div>
               <hr class="comment_hr" />
             </div>
@@ -261,7 +264,7 @@ export default {
   },
   mounted() {
     this.user = JSON.parse(localStorage.getItem("user")); // 获取当前用户信息
-    console.log(this.user, "user");
+    // console.log(this.user, "user");
     if (this.user) {
       this.isComment = true;
       this.getBlogComment();
@@ -323,6 +326,10 @@ export default {
       this.commentList.forEach(item => {
         item[`firstComIsLike`] = false;
         item[`isShowReplyFirstCom`] = false;
+        item.replies.forEach(x => {
+          x[`secondComIsLike`] = false;
+          x[`isShowReplyRecondCom`] = false;
+        });
       });
     },
     // 发表一级评论
@@ -391,7 +398,6 @@ export default {
     // 回复一级评论按钮
     replyFirstComBtn(e) {
       e.isShowReplyFirstCom = !e.isShowReplyFirstCom;
-      // console.log(e);
     },
     // 删除一级评论
     async deleteFirstCom(comId) {
@@ -421,35 +427,59 @@ export default {
         content: this.secondComContent,
         anonymous: this.isAnonymous
       };
-      // console.log(params);
       const res = await this.$axios.post(
         `${process.env.BASE_URL}/web_api/replyBlog`,
         params
       );
-      if (res.status == 200) {
+      if (res.data.status_code == 200) {
         this.getBlogComment();
       }
     },
+    // 回复二级评论按钮
+    replySecondComBtn(e) {
+      e.isShowReplyRecondCom = !e.isShowReplyRecondCom;
+    },
     //回复二级评论
-    async submitReSecondCom(secondItem) {
+    async submitReSecondCom(secondItem, firstItem) {
       const params = {
         replyName: this.user.nickName,
-        prelyId: this.user._id,
+        replyId: this.user._id,
         reReplyname: secondItem.userInfo[0].nickName,
         reReplyId: secondItem.userInfo[0]._id,
         blogId: this.detailParams.detailId,
-        commentId: secondItem._id,
+        commentId: firstItem._id,
         content: this.secondComContent,
         anonymous: this.isAnonymous
       };
-      // console.log(params);
       const res = await this.$axios.post(
         `${process.env.BASE_URL}/web_api/replyBlog`,
         params
       );
-      if (res.status == 200) {
+      if (res.data.status_code == 200) {
         this.getBlogComment();
       }
+    },
+    // 删除二级评论
+    async deleteReply(comId) {
+      const res = await this.$axios.get(
+        `${process.env.BASE_URL}/web_api/deleteReply?replyId=${comId}`
+      );
+      if (res.data.status_code === 200) {
+        this.getBlogComment();
+      }
+    },
+    // 回复点赞
+    replyLike(secondItem) {
+      const params = {
+        replyId: secondItem._id,
+        userId: this.user._id
+      };
+      const res = this.$axios.post(
+        `${process.env.BASE_URL}/web_api/replyLike`,
+        params
+      );
+      secondItem.secondComIsLike = !secondItem.secondComIsLike;
+      secondItem.likeNum = secondItem.likeNum + 1;
     }
   }
 };
