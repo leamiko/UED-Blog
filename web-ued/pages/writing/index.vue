@@ -6,10 +6,10 @@
         <el-carousel trigger="click" :height="332 + 'px'" :autoplay="false" class="set_width"
           v-show="topList.length > 0">
           <el-carousel-item v-for="(item,index) in topList" :key="index" class="flex">
-            <div class="left_title" @click="goDetail(item)">
+            <div class="left_title" @click="goDetail(item.blog)">
               <img :src="item.blog.bigImgUrl" :style="{'visibility': item.blog.bigImgUrl ? 'visible': 'hidden'}">
             </div>
-            <div class="right_detail" @click="goDetail(item)">
+            <div class="right_detail" @click="goDetail(item.blog)">
               <img :src="require('../../assets/img/image/' + item.blog.imgUrl)" alt="">
               <div class="title">
                 <p>{{item.blog.title}}</p>
