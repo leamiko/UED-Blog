@@ -1,6 +1,8 @@
 var express = require('express')
 const router = express.Router()
-const { verifyMiddleware } = require('../middleware/verify.js')
+const {
+  verifyMiddleware
+} = require('../middleware/verify.js')
 
 var web_user = require('../controller/web/user')
 var web_blog = require('../controller/web/blog')
@@ -8,20 +10,20 @@ var web_bugCtrler = require('../controller/web/bug')
 var avatar = require('../controller/web/avatar')
 
 /* GET home page. */
-router.get('/index', function(req, res, next) {
+router.get('/index', function (req, res, next) {
   res.json({
     name: 'hello world!'
   })
 })
 
 /* 登录注册 */
-router.post('/login', function(req, res, next) {
+router.post('/login', function (req, res, next) {
   web_user.login(req, res)
 })
-router.get('/logOut', function(req, res, next) {
+router.get('/logOut', function (req, res, next) {
   web_user.logOut(req, res)
 })
-router.post('/register', function(req, res, next) {
+router.post('/register', function (req, res, next) {
   web_user.register(req, res)
 })
 router.get('/callback', (req, res) => {
@@ -41,76 +43,76 @@ router.post('/editInfo', (req, res, next) => {
 
 /* 文章API */
 //获取blog详情
-router.get('/getBlog', function(req, res, next) {
+router.get('/getBlog', function (req, res, next) {
   web_blog.getBlog(req, res)
 })
 //首页列表
-router.get('/getHomeList', function(req, res, next) {
+router.get('/getHomeList', function (req, res, next) {
   //调用controller方法
   web_blog.getHomeList(req, res)
 })
 //写字推荐
-router.post('/getWriteBest', function(req, res, next) {
+router.post('/getWriteBest', function (req, res, next) {
   //调用controller方法
   web_blog.getWriteBest(req, res)
 })
 //写字列表
-router.post('/getWriteList', function(req, res, next) {
+router.post('/getWriteList', function (req, res, next) {
   //调用controller方法
   web_blog.getWriteList(req, res)
 })
 //写字详情感兴趣
-router.get('/getWriteIntresting', function(req, res, next) {
+router.get('/getWriteIntresting', function (req, res, next) {
   //调用controller方法
   web_blog.getWriteIntresting(req, res)
 })
 //blog点赞
-router.post('/likeBlog', function(req, res, next) {
+router.post('/likeBlog', function (req, res, next) {
   //调用controller方法
   web_blog.likeBlog(req, res)
 })
 //blog评论
-router.post('/commentBlog', function(req, res, next) {
+router.post('/commentBlog', function (req, res, next) {
   //调用controller方法
   web_blog.commentBlog(req, res)
 })
 //评论点赞
-router.post('/commentLike', function(req, res, next) {
+router.post('/commentLike', function (req, res, next) {
   //调用controller方法
   web_blog.commentLike(req, res)
 })
 //评论删除
-router.post('/deleteComment', function(req, res, next) {
+router.post('/deleteComment', function (req, res, next) {
   //调用controller方法
   web_blog.deleteComment(req, res)
 })
 //取消评论点赞
-router.post('/deleteCommentLike', function(req, res, next) {
+router.post('/deleteCommentLike', function (req, res, next) {
   //调用controller方法
   web_blog.deleteCommentLike(req, res)
 })
 //blog回复
-router.post('/replyBlog', function(req, res, next) {
+router.post('/replyBlog', function (req, res, next) {
   //调用controller方法
   web_blog.replyBlog(req, res)
 })
 //blog回复点赞
-router.post('/replyLike', function(req, res, next) {
+router.post('/replyLike', function (req, res, next) {
   //调用controller方法
   web_blog.replyLike(req, res)
 })
 //blog回复删除
-router.get('/deleteReply', function(req, res, next) {
+router.get('/deleteReply', function (req, res, next) {
   //调用controller方法
   web_blog.deleteReply(req, res)
 })
 //获取blog评论
-router.get('/getBlogComment', function(req, res, next) {
+router.get('/getBlogComment', function (req, res, next) {
   //调用controller方法
   web_blog.getBlogComment(req, res)
 })
 //获取blog评论
-router.get('/rankTask', function(req, res, next) {
+router.get('/rankTask', function (req, res, next) {
   //调用controller方法
   web_blog.rankTask(req, res)
 })
@@ -169,6 +171,10 @@ router.post('/SearchByKeywords', (req, res, next) => {
 router.post('/commentBug', (req, res, next) => {
   web_bugCtrler.commentBug(req, res, next)
 })
+// Bug采纳评论
+router.post('/adoptComment', (req, res, next) => {
+  web_bugCtrler.adoptComment(req, res, next)
+})
 // 获取Bug评论
 router.get('/getBugComment', (req, res, next) => {
   web_bugCtrler.getBugComment(req, res, next)
@@ -189,6 +195,21 @@ router.post('/deleteReply', (req, res, next) => {
 router.get('/bugCommentLike', (req, res, next) => {
   //调用controller方法
   web_bugCtrler.bugCommentLike(req, res, next)
+})
+//取消评论点赞
+router.get('/cancelBugCommentLike', (req, res, next) => {
+  //调用controller方法
+  web_bugCtrler.cancelBugCommentLike(req, res, next)
+})
+//回复点赞
+router.get('/bugReplyLike', (req, res, next) => {
+  //调用controller方法
+  web_bugCtrler.bugReplyLike(req, res, next)
+})
+//取消回复点赞
+router.get('/cancelBugReplyLike', (req, res, next) => {
+  //调用controller方法
+  web_bugCtrler.cancelBugReplyLike(req, res, next)
 })
 
 /**

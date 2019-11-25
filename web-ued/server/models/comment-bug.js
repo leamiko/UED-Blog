@@ -7,10 +7,10 @@ var bugCommentSchema = new Schema({
         type: String //评论人
     },
     commenterId: {
-        type: String //评论人objectid
+        type: mongoose.Schema.Types.ObjectId //评论人objectid
     },
     bugId: {
-        type: String //条目objectid
+        type: mongoose.Schema.Types.ObjectId //条目objectid
     },
     likeNum: {
         type: Number, //点赞数
@@ -18,6 +18,10 @@ var bugCommentSchema = new Schema({
     },
     content: {
         type: String //内容
+    },
+    adopt: {
+        type: Boolean, //是否采纳
+        default: false
     },
     anonymous: {
         type: Boolean //是否匿名

@@ -25,11 +25,8 @@ var BugSchema = new Schema({
     type: String, //bug解决方案
     default: ''
   },
-  author: {
-    type: String //作者  登录用户昵称
-  },
   userId: {
-    type: String //作者objectId也是登录用户objectId
+    type: mongoose.Schema.Types.ObjectId //作者objectId也是登录用户objectId
   },
   likeNum: {
     type: Number, //点赞数
@@ -47,9 +44,13 @@ var BugSchema = new Schema({
     type: Number, //评论最高点赞数
     default: 0
   },
+  adopt: {
+    type: Boolean, //是否采纳
+    default: false
+  },
   anonymous: {
-    type: Number, // 匿名
-    default: 0
+    type: Boolean, // 匿名
+    default: false
   },
   rank: {
     type: Number, //rank
@@ -66,4 +67,4 @@ var BugSchema = new Schema({
   }
 })
 
-module.exports = db.model('Bug', BugSchema)
+module.exports = db.model('Bug', BugSchema, 'bug')
