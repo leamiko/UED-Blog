@@ -169,10 +169,10 @@ exports.GetBugList = async function (req, res, next) {
           }
         },
         {
-          $skip: (req.body.pageIndex * 1 - 1) * req.body.pageSize,
+          $skip: ((req.body.pageIndex ? req.body.pageIndex : 1) * 1 - 1) * (req.body.pageSize ? req.body.pageSize : count),
         },
         {
-          $limit: req.body.pageSize
+          $limit: (req.body.pageSize ? req.body.pageSize : count)
         }
       ])
     const [...copyresult] = result
