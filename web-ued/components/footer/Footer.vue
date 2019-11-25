@@ -5,7 +5,7 @@
         <h5> {{ item.label }} </h5>
         <ul>
           <li v-for="(list, i) in item.children" :key="i">
-            <a :href="list.redirectUrl"> {{ list.label }}</a>
+            <a :href="list.redirectUrl" target="_blank"> {{ list.label }}</a>
           </li>
         </ul>
       </div>
