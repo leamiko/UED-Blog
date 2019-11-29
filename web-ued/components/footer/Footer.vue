@@ -1,11 +1,28 @@
 <template>
-  <div class="my-footer" :class="{'bor-top': hasMenu}">
-    <div class="cus-flex cus-flex-center foot" ref="foot" v-show="hasMenu">
-      <div v-for="(item, index) in custom.menu" :key="index">
+  <div
+    class="my-footer"
+    :class="{'bor-top': hasMenu}"
+  >
+    <div
+      class="cus-flex cus-flex-center foot"
+      ref="foot"
+      v-show="hasMenu"
+    >
+      <div
+        v-for="(item, index) in custom.menu"
+        :key="index"
+      >
         <h5> {{ item.label }} </h5>
         <ul>
-          <li v-for="(list, i) in item.children" :key="i">
-            <a :href="list.redirectUrl"> {{ list.label }}</a>
+          <li
+            v-for="(list, i) in item.children"
+            :key="i"
+          >
+            <a
+              :class="{'no_pointer-events':list.redirectUrl==='/'}"
+              :href="list.redirectUrl"
+              target="_blank"
+            > {{ list.label }}</a>
           </li>
         </ul>
       </div>
@@ -24,12 +41,12 @@ export default {
       required: false
     }
   },
-  data() {
+  data () {
     return {
       custom: custom.foot
     }
   },
-  mounted() {
+  mounted () {
     if (this.hasMenu) {
       this.$refs.foot.style.backgroundImage = `url(${this.custom.logoUrl})`;
     }
@@ -47,10 +64,10 @@ h5 {
   font-size: 16px;
 }
 .bor-top {
-  border-top: 2px solid rgba(51, 118, 255, .5);
+  border-top: 2px solid rgba(51, 118, 255, 0.5);
 }
 .my-footer {
-  color: #34485E;
+  color: #34485e;
   background: white;
 
   > div.foot {
@@ -96,10 +113,11 @@ h5 {
     }
   }
 }
-
-@media screen and(min-width: 1024px){
+.no_pointer-events {
+  pointer-events: none;
+}
+@media screen and(min-width: 1024px) {
   .my-footer {
-
     > div.foot {
       width: 960px;
     }
@@ -108,7 +126,6 @@ h5 {
 
 @media screen and(min-width: 1100px) {
   .my-footer {
-
     > div.foot {
       width: 1000px;
     }
@@ -116,7 +133,6 @@ h5 {
 }
 @media screen and(min-width: 1280px) {
   .my-footer {
-
     > div.foot {
       width: 1100px;
     }
@@ -125,7 +141,6 @@ h5 {
 
 @media screen and(min-width: 1366px) {
   .my-footer {
-
     > div.foot {
       width: 1200px;
     }
@@ -134,7 +149,6 @@ h5 {
 
 @media screen and(min-width: 1440px) {
   .my-footer {
-
     > div.foot {
       width: 1200px;
     }
@@ -143,7 +157,6 @@ h5 {
 
 @media screen and(min-width: 1680px) {
   .my-footer {
-
     > div.foot {
       width: 1200px;
     }
@@ -151,7 +164,6 @@ h5 {
 }
 @media screen and(min-width: 1920px) {
   .my-footer {
-
     > div.foot {
       width: 1200px;
     }

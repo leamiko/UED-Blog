@@ -1,215 +1,198 @@
 <template>
-  <div>
-    <my-scrollbar hasHead hasFoot :headStyle="{'background':'white'}" :headActive="'写字'">
-      <div slot="container">
-        <div class="detail_container">
-          <div class="support" :class="{'support_back':praiseOnly}">
-            <div class="support_icon pointer" @click="praise()">
-              <img src="@/assets/img/icon/praise_small_icon.svg" v-show="praiseNum === 0" />
-              <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0" />
-            </div>
-            <div class="praise_badge_small" v-show="praiseNum > 0">+{{praiseNum}}</div>
-            <div class="support_text">
-              <span>点赞</span>
-              <span class="separate inline"></span>
-              <span>分享</span>
-            </div>
-            <div class="support_icon pointer">
-              <img src="@/assets/img/icon/wechat_icon.svg" />
-            </div>
-            <div class="support_icon pointer">
-              <img src="@/assets/img/icon/wechat_share_icon.svg" />
-            </div>
-            <div class="support_icon pointer">
-              <img src="@/assets/img/icon/weibo_icon.svg" />
-            </div>
+  <my-scrollbar hasHead hasFoot :headStyle="{'background':'white'}" :headActive="'写字'">
+    <div slot="container">
+      <div class="detail_container">
+        <div class="support" :class="{'support_back':praiseOnly}">
+          <div class="support_icon pointer" @click="praise()">
+            <img src="@/assets/img/icon/praise_small_icon.svg" v-show="praiseNum === 0" />
+            <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0" />
           </div>
-          <div class="detail_info inline bg-white">
-            <div class="detail_title">
-              {{detailInfo.blog.title}}
-              <div class="detail_presenter">
-                <div class="presenter_head flt inline">
-                  <img :src="detailInfo.userInfo.avatar" />
-                </div>
-                <span class="presenter_info inline">{{detailInfo.userInfo.nickName}} · {{detailInfo.blog.updateAt | formatDateDay}}</span>
-                <div class="mark_tags inline">
-                  <span class="mark_tag">{{ detailInfo.blog.blogType == 1 ? "技术" : detailInfo.blog.blogType == 2 ? "交互" :detailInfo.blog.blogType == 3 ? "设计" :detailInfo.blog.blogType == 4 ? "管理" :"其它" }}</span>
-                </div>
-                <div class="browse inline">
-                  <div class="browse_icon inline">
-                    <img src="@/assets/img/icon/browse.png" />
-                  </div>{{detailInfo.blog.viewNum}}
-                </div>
-              </div>
-              <img class="topImg" v-if="detailParams.imgUrl" :src="require('../../assets/img/image/' + detailParams.imgUrl)" alt="">
-            </div>
-            <div class="detail_content">
-              <div class="infoBox">
-                {{detailInfo.blog.info}}
-              </div>
-              <div class="contentBox" v-html="detailInfo.blog.content">
-                {{detailInfo.blog.content}}
-              </div>
-            </div>
-            <div class="praise" :class="{'praise_num50':praiseNum === 50}">
-              <div class="praise_img pointer" id="praise" @click="praise()">
-                <img src="@/assets/img/icon/praise.png" v-show="praiseNum === 0" />
-                <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0 && praiseNum !== 50" />
-                <img class="transition" src="@/assets/img/icon/praise_50.svg" v-show="praiseNum === 50" />
-              </div>
-              <div class="praise_badge" v-show="praiseNum > 0 && praiseNum !== 50">+{{praiseNum}}</div>
-              <div class="praise_num">&nbsp;&nbsp;{{praiseNum?praiseNum:0}}个赞</div>
-            </div>
+          <div class="praise_badge_small" v-show="praiseNum > 0">+{{praiseNum}}</div>
+          <div class="support_text">
+            <span>点赞</span>
+            <span class="separate inline"></span>
+            <span>分享</span>
           </div>
-          <div class="interest inline">
-            <div class="interest_title">
-              你可能感兴趣
-              <router-link class="more frt" :to="'/writing'">
-                更多
-                <i class="el-icon-arrow-right"></i>
-              </router-link>
-            </div>
-            <div class="interest_list">
-              <div class="interest_info pointer">
-                <div class="pic">
-                  <img src="@/assets/img/banner/banner-index-banner-11.jpg" />
-                </div>
-                <span>浏览器的内核是支持浏览器运行的最核心的 程序，分为渲染引擎和 JS 引擎两部分…</span>
-              </div>
-              <div class="interest_info pointer">
-                <div class="pic">
-                  <img src="@/assets/img/banner/banner-index-banner-12.jpg" />
-                </div>
-                <span>浏览器的内核是支持浏览器运行的最核心的 程序，分为渲染引擎和 JS 引擎两部分…</span>
-              </div>
-              <div class="interest_info pointer">
-                <div class="pic">
-                  <img src="@/assets/img/banner/banner-index-banner-15.jpg" />
-                </div>
-                <span>浏览器的内核是支持浏览器运行的最核心的 程序，分为渲染引擎和 JS 引擎两部分…</span>
-              </div>
-              <div class="interest_info pointer">
-                <div class="pic">
-                  <img src="@/assets/img/banner/banner-index-banner-10.jpg" />
-                </div>
-                <span>浏览器的内核是支持浏览器运行的最核心的 程序，分为渲染引擎和 JS 引擎两部分…</span>
-              </div>
-            </div>
+          <div class="support_icon pointer">
+            <img src="@/assets/img/icon/wechat_icon.svg" />
+          </div>
+          <div class="support_icon pointer">
+            <img src="@/assets/img/icon/wechat_share_icon.svg" />
+          </div>
+          <div class="support_icon pointer">
+            <img src="@/assets/img/icon/weibo_icon.svg" />
           </div>
         </div>
-        <div class="comment_container">
-          <div class="comment_title">共{{detailInfo.blog.commentNum}}条评论</div>
-          <div class="comment_info bg-white" v-if="isComment">
-            <div class="comment_text">
-              <div class="current_user inline">
-                <img :src="user.avatar" />
+        <div class="detail_info inline bg-white">
+          <div class="detail_title">
+            {{detailInfo.blog.title}}
+            <div class="detail_presenter">
+              <div class="presenter_head flt inline">
+                <img :src="detailInfo.userInfo.avatar" />
               </div>
-              <div class="current_edit inline">
-                <el-input type="textarea" @input="onEditorChange1" v-model="firstComContent" maxlength="800" :placeholder="'我有一个大胆的想法～'">
-                </el-input>
-                <div class="text-right margin_top_15">
-                  <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
-                  <el-button type="primary" round size="small" @click="submitFistCom()" v-bind:class="{comment_btn_gray: !haveFirstComContent}">&emsp;评&nbsp;论&emsp;</el-button>
-                </div>
+              <span class="presenter_info inline" v-if="user">{{detailInfo.userInfo.nickName}} · {{detailInfo.blog.updateAt | formatDateDay}}</span>
+              <div class="mark_tags inline">
+                <span class="mark_tag">{{ detailInfo.blog.blogType == 1 ? "技术" : detailInfo.blog.blogType == 2 ? "交互" :detailInfo.blog.blogType == 3 ? "设计" :detailInfo.blog.blogType == 4 ? "管理" :"其它" }}</span>
               </div>
-              <hr class="comment_hr" />
+              <div class="browse inline">
+                <div class="browse_icon inline">
+                  <img src="@/assets/img/icon/browse.png" />
+                </div>{{detailInfo.blog.viewNum}}
+              </div>
             </div>
-            <div class="comment_text margin_top_40" v-for="(firstItem,firstIndex) in commentList" :key="firstIndex">
-              <div class="current_user inline">
-                <img :src="firstItem.userInfo[0].avatar" />
-              </div>
-              <div class="current_edit inline">
-                <div @mouseenter="mouseHoverDelComBtn(firstIndex, firstItem.commentUserId, true)" @mouseleave="mouseHoverDelComBtn(firstIndex, firstItem.commentUserId, false)">
-                  <div class="comment_unit_name" v-if="firstItem.anonymous==false">{{user.nickName}}</div>
-                  <div class="comment_unit_content">{{firstItem.content}}</div>
-                  <div class="comment_unit_bottom">
-                    <div class="comment_unit_bottom_left">
-                      <div class="comment_unit_bottom_btn" @mouseenter="mouseHoverSupComBtn(firstIndex,true)" @mouseleave="mouseHoverSupComBtn(firstIndex,false)" @click="commentLike(firstItem._id)" v-bind:class="{comment_unit_bottom_btn_selected: firstItem.firstComIsLike}">
-                        <img v-if="firstItem.firstComIsLike || (firstComIndex === firstIndex && supportComBtnIsHover)" src="@/assets/img/icon/icon-support-hover.svg" alt />
-                        <img v-if="!(firstItem.firstComIsLike || (firstComIndex === firstIndex && supportComBtnIsHover))" src="@/assets/img/icon/icon-support.svg" alt />
-                        {{firstItem.likeNum}}
-                      </div>
-                      <div class="comment_unit_bottom_btn margin_left_15" @click="replyFirstComBtn(firstItem)" v-bind:class="{comment_unit_bottom_btn_selected: firstItem.isShowReplyFirstCom}">回复</div>
-                      <div class="comment_unit_bottom_btn margin_left_15" v-if="user._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover" @click="deleteFirstCom(firstItem._id)">删除</div>
-                    </div>
-                    <div class="comment_unit_bottom_right">{{firstItem.createAt | formatDateDay}}</div>
-                  </div>
-                </div>
-                <div class="margin_top_40" v-if="firstItem.isShowReplyFirstCom">
-                  <div class="current_user inline">
-                    <img :src="user.avatar" />
-                  </div>
-                  <div class="current_edit inline">
-                    <el-input type="textarea" @input="onEditorChange2" v-model="secondComContent" maxlength="800" :placeholder="'我有一个大胆的想法～'"></el-input>
-                    <div class="text-right margin_top_15">
-                      <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
-                      <el-button type="primary" round size="small" @click="submitSecondCom(firstItem)">&emsp;评&nbsp;论&emsp;</el-button>
-                    </div>
-                  </div>
-                </div>
-                <!-- 二级评论 -->
-                <div v-for="(secondItem, secondIndex) in firstItem.replies" :key="secondIndex">
-                  <div class="two_commment_div margin_top_40">
-                    <div class="current_user inline">
-                      <img src="@/assets/img/image/code_presenter.png" />
-                    </div>
-                    <div class="comment_text inline">
-                      <div class="comment_unit_name">
-                        {{user.nickName}}
-                        <span>回复</span>
-                        {{firstItem.userInfo[0].nickName}}
-                      </div>
-                      <div class="comment_unit_content">{{secondItem.content}}</div>
-                      <div class="comment_unit_bottom">
-                        <div class="comment_unit_bottom_left">
-                          <div class="comment_unit_bottom_btn">
-                            <img src="@/assets/img/icon/icon-support.svg" />
-                            0
-                          </div>
-                          <div class="comment_unit_bottom_btn margin_left_15" @click="submitReSecondCom(secondItem)">回复1</div>
-                        </div>
-                        <div class="comment_unit_bottom_right">{{secondItem.createAt | formatDateDay}}</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- 回复二级评论 -->
-                 <!-- <div class="margin_top_40" v-if="firstItem.isShowReplyFirstCom">
-                  <div class="current_user inline">
-                    <img :src="user.avatar" />
-                  </div>
-                  <div class="current_edit inline">
-                    <el-input type="textarea" @input="onEditorChange2" v-model="secondComContent" maxlength="800" :placeholder="'我有一个大胆的想法～'"></el-input>
-                    <div class="text-right margin_top_15">
-                      <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
-                      <el-button type="primary" round size="small" @click="submitSecondCom(firstItem)">&emsp;评&nbsp;论&emsp;</el-button>
-                    </div>
-                  </div>
-                </div> -->
-              </div>
-              <hr class="comment_hr" />
+            <img class="topImg" v-if="detailParams.imgUrl" :src="require('../../assets/img/image/' + detailParams.imgUrl)" alt="">
+          </div>
+          <div class="detail_content">
+            <div class="infoBox">
+              {{detailInfo.blog.info}}
             </div>
-            <div class="noComment2" v-if="commentList.length==0">
-              <div class="pic">
-                <img src="@/assets/img/image/noComment2.png" />
-              </div>
-              <div class="text">
-                成为第一个评论的人
-              </div>
+            <div class="contentBox" v-html="detailInfo.blog.content">
+              {{detailInfo.blog.content}}
             </div>
           </div>
-          <div class="noComment1" v-if="!isComment">
-            <div class="pic">
-              <img src="@/assets/img/image/noComment.png" />
+          <div class="praise" :class="{'praise_num50':praiseNum === 50}">
+            <div class="praise_img pointer" id="praise" @click="praise()">
+              <img src="@/assets/img/icon/praise.png" v-show="praiseNum === 0" />
+              <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0 && praiseNum !== 50" />
+              <img class="transition" src="@/assets/img/icon/praise_50.svg" v-show="praiseNum === 50" />
             </div>
-            <div class="text">
-              评论区这么热闹，不想来看看嘛？<span @click="modalLogin()">看看就看看</span>
+            <div class="praise_badge" v-show="praiseNum > 0 && praiseNum !== 50">+{{praiseNum}}</div>
+            <div class="praise_num">&nbsp;&nbsp;{{praiseNum?praiseNum:0}}个赞</div>
+          </div>
+        </div>
+        <div class="interest inline">
+          <div class="interest_title">
+            你可能感兴趣
+            <router-link class="more frt" :to="'/writing'">
+              更多
+              <i class="el-icon-arrow-right"></i>
+            </router-link>
+          </div>
+          <div class="interest_list">
+            <div class="interest_info pointer" v-for="(item, index) in intrestingList" :key="index">
+              <div class="pic" @click="goIntDetail(item._id)">
+                <img :src="item.bigImgUrl" />
+              </div>
+              <span>{{item.info}}</span>
             </div>
           </div>
         </div>
       </div>
-    </my-scrollbar>
-  </div>
+      <div class="comment_container">
+        <div class="comment_title">共{{detailInfo.blog.commentNum}}条评论</div>
+        <div class="comment_info bg-white" v-if="isComment">
+          <div class="comment_text">
+            <div class="current_user inline">
+              <img :src="user.avatar" />
+            </div>
+            <div class="current_edit inline">
+              <el-input type="textarea" @input="onEditorChange1" v-model="firstComContent" maxlength="800" :placeholder="'我有一个大胆的想法～'">
+              </el-input>
+              <div class="text-right margin_top_15">
+                <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
+                <el-button type="primary" round size="small" @click="submitFistCom()" v-bind:class="{comment_btn_gray: !haveFirstComContent}">&emsp;评&nbsp;论&emsp;</el-button>
+              </div>
+            </div>
+            <hr class="comment_hr" />
+          </div>
+          <div class="comment_text margin_top_40" v-for="(firstItem,firstIndex) in commentList" :key="firstIndex">
+            <div class="current_user inline">
+              <img :src="firstItem.userInfo[0].avatar" />
+            </div>
+            <div class="current_edit inline">
+              <div @mouseenter="mouseHoverDelComBtn(firstIndex, firstItem.commentUserId, true)" @mouseleave="mouseHoverDelComBtn(firstIndex, firstItem.commentUserId, false)">
+                <div class="comment_unit_name" v-if="firstItem.anonymous==false">{{user.nickName}}</div>
+                <div class="comment_unit_content">{{firstItem.content}}</div>
+                <div class="comment_unit_bottom">
+                  <div class="comment_unit_bottom_left">
+                    <div class="comment_unit_bottom_btn" @mouseenter="mouseHoverSupComBtn(firstIndex,true)" @mouseleave="mouseHoverSupComBtn(firstIndex,false)" @click="commentLike(firstItem._id)" v-bind:class="{comment_unit_bottom_btn_selected: firstItem.firstComIsLike}">
+                      <img v-if="firstItem.firstComIsLike || (firstComIndex === firstIndex && supportComBtnIsHover)" src="@/assets/img/icon/icon-support-hover.svg" alt />
+                      <img v-if="!(firstItem.firstComIsLike || (firstComIndex === firstIndex && supportComBtnIsHover))" src="@/assets/img/icon/icon-support.svg" alt />
+                      {{firstItem.likeNum}}
+                    </div>
+                    <div class="comment_unit_bottom_btn margin_left_15" @click="replyFirstComBtn(firstItem)" v-bind:class="{comment_unit_bottom_btn_selected: firstItem.isShowReplyFirstCom}">回复</div>
+                    <div class="comment_unit_bottom_btn margin_left_15" v-if="user._id ==firstItem.userInfo[0]._id && (firstComIndex == firstIndex && deleteComBtnIsHover)" @click="deleteFirstCom(firstItem._id)">删除</div>
+                  </div>
+                  <div class="comment_unit_bottom_right">{{firstItem.createAt | formatDateDay}}</div>
+                </div>
+              </div>
+              <div class="margin_top_40" v-if="firstItem.isShowReplyFirstCom">
+                <div class="current_user inline">
+                  <img :src="user.avatar" />
+                </div>
+                <div class="current_edit inline">
+                  <el-input type="textarea" @input="onEditorChange2" v-model="secondComContent" maxlength="800" :placeholder="'我有一个大胆的想法～'"></el-input>
+                  <div class="text-right margin_top_15">
+                    <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
+                    <el-button type="primary" round size="small" @click="submitSecondCom(firstItem)">&emsp;评&nbsp;论&emsp;</el-button>
+                  </div>
+                </div>
+              </div>
+              <!-- 二级评论 -->
+              <div v-for="(secondItem, secondIndex) in firstItem.replies" :key="secondIndex">
+                <div class="two_commment_div margin_top_40">
+                  <div class="current_user inline">
+                    <img :src="user.avatar" />
+                  </div>
+                  <div class="comment_text inline">
+                    <div class="comment_unit_name">
+                      {{user.nickName}}
+                      <span>回复</span>
+                      {{firstItem.userInfo[0].nickName}}
+                    </div>
+                    <div class="comment_unit_content">{{secondItem.content}}</div>
+                    <div class="comment_unit_bottom">
+                      <div class="comment_unit_bottom_left">
+                        <div class="comment_unit_bottom_btn" @click="replyLike(secondItem)" v-bind:class="{comment_unit_bottom_btn_selected: secondItem.secondComIsLike}">
+                          <img v-if="secondItem.secondComIsLike " src="@/assets/img/icon/icon-support-hover.svg" alt />
+                          <img v-if="!secondItem.secondComIsLike " src="@/assets/img/icon/icon-support.svg" alt />
+                          {{secondItem.likeNum}}
+                        </div>
+                        <div class="comment_unit_bottom_btn margin_left_15" @click="replySecondComBtn(secondItem)" v-bind:class="{comment_unit_bottom_btn_selected: secondItem.isShowReplyRecondCom}">回复</div>
+                        <div class="comment_unit_bottom_btn margin_left_15" v-if="user._id == firstItem.userInfo[0]._id" @click="deleteReply(secondItem._id)">删除</div>
+                      </div>
+                      <div class="comment_unit_bottom_right">{{secondItem.createAt | formatDateDay}}</div>
+                    </div>
+                  </div>
+                </div>
+                <!-- 回复二级评论 -->
+                <div class="margin_top_40" v-if="secondItem.isShowReplyRecondCom">
+                  <div class="current_user inline">
+                    <img :src="user.avatar" />
+                  </div>
+                  <div class="current_edit inline">
+                    <el-input type="textarea" @input="onEditorChange2" v-model="secondComContent" maxlength="800" :placeholder="'我有一个大胆的想法～'"></el-input>
+                    <div class="text-right margin_top_15">
+                      <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
+                      <el-button type="primary" round size="small" @click="submitReSecondCom(secondItem,firstItem)">&emsp;评&nbsp;论&emsp;</el-button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <hr class="comment_hr" />
+          </div>
+          <div class="noComment2" v-if="commentList.length==0">
+            <div class="pic">
+              <img src="@/assets/img/image/noComment2.png" />
+            </div>
+            <div class="text">
+              成为第一个评论的人
+            </div>
+          </div>
+        </div>
+        <div class="noComment1" v-if="!isComment">
+          <div class="pic">
+            <img src="@/assets/img/image/noComment.png" />
+          </div>
+          <div class="text">
+            评论区这么热闹，不想来看看嘛？<span @click="modalLogin()">看看就看看</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </my-scrollbar>
 </template>
 <script>
 import * as custom from "@/assets/js/custom.config";
@@ -256,12 +239,13 @@ export default {
       firstCommenterId: "", // 评论列表中一级评论人id
       firstComIndex: "", // 评论列表中一级评论数组下标
       user: "",
-      isComment: false
+      isComment: false,
+      intrestingList: [] // 感兴趣列表
     };
   },
   mounted() {
     this.user = JSON.parse(localStorage.getItem("user")); // 获取当前用户信息
-    console.log(this.user, "user");
+    // console.log(this.user, "user");
     if (this.user) {
       this.isComment = true;
       this.getBlogComment();
@@ -282,8 +266,24 @@ export default {
     this.visualScroll.disconnect();
   },
   methods: {
+    //跳转感兴趣详情页
+    goIntDetail(id) {
+      console.log(id);
+      this.$router.push({
+        path: "/writing" 
+      });
+    },
+    //打开登录框
     modalLogin() {
       this.$store.commit("modalVisible", true);
+    },
+    //获取感兴趣列表
+    async getWriteIntresting() {
+      const res = await this.$axios.get(
+        `${process.env.BASE_URL}/web_api/getWriteIntresting?blogType=${this.detailInfo.blog.blogType}`
+      );
+      this.intrestingList = res.data.data;
+      console.log(this.intrestingList);
     },
     //获取详情列表
     async getBlog() {
@@ -292,6 +292,7 @@ export default {
       );
       this.detailInfo = res.data.data;
       this.praiseNum = this.detailInfo.blog.likeNum;
+      this.getWriteIntresting();
       // console.log(this.detailInfo);
     },
     // 详情点赞
@@ -319,10 +320,14 @@ export default {
         `${process.env.BASE_URL}/web_api/getBlogComment?blogId=${this.detailParams.detailId}`
       );
       this.commentList = res.data.data;
-      console.log(this.commentList, "评论列表");
+      // console.log(this.commentList, "评论列表");
       this.commentList.forEach(item => {
         item[`firstComIsLike`] = false;
         item[`isShowReplyFirstCom`] = false;
+        item.replies.forEach(x => {
+          x[`secondComIsLike`] = false;
+          x[`isShowReplyRecondCom`] = false;
+        });
       });
     },
     // 发表一级评论
@@ -391,7 +396,6 @@ export default {
     // 回复一级评论按钮
     replyFirstComBtn(e) {
       e.isShowReplyFirstCom = !e.isShowReplyFirstCom;
-      // console.log(e);
     },
     // 删除一级评论
     async deleteFirstCom(comId) {
@@ -421,35 +425,59 @@ export default {
         content: this.secondComContent,
         anonymous: this.isAnonymous
       };
-      // console.log(params);
       const res = await this.$axios.post(
         `${process.env.BASE_URL}/web_api/replyBlog`,
         params
       );
-      if (res.status == 200) {
+      if (res.data.status_code == 200) {
         this.getBlogComment();
       }
     },
+    // 回复二级评论按钮
+    replySecondComBtn(e) {
+      e.isShowReplyRecondCom = !e.isShowReplyRecondCom;
+    },
     //回复二级评论
-    async submitReSecondCom(secondItem) {
+    async submitReSecondCom(secondItem, firstItem) {
       const params = {
         replyName: this.user.nickName,
-        prelyId: this.user._id,
+        replyId: this.user._id,
         reReplyname: secondItem.userInfo[0].nickName,
         reReplyId: secondItem.userInfo[0]._id,
         blogId: this.detailParams.detailId,
-        commentId: secondItem._id,
+        commentId: firstItem._id,
         content: this.secondComContent,
         anonymous: this.isAnonymous
       };
-      // console.log(params);
       const res = await this.$axios.post(
         `${process.env.BASE_URL}/web_api/replyBlog`,
         params
       );
-      if (res.status == 200) {
+      if (res.data.status_code == 200) {
         this.getBlogComment();
       }
+    },
+    // 删除二级评论
+    async deleteReply(comId) {
+      const res = await this.$axios.get(
+        `${process.env.BASE_URL}/web_api/deleteReply?replyId=${comId}`
+      );
+      if (res.data.status_code === 200) {
+        this.getBlogComment();
+      }
+    },
+    // 回复点赞
+    replyLike(secondItem) {
+      const params = {
+        replyId: secondItem._id,
+        userId: this.user._id
+      };
+      const res = this.$axios.post(
+        `${process.env.BASE_URL}/web_api/replyLike`,
+        params
+      );
+      secondItem.secondComIsLike = !secondItem.secondComIsLike;
+      secondItem.likeNum = secondItem.likeNum + 1;
     }
   }
 };
@@ -614,7 +642,9 @@ export default {
       }
     }
     .detail_content {
-      margin: 54px auto 40px;
+      // margin: 54px auto 40px;
+      margin: 54px auto 240px;
+
       width: 100%;
       text-align: center;
       .infoBox,

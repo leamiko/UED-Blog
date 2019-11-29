@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div v-loading="loading">
     <my-scrollbar hasHead hasFoot :headStyle="{'background':'white'}" :headActive="'打码'">
-      <div slot="container" v-loading="loading">
+      <div slot="container" v-show="detailShow">
         <div class="detail_container">
           <div class="support" :class="{'support_back':praiseOnly}">
             <div class="support_icon pointer" @click="praise()">
@@ -269,7 +269,8 @@ export default {
   },
   data() {
     return {
-      loading: false,
+      loading: true,
+      detailShow: false,
       Id: "", // 当前问题Id
       detailInfo: {}, // 详情信息
       praiseNum: 0, // 点赞数
@@ -346,22 +347,25 @@ export default {
               message: data.message
             });
           }
-          // setTimeout(() => {
-          //   this.loading = false;
-          // }, 500);
+          setTimeout(() => {
+            this.loading = false;
+            this.detailShow = true;
+          }, 500);          
         } else {
-          // setTimeout(() => {
-          //   this.loading = false;
-          // }, 500);
+          setTimeout(() => {
+            this.loading = false;
+            this.detailShow = true;
+          }, 500);          
           this.$notify.error({
             title: "错误",
             message: "未查询到相关数据，请联系管理员。"
           });
         }
       } else {
-        // setTimeout(() => {
-        //   this.loading = false;
-        // }, 500);
+        setTimeout(() => {
+          this.loading = false;
+          this.detailShow = true;
+        }, 500);        
         this.$notify.error({
           title: "错误",
           message: res.data.message
@@ -448,6 +452,8 @@ export default {
     },
     // 查看感兴趣内容
     showDetail(id) {
+      this.loading = true;
+      this.detailShow = false;
       this.$router.push({
         path: "/coding/detail",
         query: {
