@@ -90,7 +90,7 @@ export default {
       this.$emit('hide', true);
       this.showContent = false;
       this.show = false;
-      this.$route.replace({
+      this.$router.replace({
         path: '/coding/list'
       })
       // done();

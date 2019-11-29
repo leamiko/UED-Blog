@@ -6,8 +6,8 @@
           <div class="support" :class="{'support_back':praiseOnly}">
             <div class="support_icon pointer" @click="praise()">
               <!-- <img src="@/assets/img/icon/praise_small_icon.svg" /> -->
-              <img src="@/assets/img/icon/praise_small_icon.svg" v-show="praiseNum === 0"/>
-              <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0"/>
+              <img src="@/assets/img/icon/praise_small_icon.svg" v-show="praiseNum === 0" />
+              <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0" />
             </div>
             <div class="praise_badge_small" v-show="praiseNum > 0">+{{praiseNum}}</div>
             <div class="support_text">
@@ -58,7 +58,10 @@
                 <div class="word" v-html="detailInfo.content"></div>
               </div>
             </div>
-            <div class="detail_content" v-show="detailInfo.bugSolution!==null&&detailInfo.bugSolution!==''">
+            <div
+              class="detail_content"
+              v-show="detailInfo.bugSolution!==null&&detailInfo.bugSolution!==''"
+            >
               <div class="detail_sign">
                 <span class="span_sign inline flt"></span>解决方案
               </div>
@@ -68,9 +71,12 @@
             </div>
             <div class="praise" :class="{'praise_num50':praiseNum === 50}">
               <div class="praise_img pointer" id="praise" @click="praise()">
-                <img src="@/assets/img/icon/praise.png" v-show="praiseNum === 0"/>
-                <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0 && praiseNum !== 50"/>
-                <img src="@/assets/img/icon/praise_50.svg" v-show="praiseNum === 50"/>
+                <img src="@/assets/img/icon/praise.png" v-show="praiseNum === 0" />
+                <img
+                  src="@/assets/img/icon/praise_null.svg"
+                  v-show="praiseNum > 0 && praiseNum !== 50"
+                />
+                <img src="@/assets/img/icon/praise_50.svg" v-show="praiseNum === 50" />
               </div>
               <div class="praise_badge" v-show="praiseNum > 0 && praiseNum !== 50">+{{praiseNum}}</div>
               <div class="praise_num">&nbsp;&nbsp;{{praiseNum?praiseNum:0}}个赞</div>
@@ -183,7 +189,7 @@
                     ></my-editor>
                     <br />
                     <div class="text-right">
-                      <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
+                      <!-- <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp; -->
                       <el-button
                         type="primary"
                         round
@@ -292,7 +298,7 @@ export default {
       commentList: [], // 评论列表
       firstCommenterId: "", // 评论列表中一级评论人id
       firstComIndex: "", // 评论列表中一级评论数组下标
-      list: [{ id: 10 }, { id: 11 }],
+      list: [{ id: 10 }, { id: 11 }]
     };
   },
   mounted() {
@@ -303,20 +309,20 @@ export default {
     }
     this.userInfo = JSON.parse(localStorage.getItem("user")); // 获取当前用户信息
     // 可视区内保留一个点赞icon
-    this.visualScroll = new IntersectionObserver(([entry]) => {
+    (this.visualScroll = new IntersectionObserver(([entry]) => {
       if (entry && entry.isIntersecting) {
         // bigPraise已在可视范围内
         this.praiseOnly = true;
       } else {
         this.praiseOnly = false;
       }
-    }),
-    this.visualScroll.observe(document.querySelector('#praise'))
+    })),
+      this.visualScroll.observe(document.querySelector("#praise"));
   },
-  destroyed() { 
-    this.visualScroll.disconnect() 
+  destroyed() {
+    this.visualScroll.disconnect();
   },
-  methods: {    
+  methods: {
     // 获取详情信息
     async getInfo() {
       let params = {
@@ -330,32 +336,35 @@ export default {
           this.detailInfo = res.data.data;
           // 获取当前登录人对当前详情的点赞数
           const user = JSON.parse(localStorage.getItem("user"));
-          let userParams = {            
+          let userParams = {
             userId: user._id,
-            bugId: this.Id,
-          }
-          const { data } = await this.$axios.post(`${process.env.BASE_URL}/web_api/getThisBugUserLikeNum`, userParams);
+            bugId: this.Id
+          };
+          const { data } = await this.$axios.post(
+            `${process.env.BASE_URL}/web_api/getThisBugUserLikeNum`,
+            userParams
+          );
           if (data.status_code === 200) {
             if (data.data !== null) {
-               this.praiseNum = data.data.count ? data.data.count : 0;
+              this.praiseNum = data.data.count ? data.data.count : 0;
             } else {
               this.praiseNum = 0;
-            }           
+            }
           } else {
             this.$notify.error({
-              title: '错误',
+              title: "错误",
               message: data.message
             });
           }
           setTimeout(() => {
             this.loading = false;
             this.detailShow = true;
-          }, 500);          
+          }, 500);
         } else {
           setTimeout(() => {
             this.loading = false;
             this.detailShow = true;
-          }, 500);          
+          }, 500);
           this.$notify.error({
             title: "错误",
             message: "未查询到相关数据，请联系管理员。"
@@ -365,7 +374,7 @@ export default {
         setTimeout(() => {
           this.loading = false;
           this.detailShow = true;
-        }, 500);        
+        }, 500);
         this.$notify.error({
           title: "错误",
           message: res.data.message
@@ -469,35 +478,39 @@ export default {
       if (this.praiseNum < 50) {
         this.praiseNum++;
         this.praiseIncrement++;
-        setTimeout(()=>this.setPraise(), 3000);
+        setTimeout(() => this.setPraise(), 3000);
       }
     },
     async setPraise() {
       const user = JSON.parse(localStorage.getItem("user"));
       let praiseParams = {
-          bugId: this.Id,
-          userId: user._id,
-          count: this.praiseIncrement,
-        }
-        const { data } = await this.$axios.post(`${process.env.BASE_URL}/web_api/LikeBugById`, praiseParams);
-        if (data.status_code === 200) {          
-          this.praiseIncrement = 0;
-        } else {
-          this.$notify.error({
-            title: '错误',
-            message: data.message
-          });
-        }
+        bugId: this.Id,
+        userId: user._id,
+        count: this.praiseIncrement
+      };
+      const { data } = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/LikeBugById`,
+        praiseParams
+      );
+      if (data.status_code === 200) {
+        this.praiseIncrement = 0;
+      } else {
+        this.$notify.error({
+          title: "错误",
+          message: data.message
+        });
+      }
     },
     // 发表一级评论
     async submitFistCom() {
       if (!this.haveFirstComContent) return;
       console.log(this.firstComContent);
       const params = {
-        commenterName: this.userInfo.nickName,
+        // commenterName: this.userInfo.nickName,
         commenterId: this.userInfo._id,
         bugId: this.Id,
-        content: this.firstComContent
+        content: this.firstComContent,
+        anonymous: this.isAnonymous
       };
       const res = await this.$axios.post(
         `${process.env.BASE_URL}/web_api/commentBug`,
@@ -633,7 +646,7 @@ export default {
   position: relative;
   width: 62.5%;
   margin: 57px auto 40px;
-  .support {    
+  .support {
     position: fixed;
     left: 14%;
     top: 217px;
@@ -986,16 +999,25 @@ export default {
 <style lang="scss">
 // 非私有样式！，格式化富文本
 .describe {
-  p, ul, ol, li, pre, blockquote, strong, em, #text {
+  p,
+  ul,
+  ol,
+  li,
+  pre,
+  blockquote,
+  strong,
+  em,
+  #text {
     font-size: 16px;
     color: #000000;
-    font-family: PingFangSC-Regular,PingFang SC;
+    font-family: PingFangSC-Regular, PingFang SC;
     word-break: break-all;
     word-wrap: break-word;
     white-space: normal;
   }
   // 图片宽度
-  p img, blockquote img {
+  p img,
+  blockquote img {
     width: 100%;
   }
 }
