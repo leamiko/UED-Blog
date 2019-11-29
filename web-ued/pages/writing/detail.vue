@@ -30,7 +30,7 @@
               <div class="presenter_head flt inline">
                 <img :src="detailInfo.userInfo.avatar" />
               </div>
-              <span class="presenter_info inline">{{detailInfo.userInfo.nickName}} · {{detailInfo.blog.updateAt | formatDateDay}}</span>
+              <span class="presenter_info inline" v-if="user">{{detailInfo.userInfo.nickName}} · {{detailInfo.blog.updateAt | formatDateDay}}</span>
               <div class="mark_tags inline">
                 <span class="mark_tag">{{ detailInfo.blog.blogType == 1 ? "技术" : detailInfo.blog.blogType == 2 ? "交互" :detailInfo.blog.blogType == 3 ? "设计" :detailInfo.blog.blogType == 4 ? "管理" :"其它" }}</span>
               </div>
