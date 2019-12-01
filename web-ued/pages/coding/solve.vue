@@ -8,7 +8,10 @@
         <div class="my-content cus-box-center">
           <el-card>
             <template slot="header">
-              <h5 class="font-size--lg">提供解决方案</h5>
+              <div class="flex space-between">
+                <h5 class="font-size--lg">提供解决方案</h5>
+                <el-button size="small" @click="$router.back()">返回</el-button>
+              </div>
             </template>
             <div class="card-content">
               <el-avatar :size="48" :src="avator" class="align-top"></el-avatar>
@@ -21,10 +24,10 @@
                     <el-dropdown-menu slot="dropdown">
                       <div class="my-menu-content">
                         <ul>
-                          <li class="pointer" v-for="item in list" :key="item.id" @click="descList = item.content">{{item.name}}</li>
+                          <li class="pointer" v-for="item in list" :key="item.id" @click="descList = item.children">{{item.name}}</li>
                         </ul>
                         <div>
-                          <my-tag class="my-tag pointer" :class="{'active': checkList.indexOf(item) >= 0}" v-for="item in descList" :key="'desc' + item.id" :text="item.name" @active="checkLabel(item)"></my-tag>
+                          <my-tag class="my-tag pointer" :class="{'active': checkList.indexOf(item) >= 0}" v-for="item in descList" :key="'desc' + item._id" :text="item.name" @active="checkLabel(item)"></my-tag>
                         </div>
                       </div>
                     </el-dropdown-menu>
@@ -45,13 +48,14 @@
       </div>
     </my-scrollbar>
 
-    <el-dialog :visible.sync="showDialog" :show-close="false" width="390px" center :before-close="handleClose" append-to-body>
+    <el-dialog :visible.sync="showDialog" :show-close="false" width="390px" center append-to-body :close-on-click-modal="resultError" :close-on-press-escape="resultError">
         <template slot="title">
           <h5 class="font-size--md text-dark line-height--lg">{{resultMsg}}</h5>
         </template>
       <div class="text-center">
         <p v-show="resultError">{{resultError}}</p>
         <img :src="resultImage" class="my-img">
+        <p v-show="!resultError">距离关闭还有（{{timer}}）秒</p>
       </div>
     </el-dialog>
   </div>
@@ -61,7 +65,6 @@
 import avatorUrl from '@/assets/img/icon/icon-system-avator.svg';
 import successImg from '@/assets/img/image/image-system-submit-success.svg';
 import failImg from '@/assets/img/image/image-system-submit-fail.png';
-import * as custom from '@/assets/js/custom.config';
 import MyScrollbar from '@/components/scroller/Scrollbar';
 import MyHeader from '@/components/header/Header';
 import MyFooter from '@/components/footer/Footer';
@@ -85,24 +88,19 @@ export default {
       content2: '',
       className: 'custom-dialog',
       isAnonymous: false,
-      list: custom.search.list,
-      descList: custom.search.list[0].content,
+      list: [],
+      descList: [],
       showDialog: false,
       checkList: [],
       resultMsg: '',
       resultImage: '',
-      resultError: null
+      resultError: null,
+      timer: 3
     }
   },
   methods: {
     handleClose() {
       this.showDialog = false;
-      // 如果发布成功直接跳到列表
-      if (!this.resultError) {
-        this.$route.replace({
-          path: '/coding/list'
-        });
-      }
     },
     checkLabel(val) {
       if (this.checkList.indexOf(val) === -1) {
@@ -121,6 +119,24 @@ export default {
     onEditor2Change({ editor, html, text }) {
       this.content2 = html;
     },
+    async getTags() {
+      const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/GetBugTags`);
+      if (res.status === 200 && res.data.message === 'success') {
+        if (res.data.data && res.data.data.length > 0) {
+          this.list = res.data.data;
+          this.descList = this.list[0].children;
+          // 长度限制
+          if (this.list.length > 9) {
+            this.list.length = 9;
+          }
+        }
+      } else {
+        this.$notify.error({
+          title: '错误',
+          message: res.data.message
+        });
+      }
+    },
     async submit() {
       if (!this.input) {
         this.$notify.error({
@@ -136,6 +152,13 @@ export default {
         });
         return;
       }
+      if (!this.content2) {
+        this.$notify.error({
+          title: '错误',
+          message: '请填写解决方案！'
+        });
+        return;
+      }
       const params = {
         title: this.input,
         content: this.content1,
@@ -148,6 +171,21 @@ export default {
         this.resultMsg = '发布成功!';
         this.resultImage = successImg;
         this.showDialog = true;
+
+        this.timer = 3;
+        let jishiqi = setInterval(() => {
+          this.timer --;
+          if (this.timer == 0) {
+            clearInterval(jishiqi);
+            this.showDialog = false;
+            // 如果发布成功直接跳到列表
+            if (!this.resultError) {
+              this.$router.replace({
+                path: '/coding/list'
+              });
+            }
+          }
+        }, 1000);
       } else {
         this.resultError = res.data.message;
         this.resultMsg = '发布失败!';
@@ -156,12 +194,21 @@ export default {
       }
     }
   },
-  mounted() { }
+  mounted() {
+    this.getTags();
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/style/cus.scss';
+.flex {
+  display: flex;
+}
+
+.space-between {
+  justify-content: space-between;
+}
 .cus-header {
   top: 0;
   width: 100%;
