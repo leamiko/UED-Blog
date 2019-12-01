@@ -143,11 +143,12 @@
                   <div class="comment_unit_content">{{firstItem.content}}</div>
                   <div class="comment_unit_bottom">
                     <div class="comment_unit_bottom_left">
+                      <!-- 点赞 -->
                       <div
                         class="comment_unit_bottom_btn"
                         @mouseenter="mouseHoverSupComBtn(firstIndex,true)"
                         @mouseleave="mouseHoverSupComBtn(firstIndex,false)"
-                        @click="commentLike(firstItem._id)"
+                        @click="commentLike(firstItem)"
                         v-bind:class="{comment_unit_bottom_btn_selected: firstItem.firstComIsLike}"
                       >
                         <img
@@ -162,11 +163,13 @@
                         />
                         {{firstItem.likeNum}}
                       </div>
+                      <!-- 回复 -->
                       <div
                         class="comment_unit_bottom_btn margin_left_15"
                         @click="replyFirstComBtn(firstItem._id)"
                         v-bind:class="{comment_unit_bottom_btn_selected: firstItem.isShowReplyFirstCom}"
                       >回复</div>
+                      <!-- 删除 -->
                       <div
                         class="comment_unit_bottom_btn margin_left_15"
                         v-if="userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover"
@@ -189,7 +192,7 @@
                     ></my-editor>
                     <br />
                     <div class="text-right">
-                      <!-- <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp; -->
+                      <el-checkbox v-model="firstItem.isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
                       <el-button
                         type="primary"
                         round
@@ -200,32 +203,67 @@
                   </div>
                 </div>
                 <!-- 二级评论 -->
-                <!-- <template v-for="(secondItem, secondIndex) in list">
-                  <div class="two_commment_div margin_top_40" :key="secondIndex">
+                <template v-for="(secondItem, secondIndex) in firstItem.replies">
+                  <div
+                    v-if="secondIndex == 0 && !firstItem.isShowMoreReplies"
+                    class="two_commment_div margin_top_40"
+                    :key="secondIndex"
+                  >
                     <div class="current_user inline">
                       <img src="@/assets/img/image/code_presenter.png" />
                     </div>
                     <div class="comment_text inline">
                       <div class="comment_unit_name">
-                        Nike
+                        {{secondItem.replyerName}}
                         <span>回复</span>
-                        Maria
+                        {{secondItem.replyTargetName}}
                       </div>
-                      <div class="comment_unit_content">写的真的很棒，虽然还远没有做到架构师的级别，但是看到了自己的不足和应该努力的方向。</div>
+                      <div class="comment_unit_content">{{secondItem.content}}</div>
                       <div class="comment_unit_bottom">
                         <div class="comment_unit_bottom_left">
                           <div class="comment_unit_bottom_btn">
                             <img src="@/assets/img/icon/icon-support.svg" />
-                            0
+                            {{secondItem.likeNum}}
                           </div>
                           <div class="comment_unit_bottom_btn margin_left_15">回复</div>
                         </div>
-                        <div class="comment_unit_bottom_right">2019-09-06</div>
+                        <div
+                          class="comment_unit_bottom_right"
+                        >{{secondItem.createAt | formatDateDay}}</div>
                       </div>
                     </div>
-                </div>-->
-                <!-- 发表二级评论(回复二级评论) -->
-                <!-- <div class="margin_top_40" v-if="isShowReply" :key="secondIndex">
+                  </div>
+                  <div
+                    v-if="firstItem.isShowMoreReplies"
+                    class="two_commment_div margin_top_40"
+                    :key="secondIndex"
+                  >
+                    <div class="current_user inline">
+                      <img src="@/assets/img/image/code_presenter.png" />
+                    </div>
+                    <div class="comment_text inline">
+                      <div class="comment_unit_name">
+                        {{secondItem.replyerName}}
+                        <span>回复</span>
+                        {{secondItem.replyTargetName}}
+                      </div>
+                      <div class="comment_unit_content">{{secondItem.content}}</div>
+                      <div class="comment_unit_bottom">
+                        <div class="comment_unit_bottom_left">
+                          <div class="comment_unit_bottom_btn">
+                            <img src="@/assets/img/icon/icon-support.svg" />
+                            {{secondItem.likeNum}}
+                          </div>
+                          <div class="comment_unit_bottom_btn margin_left_15">回复</div>
+                        </div>
+                        <div
+                          class="comment_unit_bottom_right"
+                        >{{secondItem.createAt | formatDateDay}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- 发表二级评论(回复二级评论) -->
+                  <!-- <div class="margin_top_40" v-if="isShowReply" :key="secondIndex">
                     <div class="current_user inline">
                       <img src="@/assets/img/image/code_presenter.png" />
                     </div>
@@ -242,9 +280,14 @@
                         >&emsp;评&nbsp;论&emsp;</el-button>
                       </div>
                     </div>
-                  </div>
-                </template>-->
-                <div class="btn_blue margin_top_30">查看更多回复</div>
+                  </div>-->
+                </template>
+                <!-- 查看更多回复 -->
+                <div
+                  class="btn_blue margin_top_30"
+                  @click="showMoreReplies(firstItem)"
+                  v-if="firstItem.replies.length>1"
+                >{{firstItem.showMoreRepliesName}}</div>
               </div>
               <hr class="comment_hr" />
             </div>
@@ -297,8 +340,7 @@ export default {
       userInfo: "", // 用户信息
       commentList: [], // 评论列表
       firstCommenterId: "", // 评论列表中一级评论人id
-      firstComIndex: "", // 评论列表中一级评论数组下标
-      list: [{ id: 10 }, { id: 11 }]
+      firstComIndex: "" // 评论列表中一级评论数组下标
     };
   },
   mounted() {
@@ -307,6 +349,7 @@ export default {
       this.getInfo();
       this.getCommentList();
     }
+    console.log(this.userInfo);
     this.userInfo = JSON.parse(localStorage.getItem("user")); // 获取当前用户信息
     // 可视区内保留一个点赞icon
     (this.visualScroll = new IntersectionObserver(([entry]) => {
@@ -517,9 +560,6 @@ export default {
         params
       );
       if (res.status == 200) {
-        // this.resultMsg = "评论成功!";
-        // this.resultImage = successImg;
-        // this.showDialog = true;
         this.getCommentList();
         this.onEditorChange({});
       }
@@ -530,21 +570,18 @@ export default {
       // if (!this.haveFirstComContent) return;
       const params = {
         commentId: firstItem._id,
-        replyerName: this.userInfo.nickName,
         replyerId: this.userInfo._id,
-        replyTargetName: firstItem.commenterName,
         replyTargetId: firstItem.commenterId,
         bugId: firstItem.bugId,
-        content: "回复2"
+        content: firstItem.replyFirstComContent,
+        anonymous: firstItem.isAnonymous
       };
       const res = await this.$axios.post(
         `${process.env.BASE_URL}/web_api/replyBug`,
         params
       );
       if (res.status == 200) {
-        this.resultMsg = "回复成功!";
-        this.resultImage = successImg;
-        this.showDialog = true;
+        this.getCommentList();
       }
     },
     // 监听一级评论框
@@ -556,27 +593,31 @@ export default {
     // 监听发表二级评论（回复一级）框
     onEditorChangeSecondCom({ editor, html, text }, firstItem) {
       console.log(text, firstItem);
-      // this.commentList.forEach(item => {
-      //   if (item._id === firstItem._id) {
-      //     item["replyFirstComContent"] = text;
-      //   }
-      // });
-      // this.firstComContent = text;
-      // this.haveFirstComContent = html ? true : false;
-      // console.log(this.firstComContent, this.haveFirstComContent);
-    },
-    // 评论点赞
-    commentLike(comId) {
       this.commentList.forEach(item => {
-        if (item._id === comId && !item.firstComIsLike) {
+        if (item._id === firstItem._id) {
+          item["replyFirstComContent"] = text;
+        }
+      });
+    },
+    // 评论点赞&取消点赞
+    commentLike(firstItem) {
+      const bugCommentLikeApi = firstItem.firstComIsLike
+        ? "cancelBugCommentLike"
+        : "bugCommentLike";
+      this.commentList.forEach(item => {
+        if (item._id === firstItem._id) {
           const res = this.$axios.get(
-            `${process.env.BASE_URL}/web_api/bugCommentLike?bugId=` +
+            `${process.env.BASE_URL}/web_api/` +
+              bugCommentLikeApi +
+              `?bugId=` +
               this.Id +
               `&commentId=` +
-              item._id
+              item._id +
+              `&userId=` +
+              this.userInfo._id
           );
+          firstItem.firstComIsLike ? item.likeNum-- : item.likeNum++;
           item.firstComIsLike = !item.firstComIsLike;
-          item.likeNum = item.likeNum + 1;
         }
       });
     },
@@ -590,6 +631,12 @@ export default {
         this.commentList.forEach(item => {
           item[`firstComIsLike`] = false;
           item[`isShowReplyFirstCom`] = false;
+          item[`isShowMoreReplies`] = false;
+          item[`showMoreRepliesName`] = "查看更多回复";
+          item.likerList.forEach(ele => {
+            item.firstComIsLike =
+              this.userInfo._id === ele.userId ? true : false;
+          });
         });
         console.log(this.commentList);
       } else {
@@ -620,16 +667,25 @@ export default {
     },
     // 删除一级评论
     async deleteFirstCom(comId) {
+      const params = {
+        commentId: comId,
+        bugId: this.Id,
+        userId: this.userInfo._id
+      };
       const res = await this.$axios.post(
         `${process.env.BASE_URL}/web_api/deleteBugComment`,
-        { commentId: comId }
+        params
       );
       if (res.data.status_code === 200) {
-        this.resultMsg = "删除成功!";
-        this.resultImage = successImg;
-        this.showDialog = true;
         this.getCommentList();
       }
+    },
+    // 查看更多回复
+    showMoreReplies(firstItem) {
+      firstItem.isShowMoreReplies = !firstItem.isShowMoreReplies;
+      firstItem.showMoreRepliesName = firstItem.isShowMoreReplies
+        ? "收起更多回复"
+        : "查看更多回复";
     }
   }
 };
