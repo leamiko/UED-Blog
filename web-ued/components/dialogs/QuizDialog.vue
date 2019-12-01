@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync="show" width="750px" :custom-class="classStyle" :before-close="handleClose" destroy-on-close append-to-body>
+  <el-dialog :visible.sync="show" width="750px" :custom-class="classStyle" :before-close="handleClose" destroy-on-close append-to-body :close-on-click-modal="false" :close-on-press-escape="false">
     <!-- 内层 -->
     <el-dialog :visible.sync="innerVisible" :show-close="false" width="390px" center append-to-body :before-close="innerClose">
         <template slot="title">
@@ -90,9 +90,9 @@ export default {
       this.$emit('hide', true);
       this.showContent = false;
       this.show = false;
-      this.$router.replace({
-        path: '/coding/list'
-      })
+      // this.$router.replace({
+      //   path: '/coding/list'
+      // })
       // done();
     },
     innerClose(done) {

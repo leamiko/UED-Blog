@@ -36,11 +36,21 @@
               <h4 class="text-dark">热门问题</h4>
               <el-button size="medium" round @click="pathRedirect('/coding/list')"> 查看更多<i class="el-icon-arrow-right el-icon-caret-right"></i> </el-button>
             </div>
-            <ul>
+            <ul v-if="hotList && hotList.length > 0">
               <li v-for="item in hotList" :key="item.id">
                 <el-link :underline="false" :href="'/coding/detail?bugId=' + item._id">{{item.title}}</el-link>
               </li>
             </ul>
+            <!-- 无结果 -->
+            <div class="code_noresult" v-else>
+              <div class="noresult_img">
+                <img src="@/assets/img/image/image-search-noresult-image.png" >
+              </div>
+              <div class="noresult_prompt">
+                暂无数据~~~
+                <button type="button" class="ask_btn bg-white pointer" @click="askShow=true">我要提问</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -92,6 +102,9 @@ export default {
       this[command] = !this[command];
     },
     getSearch(val) {
+      if (!val) {
+        return;
+      }
       this.$router.push({
         path: '/coding/list',
         query: val ? {search: val} : null
@@ -240,4 +253,36 @@ export default {
 //     }
 //   }
 // }
+
+.code_noresult {
+  display: flex;
+  height: 218px;
+  margin-top: 30px;
+  padding-top: 38px;
+  box-shadow:0px 1px 5px 0px rgba(236,236,236,0.5);
+  .noresult_img {
+    width: 234px;
+    height: 185px;
+    margin-left: calc((100% - 614px)/2);
+    img {
+      width: 100%;
+    }
+  }
+  .noresult_prompt {
+    flex: 1;
+    margin-top: 60px;
+    margin-left: 50px;
+    color: #A0A0A0;
+    .ask_btn {
+      margin-left: 20px;
+      padding: 6px 19px;
+      color: #3376FF;
+      border: 1px solid #3376FF;
+      border-radius: 15px;
+    }
+    .ask_btn:focus {
+      outline: none;
+    }
+  }
+}
 </style>>
