@@ -136,8 +136,8 @@
               <div class="current_edit inline">
                 <!-- 一级评论 -->
                 <div
-                  @mouseenter="mouseHoverDelComBtn(firstIndex, firstItem.commenterId, true)"
-                  @mouseleave="mouseHoverDelComBtn(firstIndex, firstItem.commenterId, false)"
+                  @mouseenter="mouseHoverDelComBtn(firstIndex, true)"
+                  @mouseleave="mouseHoverDelComBtn(firstIndex, false)"
                 >
                   <div class="comment_unit_name">{{firstItem.commenterName}}</div>
                   <div class="comment_unit_content">{{firstItem.content}}</div>
@@ -148,16 +148,16 @@
                         class="comment_unit_bottom_btn"
                         @mouseenter="mouseHoverSupComBtn(firstIndex,true)"
                         @mouseleave="mouseHoverSupComBtn(firstIndex,false)"
-                        @click="commentLike(firstItem)"
+                        @click="firstComLike(firstItem)"
                         v-bind:class="{comment_unit_bottom_btn_selected: firstItem.firstComIsLike}"
                       >
                         <img
-                          v-if="firstItem.firstComIsLike || (firstComIndex === firstIndex && supportComBtnIsHover)"
+                          v-if="firstItem.firstComIsLike || (firstComIndex === firstIndex && firstComSupportBtnIsHover)"
                           src="@/assets/img/icon/icon-support-hover.svg"
                           alt
                         />
                         <img
-                          v-if="!(firstItem.firstComIsLike || (firstComIndex === firstIndex && supportComBtnIsHover))"
+                          v-if="!(firstItem.firstComIsLike || (firstComIndex === firstIndex && firstComSupportBtnIsHover))"
                           src="@/assets/img/icon/icon-support.svg"
                           alt
                         />
@@ -172,7 +172,7 @@
                       <!-- 删除 -->
                       <div
                         class="comment_unit_bottom_btn margin_left_15"
-                        v-if="userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover"
+                        v-if="userInfo._id === firstItem.commenterId && firstComIndex === firstIndex && deleteComBtnIsHover"
                         @click="deleteFirstCom(firstItem._id)"
                       >删除</div>
                     </div>
@@ -204,6 +204,7 @@
                 </div>
                 <!-- 二级评论 -->
                 <template v-for="(secondItem, secondIndex) in firstItem.replies">
+                  <!-- 二级评论默认展示第一条 -->
                   <div
                     v-if="secondIndex == 0 && !firstItem.isShowMoreReplies"
                     class="two_commment_div margin_top_40"
@@ -221,11 +222,33 @@
                       <div class="comment_unit_content">{{secondItem.content}}</div>
                       <div class="comment_unit_bottom">
                         <div class="comment_unit_bottom_left">
-                          <div class="comment_unit_bottom_btn">
-                            <img src="@/assets/img/icon/icon-support.svg" />
+                          <div
+                            class="comment_unit_bottom_btn"
+                            @mouseenter="supportSecondComBtnHover(secondItem,true)"
+                            @mouseleave="supportSecondComBtnHover(secondItem,false)"
+                            @click="secondComLike(secondItem)"
+                            v-bind:class="{comment_unit_bottom_btn_selected: secondItem.secondComIsLike}"
+                          >
+                            <img
+                              v-if="secondItem.secondComIsLike||(secondComId === secondItem._id && secondComSupportBtnIsHover)"
+                              src="@/assets/img/icon/icon-support-hover.svg"
+                              alt
+                            />
+                            <img
+                              v-if="!(secondItem.secondComIsLike||(secondComId === secondItem._id && secondComSupportBtnIsHover))"
+                              src="@/assets/img/icon/icon-support.svg"
+                              alt
+                            />
                             {{secondItem.likeNum}}
                           </div>
                           <div class="comment_unit_bottom_btn margin_left_15">回复</div>
+                          <!-- 删除 -->
+                          <!-- v-if="userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover"
+                          @click="deleteFirstCom(firstItem._id)"-->
+                          <div
+                            class="comment_unit_bottom_btn margin_left_15"
+                            v-if="userInfo._id === secondItem.replyerId"
+                          >删除</div>
                         </div>
                         <div
                           class="comment_unit_bottom_right"
@@ -233,6 +256,7 @@
                       </div>
                     </div>
                   </div>
+                  <!-- 更多二级评论 -->
                   <div
                     v-if="firstItem.isShowMoreReplies"
                     class="two_commment_div margin_top_40"
@@ -250,8 +274,23 @@
                       <div class="comment_unit_content">{{secondItem.content}}</div>
                       <div class="comment_unit_bottom">
                         <div class="comment_unit_bottom_left">
-                          <div class="comment_unit_bottom_btn">
-                            <img src="@/assets/img/icon/icon-support.svg" />
+                          <div
+                            class="comment_unit_bottom_btn"
+                            @mouseenter="supportSecondComBtnHover(secondItem,true)"
+                            @mouseleave="supportSecondComBtnHover(secondItem,false)"
+                            @click="secondComLike(secondItem)"
+                            v-bind:class="{comment_unit_bottom_btn_selected: secondItem.secondComIsLike}"
+                          >
+                            <img
+                              v-if="secondItem.secondComIsLike||(secondComId === secondItem._id && secondComSupportBtnIsHover)"
+                              src="@/assets/img/icon/icon-support-hover.svg"
+                              alt
+                            />
+                            <img
+                              v-if="!(secondItem.secondComIsLike||(secondComId === secondItem._id && secondComSupportBtnIsHover))"
+                              src="@/assets/img/icon/icon-support.svg"
+                              alt
+                            />
                             {{secondItem.likeNum}}
                           </div>
                           <div class="comment_unit_bottom_btn margin_left_15">回复</div>
@@ -335,12 +374,13 @@ export default {
       showDialog: false,
       firstComContent: "", // 一级评论内容
       haveFirstComContent: false, // 监听一级评论内容
-      supportComBtnIsHover: false, // 评论点赞按钮是否悬浮
+      firstComSupportBtnIsHover: false, // 一级评论点赞按钮是否悬浮
+      secondComSupportBtnIsHover: false, // 二级评论点赞按钮是否悬浮
       deleteComBtnIsHover: false, // 评论删除按钮是否悬浮
       userInfo: "", // 用户信息
       commentList: [], // 评论列表
-      firstCommenterId: "", // 评论列表中一级评论人id
-      firstComIndex: "" // 评论列表中一级评论数组下标
+      firstComIndex: "", // 评论列表中一级评论数组下标
+      secondComId: "" // 评论列表中二级评论id
     };
   },
   mounted() {
@@ -564,7 +604,7 @@ export default {
         this.onEditorChange({});
       }
     },
-    // 发表二级级评论(回复一级评论)
+    // 发表二级评论(回复一级评论)
     async submitSecondCom(firstItem) {
       // this.commentList.forEach(item => {});
       // if (!this.haveFirstComContent) return;
@@ -590,7 +630,7 @@ export default {
       this.firstComContent = text;
       this.haveFirstComContent = html ? true : false;
     },
-    // 监听发表二级评论（回复一级）框
+    // 监听二级评论（回复一级）框
     onEditorChangeSecondCom({ editor, html, text }, firstItem) {
       console.log(text, firstItem);
       this.commentList.forEach(item => {
@@ -599,8 +639,8 @@ export default {
         }
       });
     },
-    // 评论点赞&取消点赞
-    commentLike(firstItem) {
+    // 一级评论点赞&取消点赞
+    firstComLike(firstItem) {
       const bugCommentLikeApi = firstItem.firstComIsLike
         ? "cancelBugCommentLike"
         : "bugCommentLike";
@@ -628,14 +668,23 @@ export default {
       );
       if (res.data.status_code === 200) {
         this.commentList = res.data.data;
-        this.commentList.forEach(item => {
-          item[`firstComIsLike`] = false;
-          item[`isShowReplyFirstCom`] = false;
-          item[`isShowMoreReplies`] = false;
-          item[`showMoreRepliesName`] = "查看更多回复";
-          item.likerList.forEach(ele => {
-            item.firstComIsLike =
+        // 循环一级评论
+        this.commentList.forEach(firstItem => {
+          firstItem[`isShowReplyFirstCom`] = false; // 是否展示发表二级评论(回复一级)框
+          firstItem[`isShowMoreReplies`] = false; // 展示更多回复
+          firstItem[`showMoreRepliesName`] = "查看更多回复"; // 展示更多回复按钮文本
+          // 判断当前用户是否对一级评论点赞
+          firstItem.likerList.forEach(ele => {
+            firstItem.firstComIsLike =
               this.userInfo._id === ele.userId ? true : false;
+          });
+          // 循环二级评论
+          firstItem.replies.forEach(secondItem => {
+            // 判断当前用户是否对二级评论点赞
+            secondItem.likerList.forEach(ele => {
+              secondItem.secondComIsLike =
+                this.userInfo._id === ele.userId ? true : false;
+            });
           });
         });
         console.log(this.commentList);
@@ -646,7 +695,7 @@ export default {
         });
       }
     },
-    // 回复一级评论按钮
+    // 一级评论回复按钮
     replyFirstComBtn(comId) {
       this.commentList.forEach(item => {
         if (item._id === comId) {
@@ -654,15 +703,14 @@ export default {
         }
       });
     },
-    // 评论删除按钮悬浮
-    mouseHoverDelComBtn(index, id, isHover) {
+    // 一级评论删除按钮悬浮
+    mouseHoverDelComBtn(index, isHover) {
       this.deleteComBtnIsHover = isHover;
-      this.firstCommenterId = id;
       this.firstComIndex = index;
     },
-    // 评论点赞按钮悬浮
+    // 一级评论点赞按钮悬浮
     mouseHoverSupComBtn(index, isHover) {
-      this.supportComBtnIsHover = isHover;
+      this.firstComSupportBtnIsHover = isHover;
       this.firstComIndex = index;
     },
     // 删除一级评论
@@ -686,6 +734,35 @@ export default {
       firstItem.showMoreRepliesName = firstItem.isShowMoreReplies
         ? "收起更多回复"
         : "查看更多回复";
+    },
+    // 二级评论点赞按钮悬浮
+    supportSecondComBtnHover(secondItem, isHover) {
+      this.secondComSupportBtnIsHover = isHover;
+      this.secondComId = secondItem._id;
+    },
+    // 二级评论点赞&取消点赞
+    secondComLike(secondItem) {
+      const bugReplyLikeApi = secondItem.secondComIsLike
+        ? "cancelBugReplyLike"
+        : "bugReplyLike";
+      this.commentList.forEach(comItem => {
+        comItem.replies.forEach(repItem => {
+          if (repItem._id === secondItem._id) {
+            const res = this.$axios.get(
+              `${process.env.BASE_URL}/web_api/` +
+                bugReplyLikeApi +
+                `?bugId=` +
+                this.Id +
+                `&replyId=` +
+                repItem._id +
+                `&userId=` +
+                this.userInfo._id
+            );
+            secondItem.secondComIsLike ? repItem.likeNum-- : repItem.likeNum++;
+            repItem.secondComIsLike = !repItem.secondComIsLike;
+          }
+        });
+      });
     }
   }
 };
