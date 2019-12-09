@@ -170,7 +170,7 @@
                     nickName: this.name,
                     avatar: this.imgUrl
                 }
-                const res = await this.$axios.post(`${process.env.BASE_URL}/web_api/editInfo`, params);
+                const res = await this.$axios.post(`${process.env.BASE_URL}/web_api/updateInfo`, params);
                 if (res.data.status_code == 200) {
                     let user = res.data.data
                     console.log(user)
