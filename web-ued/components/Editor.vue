@@ -55,9 +55,10 @@ export default {
       // console.log('editor change!', editor, html, text)
       this.content = html;
       this.$emit('change', { editor, html, text });
+    },
+    clear() {
+      this.content = '<p></p>';
     }
   }
 }
 </script>
-<style lang="scss" scoped>
-</style>
