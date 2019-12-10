@@ -47,7 +47,7 @@
            v-show="!bindWX">
         <div class="successPic"><img src="@/assets/img/image/Bitmap.png"
                alt=""></div>
-        <el-button type="primary"
+        <el-button type="primary" @click="compelteInfo()"
                    class="cus-full-width successBtn">丰富你的个人信息</el-button>
       </div>
       <div class="codeBox"
@@ -60,11 +60,19 @@
         </div>
       </div>
     </div>
+      <!-- 模态框 -->
+    <person-dialog :isShow="infoShow"
+                   :classStyle="className"
+                   @hide="infoShow = false"></person-dialog>
   </div>
 </template>
 
 <script>
+import PersonDialog from "../components/dialogs/PersonalInfo";
 export default {
+  components: {
+    PersonDialog
+  },
   data () {
     var checkName = (rule, value, callback) => {
       // console.log(value);
@@ -121,7 +129,9 @@ export default {
       submitLoading: false,
       successBox: false,
       bindWX: false,
-      isError: false
+      isError: false,
+      infoShow: false, // 个人信息弹窗
+      className: "info_dialog",
     };
   },
   // head() {
@@ -133,6 +143,11 @@ export default {
     this.wxHandle();
   },
   methods: {
+    // 填写个人信息
+    compelteInfo() {
+       this.infoShow = true 
+       this.bindWX = false;
+    },
     //二维码
     wxHandle () {
       var obj = new WxLogin({
@@ -166,6 +181,7 @@ export default {
             //   this.$router.replace("/login");
             // });
             localStorage.setItem("user", JSON.stringify(data.user));
+            this.$store.commit("flag", new Date().toLocaleTimeString());
             this.$emit("titleChanged", "恭喜你，注册成功");
             this.successBox = true;
             this.bindWX = true;

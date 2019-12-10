@@ -132,7 +132,7 @@ export default {
       infoShow: false, // 个人信息弹窗
       className: "info_dialog",
       userName: "",
-      avatar: "",
+      avatar: null,
       account: ""
     };
   },

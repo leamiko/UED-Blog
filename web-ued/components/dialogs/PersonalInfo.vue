@@ -88,6 +88,13 @@
         watch: {
             isShow(newVal, oldVal) {
                 this.show = newVal;
+            },
+             "$store.state.flag": function () {
+                if (this.$store.state.flag !== null) {
+                     this.memberInfo = JSON.parse(localStorage.getItem('user'))
+                     this.name = this.memberInfo.nickName
+                     console.log(this.memberInfo);
+                }
             }
         },
         data() {
@@ -102,10 +109,11 @@
             }
         },
         mounted() {
-            if (localStorage.user) {
-                this.memberInfo = JSON.parse(localStorage.getItem('user'))
-                this.name = this.memberInfo.nickName
-            }
+            // if (localStorage.user) {
+            //     this.memberInfo = JSON.parse(localStorage.getItem('user'))
+            //     this.name = this.memberInfo.nickName
+            //     console.log(this.memberInfo);
+            // }
             this.getAvatarList()
         },
         methods: {

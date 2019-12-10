@@ -110,6 +110,7 @@
 
     .right_detail {
       width: 419px;
+      cursor: pointer;
     }
   }
 
