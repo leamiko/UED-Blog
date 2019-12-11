@@ -136,8 +136,8 @@
               <div class="current_edit inline">
                 <!-- 一级评论 -->
                 <div
-                  @mouseenter="mouseHoverDelComBtn(firstIndex, true)"
-                  @mouseleave="mouseHoverDelComBtn(firstIndex, false)"
+                  @mouseenter="mouseHoverFirstCom(firstIndex, true)"
+                  @mouseleave="mouseHoverFirstCom(firstIndex, false)"
                 >
                   <div class="comment_unit_name">{{firstItem.commenterName}}</div>
                   <div class="comment_unit_content">{{firstItem.content}}</div>
@@ -209,6 +209,8 @@
                     v-if="secondIndex == 0 && !firstItem.isShowMoreReplies"
                     class="two_commment_div margin_top_40"
                     :key="secondIndex"
+                    @mouseenter="mouseHoverSecondCom(secondItem)"
+                    @mouseleave="mouseHoverSecondCom(secondItem)"
                   >
                     <div class="current_user inline">
                       <img src="@/assets/img/image/code_presenter.png" />
@@ -247,7 +249,7 @@
                           @click="deleteFirstCom(firstItem._id)"-->
                           <div
                             class="comment_unit_bottom_btn margin_left_15"
-                            v-if="userInfo._id === secondItem.replyerId"
+                            v-if="userInfo._id === secondItem.replyerId && secondComIdForShowDelBtn === secondItem._id"
                           >删除</div>
                         </div>
                         <div
@@ -261,6 +263,8 @@
                     v-if="firstItem.isShowMoreReplies"
                     class="two_commment_div margin_top_40"
                     :key="secondIndex"
+                    @mouseenter="mouseHoverSecondCom(secondItem)"
+                    @mouseleave="mouseHoverSecondCom(secondItem)"
                   >
                     <div class="current_user inline">
                       <img src="@/assets/img/image/code_presenter.png" />
@@ -294,6 +298,13 @@
                             {{secondItem.likeNum}}
                           </div>
                           <div class="comment_unit_bottom_btn margin_left_15">回复</div>
+                          <!-- 删除 -->
+                          <!-- v-if="userInfo._id === firstCommenterId && firstComIndex === firstIndex && deleteComBtnIsHover"
+                          @click="deleteFirstCom(firstItem._id)"-->
+                          <div
+                            class="comment_unit_bottom_btn margin_left_15"
+                            v-if="userInfo._id === secondItem.replyerId && secondComIdForShowDelBtn === secondItem._id"
+                          >删除</div>
                         </div>
                         <div
                           class="comment_unit_bottom_right"
@@ -380,7 +391,8 @@ export default {
       userInfo: "", // 用户信息
       commentList: [], // 评论列表
       firstComIndex: "", // 评论列表中一级评论数组下标
-      secondComId: "" // 评论列表中二级评论id
+      secondComId: "", // 评论列表中二级评论id
+      secondComIdForShowDelBtn: "" // 评论列表中二级评论id为了显示删除按钮
     };
   },
   mounted() {
@@ -703,8 +715,8 @@ export default {
         }
       });
     },
-    // 一级评论删除按钮悬浮
-    mouseHoverDelComBtn(index, isHover) {
+    // 一级评论悬浮显示删除
+    mouseHoverFirstCom(index, isHover) {
       this.deleteComBtnIsHover = isHover;
       this.firstComIndex = index;
     },
@@ -763,6 +775,10 @@ export default {
           }
         });
       });
+    },
+    // 二级评论悬浮显示删除
+    mouseHoverSecondCom(secondItem) {
+      this.secondComIdForShowDelBtn = secondItem._id;
     }
   }
 };

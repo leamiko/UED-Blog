@@ -142,6 +142,7 @@ export default {
       let response = await this.$axios.get(`${process.env.BASE_URL}/web_api/getHomeList`);
       response.data.data.forEach(element => {
         if (element !== null) {
+          element.userInfo = element.userInfo ? element.userInfo : {};
           this.list.push(element);
         }
       });

@@ -47,7 +47,7 @@
            v-show="!bindWX">
         <div class="successPic"><img src="@/assets/img/image/Bitmap.png"
                alt=""></div>
-        <el-button type="primary"
+        <el-button type="primary" @click="compelteInfo()"
                    class="cus-full-width successBtn">丰富你的个人信息</el-button>
       </div>
       <div class="codeBox"
@@ -60,11 +60,19 @@
         </div>
       </div>
     </div>
+      <!-- 模态框 -->
+    <person-dialog :isShow="infoShow"
+                   :classStyle="className"
+                   @hide="infoShow = false"></person-dialog>
   </div>
 </template>
 
 <script>
+import PersonDialog from "../components/dialogs/PersonalInfo";
 export default {
+  components: {
+    PersonDialog
+  },
   data () {
     var checkName = (rule, value, callback) => {
       // console.log(value);
@@ -121,7 +129,9 @@ export default {
       submitLoading: false,
       successBox: false,
       bindWX: false,
-      isError: false
+      isError: false,
+      infoShow: false, // 个人信息弹窗
+      className: "info_dialog",
     };
   },
   // head() {
@@ -133,14 +143,19 @@ export default {
     this.wxHandle();
   },
   methods: {
+    // 填写个人信息
+    compelteInfo() {
+       this.infoShow = true 
+       this.bindWX = false;
+    },
     //二维码
     wxHandle () {
       var obj = new WxLogin({
         id: "wxBindQrcode",
         appid: process.env.WX_WEB_ID,
         scope: "snsapi_login",
-        redirect_uri: window.location.href,
-        // redirect_uri: 'http://ued.lunz.cn',
+        // redirect_uri: window.location.href,
+        redirect_uri: 'http://ued.lunz.cn',
         state: "",
         style: "",
         href: "data:text/css;base64,Ly8gLmltcG93ZXJCb3ggew0KLy8gICAucXJjb2RlIHsNCi8vICAgICB3aWR0aDogMTgwcHg7DQovLyAgICAgaGVpZ2h0OiAxODBweDsNCi8vICAgICBtYXJnaW4tdG9wOiAwcHg7DQovLyAgICAgbWFyZ2luLXJpZ2h0OiAxMThweDsNCi8vICAgICBib3JkZXI6IDFweCBzb2xpZCAjZTJlMmUyOw0KLy8gICB9DQovLyAgIC5pbmZvew0KLy8gICAgIGRpc3BsYXk6IG5vbmU7DQovLyAgIH0NCi8vICAgLnRpdGxlew0KLy8gICAgIGRpc3BsYXk6IG5vbmU7DQovLyAgIH0NCi8vIH0NCi5pbXBvd2VyQm94IC5xcmNvZGV7DQogIHdpZHRoOiAxODBweDsNCiAgaGVpZ2h0OiAxODBweDsNCiAgbWFyZ2luLXRvcDogMHB4Ow0KICBtYXJnaW4tcmlnaHQ6IDExOHB4Ow0KICBib3JkZXI6IDFweCBzb2xpZCAjZTJlMmUyOw0KfQ0KLmltcG93ZXJCb3ggLmluZm97DQogIGRpc3BsYXk6IG5vbmU7DQp9DQouaW1wb3dlckJveCAudGl0bGV7DQogIGRpc3BsYXk6IG5vbmU7DQp9"
@@ -166,6 +181,7 @@ export default {
             //   this.$router.replace("/login");
             // });
             localStorage.setItem("user", JSON.stringify(data.user));
+            this.$store.commit("flag", new Date().toLocaleTimeString());
             this.$emit("titleChanged", "恭喜你，注册成功");
             this.successBox = true;
             this.bindWX = true;

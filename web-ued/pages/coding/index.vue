@@ -37,6 +37,9 @@
               <el-button size="medium" round @click="pathRedirect('/coding/list')"> 查看更多<i class="el-icon-arrow-right el-icon-caret-right"></i> </el-button>
             </div>
             <ul v-if="hotList && hotList.length > 0">
+              <li v-show="hotList && hotList.length >= 4">
+                <img src="../../assets/img/image/image-code-hot-hotimg.png">
+              </li>
               <li v-for="item in hotList" :key="item.id">
                 <el-link :underline="false" :href="'/coding/detail?bugId=' + item._id">{{item.title}}</el-link>
               </li>
@@ -199,12 +202,44 @@ export default {
     border-radius: 4px;
     padding: 30px;
     margin: 140px 0 95px;
+
     ul {
       list-style: none;
-      padding: 30px 0 0;
+      padding: 30px 0 0 0;
+      position: relative;
+
       > li {
         padding: 20px 0;
+        padding-left: 45px;
         border-bottom: 1px solid #EFF3F7;
+
+        &:first-child {
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          padding: 0;
+          border: 0;
+          width: 300px;
+          height: 222px;;
+          img {
+            width: 100%;
+          }
+        }
+
+        &:nth-child(2) {
+          background: url('../../assets/img/image/image-code-hot-1.png') no-repeat center left;
+          background-size: 30px 30px;
+        }
+
+        &:nth-child(3) {
+          background: url('../../assets/img/image/image-code-hot-2.png') no-repeat center left;
+          background-size: 30px 30px;
+        }
+
+        &:nth-child(4) {
+          background: url('../../assets/img/image/image-code-hot-3.png') no-repeat center left;
+          background-size: 30px 30px;
+        }
 
         &:last-child {
           border-bottom: 0;

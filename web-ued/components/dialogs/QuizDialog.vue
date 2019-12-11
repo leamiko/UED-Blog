@@ -87,6 +87,8 @@ export default {
   },
   methods: {
     handleClose(done) {
+      // 置空输入框
+      this.input = '';
       this.$emit('hide', true);
       this.showContent = false;
       this.show = false;
@@ -115,6 +117,14 @@ export default {
       this.content = html;
     },
     async submit() {
+      // 优先验证用户身份信息
+      if (!this.userInfo) {
+        this.$notify.error({
+          title: '错误',
+          message: '您还没有登录，请登录！'
+        });
+        return;
+      }
       if (!this.input) {
         this.$notify.error({
           title: '错误',
@@ -134,7 +144,9 @@ export default {
         content: this.content,
         tags: [],
         bugStatus: true,
-        bugSolution: null
+        bugSolution: null,
+        userId: this.userInfo._id,
+        anonymous: this.isAnonymous
       };
       const res = await this.$axios.post(`${process.env.BASE_URL}/web_api/AddBugItems`, params);
       if (res.status === 200 && res.data.message === 'success') {

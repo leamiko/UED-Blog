@@ -88,6 +88,13 @@
         watch: {
             isShow(newVal, oldVal) {
                 this.show = newVal;
+            },
+             "$store.state.flag": function () {
+                if (this.$store.state.flag !== null) {
+                     this.memberInfo = JSON.parse(localStorage.getItem('user'))
+                     this.name = this.memberInfo.nickName
+                     console.log(this.memberInfo);
+                }
             }
         },
         data() {
@@ -102,10 +109,11 @@
             }
         },
         mounted() {
-            if (localStorage.user) {
-                this.memberInfo = JSON.parse(localStorage.getItem('user'))
-                this.name = this.memberInfo.nickName
-            }
+            // if (localStorage.user) {
+            //     this.memberInfo = JSON.parse(localStorage.getItem('user'))
+            //     this.name = this.memberInfo.nickName
+            //     console.log(this.memberInfo);
+            // }
             this.getAvatarList()
         },
         methods: {
@@ -170,7 +178,7 @@
                     nickName: this.name,
                     avatar: this.imgUrl
                 }
-                const res = await this.$axios.post(`${process.env.BASE_URL}/web_api/editInfo`, params);
+                const res = await this.$axios.post(`${process.env.BASE_URL}/web_api/updateInfo`, params);
                 if (res.data.status_code == 200) {
                     let user = res.data.data
                     console.log(user)

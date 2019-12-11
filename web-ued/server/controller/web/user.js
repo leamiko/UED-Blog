@@ -170,7 +170,7 @@ exports.isLogin = function(req, res) {
   }
 }
 
-exports.editInfo = function(req, res) {
+exports.updateInfo = function(req, res) {
   User.findOne(
     {
       nickName: req.body.nickName

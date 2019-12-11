@@ -95,7 +95,8 @@ export default {
       resultMsg: '',
       resultImage: '',
       resultError: null,
-      timer: 3
+      timer: 3,
+      userInfo: null
     }
   },
   methods: {
@@ -138,6 +139,14 @@ export default {
       }
     },
     async submit() {
+      // 优先验证用户身份信息
+      if (!this.userInfo) {
+        this.$notify.error({
+          title: '错误',
+          message: '您还没有登录，请登录！'
+        });
+        return;
+      }
       if (!this.input) {
         this.$notify.error({
           title: '错误',
@@ -162,10 +171,13 @@ export default {
       const params = {
         title: this.input,
         content: this.content1,
-        tags: this.checkList,
+        tags: [],
         bugStatus: false,
-        bugSolution: this.content2
+        bugSolution: this.content2,
+        userId: this.userInfo._id,
+        anonymous: this.isAnonymous
       };
+      params.tags = this.checkList.map(item => item.name);
       const res = await this.$axios.post(`${process.env.BASE_URL}/web_api/AddBugItems`, params);
       if (res.status === 200 && res.data.message === 'success') {
         this.resultMsg = '发布成功!';
@@ -195,6 +207,11 @@ export default {
     }
   },
   mounted() {
+    // 获取用户信息
+    if (window.localStorage.getItem('user')) {
+      this.userInfo = JSON.parse(window.localStorage.getItem('user'));
+      this.avator = this.userInfo.avatar ? this.userInfo.avatar : avatorUrl;
+    }
     this.getTags();
   }
 }

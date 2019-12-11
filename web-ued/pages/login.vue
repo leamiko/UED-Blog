@@ -116,8 +116,8 @@ export default {
         id: "wxLoginQrcode",
         appid: process.env.WX_WEB_ID,
         scope: "snsapi_login",
-        redirect_uri: window.location.href,
-        // redirect_uri: "http://ued.lunz.cn",
+        // redirect_uri: window.location.href,
+        redirect_uri: "http://ued.lunz.cn",
         state: "",
         style: "",
         href:
