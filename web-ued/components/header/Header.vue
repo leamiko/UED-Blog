@@ -16,6 +16,9 @@
             <router-link :to="item.redirectUrl"
                          class="font-size-18">{{ item.label }}</router-link>
           </li>
+           <li >
+            <router-link :to="'/coding/regular'" class="font-size-18">正则</router-link>
+          </li>
         </ul>
       </div>
       <div class="cus-flex cus-align-center">
