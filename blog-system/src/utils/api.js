@@ -34,5 +34,10 @@ export default {
   // 头像管理
   addAvatar: `${baseUrl}/addAvatar`,
   getAvatarList: `${baseUrl}/getAvatarList`,
-  deleteAvatar: `${baseUrl}/deleteAvatar`
+  deleteAvatar: `${baseUrl}/deleteAvatar`,
+
+  // 正则表达式管理
+  getRegularList: `${baseUrl}/getRegularList`,
+  getRegularDetail: `${baseUrl}/getRegularDetail`,
+  updateRegular: `${baseUrl}/updateRegularById`
 }
