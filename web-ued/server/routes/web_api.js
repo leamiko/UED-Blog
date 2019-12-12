@@ -8,6 +8,7 @@ var web_user = require('../controller/web/user')
 var web_blog = require('../controller/web/blog')
 var web_bugCtrler = require('../controller/web/bug')
 var avatar = require('../controller/web/avatar')
+var regular = require('../controller/web/regular')
 
 /* GET home page. */
 router.get('/index', function (req, res, next) {
@@ -37,8 +38,8 @@ router.get('/wxLogin', (req, res) => {
 })
 
 /*个人信息*/
-router.post('/updateInfo', (req, res, next) => {
-  web_user.updateInfo(req, res)
+router.post('/editInfo', (req, res, next) => {
+  web_user.editInfo(req, res)
 })
 
 /* 文章API */
@@ -220,4 +221,14 @@ router.get('/getAvatarList', (req, res, next) => {
   avatar.getAvatarList(req, res, next)
 })
 
+
+// 获取正则表达式列表
+router.post('/getRegularList', function (req, res, next) {
+  //调用controller方法
+  regular.getRegularList(req, res)
+})
+// 新增正则
+router.post('/addRegular', (req, res, next) => {
+  regular.AddRegular(req, res, next)
+})
 module.exports = router
