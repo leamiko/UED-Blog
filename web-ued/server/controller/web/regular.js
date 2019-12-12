@@ -4,10 +4,22 @@ var Users = require('../../models/user');
 
 //正则表达式列表
 exports.getRegularList = async function (req, res, next) {
-    let filters = {}
-    if (req.body.filters.regularCategory) {
-        filters.regularCategory = req.body.filters.regularCategory
-    }
+    let reg = new RegExp(req.body.searchValue, 'i');
+
+    let filters = {
+        $or: [{
+            regularName: {
+                $regex: reg
+            },
+        }, {
+            regularDescribe: {
+                $regex: reg
+            }
+        }],
+        regularCategory: 0
+    };
+    filters.regularCategory = req.body.regularCategory
+
     console.log(filters);
     const count = await Regular.countDocuments(filters)
     Regular.find(
@@ -48,11 +60,19 @@ exports.AddRegular = async function (req, res, next) {
                 status: 0,
                 regularCategory: 1
             }
-            const created = await Regular.create([postData])
-            res.json({
-                status_code: 200,
-                message: 'success'
+            const foundthis = await Regular.findOne({
+                regular: postData.regular
             })
+            if (foundthis) {
+                throw new Error('该正则表达式已存在！')
+            } else {
+                const created = await Regular.create([postData])
+                res.json({
+                    status_code: 200,
+                    message: 'success'
+                })
+            }
+
         } else {
             throw new Error('用户信息错误！')
         }
