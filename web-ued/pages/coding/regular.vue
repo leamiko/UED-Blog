@@ -20,13 +20,16 @@
             <el-button type="primary" @click="onlineVerify()">在线验证</el-button>
             <el-button type="primary" @click="form1Visible=true">新增</el-button>
           </div>
-          <el-table :data="tableData" style="width: 100%" height="600">
+          <el-table :data="tableData" style="width: 100%" height="400">
             <el-table-column label="名称" prop="regularName"></el-table-column>
             <el-table-column label="描述" prop="regularDescribe">
               <template slot-scope="scope">
                 <el-popover trigger="hover" placement="top">
-                  <p>{{ scope.row.desc }}</p>
-                  <div slot="reference" class="name-wrapper">{{shortString(scope.row.desc) }}</div>
+                  <p>{{ scope.row.regularDescribe }}</p>
+                  <div
+                    slot="reference"
+                    class="name-wrapper"
+                  >{{shortString(scope.row.regularDescribe) }}</div>
                 </el-popover>
               </template>
             </el-table-column>
@@ -35,8 +38,8 @@
             <el-table-column label="状态" prop="status">
               <template slot-scope="scope">
                 <div slot="reference" class="name-wrapper">
-                  <el-tag size="small" v-if="scope.row.status==='1'">已审核</el-tag>
-                  <el-tag size="small" type="info" v-if="scope.row.status==='2'">未审核</el-tag>
+                  <el-tag size="small" v-if="scope.row.status===1">已审核</el-tag>
+                  <el-tag size="small" type="info" v-if="scope.row.status===0">未审核</el-tag>
                 </div>
               </template>
             </el-table-column>
@@ -207,7 +210,7 @@ export default {
       // 表格数据
       tableData: [],
       search: "",
-      regClass: null,
+      regClass: 0,
       formVisible: false,
       form1Visible: false,
       reg: ""
@@ -215,6 +218,13 @@ export default {
   },
   mounted() {
     this.getRegList();
+  },
+  watch: {
+    form1Visible(val) {
+      if (!val) {
+        this.getRegList();
+      }
+    }
   },
   methods: {
     // 列表
@@ -224,17 +234,15 @@ export default {
         searchValue: ""
       };
       const { data } = await this.$axios.post(
-        `${process.env.BASE_URL}/web_api/GetBugList`,
+        `${process.env.BASE_URL}/web_api/getRegularList`,
         params
       );
       if (data.status_code === 200) {
-        if (data.data.length > 0) {
-          this.tableData = data.data;
-        }
+        this.tableData = data.data;
       } else {
         this.$notify.error({
-          title: "错误",
-          message: data.data.message
+          title: "失败",
+          message: data.message
         });
       }
     },
@@ -265,6 +273,7 @@ export default {
     // 选择正则分类
     chooseType(item) {
       this.regClass = item.id;
+      this.getRegList();
     }
   }
 };
