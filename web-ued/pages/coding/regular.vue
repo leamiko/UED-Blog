@@ -17,7 +17,7 @@
         </div>
         <div class="right_articles">
           <div class="reg_btn">
-            <el-button type="primary">在线验证</el-button>
+            <el-button type="primary" @click="onlineVerify()">在线验证</el-button>
             <el-button type="primary">新增</el-button>
           </div>
           <el-table :data="tableData" style="width: 100%" height="600">
@@ -43,36 +43,12 @@
 
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button size="mini" @click="handleVerify(scope.$index, scope.row)">验证</el-button>
+                <el-button size="mini" @click="handleVerify(scope.$index, scope.row,'form')">验证</el-button>
               </template>
             </el-table-column>
           </el-table>
           <!-- no result -->
-          <el-dialog title :visible.sync="dialogFormVisible">
-            <el-form
-              :label-position="labelPosition"
-              :model="form"
-              label-width="formLabelWidth"
-              status-icon
-              :rules="rules"
-              ref="form"
-              class="demo-ruleForm"
-            >
-              <el-form-item label="正则表达式" prop="name">
-                <el-input v-model="form.name" autocomplete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="测试内容" prop="content">
-                <el-input v-model="form.content" autocomplete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="测试结果" prop="result">
-                <el-input v-model="form.result" autocomplete="off"></el-input>
-              </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="dialogFormVisible = false">取 消</el-button>
-              <el-button type="primary" @click="submitForm('form')">确 定</el-button>
-            </div>
-          </el-dialog>
+          <formula-verify ref="form" v-if="formVisible" :visible.sync="formVisible"></formula-verify>
         </div>
       </div>
     </div>
@@ -189,12 +165,14 @@
 <script>
 import * as custom from "@/assets/js/custom.config";
 import MyScrollbar from "@/components/scroller/Scrollbar";
+import FormulaVerify from "@/components/dialogs/FormulaVerify";
 import MyHeader from "@/components/header/Header";
 import Detail from "@/pages/writing/detail";
 import { log } from "util";
 export default {
   components: {
-    MyScrollbar
+    MyScrollbar,
+    FormulaVerify
   },
   data() {
     return {
@@ -226,87 +204,85 @@ export default {
           name: "王小虎",
           desc: "这里填写正则errrrrrrrrrrrrr的描述",
           class: "数字校验",
-          reg: "/^d+$/",
+          reg: "^[1][3][0-9]{9}$",
           status: "1"
         },
         {
           name: "王小虎",
           desc: "这里填写正则的描述",
           class: "数字校验",
-          reg: "/^d+$/",
+          reg: "^([1-9][0-9]?|100)$",
           status: "2"
         },
         {
           name: "王小虎",
           desc: "这里填写正则的描述",
           class: "数字校验",
-          reg: "/^d+$/",
+          reg: "^d+$",
           status: "1"
         },
         {
           name: "王小虎",
           desc: "这里填写正则的描述",
           class: "数字校验",
-          reg: "/^d+$/",
+          reg: "^d+$",
           status: "1"
         },
         {
           name: "王小虎",
           desc: "这里填写正则的描述",
           class: "数字校验",
-          reg: "/^d+$/",
+          reg: "^d+$",
           status: "1"
         },
         {
           name: "王小虎",
           desc: "这里填写正则的描述",
           class: "数字校验",
-          reg: "/^d+$/",
+          reg: "^d+$",
           status: "1"
         },
         {
           name: "王小虎",
           desc: "这里填写正则的描述",
           class: "数字校验",
-          reg: "/^d+$/",
+          reg: "^d+$",
           status: "1"
         },
         {
           name: "王小虎",
           desc: "这里填写正则的描述",
           class: "数字校验",
-          reg: "/^d+$/",
+          reg: "^d+$",
           status: "1"
         }
       ],
       search: "",
       regClass: null,
-      regShow: false,
-      dialogFormVisible: false,
-      form: {
-        name: "",
-        content: "",
-        result: ""
-      },
-      formLabelWidth: "120px",
-      labelPosition: "right",
-      rules: {
-        name: [
-          { required: true, message: "请输入正则表达式", trigger: "blur" }
-        ],
-        content: [
-          { required: true, message: "请输入测试内容", trigger: "blur" }
-        ]
-      }
+      formVisible: false
     };
   },
   mounted() {},
   methods: {
     // 操作列方法
-    handleVerify(index, row) {
-      console.log(index, row);
-      this.regShow = true;
-      this.dialogFormVisible = true;
+    handleVerify(index, row, refFrom) {
+      // if (this.$refs[refForm]) {
+      //   this.$refs[refForm].initForm();
+      // }
+      this.formVisible = true;
+      // this.form.name = row.reg;
+      // this.form.content = null;
+      // this.disabled = true;
+      // this.testResult = "";
+    },
+
+    // 在线验证
+    onlineVerify() {
+      this.formVisible = true;
+      // this.form.name = null;
+      // this.form.content = null;
+      // this.disabled = false;
+      // this.testResult = "";
     },
 
     // 截取正则描述前十个字符串
@@ -321,19 +297,6 @@ export default {
     // 选择正则分类
     chooseType(item) {
       this.regClass = item.id;
-    },
-    submitForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          alert("submit!");
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
-    },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
     }
   }
 };
