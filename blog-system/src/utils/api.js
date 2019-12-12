@@ -38,5 +38,6 @@ export default {
 
   // 正则表达式管理
   getRegularList: `${baseUrl}/getRegularList`,
-  getRegularDetail: `${baseUrl}/getRegularDetail`
+  getRegularDetail: `${baseUrl}/getRegularDetail`,
+  updateRegular: `${baseUrl}/updateRegularById`
 }
