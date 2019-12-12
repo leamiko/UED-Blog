@@ -71,7 +71,7 @@ export default {
     async addRegular() {
       if (!this.userInfo) {
         this.$notify.error({
-          title: "错误",
+          title: "失败",
           message: "未登录！"
         });
         return;

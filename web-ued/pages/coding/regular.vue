@@ -20,7 +20,7 @@
             <el-button type="primary" @click="onlineVerify()">在线验证</el-button>
             <el-button type="primary" @click="form1Visible=true">新增</el-button>
           </div>
-          <el-table :data="tableData" style="width: 100%" height="400">
+          <el-table :data="tableData" height="420" class="data_table">
             <el-table-column label="名称" prop="regularName"></el-table-column>
             <el-table-column label="描述" prop="regularDescribe">
               <template slot-scope="scope">
@@ -63,6 +63,11 @@
     </div>
   </my-scrollbar>
 </template>
+<style lang="scss" >
+.data_table th {
+  background-color: #eaf1ff !important;
+}
+</style>
 <style lang="scss" scoped>
 .flex {
   display: flex;
@@ -91,7 +96,7 @@
   width: 100%;
   background: rgba(255, 255, 255, 1);
   box-shadow: 0px 1px 5px 0px rgba(236, 236, 236, 0.53);
-  padding: 0 30px;
+  padding: 0 30px 30px;
   overflow: hidden;
 
   a {
@@ -103,6 +108,9 @@
     padding: 20px;
     float: right;
   }
+}
+.data_table {
+  width: 100%;
 }
 
 .right_detail {
