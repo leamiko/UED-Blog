@@ -12,13 +12,7 @@ exports.getRegularList = async function (req, res, next) {
     const count = await Regular.countDocuments(filters)
     Regular.find(
         filters,
-        null, {
-            skip: (req.body.paging.pageIndex - 1) * req.body.paging.pageSize,
-            limit: req.body.paging.pageSize,
-            sort: {
-                createAt: -1
-            }
-        },
+        null,
         (err, data) => {
             if (err) {
                 res.send({
