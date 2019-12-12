@@ -18,11 +18,11 @@
         <div class="right_articles">
           <div class="reg_btn">
             <el-button type="primary" @click="onlineVerify()">在线验证</el-button>
-            <el-button type="primary">新增</el-button>
+            <el-button type="primary" @click="form1Visible=true">新增</el-button>
           </div>
           <el-table :data="tableData" style="width: 100%" height="600">
-            <el-table-column label="名称" prop="name"></el-table-column>
-            <el-table-column label="描述" prop="desc">
+            <el-table-column label="名称" prop="regularName"></el-table-column>
+            <el-table-column label="描述" prop="regularDescribe">
               <template slot-scope="scope">
                 <el-popover trigger="hover" placement="top">
                   <p>{{ scope.row.desc }}</p>
@@ -30,8 +30,8 @@
                 </el-popover>
               </template>
             </el-table-column>
-            <el-table-column label="分类" prop="class"></el-table-column>
-            <el-table-column label="表达式" prop="reg"></el-table-column>
+            <el-table-column label="分类" prop="regularCategory"></el-table-column>
+            <el-table-column label="表达式" prop="regular"></el-table-column>
             <el-table-column label="状态" prop="status">
               <template slot-scope="scope">
                 <div slot="reference" class="name-wrapper">
@@ -40,19 +40,24 @@
                 </div>
               </template>
             </el-table-column>
-
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button size="mini" @click="handleVerify(scope.$index, scope.row,'form')">验证</el-button>
+                <el-button size="mini" @click="handleVerify(scope.$index, scope.row)">验证</el-button>
               </template>
             </el-table-column>
           </el-table>
           <!-- no result -->
-          <formula-verify ref="form" v-if="formVisible" :visible.sync="formVisible"></formula-verify>
+          <formula-verify
+            ref="form"
+            v-if="formVisible"
+            :visible.sync="formVisible"
+            :disabled="disabled"
+            :reg="reg"
+          ></formula-verify>
+          <add-formula ref="form1" v-if="form1Visible" :visible.sync="form1Visible"></add-formula>
         </div>
       </div>
     </div>
-    <!-- <formula-verify :isShow="regShow"></formula-verify> -->
   </my-scrollbar>
 </template>
 <style lang="scss" scoped>
@@ -166,16 +171,17 @@
 import * as custom from "@/assets/js/custom.config";
 import MyScrollbar from "@/components/scroller/Scrollbar";
 import FormulaVerify from "@/components/dialogs/FormulaVerify";
-import MyHeader from "@/components/header/Header";
-import Detail from "@/pages/writing/detail";
-import { log } from "util";
+import AddFormula from "@/components/dialogs/AddFormula";
+
 export default {
   components: {
     MyScrollbar,
-    FormulaVerify
+    FormulaVerify,
+    AddFormula
   },
   data() {
     return {
+      disabled: false,
       menuItems: [
         {
           id: 0,
@@ -199,90 +205,52 @@ export default {
         }
       ],
       // 表格数据
-      tableData: [
-        {
-          name: "王小虎",
-          desc: "这里填写正则errrrrrrrrrrrrr的描述",
-          class: "数字校验",
-          reg: "^[1][3][0-9]{9}$",
-          status: "1"
-        },
-        {
-          name: "王小虎",
-          desc: "这里填写正则的描述",
-          class: "数字校验",
-          reg: "^([1-9][0-9]?|100)$",
-          status: "2"
-        },
-        {
-          name: "王小虎",
-          desc: "这里填写正则的描述",
-          class: "数字校验",
-          reg: "^d+$",
-          status: "1"
-        },
-        {
-          name: "王小虎",
-          desc: "这里填写正则的描述",
-          class: "数字校验",
-          reg: "^d+$",
-          status: "1"
-        },
-        {
-          name: "王小虎",
-          desc: "这里填写正则的描述",
-          class: "数字校验",
-          reg: "^d+$",
-          status: "1"
-        },
-        {
-          name: "王小虎",
-          desc: "这里填写正则的描述",
-          class: "数字校验",
-          reg: "^d+$",
-          status: "1"
-        },
-        {
-          name: "王小虎",
-          desc: "这里填写正则的描述",
-          class: "数字校验",
-          reg: "^d+$",
-          status: "1"
-        },
-        {
-          name: "王小虎",
-          desc: "这里填写正则的描述",
-          class: "数字校验",
-          reg: "^d+$",
-          status: "1"
-        }
-      ],
+      tableData: [],
       search: "",
       regClass: null,
-      formVisible: false
+      formVisible: false,
+      form1Visible: false,
+      reg: ""
     };
   },
-  mounted() {},
+  mounted() {
+    this.getRegList();
+  },
   methods: {
-    // 操作列方法
-    handleVerify(index, row, refFrom) {
-      // if (this.$refs[refForm]) {
-      //   this.$refs[refForm].initForm();
-      // }
+    // 列表
+    async getRegList() {
+      let params = {
+        regularCategory: this.regClass,
+        searchValue: ""
+      };
+      const { data } = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/GetBugList`,
+        params
+      );
+      if (data.status_code === 200) {
+        if (data.data.length > 0) {
+          this.tableData = data.data;
+        }
+      } else {
+        this.$notify.error({
+          title: "错误",
+          message: data.data.message
+        });
+      }
+    },
+
+    // 操作列验证方法
+    handleVerify(index, row) {
+      this.reg = row.regular;
       this.formVisible = true;
-      // this.form.name = row.reg;
-      // this.form.content = null;
-      // this.disabled = true;
-      // this.testResult = "";
+      this.disabled = true;
     },
 
     // 在线验证
     onlineVerify() {
+      this.reg = "";
       this.formVisible = true;
-      // this.form.name = null;
-      // this.form.content = null;
-      // this.disabled = false;
-      // this.testResult = "";
+      this.disabled = false;
     },
 
     // 截取正则描述前十个字符串

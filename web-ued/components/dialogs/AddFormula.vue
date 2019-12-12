@@ -10,25 +10,27 @@
   >
     <el-form
       :label-position="labelPosition"
-      :model="form"
+      :model="form1"
       label-width="120px"
       status-icon
       :rules="rules"
-      ref="form"
+      ref="form1"
       class="demo-ruleForm"
       hide-required-asterisk
     >
-      <el-form-item label="正则表达式" prop="name">
-        <el-input v-model="form.name" autocomplete="off" :disabled="disabled"></el-input>
+      <el-form-item label="名称" prop="name">
+        <el-input v-model="form1.name" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="测试内容" prop="content">
-        <el-input v-model="form.content" autocomplete="off"></el-input>
+      <el-form-item label="描述" prop="desc">
+        <el-input v-model="form1.desc" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="测试结果" prop="result">{{testResult}}</el-form-item>
+      <el-form-item label="正则表达式" prop="reg">
+        <el-input v-model="form1.reg" autocomplete="off"></el-input>
+      </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="cancelModal">取 消</el-button>
-      <el-button type="primary" @click="submitForm('form')">测试匹配</el-button>
+      <el-button type="primary" @click="submitForm('form1')">测试匹配</el-button>
     </div>
   </el-dialog>
 </template>
@@ -38,31 +40,19 @@ export default {
     visible: {
       type: Boolean,
       default: false
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    reg: {
-      type: String,
-      default: false
     }
   },
   data() {
     return {
-      form: {
-        name: this.reg,
-        content: "",
-        result: ""
+      form1: {
+        name: "",
+        desc: "",
+        reg: ""
       },
       labelPosition: "left",
       rules: {
-        name: [
-          { required: true, message: "请输入正则表达式", trigger: "blur" }
-        ],
-        content: [
-          { required: true, message: "请输入测试内容", trigger: "blur" }
-        ]
+        name: [{ required: true, message: "请输入名称", trigger: "blur" }],
+        reg: [{ required: true, message: "请输入正则表达式", trigger: "blur" }]
       },
       testResult: ""
     };
@@ -78,11 +68,6 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          if (new RegExp(this.form.name).test(this.form.content)) {
-            this.testResult = "验证成功";
-          } else {
-            this.testResult = "验证失败";
-          }
         } else {
           return false;
         }
