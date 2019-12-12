@@ -1,31 +1,34 @@
 var express = require('express')
 const router = express.Router()
-const { authorizationMiddleware } = require('../middleware/authorization.js')
+const {
+  authorizationMiddleware
+} = require('../middleware/authorization.js')
 
 var user = require('../controller/system/user')
 var dictionary = require('../controller/system/dictionary')
 var blog = require('../controller/system/blog')
 var bugCtrler = require('../controller/system/bug')
 var avatar = require('../controller/system/avatar')
+var regular = require('../controller/system/regular')
 
 /* GET home page. */
-router.get('/index', function(req, res, next) {
+router.get('/index', function (req, res, next) {
   res.json({
     name: 'hello world!'
   })
 })
 
 /* GET users listing. */
-router.post('/login', function(req, res, next) {
+router.post('/login', function (req, res, next) {
   user.login(req, res)
 })
-router.get('/logOut', function(req, res, next) {
+router.get('/logOut', function (req, res, next) {
   user.logOut(req, res)
 })
-router.get('/superAdmin', function(req, res, next) {
+router.get('/superAdmin', function (req, res, next) {
   user.superAdmin(req, res)
 })
-router.get('/getUserList', function(req, res, next) {
+router.get('/getUserList', function (req, res, next) {
   user.getUserList(req, res)
 })
 
@@ -87,36 +90,36 @@ router.get(
  * 文章管理
  */
 //新增删除blog
-router.post('/addEditBlog', authorizationMiddleware, function(req, res, next) {
+router.post('/addEditBlog', authorizationMiddleware, function (req, res, next) {
   //调用controller方法
   blog.addEditBlog(req, res)
 })
 //获取blog详情
-router.get('/getBlog', authorizationMiddleware, function(req, res, next) {
+router.get('/getBlog', authorizationMiddleware, function (req, res, next) {
   blog.getBlog(req, res)
 })
 //blog列表
-router.post('/getBlogList', authorizationMiddleware, function(req, res, next) {
+router.post('/getBlogList', authorizationMiddleware, function (req, res, next) {
   //调用controller方法
   blog.getBlogList(req, res)
 })
 //blog删除
-router.get('/deleteBlog', authorizationMiddleware, function(req, res, next) {
+router.get('/deleteBlog', authorizationMiddleware, function (req, res, next) {
   //调用controller方法
   blog.deleteBlog(req, res)
 })
 //blog点赞
-router.get('/likeBlog', authorizationMiddleware, function(req, res, next) {
+router.get('/likeBlog', authorizationMiddleware, function (req, res, next) {
   //调用controller方法
   blog.likeBlog(req, res)
 })
 //blog评论
-router.post('/commentBlog', authorizationMiddleware, function(req, res, next) {
+router.post('/commentBlog', authorizationMiddleware, function (req, res, next) {
   //调用controller方法
   blog.commentBlog(req, res)
 })
 //获取blog评论
-router.get('/getBlogComment', authorizationMiddleware, function(
+router.get('/getBlogComment', authorizationMiddleware, function (
   req,
   res,
   next
@@ -129,7 +132,7 @@ router.get('/getBlogComment', authorizationMiddleware, function(
  * 用户管理
  */
 // 注册账号
-router.post('/registerAdmin', authorizationMiddleware, function(
+router.post('/registerAdmin', authorizationMiddleware, function (
   req,
   res,
   next
@@ -137,11 +140,11 @@ router.post('/registerAdmin', authorizationMiddleware, function(
   user.register(req, res)
 })
 //账号列表
-router.post('/adminList', authorizationMiddleware, function(req, res, next) {
+router.post('/adminList', authorizationMiddleware, function (req, res, next) {
   user.adminList(req, res)
 })
 //删除账号
-router.get('/deleteAdmin', authorizationMiddleware, function(req, res, next) {
+router.get('/deleteAdmin', authorizationMiddleware, function (req, res, next) {
   user.deleteAdmin(req, res)
 })
 
@@ -186,5 +189,27 @@ router.get('/getAvatarList', (req, res, next) => {
 router.get('/deleteAvatar', (req, res, next) => {
   avatar.deleteAvatar(req, res, next)
 })
+
+/**
+ * 正则表达式管理
+ */
+// 正则表达式列表
+router.post('/getRegularList', (req, res, next) => {
+  regular.getRegularList(req, res, next)
+})
+
+// 获取正则表达式详情
+router.get('/getRegularDetail', function (req, res, next) {
+  regular.getRegularDetail(req, res)
+})
+
+// 更新正则表达式详情
+router.post(
+  '/updateRegularById',
+  authorizationMiddleware,
+  async (req, res, next) => {
+    regular.updateRegularById(req, res, next)
+  }
+)
 
 module.exports = router
