@@ -212,4 +212,9 @@ router.post(
   }
 )
 
+// 删除正则
+router.get('/deleteRegularById', (req, res, next) => {
+  regular.deleteRegularById(req, res, next)
+})
+
 module.exports = router
