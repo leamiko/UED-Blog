@@ -143,7 +143,7 @@ export default {
         title: this.input,
         content: this.content,
         tags: [],
-        bugStatus: true,
+        bugStatus: false,
         bugSolution: null,
         userId: this.userInfo._id,
         anonymous: this.isAnonymous
