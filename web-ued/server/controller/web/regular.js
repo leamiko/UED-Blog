@@ -58,7 +58,7 @@ exports.AddRegular = async function (req, res, next) {
                 regularDescribe: req.body.regularDescribe,
                 regular: req.body.regular,
                 status: 0,
-                regularCategory: 1
+                regularCategory: 0
             }
             const foundthis = await Regular.findOne({
                 regular: postData.regular
