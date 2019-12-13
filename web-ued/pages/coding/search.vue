@@ -1,4 +1,4 @@
-<template>
+<template> 
   <div class="cus-full-screen hidden bg-white">
     <my-scrollbar hasHead hasFoot :headActive="'打码'" :isFootMenu="false" :mainStyle="{'background':'white'}" :headStyle="styleConf">
       <div slot="head_custom">
