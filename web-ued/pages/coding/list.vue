@@ -109,7 +109,7 @@ export default {
       ],
       solveState: null, // 解决状态
       noData: true, // 无数据
-      listShow: true, // 是否展示列表数据，解决状态搜索出无数据时不展示
+      listShow: false, // 是否展示列表数据，解决状态搜索出无数据时不展示
       pageIndex: 1,
       bugList: [], // bug
       count: '', // bug总条数
