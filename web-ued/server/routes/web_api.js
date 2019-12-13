@@ -38,8 +38,8 @@ router.get('/wxLogin', (req, res) => {
 })
 
 /*个人信息*/
-router.post('/editInfo', (req, res, next) => {
-  web_user.editInfo(req, res)
+router.post('/updateInfo', (req, res, next) => {
+  web_user.updateInfo(req, res)
 })
 
 /* 文章API */
