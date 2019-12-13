@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 var Regular = require('../../models/regularModel');
 var Users = require('../../models/user');
-
 //正则表达式列表
 exports.getRegularList = async function (req, res, next) {
     let reg1 = new RegExp(req.body.regularName, 'i');
@@ -33,13 +32,7 @@ exports.getRegularList = async function (req, res, next) {
     const count = await Regular.countDocuments(filters)
     Regular.find(
         filters,
-        null, {
-            skip: (req.body.pageIndex - 1) * req.body.pageSize,
-            limit: req.body.pageSize,
-            sort: {
-                createAt: -1
-            }
-        },
+        null,
         (err, data) => {
             if (err) {
                 res.send({

@@ -89,6 +89,14 @@ const router = new Router({
           meta: {
             title: '头像管理'
           }
+        },
+        {
+          path: '/regular',
+          name: 'regular',
+          component: () => import('./views/Regular-management/Regular.vue'),
+          meta: {
+            title: '正则管理'
+          }
         }
       ]
     }
