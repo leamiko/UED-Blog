@@ -4,25 +4,42 @@ var Users = require('../../models/user');
 
 //正则表达式列表
 exports.getRegularList = async function (req, res, next) {
-    let reg = new RegExp(req.body.searchValue, 'i');
-    let filters = {
-        $or: [{
-            regularName: {
-                $regex: reg
-            },
-        }, {
-            regularDescribe: {
-                $regex: reg
+    let reg1 = new RegExp(req.body.regularName, 'i');
+    let reg2 = new RegExp(req.body.regularDescribe, 'i');
+    let reg3 = new RegExp(req.body.regular, 'i');
+
+    let filters = {};
+    if (req.body.filters) {
+        if (req.body.filters.regularName) {
+            filters.regularName = new RegExp(req.body.filters.regularName)
+        }
+        if (req.body.filters.regularDescribe) {
+            filters.regularDescribe = {
+                $regex: req.body.filters.regularDescribe
             }
-        }],
-        regularCategory: 0
-    };
-    filters.regularCategory = req.body.regularCategory;
-    console.log(filters);
+        }
+        if (req.body.filters.regular) {
+            filters.regular = {
+                $regex: req.body.filters.regular
+            }
+        }
+        if (req.body.filters.status) {
+            filters.status = req.body.filters.status
+        }
+        if (req.body.filters.regularCategory) {
+            filters.regularCategory = req.body.filters.regularCategory
+        }
+    }
     const count = await Regular.countDocuments(filters)
     Regular.find(
         filters,
-        null,
+        null, {
+            skip: (req.body.pageIndex - 1) * req.body.pageSize,
+            limit: req.body.pageSize,
+            sort: {
+                createAt: -1
+            }
+        },
         (err, data) => {
             if (err) {
                 res.send({
