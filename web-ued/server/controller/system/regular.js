@@ -90,3 +90,21 @@ exports.updateRegularById = function (req, res, next) {
         }
     })
 }
+
+// 正则删除
+exports.deleteRegularById = function (req, res, next) {
+    var id = req.query.regularId
+    Regular.findByIdAndDelete(id, function (err, result) {
+        if (err) {
+            res.send({
+                status_code: 201,
+                message: err
+            })
+        } else {
+            res.json({
+                status_code: 200,
+                message: 'success',
+            })
+        }
+    })
+}
