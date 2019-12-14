@@ -141,7 +141,14 @@
               <div class="current_edit inline">
                 <!-- 一级评论 -->
                 <div class="first_comment_box">
-                  <div class="comment_unit_name">{{firstItem.commenterName}}</div>
+                  <div class="comment_unit_name comment_unit_name_adopt">
+                    {{firstItem.commenterName}}
+                    <img
+                      src="@/assets/img/image/best_comment.svg"
+                      alt
+                      v-if="firstItem.adopt"
+                    />
+                  </div>
                   <div class="comment_unit_content">{{firstItem.content}}</div>
                   <div class="comment_unit_bottom">
                     <div class="comment_unit_bottom_left">
@@ -182,6 +189,17 @@
                         v-if="userInfo._id === firstItem.commenterId"
                         @click="deleteFirstCom(firstItem._id)"
                       >删除</div>
+                      <!-- 删除 -->
+                      <div
+                        class="comment_unit_bottom_btn margin_left_15 first_comment_delete_btn"
+                        v-if="userInfo._id === detailInfo.userId && !firstItem.adopt && !haveComAdopt"
+                        @click="adoptCom(firstItem._id)"
+                      >采纳</div>
+                      <div
+                        class="comment_unit_bottom_btn margin_left_15 first_comment_delete_btn"
+                        v-if="userInfo._id === detailInfo.userId  && firstItem.adopt"
+                        @click="adoptCom(firstItem._id)"
+                      >取消采纳</div>
                     </div>
                     <div class="comment_unit_bottom_right">{{firstItem.createAt | formatDateDay}}</div>
                   </div>
@@ -400,7 +418,8 @@ export default {
       firstComContent: "", // 一级评论内容
       haveFirstComContent: false, // 监听一级评论内容
       userInfo: "", // 用户信息
-      commentList: [] // 评论列表
+      commentList: [], // 评论列表
+      haveComAdopt: false // 是否有评论被采纳
     };
   },
   mounted() {
@@ -719,7 +738,15 @@ export default {
             });
           });
         });
-        console.log(this.commentList);
+        for (var value of this.commentList) {
+          console.log(value);
+          if (value.adopt) {
+            this.haveComAdopt = true;
+            return;
+          } else {
+            this.haveComAdopt = false;
+          }
+        }
       } else {
         this.$notify.error({
           title: "错误",
@@ -754,6 +781,21 @@ export default {
       };
       const res = await this.$axios.post(
         `${process.env.BASE_URL}/web_api/deleteBugComment`,
+        params
+      );
+      if (res.data.status_code === 200) {
+        this.getCommentList();
+      }
+    },
+    // 采纳评论
+    async adoptCom(comId) {
+      const params = {
+        userId: this.userInfo._id,
+        bugId: this.Id,
+        commentId: comId
+      };
+      const res = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/adoptComment`,
         params
       );
       if (res.data.status_code === 200) {
@@ -1068,6 +1110,15 @@ export default {
   > span {
     font-weight: 500;
     color: rgba(145, 153, 161, 1);
+  }
+}
+.comment_unit_name_adopt {
+  display: flex;
+  justify-content: space-between;
+  img {
+    position: relative;
+    top: -17px;
+    left: 35px;
   }
 }
 .comment_unit_content {
