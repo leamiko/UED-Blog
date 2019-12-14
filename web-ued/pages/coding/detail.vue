@@ -711,6 +711,98 @@ export default {
         }
       });
     },
+    // 二级评论点赞&取消点赞
+    secondComLike(secondItem) {
+      const bugReplyLikeApi = secondItem.secondComIsLike
+        ? "cancelBugReplyLike"
+        : "bugReplyLike";
+      this.commentList.forEach(comItem => {
+        comItem.replies.forEach(repItem => {
+          if (repItem._id === secondItem._id) {
+            const res = this.$axios.get(
+              `${process.env.BASE_URL}/web_api/` +
+                bugReplyLikeApi +
+                `?bugId=` +
+                this.Id +
+                `&replyId=` +
+                repItem._id +
+                `&userId=` +
+                this.userInfo._id
+            );
+            secondItem.secondComIsLike ? repItem.likeNum-- : repItem.likeNum++;
+            repItem.secondComIsLike = !repItem.secondComIsLike;
+          }
+        });
+      });
+    },
+    // 一级评论回复按钮
+    replyFirstComBtn(comId) {
+      this.commentList.forEach(item => {
+        if (item._id === comId) {
+          item.isShowReplyFirstCom = !item.isShowReplyFirstCom;
+        }
+      });
+    },
+    // 二级评论回复按钮
+    replySecondComBtn(comId) {
+      this.commentList.forEach(item => {
+        item.replies.forEach(ele => {
+          if (ele._id === comId) {
+            ele.isShowReplySecondCom = !ele.isShowReplySecondCom;
+          }
+        });
+      });
+    },
+    // 删除一级评论
+    async deleteFirstCom(comId) {
+      const params = {
+        commentId: comId,
+        bugId: this.Id,
+        userId: this.userInfo._id
+      };
+      const res = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/deleteBugComment`,
+        params
+      );
+      if (res.data.status_code === 200) {
+        this.getCommentList();
+      }
+    },
+    // 删除二级评论
+    async deleteSecondCom(comId) {
+      const params = {
+        replyId: comId
+      };
+      const res = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/deleteReply`,
+        params
+      );
+      if (res.data.status_code === 200) {
+        this.getCommentList();
+      }
+    },
+    // 采纳&取消采纳评论
+    async adoptCom(comId) {
+      const params = {
+        userId: this.userInfo._id,
+        bugId: this.Id,
+        commentId: comId
+      };
+      const res = await this.$axios.post(
+        `${process.env.BASE_URL}/web_api/adoptComment`,
+        params
+      );
+      if (res.data.status_code === 200) {
+        this.getCommentList();
+      }
+    },
+    // 查看更多回复
+    showMoreReplies(firstItem) {
+      firstItem.isShowMoreReplies = !firstItem.isShowMoreReplies;
+      firstItem.showMoreRepliesName = firstItem.isShowMoreReplies
+        ? "收起更多回复"
+        : "查看更多回复";
+    },
     // 获取评论
     async getCommentList() {
       const res = await this.$axios.get(
@@ -752,98 +844,6 @@ export default {
           title: "错误",
           message: res.data.message
         });
-      }
-    },
-    // 一级评论回复按钮
-    replyFirstComBtn(comId) {
-      this.commentList.forEach(item => {
-        if (item._id === comId) {
-          item.isShowReplyFirstCom = !item.isShowReplyFirstCom;
-        }
-      });
-    },
-    // 二级评论回复按钮
-    replySecondComBtn(comId) {
-      this.commentList.forEach(item => {
-        item.replies.forEach(ele => {
-          if (ele._id === comId) {
-            ele.isShowReplySecondCom = !ele.isShowReplySecondCom;
-          }
-        });
-      });
-    },
-    // 删除一级评论
-    async deleteFirstCom(comId) {
-      const params = {
-        commentId: comId,
-        bugId: this.Id,
-        userId: this.userInfo._id
-      };
-      const res = await this.$axios.post(
-        `${process.env.BASE_URL}/web_api/deleteBugComment`,
-        params
-      );
-      if (res.data.status_code === 200) {
-        this.getCommentList();
-      }
-    },
-    // 采纳评论
-    async adoptCom(comId) {
-      const params = {
-        userId: this.userInfo._id,
-        bugId: this.Id,
-        commentId: comId
-      };
-      const res = await this.$axios.post(
-        `${process.env.BASE_URL}/web_api/adoptComment`,
-        params
-      );
-      if (res.data.status_code === 200) {
-        this.getCommentList();
-      }
-    },
-    // 查看更多回复
-    showMoreReplies(firstItem) {
-      firstItem.isShowMoreReplies = !firstItem.isShowMoreReplies;
-      firstItem.showMoreRepliesName = firstItem.isShowMoreReplies
-        ? "收起更多回复"
-        : "查看更多回复";
-    },
-    // 二级评论点赞&取消点赞
-    secondComLike(secondItem) {
-      const bugReplyLikeApi = secondItem.secondComIsLike
-        ? "cancelBugReplyLike"
-        : "bugReplyLike";
-      this.commentList.forEach(comItem => {
-        comItem.replies.forEach(repItem => {
-          if (repItem._id === secondItem._id) {
-            const res = this.$axios.get(
-              `${process.env.BASE_URL}/web_api/` +
-                bugReplyLikeApi +
-                `?bugId=` +
-                this.Id +
-                `&replyId=` +
-                repItem._id +
-                `&userId=` +
-                this.userInfo._id
-            );
-            secondItem.secondComIsLike ? repItem.likeNum-- : repItem.likeNum++;
-            repItem.secondComIsLike = !repItem.secondComIsLike;
-          }
-        });
-      });
-    },
-    // 删除二级评论
-    async deleteSecondCom(comId) {
-      const params = {
-        replyId: comId
-      };
-      const res = await this.$axios.post(
-        `${process.env.BASE_URL}/web_api/deleteReply`,
-        params
-      );
-      if (res.data.status_code === 200) {
-        this.getCommentList();
       }
     }
   }
