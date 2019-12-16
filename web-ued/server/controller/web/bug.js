@@ -534,6 +534,7 @@ exports.getBugComment = async function (req, res, next) {
             likeNum: 1,
             content: 1,
             anonymous: 1,
+            createAt: 1,
             authorInfo: {
               avatar: {
                 $cond: [{
@@ -643,7 +644,7 @@ exports.getBugComment = async function (req, res, next) {
           copyfel.authorInfo = {}
         } else {
           copyfel.authorInfo = {
-            nickName: copyfel.authorInfo[0],
+            nickName: copyfel.authorInfo[0].nickName[0],
             account: copyfel.authorInfo[0].account[0],
             avatar: copyfel.authorInfo[0].avatar[0]
           }
