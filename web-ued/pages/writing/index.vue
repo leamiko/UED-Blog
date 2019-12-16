@@ -309,9 +309,11 @@
           detailId: e._id,
           imgUrl: e.imgUrl
         };
-        this.$router.push({
-          path: "writing/detail?detailParams=" + JSON.stringify(detailParams)
-        });
+        console.log(window.location)
+        window.open(window.location.href + '/detail?detailParams=' + JSON.stringify(detailParams))
+        // this.$router.push({
+        //   path: "writing/detail?detailParams=" + JSON.stringify(detailParams)
+        // });
       },
       // 选择文章类型
       chooseType(item) {
