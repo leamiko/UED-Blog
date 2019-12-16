@@ -10,13 +10,13 @@ var RegularSchema = new Schema({
         type: String // 正则描述
     },
     regularCategory: {
-        type: Number // 正则的分类  
+        type: String // 正则的分类  
     },
     regular: {
         type: String // 正则表达式子
     },
     status: {
-        type: Number // 正则表达式状态
+        type: String // 正则表达式状态
     }
 }, {
     timestamps: {
