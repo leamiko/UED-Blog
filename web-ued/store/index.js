@@ -42,8 +42,9 @@ export const state = () => ({
   isLogin: true,
   modalVisible: false,
   qrcodeBindBox: false,
-  wxUnionId: null, 
+  wxUnionId: null,
   flag:null,
+  redirect: null
 })
 
 export const mutations = {
@@ -65,6 +66,9 @@ export const mutations = {
   },
   flag(state, data){
     state.flag = data
+  },
+  ChangeRedirect(state, data) {
+    state.redirect = data
   }
 }
 

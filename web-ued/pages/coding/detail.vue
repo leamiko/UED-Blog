@@ -145,7 +145,7 @@
                   <div class="comment_unit_name comment_unit_name_adopt">
                     {{firstItem.commenterName}}
                     <img
-                      src="@/assets/img/image/best_comment.svg"
+                      src="@/assets/img/image/comment_adopt.png"
                       alt
                       v-if="firstItem.adopt"
                     />
