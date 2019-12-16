@@ -34,7 +34,9 @@
               </template>
             </el-table-column>
             <el-table-column label="分类" prop="regularCategory">
-              {{regularCategory|category}}
+              <template slot-scope="scope">
+                <div slot="reference" class="name-wrapper">{{scope.row.regularCategory|category}}</div>
+              </template>
             </el-table-column>
             <el-table-column label="表达式" prop="regular"></el-table-column>
             <el-table-column label="状态" prop="status">
@@ -197,23 +199,23 @@ export default {
       disabled: false,
       menuItems: [
         {
-          id: '0',
+          id: "0",
           name: "全部"
         },
         {
-          id: '1',
+          id: "1",
           name: "数字校验"
         },
         {
-          id: '2',
+          id: "2",
           name: "字符校验"
         },
         {
-          id: '3',
+          id: "3",
           name: "个人信息"
         },
         {
-          id: '4',
+          id: "4",
           name: "公式验证"
         }
       ],
@@ -226,7 +228,7 @@ export default {
       reg: ""
     };
   },
-   filters: {
+  filters: {
     category: function(value) {
       if (value === "1") {
         return "数字校验";
