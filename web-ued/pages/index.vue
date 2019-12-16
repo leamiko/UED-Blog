@@ -31,7 +31,7 @@
             v-for="item in list"
             :key="item.id"
             class="cus-flex"
-            @click="goDetail(item)"
+            @click="goDetail(item.blog)"
           >
             <img
               :src="item.blog.midImgUrl"
@@ -42,11 +42,12 @@
               <span class="desc">{{item.blog.info}}</span>
               <div class="cus-flex cus-align-center">
                 <el-avatar
+                  v-show="$store.state.flag"
                   size="small"
                   :src="item.userInfo.avatar"
                   class="avatar"
                 ></el-avatar>
-                <span class="text_color_time">{{item.userInfo.nickName}} · {{item.userInfo.updateAt | datetimeFormat}}</span>&emsp;&emsp;
+                <span class="text_color_time" ><span v-show="$store.state.flag">{{item.userInfo.nickName}} ·</span> {{item.userInfo.updateAt | datetimeFormat}}</span>&emsp;&emsp;
                 <span class="text_color">{{ item.blog.blogType == 1 ? "技术" : item.blog.blogType == 2 ? "交互" :item.blog.blogType == 3 ? "设计" :item.blog.blogType == 4 ? "管理" :"其它" }}</span>&emsp;&emsp;
                 <span class="text_color"><img src="@/assets/img/icon/eyes.svg">{{item.blog.viewNum}}</span>&emsp;&emsp;
                 <span class="text_color"><img src="@/assets/img/icon/like.svg">{{item.blog.likeNum}}</span>
@@ -55,13 +56,14 @@
           </li>
         </ul>
         <div class="center">
-          <el-button
+          <router-link :to="custom.menu[1].redirectUrl">  
+            <el-button
             round
             class="btn_style"
           >
-            <router-link :to="custom.menu[1].redirectUrl">查看更多
-            </router-link>
+          查看更多{{$store.state.flag}}
           </el-button>
+          </router-link>
         </div>
       </div>
     </div>
@@ -122,6 +124,7 @@ export default {
   methods: {
     //跳转明细页
     goDetail (e) {
+      console.log(e);
       var detailParams = {
         detailId: e._id,
         imgUrl: e.imgUrl
@@ -213,9 +216,6 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   word-break: keep-all;
-  &:hover {
-    cursor: pointer;
-  }
 }
 .avatar {
   margin-right: 10px;
@@ -236,6 +236,11 @@ export default {
 .center {
   text-align: center;
 }
+.cus-flex{
+    &:hover {
+    cursor: pointer;
+  }
+}
 .btn_style {
   width: 700px;
   height: 54px;
@@ -243,6 +248,7 @@ export default {
   background: rgba(238, 238, 239, 1);
   font-size: 14px;
   margin-bottom: 68px;
+  border: 0; 
   a {
     color: rgba(52, 72, 94, 1);
     text-decoration-line: none;
