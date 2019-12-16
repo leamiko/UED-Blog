@@ -51,7 +51,8 @@
                 <div class="content_mark inline">
                   <div class="presenter flt">
                     <div class="presenter_head flt inline">
-                      <img src="@/assets/img/image/code_presenter.png">
+                      <img v-if="!x.anonymous && x.authorInfo.avatar!==''" src="x.authorInfo.avatar">
+                      <img v-else-if="x.anonymous || x.authorInfo.avatar===''" src="@/assets/img/icon/anonymous_icon.jpg">
                     </div>
                     <span class="presenter_info inline">{{x.author}} · {{x.updateAt | formatDateDay}}</span>
                     <div class="mark_tags inline">

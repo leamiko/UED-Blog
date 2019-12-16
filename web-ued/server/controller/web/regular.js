@@ -5,7 +5,6 @@ var Users = require('../../models/user');
 //正则表达式列表
 exports.getRegularList = async function (req, res, next) {
     let reg = new RegExp(req.body.searchValue, 'i');
-
     let filters = {
         $or: [{
             regularName: {
@@ -16,10 +15,10 @@ exports.getRegularList = async function (req, res, next) {
                 $regex: reg
             }
         }],
-        regularCategory: 0
     };
-    filters.regularCategory = req.body.regularCategory
-
+    if (req.body.regularCategory !== '0') {
+        filters.regularCategory = req.body.regularCategory
+    }
     console.log(filters);
     const count = await Regular.countDocuments(filters)
     Regular.find(
@@ -57,8 +56,8 @@ exports.AddRegular = async function (req, res, next) {
                 regularName: req.body.regularName,
                 regularDescribe: req.body.regularDescribe,
                 regular: req.body.regular,
-                status: 0,
-                regularCategory: 1
+                status: '0',
+                regularCategory: '0'
             }
             const foundthis = await Regular.findOne({
                 regular: postData.regular
