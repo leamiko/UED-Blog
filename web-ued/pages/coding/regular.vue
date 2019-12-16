@@ -38,8 +38,8 @@
             <el-table-column label="状态" prop="status">
               <template slot-scope="scope">
                 <div slot="reference" class="name-wrapper">
-                  <el-tag size="small" v-if="scope.row.status===1">已审核</el-tag>
-                  <el-tag size="small" type="info" v-if="scope.row.status===0">未审核</el-tag>
+                  <el-tag size="small" v-if="scope.row.status==='1'">已审核</el-tag>
+                  <el-tag size="small" type="info" v-if="scope.row.status==='0'">未审核</el-tag>
                 </div>
               </template>
             </el-table-column>
@@ -195,23 +195,23 @@ export default {
       disabled: false,
       menuItems: [
         {
-          id: 0,
+          id: '0',
           name: "全部"
         },
         {
-          id: 1,
+          id: '1',
           name: "数字校验"
         },
         {
-          id: 2,
+          id: '2',
           name: "字符校验"
         },
         {
-          id: 3,
+          id: '3',
           name: "个人信息"
         },
         {
-          id: 4,
+          id: '4',
           name: "公式验证"
         }
       ],

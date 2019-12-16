@@ -97,6 +97,11 @@ const router = new Router({
           meta: {
             title: '正则管理'
           }
+        },
+        {
+          path: '/regular/regularShow',
+          name: 'regularShow',
+          component: () => import('./views/Regular-management/RegularShow.vue'),
         }
       ]
     }

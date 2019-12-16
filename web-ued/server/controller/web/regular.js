@@ -15,7 +15,7 @@ exports.getRegularList = async function (req, res, next) {
                 $regex: reg
             }
         }],
-        regularCategory: 0
+        regularCategory: '0'
     };
     filters.regularCategory = req.body.regularCategory
     console.log(filters);
