@@ -222,7 +222,7 @@ export default {
       // 表格数据
       tableData: [],
       search: "",
-      regClass: 0,
+      regClass: "0",
       formVisible: false,
       form1Visible: false,
       reg: ""
