@@ -1,24 +1,25 @@
 var mongoose = require('mongoose');
 var Regular = require('../../models/regularModel');
 var Users = require('../../models/user');
-
 //正则表达式列表
 exports.getRegularList = async function (req, res, next) {
-    let reg = new RegExp(req.body.searchValue, 'i');
-    let filters = {
-        $or: [{
-            regularName: {
-                $regex: reg
-            },
-        }, {
-            regularDescribe: {
-                $regex: reg
+    let filters = {};
+    if (req.body.filters) {
+        if (req.body.filters.regularName) {
+            filters.regularName = new RegExp(req.body.filters.regularName)
+        }
+        if (req.body.filters.regularDescribe) {
+            filters.regularDescribe = {
+                $regex: req.body.filters.regularDescribe
             }
-        }],
-        regularCategory: 0
-    };
-    filters.regularCategory = req.body.regularCategory;
-    console.log(filters);
+        }
+        if (req.body.filters.status) {
+            filters.status = req.body.filters.status
+        }
+        if (req.body.filters.regularCategory) {
+            filters.regularCategory = req.body.filters.regularCategory
+        }
+    }
     const count = await Regular.countDocuments(filters)
     Regular.find(
         filters,
@@ -43,6 +44,7 @@ exports.getRegularList = async function (req, res, next) {
 }
 
 // 查看正则表达式详情
+
 exports.getRegularDetail = function (req, res, next) {
     let rid = req.query.regularId
     console.log(rid);

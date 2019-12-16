@@ -9,7 +9,7 @@ module.exports = {
     menu: [
       { label: '首页', redirectUrl: '/' },
       { label: '写字', redirectUrl: '/writing' },
-      { label: '打码', redirectUrl: '/coding' },
+      { label: '打码', redirectUrl: '/coding', isAuth: true },
       { label: '撸图', redirectUrl: '/pointing' },
       { label: '学习', redirectUrl: '/' }
     ],
