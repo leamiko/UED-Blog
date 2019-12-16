@@ -15,9 +15,10 @@ exports.getRegularList = async function (req, res, next) {
                 $regex: reg
             }
         }],
-        regularCategory: '0'
     };
-    filters.regularCategory = req.body.regularCategory
+    if (req.body.regularCategory !== '0') {
+        filters.regularCategory = req.body.regularCategory
+    }
     console.log(filters);
     const count = await Regular.countDocuments(filters)
     Regular.find(
