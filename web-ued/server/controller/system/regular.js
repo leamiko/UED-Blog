@@ -3,10 +3,6 @@ var Regular = require('../../models/regularModel');
 var Users = require('../../models/user');
 //正则表达式列表
 exports.getRegularList = async function (req, res, next) {
-    let reg1 = new RegExp(req.body.regularName, 'i');
-    let reg2 = new RegExp(req.body.regularDescribe, 'i');
-    let reg3 = new RegExp(req.body.regular, 'i');
-
     let filters = {};
     if (req.body.filters) {
         if (req.body.filters.regularName) {
@@ -15,11 +11,6 @@ exports.getRegularList = async function (req, res, next) {
         if (req.body.filters.regularDescribe) {
             filters.regularDescribe = {
                 $regex: req.body.filters.regularDescribe
-            }
-        }
-        if (req.body.filters.regular) {
-            filters.regular = {
-                $regex: req.body.filters.regular
             }
         }
         if (req.body.filters.status) {
