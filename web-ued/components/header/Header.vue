@@ -13,8 +13,8 @@
           <li v-for="(item, index) in custom.menu"
               :key="index"
               :class="{'active': activeLabel === item.label}">
-            <router-link :to="item.redirectUrl"
-                         class="font-size-18">{{ item.label }}</router-link>
+              <span @click="pathRoute(item)" class="font-size-18">{{ item.label }}</span>
+            <!-- <router-link :to="item.redirectUrl" class="font-size-18">{{ item.label }}</router-link> -->
           </li>
         </ul>
       </div>
@@ -179,6 +179,12 @@ export default {
       );
       localStorage.removeItem("user");
       this.$store.commit("flag", null);
+      // 判断是否在打码处
+      if (this.$route.path.indexOf('/coding') >= 0) {
+        this.$router.push({
+          path: '/'
+        });
+      }
     },
     //判断是否登录
     async isLogin () {
@@ -227,6 +233,17 @@ export default {
         }
       }
       return false;
+    },
+    // 控制路由跳转
+    pathRoute(val) {
+      if (val.isAuth && !this.$store.state.flag) {
+        this.$store.commit("ChangeRedirect", val.redirectUrl);
+        this.modalLogin();
+        return;
+      }
+      this.$router.push({
+        path: val.redirectUrl
+      })
     }
   }
 };
