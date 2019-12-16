@@ -10,7 +10,7 @@
             initialValue:model.regularName
           }
         ]"
-          placeholder="请输入正则名称"
+          placeholder="请输入名称"
           :disabled="disabled"
         />
       </a-form-item>
@@ -20,7 +20,7 @@
           'model.regularDescribe',
           {rules:[{ required: false, message: '' }],initialValue:model.regularDescribe}
         ]"
-          placeholder="请输入正则描述"
+          placeholder="请输入描述"
           :disabled="disabled"
           :autosize="{ minRows: 1, maxRows: 3 }"
         />
@@ -34,7 +34,7 @@
             initialValue:model.regular
           }
         ]"
-          placeholder="请输入正则表达式"
+          placeholder="请输入表达式"
           :disabled="disabled"
         />
       </a-form-item>
@@ -49,8 +49,8 @@
             ]"
           :disabled="disabled"
         >
-          <a-radio :value=0>未审核</a-radio>
-          <a-radio :value=1>已审核</a-radio>
+          <a-radio :value="'0'">未审核</a-radio>
+          <a-radio :value="'1'">已审核</a-radio>
         </a-radio-group>
       </a-form-item>
       <a-form-item label="分类" :label-col="{ span: 7 }" :wrapper-col="{ span: 12 }">
@@ -64,6 +64,7 @@
           :disabled="disabled"
         >
           <!-- 需要所有文章分类 -->
+          <a-select-option value="0">其它</a-select-option>
           <a-select-option value="1">数字校验</a-select-option>
           <a-select-option value="2">字符校验</a-select-option>
           <a-select-option value="3">个人信息</a-select-option>

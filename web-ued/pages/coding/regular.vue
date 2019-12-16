@@ -33,7 +33,9 @@
                 </el-popover>
               </template>
             </el-table-column>
-            <el-table-column label="分类" prop="regularCategory"></el-table-column>
+            <el-table-column label="分类" prop="regularCategory">
+              {{regularCategory|category}}
+            </el-table-column>
             <el-table-column label="表达式" prop="regular"></el-table-column>
             <el-table-column label="状态" prop="status">
               <template slot-scope="scope">
@@ -223,6 +225,23 @@ export default {
       form1Visible: false,
       reg: ""
     };
+  },
+   filters: {
+    category: function(value) {
+      if (value === "1") {
+        return "数字校验";
+      }
+      if (value === "2") {
+        return "字符校验";
+      }
+      if (value === "3") {
+        return "个人信息";
+      }
+      if (value === "4") {
+        return "公式校验";
+      }
+      return "无";
+    }
   },
   mounted() {
     this.getRegList();

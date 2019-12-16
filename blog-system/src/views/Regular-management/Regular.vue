@@ -52,10 +52,15 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         :dataSource="data"
         :columns="columns"
-        :rowKey:="data.key"
+        :rowKey="data.key"
         :locale="{emptyText: '暂无数据'}"
         :loading="loading"
       >
+        <span slot="status" slot-scope="status">
+          <a-tag v-if="status==='0'">未审核</a-tag>
+          <a-tag v-if="status==='1'" color="blue">已审核</a-tag>
+        </span>
+        <span slot="regularCategory" slot-scope="regularCategory">{{regularCategory|category}}</span>
         <template slot="operation" slot-scope="text, record">
           <a class="right_gap" @click="showItems(record.key)">查看</a>
           <a class="right_gap" @click="editItems(record.key)">编辑</a>
@@ -124,11 +129,17 @@ export default {
         },
         {
           title: "状态",
-          dataIndex: "status"
+          dataIndex: "status",
+          scopedSlots: {
+            customRender: "status"
+          }
         },
         {
           title: "分类",
-          dataIndex: "regularCategory"
+          dataIndex: "regularCategory",
+          scopedSlots: {
+            customRender: "regularCategory"
+          }
         },
         {
           title: "操作",
@@ -145,6 +156,23 @@ export default {
   },
   mounted() {
     this.getList();
+  },
+  filters: {
+    category: function(value) {
+      if (value === "1") {
+        return "数字校验";
+      }
+      if (value === "2") {
+        return "字符校验";
+      }
+      if (value === "3") {
+        return "个人信息";
+      }
+      if (value === "4") {
+        return "公式校验";
+      }
+      return "无";
+    }
   },
   computed: {
     count() {
@@ -172,8 +200,6 @@ export default {
         if (res.data && res.data.length && res.data.length > 0) {
           for (let i = 0; i < this.data.length; i++) {
             this.data[i].key = this.data[i]._id;
-            this.data[i].status=this.data[i].status=='0'?'未审核':this.data[i].status=='1'?'已审核':'';
-            this.data[i].regularCategory=this.data[i].regularCategory=='0'?'其它':this.data[i].status=='1'?'数字校验':this.data[i].status=='2'?'字符校验':this.data[i].status=='3'?'个人信息':this.data[i].status=='4'?'公式验证':'';
           }
         }
       } else {
