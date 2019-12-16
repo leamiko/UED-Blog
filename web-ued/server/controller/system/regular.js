@@ -44,6 +44,7 @@ exports.getRegularList = async function (req, res, next) {
 }
 
 // 查看正则表达式详情
+
 exports.getRegularDetail = function (req, res, next) {
     let rid = req.query.regularId
     console.log(rid);
