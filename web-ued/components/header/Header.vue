@@ -42,7 +42,11 @@
           <div class="avatar"
                @mouseenter="showMsg = true"
                @mouseleave="showMsg = false"
-               v-if="$store.state.flag!==null"><span v-if="userName">{{userName}}</span><span v-else>{{account}}</span><img :src="avatar" /></div>
+               v-if="$store.state.flag!==null">
+               <span v-if="userName">{{userName}}</span><span v-else>{{account}}</span>
+               <img v-if="avatar" :src="avatar" />
+               <img v-else src="../../assets/img/image/avarot-default.png" alt="">
+               </div>
           <!-- <el-button
             type="text"
             @click="infoShow = true"
@@ -59,7 +63,7 @@
                       @titleChanged="registerTitle($event)"
                       @modalChanged="modalChanged($event)"></my-login>
             <my-register v-show="!$store.state.isLogin"
-                         @titleChanged="loginTitle($event)"></my-register>
+                         @titleChanged="loginTitle($event)" @modalChanged="modalChanged($event)"></my-register>
           </el-dialog>
           <!-- <router-link
           :to="'login'"
