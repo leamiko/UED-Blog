@@ -237,19 +237,12 @@ export default {
     },
     // 保存
     save () {
-      // let bigImgUrl
-      // let midImgUrl
-      // for (let i = 0; i < this.fileList.length - 1; i++) {
-      //   if (this.fileList[i].size > this.fileList[i + 1].size) {
-      //     bigImgUrl = this.fileList[i].url
-      //     midImgUrl = this.fileList[i + 1].url
-      //   } else {
-      //     bigImgUrl = this.fileList[i + 1].url
-      //     midImgUrl = this.fileList[i].url
-      //   }
-      // }
       this.form.validateFields(async (err, values) => {
         console.log(values.model.author)
+        if (this.bigList.length === 0 || this.smallList.length === 0) {
+          this.$message.error('请上传文章封面图片!')
+          return false
+        }
         if (!err) {
           const url = this.api.addEditBlog
           const params = {
@@ -258,9 +251,8 @@ export default {
             blogType: values.model.blogType,
             info: values.model.info,
             content: this.model.content,
-            bigImgUrl: this.bigList[0].url,
-            midImgUrl: this.smallList[0].url,
-            //   author: !this.blogId ? values.model.author.author : null,
+            bigImgUrl: this.bigList.length > 0 ? this.bigList[0].url : null,
+            midImgUrl: this.smallList.length > 0 ? this.smallList[0].url : null,
             userId: !this.blogId ? values.model.author : null
           }
           const res = await this.$http.post(url, params)

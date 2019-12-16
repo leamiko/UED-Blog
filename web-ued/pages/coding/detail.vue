@@ -30,7 +30,8 @@
               {{detailInfo.title}}
               <div class="detail_presenter">
                 <div class="presenter_head flt inline">
-                  <img src="@/assets/img/image/code_presenter.png" />
+                  <img v-show="!detailInfo.anonymous" src="detailInfo.authorInfo.avatar">
+                  <img v-show="detailInfo.anonymous" src="@/assets/img/icon/anonymous_icon.jpg">
                 </div>
                 <span
                   class="presenter_info inline"
