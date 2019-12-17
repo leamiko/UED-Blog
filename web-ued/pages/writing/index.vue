@@ -29,15 +29,15 @@
           </ul>
         </div>
         <div class="right_articles" v-infinite-scroll="getWriteList" infinite-scroll-disabled="disabled">
-          <div class="article_block" v-for="(item,index) in lists" @click="goDetail(item)" :hidden="lists.length == 0"
-            :key="index">
+          <div class="article_block" v-for="(item,index) in lists" @click="goDetail(item)" :key="index">
             <img class="title_img" :src="item.midImgUrl" alt=""
               :style="{'visibility': item.bigImgUrl ? 'visible': 'hidden'}">
             <div>
               <p>{{item.title}}</p>
               <p v-html="$options.filters.textLength(item.info, 38)"></p>
               <p>
-                <img v-if="!item.userInfo[0].avatar" class="author_icon" src="../../assets/img/image/avarot-default.png" alt="">
+                <img v-if="!item.userInfo[0].avatar" class="author_icon" src="../../assets/img/image/avarot-default.png"
+                  alt="">
                 <img v-else class="author_icon" :src="item.userInfo[0].avatar" alt="">
                 <span class="author">{{item.userInfo[0].nickName}}·{{item.updateAt | formatDateDay}}</span>
                 <span class="type">{{renderType(item.blogType)}}</span>
@@ -52,13 +52,18 @@
               </p>
             </div>
           </div>
+          <div class="article_page" v-if="showPagination">
+            <el-pagination background layout="prev, pager, next" :hide-on-single-page="false" :total="listTotal"
+              @current-change="changePage" :page-size="10">
+            </el-pagination>
+          </div>
+
           <!-- no result -->
           <div class="no_result" v-if="lists.length == 0">
             <img src="../../assets/img/image/img-write-blank.png" alt="">
             <span>暂时没有文章，赶快联系我们投稿吧！投稿邮箱：wangbing@zhongruigroup.com</span>
           </div>
         </div>
-
       </div>
     </div>
   </my-scrollbar>
@@ -215,7 +220,8 @@
       display: flex;
       align-items: center;
       font-size: 14px;
-      img.author_icon{
+
+      img.author_icon {
         width: 30px;
         height: 30px;
       }
@@ -296,6 +302,12 @@
           page: 0,
           limit: 10
         },
+        listTotal: null, // 列表总条数
+        showPagination: false, // 是否显示分页器
+        listPage: {
+          page: 0,
+          limit: 10
+        }
       };
     },
     mounted() {
@@ -309,7 +321,6 @@
           detailId: e._id,
           imgUrl: e.imgUrl
         };
-        console.log(window.location)
         window.open(window.location.href + '/detail?detailParams=' + JSON.stringify(detailParams))
         // this.$router.push({
         //   path: "writing/detail?detailParams=" + JSON.stringify(detailParams)
@@ -370,22 +381,24 @@
         );
         if (data.status === 200) {
           const res = data.data.data.data;
+          this.listTotal = data.data.data.total
           loading.close()
           if (res.length > 0) {
-            if (res.length < 10) {
-              this.disabled = true;
-            } else {
-              this.disabled = false;
-            }
-            res.forEach(e => {
-              if(e.userInfo.length == 0) {
+            this.disabled = (res.length < 10) ? true : false
+            res.map(e => {
+              if (e.userInfo.length == 0) {
                 e.userInfo.push({
                   avator: null,
                   nickName: null
                 })
               }
               this.lists.push(e);
-              console.log(this.lists);
+              this.showPagination = (this.lists.length == 20) ? true : false
+              if (this.showPagination) {
+                this.disabled = true;
+              //  this.listPage.page = this.paging.page + 1
+              //  this.listTotal = this.listTotal - this.lists.length + 1
+              }
             });
           } else {
             this.disabled = true;
@@ -406,6 +419,38 @@
             console.log(this.topList)
           }
         }
+      },
+
+      // 分页列表
+      async getPageList() {
+        let filters = {
+          blogType: this.blogType == 0 ? null : this.blogType
+        };
+        let params = {
+          paging: this.listPage,
+          filters: filters
+        };
+        const data = await this.$axios.post(
+          `${process.env.BASE_URL}/web_api/getWriteList`, params);
+        if (data.status === 200) {
+          const res = data.data.data.data
+          this.listTotal = data.data.data.total
+          res.map(e => {
+            if (e.userInfo.length == 0) {
+              e.userInfo.push({
+                avator: null,
+                nickName: null
+              })
+            }
+          })
+          this.lists = res
+        }
+      },
+
+      // 翻页
+      changePage(page) {
+        this.listPage.page = page;
+        this.getPageList();
       }
     }
   };

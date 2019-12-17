@@ -47,7 +47,7 @@
                   :src="item.userInfo.avatar"
                   class="avatar"
                 ></el-avatar>
-                <span class="text_color_time" ><span v-show="$store.state.flag">{{item.userInfo.nickName}} ·</span> {{item.userInfo.updateAt | datetimeFormat}}</span>&emsp;&emsp;
+                <span class="text_color_time"><span v-show="$store.state.flag">{{item.userInfo.nickName}} ·</span> {{item.userInfo.updateAt | datetimeFormat}}</span>&emsp;&emsp;
                 <span class="text_color">{{ item.blog.blogType == 1 ? "技术" : item.blog.blogType == 2 ? "交互" :item.blog.blogType == 3 ? "设计" :item.blog.blogType == 4 ? "管理" :"其它" }}</span>&emsp;&emsp;
                 <span class="text_color"><img src="@/assets/img/icon/eyes.svg">{{item.blog.viewNum}}</span>&emsp;&emsp;
                 <span class="text_color"><img src="@/assets/img/icon/like.svg">{{item.blog.likeNum}}</span>
@@ -56,13 +56,13 @@
           </li>
         </ul>
         <div class="center">
-          <router-link :to="custom.menu[1].redirectUrl">  
+          <router-link :to="custom.menu[1].redirectUrl">
             <el-button
-            round
-            class="btn_style"
-          >
-          查看更多{{$store.state.flag}}
-          </el-button>
+              round
+              class="btn_style"
+            >
+              查看更多
+            </el-button>
           </router-link>
         </div>
       </div>
@@ -74,6 +74,7 @@
 import * as custom from "@/assets/js/custom.config";
 import MyScrollbar from "@/components/scroller/Scrollbar";
 import MyHeader from "@/components/header/Header";
+import { Loading } from 'element-ui';
 
 export default {
   inject: ["reload"],
@@ -99,6 +100,7 @@ export default {
       avatar: custom.index.newsList[0].avatar,
       updateTime: custom.index.newsList[0].updateTime,
       screenWidth: Number,
+      loadingInstance1: {},
     };
   },
   head () {
@@ -150,9 +152,10 @@ export default {
         }
       });
       console.log(this.list);
-    }
+      return 1;
+    },
   },
-  mounted () {
+  async mounted () {
     this.screenWidth = document.body.clientWidth;
     this.height = (document.body.clientWidth / 1920) * 645;
     window.onresize = () => {
@@ -160,7 +163,12 @@ export default {
         this.height = (document.body.clientWidth / 1920) * 645;
       })()
     }
-    this.getHomeList();
+    await this.getHomeList();
+    setTimeout(()=>{this.loadingInstance1.close();},500)
+  },
+  created () {
+    this.loadingInstance1 = Loading.service({ fullscreen: true });    
+
   },
 };
 </script>
@@ -236,8 +244,8 @@ export default {
 .center {
   text-align: center;
 }
-.cus-flex{
-    &:hover {
+.cus-flex {
+  &:hover {
     cursor: pointer;
   }
 }
@@ -248,7 +256,7 @@ export default {
   background: rgba(238, 238, 239, 1);
   font-size: 14px;
   margin-bottom: 68px;
-  border: 0; 
+  border: 0;
   a {
     color: rgba(52, 72, 94, 1);
     text-decoration-line: none;
