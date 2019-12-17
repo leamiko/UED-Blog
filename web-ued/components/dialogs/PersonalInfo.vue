@@ -93,7 +93,7 @@
                 if (this.$store.state.flag !== null) {
                      this.memberInfo = JSON.parse(localStorage.getItem('user'))
                      this.name = this.memberInfo.nickName
-                     console.log(this.memberInfo);
+                     this.imgUrl = this.memberInfo.avatar
                 }
             }
         },
@@ -120,6 +120,7 @@
             handleClose(done) {
                 this.$emit('hide', true);
                 this.show = false;
+                this.name = this.memberInfo.nickName ? this.memberInfo.nickName : null
                 done();
             },
             // 获取头像
@@ -127,8 +128,13 @@
                 const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/getAvatarList`);
                 if (res.status == 200) {
                     this.avatorList = res.data.data
-                    this.avatorList.forEach(e => {
-                        this.$set(e, 'isSelect', false)
+                    this.avatorList.map(e => {
+                        if(e.url === this.memberInfo.avatar) {
+                            this.$set(e, 'isSelect', true)
+                        } else {
+                         this.$set(e, 'isSelect', false)
+                        }
+                        
                     })
                 }
 
@@ -189,7 +195,7 @@
                         this.show = false;
                         this.$notify({
                             title: '成功',
-                            message: '信息更新成功',
+                            message: '设置成功',
                             type: 'success'
                         });
                     }

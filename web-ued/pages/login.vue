@@ -150,6 +150,13 @@ export default {
             });
             this.loginForm = {};
             this.$store.commit("flag", new Date().toLocaleTimeString());
+            // 监测是否包含回调
+            if (this.$store.state.redirect) {
+              this.$router.push({
+                path: this.$store.state.redirect
+              })
+              this.$store.commit("ChangeRedirect", null);
+            }
           } else {
             //登录失败
             this.isError = true;
