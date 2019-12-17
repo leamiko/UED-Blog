@@ -37,8 +37,9 @@
               <p>{{item.title}}</p>
               <p v-html="$options.filters.textLength(item.info, 38)"></p>
               <p>
-                <img class="author_icon" src="../../assets/img/icon/icon-avator.svg" alt="">
-                <span class="author">{{item.author}}·{{item.updateAt | formatDateDay}}</span>
+                <img v-if="!item.userInfo[0].avatar" class="author_icon" src="../../assets/img/image/avarot-default.png" alt="">
+                <img v-else class="author_icon" :src="item.userInfo[0].avatar" alt="">
+                <span class="author">{{item.userInfo[0].nickName}}·{{item.updateAt | formatDateDay}}</span>
                 <span class="type">{{renderType(item.blogType)}}</span>
                 <span class="view_amount">
                   <img src="../../assets/img/icon/eyes.svg" alt="">
@@ -164,10 +165,7 @@
 
     &:hover,
     &:focus {
-      background: rgba(234, 241, 255, 1);
-      border-radius: 6px;
       color: #3376ff;
-      font-weight: bold;
     }
   }
 
@@ -188,6 +186,7 @@
     display: flex;
     padding: 50px 0;
     border-bottom: 1px solid #eff3f7;
+    cursor: pointer;
 
     &:last-child {
       border-bottom: none;
@@ -216,6 +215,10 @@
       display: flex;
       align-items: center;
       font-size: 14px;
+      img.author_icon{
+        width: 30px;
+        height: 30px;
+      }
 
       span.author {
         color: #394a58;
@@ -306,9 +309,11 @@
           detailId: e._id,
           imgUrl: e.imgUrl
         };
-        this.$router.push({
-          path: "writing/detail?detailParams=" + JSON.stringify(detailParams)
-        });
+        console.log(window.location)
+        window.open(window.location.href + '/detail?detailParams=' + JSON.stringify(detailParams))
+        // this.$router.push({
+        //   path: "writing/detail?detailParams=" + JSON.stringify(detailParams)
+        // });
       },
       // 选择文章类型
       chooseType(item) {
@@ -342,6 +347,12 @@
       // 获得文章列表
       async getWriteList() {
         this.disabled = true;
+        const loading = this.$loading({
+          lock: true,
+          text: '加载中',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
         this.paging = {
           page: ++this.paging.page,
           limit: 10
@@ -359,6 +370,7 @@
         );
         if (data.status === 200) {
           const res = data.data.data.data;
+          loading.close()
           if (res.length > 0) {
             if (res.length < 10) {
               this.disabled = true;
@@ -366,7 +378,14 @@
               this.disabled = false;
             }
             res.forEach(e => {
+              if(e.userInfo.length == 0) {
+                e.userInfo.push({
+                  avator: null,
+                  nickName: null
+                })
+              }
               this.lists.push(e);
+              console.log(this.lists);
             });
           } else {
             this.disabled = true;

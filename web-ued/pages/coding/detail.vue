@@ -30,8 +30,8 @@
               {{detailInfo.title}}
               <div class="detail_presenter">
                 <div class="presenter_head flt inline">
-                  <img v-show="!detailInfo.anonymous" src="detailInfo.authorInfo.avatar">
-                  <img v-show="detailInfo.anonymous" src="@/assets/img/icon/anonymous_icon.jpg">
+                  <img v-show="!detailInfo.anonymous" src="detailInfo.authorInfo.avatar" />
+                  <img v-show="detailInfo.anonymous" src="@/assets/img/icon/anonymous_icon.jpg" />
                 </div>
                 <span
                   class="presenter_info inline"
@@ -137,7 +137,14 @@
               :key="firstIndex"
             >
               <div class="current_user inline">
-                <img src="@/assets/img/image/code_presenter.png" />
+                <img
+                  src="@/assets/img/image/code_presenter.png"
+                  v-if="!firstItem.authorInfo.avatar || firstItem.anonymous"
+                />
+                <img
+                  :src="!(!firstItem.authorInfo.avatar || firstItem.anonymous)"
+                  v-if="firstItem.authorInfo.avatar"
+                />
               </div>
               <div class="current_edit inline">
                 <!-- 一级评论 -->
@@ -181,7 +188,7 @@
                       <!-- 回复 -->
                       <div
                         class="comment_unit_bottom_btn margin_left_15"
-                        @click="replyFirstComBtn(firstItem._id)"
+                        @click="replyFirstComBtn(firstItem)"
                         v-bind:class="{comment_unit_bottom_btn_selected: firstItem.isShowReplyFirstCom}"
                       >回复</div>
                       <!-- 删除 -->
@@ -237,7 +244,14 @@
                     :key="secondIndex"
                   >
                     <div class="current_user inline">
-                      <img src="@/assets/img/image/code_presenter.png" />
+                      <img
+                        src="@/assets/img/image/code_presenter.png"
+                        v-if="!secondItem.authorInfo.avatar || secondItem.anonymous"
+                      />
+                      <img
+                        :src="secondItem.authorInfo.avatar"
+                        v-if="!(!secondItem.authorInfo.avatar || secondItem.anonymous)"
+                      />
                     </div>
                     <div class="comment_text inline">
                       <div class="comment_unit_name">
@@ -274,7 +288,8 @@
                           </div>
                           <div
                             class="comment_unit_bottom_btn margin_left_15"
-                            @click="replySecondComBtn(secondItem._id)"
+                            @click="replySecondComBtn(secondItem)"
+                            v-bind:class="{comment_unit_bottom_btn_selected: secondItem.isShowReplySecondCom}"
                           >回复</div>
                           <!-- 删除 -->
                           <div
@@ -296,7 +311,14 @@
                     :key="secondIndex"
                   >
                     <div class="current_user inline">
-                      <img src="@/assets/img/image/code_presenter.png" />
+                      <img
+                        src="@/assets/img/image/code_presenter.png"
+                        v-if="!secondItem.authorInfo.avatar || secondItem.anonymous"
+                      />
+                      <img
+                        :src="secondItem.authorInfo.avatar"
+                        v-if="!(!secondItem.authorInfo.avatar || secondItem.anonymous)"
+                      />
                     </div>
                     <div class="comment_text inline">
                       <div class="comment_unit_name">
@@ -333,9 +355,9 @@
                           </div>
                           <div
                             class="comment_unit_bottom_btn margin_left_15"
-                            @click="replySecondComBtn(secondItem._id)"
+                            @click="replySecondComBtn(secondItem)"
+                            v-bind:class="{comment_unit_bottom_btn_selected: secondItem.isShowReplySecondCom}"
                           >回复</div>
-                          <!-- 删除 -->
                           <div
                             class="comment_unit_bottom_btn margin_left_15 second_comment_delete_btn"
                             v-if="userInfo._id === secondItem.replyerId"
@@ -352,7 +374,7 @@
                   <div
                     class="margin_top_40"
                     v-if="secondItem.isShowReplySecondCom"
-                    :key="secondIndex"
+                    :key="secondItem._id"
                   >
                     <div class="current_user inline">
                       <img src="@/assets/img/image/code_presenter.png" />
@@ -653,7 +675,7 @@ export default {
         replyTargetId: replyType === 1 ? item.commenterId : item.replyerId,
         bugId: item.bugId,
         content: item.replyComContent,
-        anonymous: item.isAnonymous
+        anonymous: item.isAnonymous ? item.isAnonymous : "false"
       };
       const res = await this.$axios.post(
         `${process.env.BASE_URL}/web_api/replyBug`,
@@ -737,19 +759,22 @@ export default {
       });
     },
     // 一级评论回复按钮
-    replyFirstComBtn(comId) {
+    replyFirstComBtn(firstItem) {
+      this.$forceUpdate();
       this.commentList.forEach(item => {
-        if (item._id === comId) {
-          item.isShowReplyFirstCom = !item.isShowReplyFirstCom;
+        if (item._id === firstItem._id) {
+          firstItem.isShowReplyFirstCom = !firstItem.isShowReplyFirstCom;
         }
       });
+      console.log(firstItem.isShowReplyFirstCom);
     },
     // 二级评论回复按钮
-    replySecondComBtn(comId) {
+    replySecondComBtn(secondItem) {
+      this.$forceUpdate();
       this.commentList.forEach(item => {
         item.replies.forEach(ele => {
-          if (ele._id === comId) {
-            ele.isShowReplySecondCom = !ele.isShowReplySecondCom;
+          if (ele._id === secondItem._id) {
+            secondItem.isShowReplySecondCom = !secondItem.isShowReplySecondCom;
           }
         });
       });
@@ -799,10 +824,18 @@ export default {
     },
     // 查看更多回复
     showMoreReplies(firstItem) {
+      this.$forceUpdate();
       firstItem.isShowMoreReplies = !firstItem.isShowMoreReplies;
       firstItem.showMoreRepliesName = firstItem.isShowMoreReplies
         ? "收起更多回复"
         : "查看更多回复";
+      if (!firstItem.isShowMoreReplies) {
+        this.commentList.forEach(item => {
+          item.replies.forEach(ele => {
+            ele.isShowReplySecondCom = false;
+          });
+        });
+      }
     },
     // 获取评论
     async getCommentList() {

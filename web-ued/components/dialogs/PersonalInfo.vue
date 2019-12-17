@@ -93,7 +93,7 @@
                 if (this.$store.state.flag !== null) {
                      this.memberInfo = JSON.parse(localStorage.getItem('user'))
                      this.name = this.memberInfo.nickName
-                     console.log(this.memberInfo);
+                     this.imgUrl = this.memberInfo.avatar
                 }
             }
         },
@@ -127,8 +127,13 @@
                 const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/getAvatarList`);
                 if (res.status == 200) {
                     this.avatorList = res.data.data
-                    this.avatorList.forEach(e => {
-                        this.$set(e, 'isSelect', false)
+                    this.avatorList.map(e => {
+                        if(e.url === this.memberInfo.avatar) {
+                            this.$set(e, 'isSelect', true)
+                        } else {
+                         this.$set(e, 'isSelect', false)
+                        }
+                        
                     })
                 }
 
