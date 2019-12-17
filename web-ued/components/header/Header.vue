@@ -148,6 +148,7 @@ export default {
       if (this.$store.state.flag !== null) {
         this.avatar = JSON.parse(localStorage.getItem("user")).avatar;
         this.userName = JSON.parse(localStorage.getItem("user")).nickName;
+        console.log(this.userName)
       }
     }
   },

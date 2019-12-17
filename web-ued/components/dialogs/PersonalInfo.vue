@@ -120,6 +120,7 @@
             handleClose(done) {
                 this.$emit('hide', true);
                 this.show = false;
+                this.name = this.memberInfo.nickName ? this.memberInfo.nickName : null
                 done();
             },
             // 获取头像
@@ -194,7 +195,7 @@
                         this.show = false;
                         this.$notify({
                             title: '成功',
-                            message: '信息更新成功',
+                            message: '设置成功',
                             type: 'success'
                         });
                     }
