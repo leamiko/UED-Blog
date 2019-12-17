@@ -175,7 +175,7 @@ exports.GetBugList = async function (req, res, next) {
           $limit: (req.body.pageSize ? req.body.pageSize : 10)
         }
       ])
-    const [...copyresult] = result
+    const [...copyresult] = result;
     copyresult.forEach(el => {
       el.authorInfo = {
         nickName: el.authorInfo[0].nickName[0],
