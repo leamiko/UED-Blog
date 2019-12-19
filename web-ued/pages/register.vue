@@ -132,6 +132,7 @@ export default {
       isError: false,
       infoShow: false, // 个人信息弹窗
       className: "info_dialog",
+      showRegister: true
     };
   },
   // head() {
@@ -146,7 +147,7 @@ export default {
     // 填写个人信息
     compelteInfo() {
        this.infoShow = true 
-       this.bindWX = false;
+       this.$emit("modalChanged", false);
     },
     //二维码
     wxHandle () {

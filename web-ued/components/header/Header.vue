@@ -13,9 +13,12 @@
           <li v-for="(item, index) in custom.menu"
               :key="index"
               :class="{'active': activeLabel === item.label}">
-            <router-link :to="item.redirectUrl"
-                         class="font-size-18">{{ item.label }}</router-link>
+              <span @click="pathRoute(item)" class="font-size-18">{{ item.label }}</span>
+            <!-- <router-link :to="item.redirectUrl" class="font-size-18">{{ item.label }}</router-link> -->
           </li>
+           <!-- <li >
+            <router-link :to="'/coding/regular'" class="font-size-18">正则</router-link>
+          </li> -->
         </ul>
       </div>
       <div class="cus-flex cus-align-center">
@@ -42,7 +45,11 @@
           <div class="avatar"
                @mouseenter="showMsg = true"
                @mouseleave="showMsg = false"
-               v-if="$store.state.flag!==null"><span v-if="userName">{{userName}}</span><span v-else>{{account}}</span><img :src="avatar" /></div>
+               v-if="$store.state.flag!==null">
+               <span v-if="userName">{{userName}}</span><span v-else>{{account}}</span>
+               <img v-if="avatar" :src="avatar" />
+               <img v-else src="../../assets/img/image/avarot-default.png" alt="">
+               </div>
           <!-- <el-button
             type="text"
             @click="infoShow = true"
@@ -59,7 +66,7 @@
                       @titleChanged="registerTitle($event)"
                       @modalChanged="modalChanged($event)"></my-login>
             <my-register v-show="!$store.state.isLogin"
-                         @titleChanged="loginTitle($event)"></my-register>
+                         @titleChanged="loginTitle($event)" @modalChanged="modalChanged($event)"></my-register>
           </el-dialog>
           <!-- <router-link
           :to="'login'"
@@ -141,6 +148,7 @@ export default {
       if (this.$store.state.flag !== null) {
         this.avatar = JSON.parse(localStorage.getItem("user")).avatar;
         this.userName = JSON.parse(localStorage.getItem("user")).nickName;
+        console.log(this.userName)
       }
     }
   },
@@ -179,6 +187,12 @@ export default {
       );
       localStorage.removeItem("user");
       this.$store.commit("flag", null);
+      // 判断是否在打码处
+      if (this.$route.path.indexOf('/coding') >= 0) {
+        this.$router.push({
+          path: '/'
+        });
+      }
     },
     //判断是否登录
     async isLogin () {
@@ -227,6 +241,17 @@ export default {
         }
       }
       return false;
+    },
+    // 控制路由跳转
+    pathRoute(val) {
+      if (val.isAuth && !this.$store.state.flag) {
+        this.$store.commit("ChangeRedirect", val.redirectUrl);
+        this.modalLogin();
+        return;
+      }
+      this.$router.push({
+        path: val.redirectUrl
+      })
     }
   }
 };

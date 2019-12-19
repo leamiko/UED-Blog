@@ -34,6 +34,12 @@ const menuList = [
     name: '头像管理',
     linkUrl: '/avatar',
     iconName: 'file-search'
+  },
+  {
+    code: '7',
+    name: '正则管理',
+    linkUrl: '/regular',
+    iconName: 'file-search'
   }
 ]
 
