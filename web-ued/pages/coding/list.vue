@@ -1,5 +1,5 @@
 <template>
-  <div class="cus-full-screen hidden">
+  <div class="cus-full-screen hidden" v-loading="loading">
     <my-scrollbar>
       <div slot="container">
         <div class="cus-fixed cus-header">
@@ -51,10 +51,10 @@
                 <div class="content_mark inline">
                   <div class="presenter flt">
                     <div class="presenter_head flt inline">
-                      <img v-if="!x.anonymous && x.authorInfo.avatar!==''" src="x.authorInfo.avatar">
-                      <img v-else-if="x.anonymous || x.authorInfo.avatar===''" src="@/assets/img/icon/anonymous_icon.jpg">
+                      <img v-if="!x.anonymous && x.authorInfo.avatar!=='' && x.authorInfo.avatar!==null" :src="x.authorInfo.avatar">
+                      <img v-else-if="x.anonymous || x.authorInfo.avatar==='' || x.authorInfo.avatar===null" src="@/assets/img/icon/anonymous_icon.jpg">
                     </div>
-                    <span class="presenter_info inline">{{x.author}} · {{x.updateAt | formatDateDay}}</span>
+                    <span class="presenter_info inline">{{x.authorInfo.nickName}} · {{x.createAt | formatDateDay}}</span>
                     <div class="mark_tags inline">
                       <span class="mark_tag" v-for="y in x.tags">{{y}}</span>
                     </div>
@@ -97,6 +97,7 @@ export default {
   },
   data() {
     return {
+      loading: true,
       className: 'custom-dialog',
       askShow: false,
       searchVal: null, // 搜索内容
@@ -137,15 +138,24 @@ export default {
         if(data.data.length > 0) {
           this.noData = false;
           this.bugList = data.data;
-          this.count = data.count;
-          this.listShow = true;
-        } else {
-          this.noData = true;
-          if (this.solveState !== null) {
-            this.listShow = false;
-          }
-        }
+          this.count = data.count;          
+          setTimeout(() => {
+            this.loading = false;
+            this.listShow = true;            
+          }, 500);
+        } else {          
+          setTimeout(() => {
+            this.loading = false;
+            this.noData = true;
+            if (this.solveState !== null) {
+              this.listShow = false;
+            };
+          }, 500);
+        }        
       } else {
+        setTimeout(() => {
+          this.loading = false;
+        }, 500);
         this.$notify.error({
           title: '错误',
           message: data.data.message
