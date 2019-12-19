@@ -10,13 +10,13 @@
           <h2 class="inline middle">{{ custom.title }}</h2>
         </router-link>
         <ul>
-          <li class="pointer" v-for="(item, index) in custom.menu" :key="index" :class="{'active': activeLabel === item.label}">
+          <li class="pointer" v-for="(item, index) in custom.menu" :key="index" :class="{'active': activeLabel == item.label}">
             <span @click="pathRoute(item)" class="font-size-18" v-if="!item.children || (item.children && item.children.length == 0)">{{ item.label }}</span>
             <span @mouseenter="item.show = true" @mouseleave="item.show = false" class="font-size-18 cus-relative" v-else>
               {{ item.label }}
               <el-collapse-transition>
                 <div v-if="item.show" class="cus-absolute header-menu--child">
-                  <div v-for="child in item.children" :key="child" @click="pathRoute(child)" class="font-size--xs">{{ child.label }}</div>
+                  <div v-for="(child, cIndex) in item.children" :key="child.label + cIndex" @click="pathRoute(child)" class="font-size--xs">{{ child.label }}</div>
                 </div>
               </el-collapse-transition>
             </span>
