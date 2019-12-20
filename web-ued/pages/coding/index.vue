@@ -34,7 +34,7 @@
           <div class="my-card">
             <div class="cus-flex cus-flex-between cus-align-center">
               <h4 class="text-dark">热门问题</h4>
-              <el-button size="medium" round @click="pathRedirect('/coding/list')"> 查看更多<i class="el-icon-arrow-right el-icon-caret-right"></i> </el-button>
+              <el-button size="medium" round @click="pathRedirect('/coding/list')"> 全部问题 <i class="el-icon-arrow-right el-icon-caret-right"></i> </el-button>
             </div>
             <ul v-if="hotList && hotList.length > 0">
               <li v-show="hotList && hotList.length >= 4">
@@ -105,9 +105,6 @@ export default {
       this[command] = !this[command];
     },
     getSearch(val) {
-      if (!val) {
-        return;
-      }
       this.$router.push({
         path: '/coding/list',
         query: val ? {search: val} : null

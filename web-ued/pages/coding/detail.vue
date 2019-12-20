@@ -30,8 +30,8 @@
               {{detailInfo.title}}
               <div class="detail_presenter">
                 <div class="presenter_head flt inline">
-                  <img v-show="!detailInfo.anonymous" src="detailInfo.authorInfo.avatar" />
-                  <img v-show="detailInfo.anonymous" src="@/assets/img/icon/anonymous_icon.jpg" />
+                  <img v-show="!detailInfo.anonymous && detailInfo.headUrl!==null" :src="detailInfo.headUrl">
+                  <img v-show="detailInfo.anonymous || detailInfo.headUrl===null" src="@/assets/img/icon/anonymous_icon.jpg">
                 </div>
                 <span
                   class="presenter_info inline"
@@ -479,6 +479,16 @@ export default {
       if (res.status === 200) {
         if (res.data.data && res.data.data !== null) {
           this.detailInfo = res.data.data;
+          if(res.data.data.authorInfo && res.data.data.authorInfo.avatar !== '' && res.data.data.authorInfo.avatar !== null){
+            this.detailInfo.headUrl = res.data.data.authorInfo.avatar;//头像url
+          } else {
+            this.detailInfo.headUrl = null;
+          }
+          if(res.data.data.authorInfo && res.data.data.authorInfo.nickName !== '' && res.data.data.authorInfo.nickName !== null){
+            this.detailInfo.author = res.data.data.authorInfo.nickName;//作者昵称
+          } else {
+            this.detailInfo.author = null;
+          }
           // 获取当前登录人对当前详情的点赞数
           const user = JSON.parse(localStorage.getItem("user"));
           let userParams = {

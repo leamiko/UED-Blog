@@ -10,16 +10,29 @@
           <h2 class="inline middle">{{ custom.title }}</h2>
         </router-link>
         <ul>
-          <li v-for="(item, index) in custom.menu"
+          <li class="pointer"
+              v-for="(item, index) in custom.menu"
               :key="index"
-              :class="{'active': activeLabel === item.label}">
+              :class="{'active': activeLabel == item.label}">
             <span @click="pathRoute(item)"
-                  class="font-size-18">{{ item.label }}</span>
-            <!-- <router-link :to="item.redirectUrl" class="font-size-18">{{ item.label }}</router-link> -->
+                  class="font-size-18"
+                  v-if="!item.children || (item.children && item.children.length == 0)">{{ item.label }}</span>
+            <span @mouseenter="item.show = true"
+                  @mouseleave="item.show = false"
+                  class="font-size-18 cus-relative"
+                  v-else>
+              {{ item.label }}
+              <el-collapse-transition>
+                <div v-if="item.show"
+                     class="cus-absolute header-menu--child">
+                  <div v-for="(child, cIndex) in item.children"
+                       :key="child.label + cIndex"
+                       @click="pathRoute(child)"
+                       class="font-size--xs">{{ child.label }}</div>
+                </div>
+              </el-collapse-transition>
+            </span>
           </li>
-          <!-- <li >
-            <router-link :to="'/coding/regular'" class="font-size-18">正则</router-link>
-          </li> -->
         </ul>
       </div>
       <div class="cus-flex cus-align-center">
@@ -153,7 +166,6 @@ export default {
       if (this.$store.state.flag !== null) {
         this.avatar = JSON.parse(localStorage.getItem("user")).avatar;
         this.userName = JSON.parse(localStorage.getItem("user")).nickName;
-        console.log(this.userName)
       }
     }
   },
@@ -314,12 +326,17 @@ a {
   ul {
     display: inline-flex;
     list-style: none;
-    padding-top: 3px;
     li {
       margin-right: 60px;
       cursor: pointer;
       &.active {
         color: $primary_blue;
+      }
+
+      > span {
+        padding: 0 30px;
+        line-height: 82px;
+        display: inline-block;
       }
     }
   }

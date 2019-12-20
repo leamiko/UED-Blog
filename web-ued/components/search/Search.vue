@@ -1,8 +1,8 @@
 <template>
   <div class="cus-flex">
     <el-input v-if="!isAsync" class="input_content" v-model="value" :placeholder="placeholder"></el-input>
-    <el-select v-if="isAsync" class="input_content" v-model="selectValue" filterable remote :placeholder="placeholder"
-      :no-data-text="'暂无数据'" :remote-method="remoteMethod" :loading="loading" @change="goDetail">
+    <el-select v-if="isAsync" class="input_content" v-model="selectValue" filterable :placeholder="placeholder"
+      remote :remote-method="remoteMethod" :loading="loading" @change="goDetail" :no-data-text="'暂无数据'">
       <el-option v-for="item in options" :key="item._id" :label="item.title" :value="item._id">
       </el-option>
     </el-select>
@@ -45,7 +45,7 @@ export default {
       }
     },
     async remoteMethod(query) {
-      if (query !== '') {
+      if (query) {
         this.loading = true;
         const parmas = {
           pageIndex: 1,

@@ -154,6 +154,10 @@ export default {
         this.resultMsg = '发布成功!';
         this.resultImage = successImg;
         this.innerVisible = true;
+        setTimeout(() => {
+          this.innerVisible = false;
+          this.handleClose();
+        }, 1000);
       } else {
         this.resultError = res.data.message;
         this.resultMsg = '发布失败!';
