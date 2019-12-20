@@ -1,5 +1,8 @@
 {
     "tslint.autoFixOnSave": true,
     "eslint.autoFixOnSave": true,
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    }
 }

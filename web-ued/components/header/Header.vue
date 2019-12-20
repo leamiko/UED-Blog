@@ -10,13 +10,25 @@
           <h2 class="inline middle">{{ custom.title }}</h2>
         </router-link>
         <ul>
-          <li class="pointer" v-for="(item, index) in custom.menu" :key="index" :class="{'active': activeLabel == item.label}">
-            <span @click="pathRoute(item)" class="font-size-18" v-if="!item.children || (item.children && item.children.length == 0)">{{ item.label }}</span>
-            <span @mouseenter="item.show = true" @mouseleave="item.show = false" class="font-size-18 cus-relative" v-else>
+          <li class="pointer"
+              v-for="(item, index) in custom.menu"
+              :key="index"
+              :class="{'active': activeLabel == item.label}">
+            <span @click="pathRoute(item)"
+                  class="font-size-18"
+                  v-if="!item.children || (item.children && item.children.length == 0)">{{ item.label }}</span>
+            <span @mouseenter="item.show = true"
+                  @mouseleave="item.show = false"
+                  class="font-size-18 cus-relative"
+                  v-else>
               {{ item.label }}
               <el-collapse-transition>
-                <div v-if="item.show" class="cus-absolute header-menu--child">
-                  <div v-for="(child, cIndex) in item.children" :key="child.label + cIndex" @click="pathRoute(child)" class="font-size--xs">{{ child.label }}</div>
+                <div v-if="item.show"
+                     class="cus-absolute header-menu--child">
+                  <div v-for="(child, cIndex) in item.children"
+                       :key="child.label + cIndex"
+                       @click="pathRoute(child)"
+                       class="font-size--xs">{{ child.label }}</div>
                 </div>
               </el-collapse-transition>
             </span>
@@ -48,10 +60,13 @@
                @mouseenter="showMsg = true"
                @mouseleave="showMsg = false"
                v-if="$store.state.flag!==null">
-               <span v-if="userName">{{userName}}</span><span v-else>{{account}}</span>
-               <img v-if="avatar" :src="avatar" />
-               <img v-else src="../../assets/img/image/avarot-default.png" alt="">
-               </div>
+            <span v-if="userName">{{userName}}</span><span v-else>{{account}}</span>
+            <img v-if="avatar"
+                 :src="avatar" />
+            <img v-else
+                 src="../../assets/img/image/avarot-default.png"
+                 alt="">
+          </div>
           <!-- <el-button
             type="text"
             @click="infoShow = true"
@@ -68,7 +83,8 @@
                       @titleChanged="registerTitle($event)"
                       @modalChanged="modalChanged($event)"></my-login>
             <my-register v-show="!$store.state.isLogin"
-                         @titleChanged="loginTitle($event)" @modalChanged="modalChanged($event)"></my-register>
+                         @titleChanged="loginTitle($event)"
+                         @modalChanged="modalChanged($event)"></my-register>
           </el-dialog>
           <!-- <router-link
           :to="'login'"
@@ -153,16 +169,18 @@ export default {
       }
     }
   },
+  beforeMount () {
+    this.isLogin();
+    this.wxLogin();
+  },
   mounted () {
+    this.isLogin();
+    this.wxLogin();
     if (this.innerStyle) {
       Object.keys(this.innerStyle).forEach(key => {
         this.$refs.header.style[key] = this.innerStyle[key];
       });
     }
-  },
-  created () {
-    this.isLogin();
-    this.wxLogin();
   },
   methods: {
     handleClose () {
@@ -188,6 +206,12 @@ export default {
       );
       localStorage.removeItem("user");
       this.$store.commit("flag", null);
+      // 提示注销成功
+      this.$notify({
+        title: '退出账号',
+        message: '账号退出成功！',
+        type: 'success'
+      });
       // 判断是否在打码处
       if (this.$route.path.indexOf('/coding') >= 0) {
         this.$router.push({
@@ -244,7 +268,7 @@ export default {
       return false;
     },
     // 控制路由跳转
-    pathRoute(val) {
+    pathRoute (val) {
       if (val.isAuth && !this.$store.state.flag) {
         this.$store.commit("ChangeRedirect", val.redirectUrl);
         this.modalLogin();
