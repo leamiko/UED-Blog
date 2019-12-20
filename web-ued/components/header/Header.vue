@@ -337,8 +337,7 @@ a {
     display: inline-flex;
     list-style: none;
     li {
-      margin-right: 60px;
-      cursor: pointer;
+
       &.active {
         color: $primary_blue;
       }

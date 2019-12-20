@@ -71,7 +71,7 @@
     }
 </style>
 <script>
-    import * as custom from "../../assets/js/custom.config";
+    import * as custom from "@/assets/js/custom.config";
     export default {
         props: {
             isShow: {
@@ -134,7 +134,7 @@
                         } else {
                          this.$set(e, 'isSelect', false)
                         }
-                        
+
                     })
                 }
 
