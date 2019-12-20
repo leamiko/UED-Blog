@@ -11,7 +11,7 @@ module.exports = {
       { label: '写字', redirectUrl: '/writing' },
       { label: '打码', redirectUrl: '', isAuth: true, children: [
         { label: 'bug避坑', redirectUrl: '/coding', isAuth: true, disabled: false },
-        { label: '正则表达式', redirectUrl: '', isAuth: true, disabled: false }
+        { label: '正则表达式', redirectUrl: '/coding/regular', isAuth: true, disabled: false }
       ], show: false},
       { label: '撸图', redirectUrl: '/pointing' },
       { label: '学习', redirectUrl: '/' }
