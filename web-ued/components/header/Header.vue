@@ -153,16 +153,16 @@ export default {
       }
     }
   },
+  beforeMount () {
+    this.isLogin();
+    this.wxLogin();
+  },
   mounted () {
     if (this.innerStyle) {
       Object.keys(this.innerStyle).forEach(key => {
         this.$refs.header.style[key] = this.innerStyle[key];
       });
     }
-  },
-  created () {
-    this.isLogin();
-    this.wxLogin();
   },
   methods: {
     handleClose () {
@@ -188,6 +188,12 @@ export default {
       );
       localStorage.removeItem("user");
       this.$store.commit("flag", null);
+      // 提示注销成功
+      this.$notify({
+        title: '退出账号',
+        message: '账号退出成功！',
+        type: 'success'
+      });
       // 判断是否在打码处
       if (this.$route.path.indexOf('/coding') >= 0) {
         this.$router.push({
