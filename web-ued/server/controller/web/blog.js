@@ -8,6 +8,7 @@ var mongoose = require('mongoose')
 //blog详情
 exports.getBlog = async function(req, res) {
   const bid = req.query.blogId
+  const userId = req.query.userId
   const whereBlog = {
     _id: bid
   }
@@ -26,7 +27,7 @@ exports.getBlog = async function(req, res) {
     }
     const userInfo = await User.findById(blog.userId)
     const whereLike = {
-      userId: blog.userId,
+      userId: userId,
       blogId: blog._id
     }
     Like.findOne(whereLike, function(err, like) {
