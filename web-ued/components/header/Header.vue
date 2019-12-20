@@ -13,10 +13,11 @@
           <li v-for="(item, index) in custom.menu"
               :key="index"
               :class="{'active': activeLabel === item.label}">
-              <span @click="pathRoute(item)" class="font-size-18">{{ item.label }}</span>
+            <span @click="pathRoute(item)"
+                  class="font-size-18">{{ item.label }}</span>
             <!-- <router-link :to="item.redirectUrl" class="font-size-18">{{ item.label }}</router-link> -->
           </li>
-           <!-- <li >
+          <!-- <li >
             <router-link :to="'/coding/regular'" class="font-size-18">正则</router-link>
           </li> -->
         </ul>
@@ -46,10 +47,13 @@
                @mouseenter="showMsg = true"
                @mouseleave="showMsg = false"
                v-if="$store.state.flag!==null">
-               <span v-if="userName">{{userName}}</span><span v-else>{{account}}</span>
-               <img v-if="avatar" :src="avatar" />
-               <img v-else src="../../assets/img/image/avarot-default.png" alt="">
-               </div>
+            <span v-if="userName">{{userName}}</span><span v-else>{{account}}</span>
+            <img v-if="avatar"
+                 :src="avatar" />
+            <img v-else
+                 src="../../assets/img/image/avarot-default.png"
+                 alt="">
+          </div>
           <!-- <el-button
             type="text"
             @click="infoShow = true"
@@ -66,7 +70,8 @@
                       @titleChanged="registerTitle($event)"
                       @modalChanged="modalChanged($event)"></my-login>
             <my-register v-show="!$store.state.isLogin"
-                         @titleChanged="loginTitle($event)" @modalChanged="modalChanged($event)"></my-register>
+                         @titleChanged="loginTitle($event)"
+                         @modalChanged="modalChanged($event)"></my-register>
           </el-dialog>
           <!-- <router-link
           :to="'login'"
@@ -153,15 +158,13 @@ export default {
     }
   },
   mounted () {
+    this.isLogin();
+    this.wxLogin();
     if (this.innerStyle) {
       Object.keys(this.innerStyle).forEach(key => {
         this.$refs.header.style[key] = this.innerStyle[key];
       });
     }
-  },
-  created () {
-    this.isLogin();
-    this.wxLogin();
   },
   methods: {
     handleClose () {
@@ -243,7 +246,7 @@ export default {
       return false;
     },
     // 控制路由跳转
-    pathRoute(val) {
+    pathRoute (val) {
       if (val.isAuth && !this.$store.state.flag) {
         this.$store.commit("ChangeRedirect", val.redirectUrl);
         this.modalLogin();
@@ -314,6 +317,7 @@ a {
     padding-top: 3px;
     li {
       margin-right: 60px;
+      cursor: pointer;
       &.active {
         color: $primary_blue;
       }
