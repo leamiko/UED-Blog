@@ -363,7 +363,7 @@ export default {
         `${process.env.BASE_URL}/web_api/likeBlog`,
         praiseParams
       );
-      console.log(data);
+      // console.log(data);
     },
     //获取评论列表
     async getBlogComment() {
