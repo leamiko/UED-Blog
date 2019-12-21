@@ -48,7 +48,9 @@ exports.getBlog = async function(req, res) {
           data: {
             blog: blog,
             userInfo: userInfo,
-            like: like
+            like: {
+              count: 0
+            }
           }
         })
       }
