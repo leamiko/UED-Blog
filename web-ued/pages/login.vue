@@ -121,7 +121,7 @@ export default {
         state: "",
         style: "",
         href:
-          "data:text/css;base64,Ly8gLmltcG93ZXJCb3ggew0KLy8gICAucXJjb2RlIHsNCi8vICAgICB3aWR0aDogMTgwcHg7DQovLyAgICAgaGVpZ2h0OiAxODBweDsNCi8vICAgICBtYXJnaW4tdG9wOiAwcHg7DQovLyAgICAgbWFyZ2luLXJpZ2h0OiAxMThweDsNCi8vICAgICBib3JkZXI6IDFweCBzb2xpZCAjZTJlMmUyOw0KLy8gICB9DQovLyAgIC5pbmZvew0KLy8gICAgIGRpc3BsYXk6IG5vbmU7DQovLyAgIH0NCi8vICAgLnRpdGxlew0KLy8gICAgIGRpc3BsYXk6IG5vbmU7DQovLyAgIH0NCi8vIH0NCi5pbXBvd2VyQm94IC5xcmNvZGV7DQogIHdpZHRoOiAxODBweDsNCiAgaGVpZ2h0OiAxODBweDsNCiAgbWFyZ2luLXRvcDogMHB4Ow0KICBtYXJnaW4tcmlnaHQ6IDExOHB4Ow0KICBib3JkZXI6IDFweCBzb2xpZCAjZTJlMmUyOw0KfQ0KLmltcG93ZXJCb3ggLmluZm97DQogIGRpc3BsYXk6IG5vbmU7DQp9DQouaW1wb3dlckJveCAudGl0bGV7DQogIGRpc3BsYXk6IG5vbmU7DQp9"
+          "data:text/css;base64,LmltcG93ZXJCb3ggLnFyY29kZXsNCiAgd2lkdGg6IDE4MHB4Ow0KICBoZWlnaHQ6IDE4MHB4Ow0KICBtYXJnaW4tdG9wOiAwcHg7DQogIG1hcmdpbi1yaWdodDogMTE4cHg7DQp9DQouaW1wb3dlckJveCAuaW5mb3sNCiAgZGlzcGxheTogbm9uZTsNCn0NCi5pbXBvd2VyQm94IC50aXRsZXsNCiAgZGlzcGxheTogbm9uZTsNCn0="
       });
     },
     //注册框隐藏登录框显示

@@ -317,6 +317,7 @@
     methods: {
       //跳转明细页
       goDetail(e) {
+        console.log(e);
         var detailParams = {
           detailId: e._id,
           imgUrl: e.imgUrl
@@ -416,7 +417,7 @@
             for (let i = 0; i < this.topList.length; i++) {
               this.topList[i].blog.imgUrl = this.topImg[i];
             }
-            console.log(this.topList)
+            // console.log(this.topList)
           }
         }
       },
