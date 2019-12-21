@@ -7,7 +7,7 @@
             <img src="@/assets/img/icon/praise_small_icon.svg" v-show="praiseNum === 0" />
             <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0" />
           </div>
-          <div class="praise_badge_small" v-show="praiseNum > 0">+{{praiseNum}}</div>
+          <div class="praise_badge_small" v-show="praiseNum > 0">+{{praiseNum>50?50:praiseNum}}</div>
           <div class="support_text">
             <span>点赞</span>
             <span class="separate inline"></span>
@@ -52,12 +52,12 @@
           </div>
           <div class="praise" :class="{'praise_num50':praiseNum === 50}">
             <div class="praise_img pointer" id="praise" @click="praise()">
-              <img src="@/assets/img/icon/praise.png" v-show="praiseNum === 0" />
-              <img src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0 && praiseNum !== 50" />
+              <img class="transition" src="@/assets/img/icon/praise.png" v-show="praiseNum === 0" />
+              <img class="transition" src="@/assets/img/icon/praise_null.svg" v-show="praiseNum > 0 && praiseNum !== 50" />
               <img class="transition" src="@/assets/img/icon/praise_50.svg" v-show="praiseNum === 50" />
             </div>
-            <div class="praise_badge" v-show="praiseNum > 0 && praiseNum !== 50">+{{praiseNum}}</div>
-            <div class="praise_num">&nbsp;&nbsp;{{praiseNum?praiseNum:0}}个赞</div>
+            <div class="praise_badge transition" v-show="praiseNum > 0 && praiseNum !== 50">+{{praiseNum>50?50:praiseNum}}</div>
+            <div class="praise_num transition">&nbsp;&nbsp;{{50>praiseNum>0?praiseNum:praiseNum>50?50:0}}个赞</div>
           </div>
         </div>
         <div class="interest inline">
@@ -90,28 +90,28 @@
               </el-input>
               <div class="text-right margin_top_15">
                 <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
-                <el-button type="primary" round size="small" @click="submitFistCom()" v-bind:class="{comment_btn_gray: !haveFirstComContent}">&emsp;评&nbsp;论&emsp;</el-button>
+                <el-button type="primary" round size="small" @click="submitFistCom()" v-bind:class="{comment_btn_gray: !haveFirstComContent}">&emsp;评&nbsp;论&emsp;零级</el-button>
               </div>
             </div>
             <hr class="comment_hr" />
           </div>
           <div class="comment_text margin_top_40" v-for="(firstItem,firstIndex) in commentList" :key="firstIndex">
-            <div class="current_user inline">
+            <div class="current_user inline" v-if="firstItem.userInfo.length!=0">
               <img :src="firstItem.userInfo[0].avatar" />
             </div>
             <div class="current_edit inline">
               <div @mouseenter="mouseHoverDelComBtn(firstIndex, firstItem.commentUserId, true)" @mouseleave="mouseHoverDelComBtn(firstIndex, firstItem.commentUserId, false)">
-                <div class="comment_unit_name" v-if="firstItem.anonymous==false">{{user.nickName}}</div>
+                <div class="comment_unit_name" v-if="firstItem.anonymous==false&&firstItem.userInfo.length!=0">{{firstItem.userInfo[0].nickName}}</div>
                 <div class="comment_unit_content">{{firstItem.content}}</div>
                 <div class="comment_unit_bottom">
                   <div class="comment_unit_bottom_left">
-                    <div class="comment_unit_bottom_btn" @mouseenter="mouseHoverSupComBtn(firstIndex,true)" @mouseleave="mouseHoverSupComBtn(firstIndex,false)" @click="commentLike(firstItem._id)" v-bind:class="{comment_unit_bottom_btn_selected: firstItem.firstComIsLike}">
-                      <img v-if="firstItem.firstComIsLike || (firstComIndex === firstIndex && supportComBtnIsHover)" src="@/assets/img/icon/icon-support-hover.svg" alt />
-                      <img v-if="!(firstItem.firstComIsLike || (firstComIndex === firstIndex && supportComBtnIsHover))" src="@/assets/img/icon/icon-support.svg" alt />
-                      {{firstItem.likeNum}}
+                    <div class="comment_unit_bottom_btn" @mouseenter="mouseHoverSupComBtn(firstIndex,true)" @mouseleave="mouseHoverSupComBtn(firstIndex,false)" @click="commentLike(firstItem)">
+                      <img v-if=" (firstComIndex === firstIndex && supportComBtnIsHover)" src="@/assets/img/icon/icon-support-hover.svg" alt />
+                      <img v-if="! (firstComIndex === firstIndex && supportComBtnIsHover)" src="@/assets/img/icon/icon-support.svg" alt />
+                      {{firstItem.likeNum}}aaa
                     </div>
-                    <div class="comment_unit_bottom_btn margin_left_15" @click="replyFirstComBtn(firstItem)" v-bind:class="{comment_unit_bottom_btn_selected: firstItem.isShowReplyFirstCom}">回复</div>
-                    <div class="comment_unit_bottom_btn margin_left_15" v-if="user._id ==firstItem.userInfo[0]._id && (firstComIndex == firstIndex && deleteComBtnIsHover)" @click="deleteFirstCom(firstItem._id)">删除</div>
+                    <div class="comment_unit_bottom_btn margin_left_15" @click="replyFirstComBtn(firstItem)" v-bind:class="{comment_unit_bottom_btn_selected: firstItem.isShowReplyFirstCom}">回复1</div>
+                    <div class="comment_unit_bottom_btn margin_left_15" v-if="firstItem.userInfo.length!=0&&user._id ==firstItem.userInfo[0]._id && (firstComIndex == firstIndex && deleteComBtnIsHover)" @click="deleteFirstCom(firstItem._id)">删除</div>
                   </div>
                   <div class="comment_unit_bottom_right">{{firstItem.createAt | formatDateDay}}</div>
                 </div>
@@ -123,8 +123,8 @@
                 <div class="current_edit inline">
                   <el-input type="textarea" @input="onEditorChange2" v-model="secondComContent" maxlength="800" :placeholder="'我有一个大胆的想法～'"></el-input>
                   <div class="text-right margin_top_15">
-                    <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
-                    <el-button type="primary" round size="small" @click="submitSecondCom(firstItem)">&emsp;评&nbsp;论&emsp;</el-button>
+                    <el-checkbox v-model="firstItem.isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
+                    <el-button type="primary" round size="small" @click="submitSecondCom(firstItem)" v-bind:class="{comment_btn_gray: !haveSecondComContent}">&emsp;评&nbsp;论&emsp;一级</el-button>
                   </div>
                 </div>
               </div>
@@ -132,11 +132,12 @@
               <div v-for="(secondItem, secondIndex) in firstItem.replies" :key="secondIndex">
                 <div class="two_commment_div margin_top_40">
                   <div class="current_user inline">
-                    <img :src="user.avatar" />
+                    <img src="@/assets/img/image/code_presenter.png" v-if="secondItem.anonymous==true" />
+                    <img :src="user.avatar" v-if="secondItem.anonymous==false" />
                   </div>
                   <div class="comment_text inline">
                     <div class="comment_unit_name">
-                      {{user.nickName}}
+                      <span v-if="secondItem.anonymous==false">{{user.nickName}}</span>
                       <span>回复</span>
                       {{firstItem.userInfo[0].nickName}}
                     </div>
@@ -146,7 +147,7 @@
                         <div class="comment_unit_bottom_btn" @click="replyLike(secondItem)" v-bind:class="{comment_unit_bottom_btn_selected: secondItem.secondComIsLike}">
                           <img v-if="secondItem.secondComIsLike " src="@/assets/img/icon/icon-support-hover.svg" alt />
                           <img v-if="!secondItem.secondComIsLike " src="@/assets/img/icon/icon-support.svg" alt />
-                          {{secondItem.likeNum}}
+                          {{secondItem.likeNum}}测试
                         </div>
                         <div class="comment_unit_bottom_btn margin_left_15" @click="replySecondComBtn(secondItem)" v-bind:class="{comment_unit_bottom_btn_selected: secondItem.isShowReplyRecondCom}">回复</div>
                         <div class="comment_unit_bottom_btn margin_left_15" v-if="user._id == firstItem.userInfo[0]._id" @click="deleteReply(secondItem._id)">删除</div>
@@ -163,8 +164,8 @@
                   <div class="current_edit inline">
                     <el-input type="textarea" @input="onEditorChange2" v-model="secondComContent" maxlength="800" :placeholder="'我有一个大胆的想法～'"></el-input>
                     <div class="text-right margin_top_15">
-                      <el-checkbox v-model="isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
-                      <el-button type="primary" round size="small" @click="submitReSecondCom(secondItem,firstItem)">&emsp;评&nbsp;论&emsp;</el-button>
+                      <el-checkbox v-model="secondItem.isAnonymous">匿名只是你穿的保护色～</el-checkbox>&emsp;&emsp;
+                      <el-button type="primary" round size="small" @click="submitReSecondCom(secondItem,firstItem)">&emsp;评&nbsp;论&emsp;二级</el-button>
                     </div>
                   </div>
                 </div>
@@ -238,14 +239,17 @@ export default {
       haveSecondComContent: false, // 监听二级评论内容
       firstCommenterId: "", // 评论列表中一级评论人id
       firstComIndex: "", // 评论列表中一级评论数组下标
-      user: "",
+      user: {
+        avatar: ""
+      },
       isComment: false,
       intrestingList: [] // 感兴趣列表
     };
   },
+  created() {},
   mounted() {
     this.user = JSON.parse(localStorage.getItem("user")); // 获取当前用户信息
-    // console.log(this.user, "user");
+    console.log(this.user, "user");
     if (this.user) {
       this.isComment = true;
       this.getBlogComment();
@@ -270,7 +274,7 @@ export default {
     goIntDetail(id) {
       console.log(id);
       this.$router.push({
-        path: "/writing" 
+        path: "/writing"
       });
     },
     //打开登录框
@@ -283,17 +287,17 @@ export default {
         `${process.env.BASE_URL}/web_api/getWriteIntresting?blogType=${this.detailInfo.blog.blogType}`
       );
       this.intrestingList = res.data.data;
-      console.log(this.intrestingList);
+      // console.log(this.intrestingList);
     },
     //获取详情列表
     async getBlog() {
       const res = await this.$axios.get(
-        `${process.env.BASE_URL}/web_api/getBlog?blogId=${this.detailParams.detailId}`
+        `${process.env.BASE_URL}/web_api/getBlog?blogId=${this.detailParams.detailId}&userId=${this.user._id}`
       );
       this.detailInfo = res.data.data;
       this.praiseNum = this.detailInfo.blog.likeNum;
       this.getWriteIntresting();
-      // console.log(this.detailInfo);
+      console.log(this.detailInfo, "detailInfo");
     },
     // 详情点赞
     async praise() {
@@ -313,16 +317,16 @@ export default {
         `${process.env.BASE_URL}/web_api/likeBlog`,
         praiseParams
       );
+      console.log(data);
     },
     //获取评论列表
     async getBlogComment() {
       const res = await this.$axios.get(
-        `${process.env.BASE_URL}/web_api/getBlogComment?blogId=${this.detailParams.detailId}`
+        `${process.env.BASE_URL}/web_api/getBlogComment?blogId=${this.detailParams.detailId}&userId=${this.user._id}`
       );
       this.commentList = res.data.data;
-      // console.log(this.commentList, "评论列表");
+      console.log(this.commentList, "评论列表");
       this.commentList.forEach(item => {
-        item[`firstComIsLike`] = false;
         item[`isShowReplyFirstCom`] = false;
         item.replies.forEach(x => {
           x[`secondComIsLike`] = false;
@@ -347,6 +351,7 @@ export default {
       if (res.data.status_code === 200) {
         this.getBlogComment();
         this.firstComContent = "";
+        this.haveFirstComContent = false;
       }
     },
     // 监听一级评论框
@@ -377,24 +382,24 @@ export default {
       this.firstComIndex = index;
     },
     // 评论点赞
-    commentLike(comId) {
+    commentLike(item) {
       const params = {
         blogId: this.detailParams.detailId,
-        commentId: comId
+        commentId: item._id,
+        userId: this.user._id
       };
-      this.commentList.forEach(item => {
-        if (item._id === comId && !item.firstComIsLike) {
-          const res = this.$axios.post(
-            `${process.env.BASE_URL}/web_api/commentLike`,
-            params
-          );
-          item.firstComIsLike = !item.firstComIsLike;
-          item.likeNum = item.likeNum + 1;
-        }
-      });
+      if (item.isLike == false) {
+        const res = this.$axios.post(
+          `${process.env.BASE_URL}/web_api/commentLike`,
+          params
+        );
+        item.isLike = true;
+        item.likeNum = item.likeNum + 1;
+      }
     },
     // 回复一级评论按钮
     replyFirstComBtn(e) {
+      this.$forceUpdate();
       e.isShowReplyFirstCom = !e.isShowReplyFirstCom;
     },
     // 删除一级评论
@@ -415,6 +420,7 @@ export default {
 
     //回复一级评论
     async submitSecondCom(firstItem) {
+      if (!this.haveSecondComContent) return;
       const params = {
         replyName: this.user.nickName,
         replyId: this.user._id,
@@ -423,7 +429,7 @@ export default {
         blogId: this.detailParams.detailId,
         commentId: firstItem._id,
         content: this.secondComContent,
-        anonymous: this.isAnonymous
+        anonymous: firstItem.isAnonymous
       };
       const res = await this.$axios.post(
         `${process.env.BASE_URL}/web_api/replyBlog`,
@@ -431,10 +437,13 @@ export default {
       );
       if (res.data.status_code == 200) {
         this.getBlogComment();
+        this.secondComContent = "";
+        this.haveSecondComContent = false;
       }
     },
     // 回复二级评论按钮
     replySecondComBtn(e) {
+      this.$forceUpdate();
       e.isShowReplyRecondCom = !e.isShowReplyRecondCom;
     },
     //回复二级评论
@@ -447,7 +456,7 @@ export default {
         blogId: this.detailParams.detailId,
         commentId: firstItem._id,
         content: this.secondComContent,
-        anonymous: this.isAnonymous
+        anonymous: secondItem.isAnonymous
       };
       const res = await this.$axios.post(
         `${process.env.BASE_URL}/web_api/replyBlog`,
@@ -537,10 +546,10 @@ export default {
   -webkit-animation-timing-function: ease-in;
   -moz-animation-timing-function: ease-in;
   -o-animation-timing-function: ease-in;
-  animation-duration: 0.5s;
-  -webkit-animation-duration: 0.5s;
-  -moz-animation-duration: 0.5s;
-  -o-animation-duration: 0.5s;
+  animation-duration: 1s;
+  -webkit-animation-duration: 1s;
+  -moz-animation-duration: 1s;
+  -o-animation-duration: 1s;
 }
 
 .detail_container {

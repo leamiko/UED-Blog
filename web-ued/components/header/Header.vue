@@ -169,6 +169,10 @@ export default {
       }
     }
   },
+  beforeMount () {
+    this.isLogin();
+    this.wxLogin();
+  },
   mounted () {
     this.isLogin();
     this.wxLogin();
@@ -202,6 +206,12 @@ export default {
       );
       localStorage.removeItem("user");
       this.$store.commit("flag", null);
+      // 提示注销成功
+      this.$notify({
+        title: '退出账号',
+        message: '账号退出成功！',
+        type: 'success'
+      });
       // 判断是否在打码处
       if (this.$route.path.indexOf('/coding') >= 0) {
         this.$router.push({
@@ -327,8 +337,7 @@ a {
     display: inline-flex;
     list-style: none;
     li {
-      margin-right: 60px;
-      cursor: pointer;
+
       &.active {
         color: $primary_blue;
       }
