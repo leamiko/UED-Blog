@@ -57,7 +57,7 @@
               <img class="transition" src="@/assets/img/icon/praise_50.svg" v-if="detailInfo.like&&detailInfo.like.count == 50&&praiseNum<51" />
             </div>
             <div class="praise_badge transition" v-if="(detailInfo.like&&detailInfo.like.count > 0 && detailInfo.like.count != 50)||(praiseNum>50)">+{{detailInfo.like.count>50?50:detailInfo.like.count}}</div>
-            <div class="praise_num transition">&nbsp;&nbsp;{{allPraiseNum}}个赞</div>记录点赞
+            <div class="praise_num transition">&nbsp;&nbsp;{{allPraiseNum}}个赞</div>
           </div>
         </div>
         <div class="interest inline">
