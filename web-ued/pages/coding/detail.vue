@@ -511,6 +511,8 @@ export default {
               message: data.message
             });
           }
+          const tagList = this.detailInfo.tags;
+          this.getInterestInfo(tagList);
           setTimeout(() => {
             this.loading = false;
             this.detailShow = true;
@@ -534,12 +536,13 @@ export default {
           title: "错误",
           message: res.data.message
         });
-      }
-      const tagList = this.detailInfo.tags;
-      this.getInterestInfo(tagList);
+      }      
     },
     // 获取感兴趣信息
     async getInterestInfo(tagList) {
+      this.interestOriginal = [];
+      this.interestUnfiltered = [];
+      this.interestList = [];
       let listParams = {
         pageIndex: 1,
         pageSize: 10,

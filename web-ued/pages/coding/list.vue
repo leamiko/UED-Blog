@@ -120,6 +120,14 @@ export default {
   mounted() {
     this.getInfo();
   },
+  watch: {
+    askShow(newVal, oldVal) {
+      if (oldVal === true && newVal === false) {
+        this.pageIndex = 1;
+        this.getInfo();
+      }      
+    }
+  },
   methods: {
     // 获取列表信息
     async getInfo () {
