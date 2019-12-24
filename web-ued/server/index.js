@@ -7,6 +7,9 @@ var system_api = require('./routes/system_api')
 var wxapp_api = require('./routes/wxapp_api')
 const bodyParser = require('body-parser')
 var cors = require('cors')
+const schedule = require('node-schedule')
+const web_blog = require('./controller/web/blog')
+const web_bugCtrler = require('./controller/web/bug')
 
 const app = express()
 
@@ -105,6 +108,16 @@ var isLogin = function(req, res, next) {
   }
 }
 app.use(isLogin)
+
+const scheduleCronstyle = () => {
+  //每分钟的第30秒定时执行一次:
+  schedule.scheduleJob('30 1 1 * * *', () => {
+    web_blog.rankTask()
+    web_bugCtrler.rankTask()
+  })
+}
+
+scheduleCronstyle()
 
 // 错误处理中间件
 app.use((err, req, res, next) => {

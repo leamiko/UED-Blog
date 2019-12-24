@@ -59,7 +59,9 @@ module.exports = {
     // 富文本编辑器样式
     '~/assets/style/quill/quill.core.css',
     // '~/assets/style/quill/quill.bubble.css',
-    '~/assets/style/quill/quill.snow.css'
+    '~/assets/style/quill/quill.snow.css',
+    // 动画
+    '~/assets/style/animate.css'
   ],
   /*
    ** Plugins to load before mounting the App
