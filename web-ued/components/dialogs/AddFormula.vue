@@ -3,11 +3,15 @@
     title
     :visible.sync="visible"
     width="40%"
-    :show-close="false"
     :modal="true"
+    :before-close="cancelModal"
+    destroy-on-close
+    append-to-body
     :close-on-click-modal="false"
     :close-on-press-escape="false"
   >
+    <img src="@/assets/img/bg/bg-dialog-reg.png" slot="title" class="dialog-img" />
+
     <el-form
       :label-position="labelPosition"
       :model="form1"
@@ -29,8 +33,10 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="cancelModal">取 消</el-button>
-      <el-button type="primary" @click="submitForm('form1')">保存</el-button>
+      <!-- <el-button @click="cancelModal">取 消</el-button>
+      <el-button type="primary" @click="submitForm('form1')">保存</el-button>-->
+      <button @click="cancelModal" class="cancel-btn">取 消</button>
+      <button type="primary" @click="submitForm('form1')" class="test-btn">测试匹配</button>
     </div>
   </el-dialog>
 </template>
@@ -115,6 +121,48 @@ export default {
 </script>
 <style lang="scss" scoped>
 .demo-ruleForm {
+  padding: 30p x 20px 0;
+}
+.demo-ruleForm {
   padding: 30px 20px 0;
 }
+.dialog-img {
+  width: 771px;
+  margin: -21px;
+}
+.cancel-btn {
+  color: #9199a1;
+  border-radius: 20px;
+  height: 30px;
+  line-height: 28px;
+  background: #f2f5f6;
+  margin-right: 15px;
+  width: 80px;
+  border: none;
+}
+.cancel-btn:focus {
+  outline: none;
+}
+.test-btn {
+  color: #fff;
+  border: 1px solid #3376ff;
+  border-radius: 20px;
+  height: 30px;
+  line-height: 27px;
+  background: #3376ff;
+  width: 80px;
+}
+.test-btn:focus {
+  outline: none;
+}
+.dialog-footer {
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
 </style>
+<style lang="scss">
+.el-form-item__label {
+  color: #000;
+  font-size: 15px;
+  font-weight: 600;
+}
