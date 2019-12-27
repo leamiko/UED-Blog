@@ -175,4 +175,7 @@ export default {
     margin-left: 30px;
   }
 }
+.text-right{
+  margin: 25px 0 40px 0;
+}
 </style>
