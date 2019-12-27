@@ -42,7 +42,7 @@
             <span class="reg_title">正则表达式</span>
             <div class="reg_btn">
               <button class="online-verify" @click="onlineVerify()">在线验证</button>
-              <button class="add-verify" @click="form1Visible=true">新增</button>
+              <button class="add-verify" type="primary" round size="small" @click="form1Visible=true">新增</button>
             </div>
             <el-table :data="tableData" class="data_table">
               <el-table-column label="名称" prop="regularName">
@@ -213,6 +213,8 @@
   height: 6px;
   border-radius: 50%;
   vertical-align: middle;
+  margin-right: 2px;
+  margin-top: -2px;
 }
 
 .green-circle {
@@ -222,6 +224,8 @@
   background: #52c41a;
   border-radius: 50%;
   vertical-align: middle;
+  margin-right: 2px;
+  margin-top: -2px;
 }
 
 .right_detail {
@@ -423,6 +427,10 @@ export default {
       // this.reg = "";
       // this.formVisible = true;
       // this.disabled = false;
+      this.$router.push({
+        path: "/coding/verify"
+      });
+      return;
     },
 
     // 截取正则描述前十个字符串
