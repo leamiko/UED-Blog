@@ -31,7 +31,7 @@
               <div class="detail_presenter">
                 <div class="presenter_head flt inline">
                   <img v-show="!detailInfo.anonymous && detailInfo.headUrl!==null" :src="detailInfo.headUrl">
-                  <img v-show="detailInfo.anonymous || detailInfo.headUrl===null" src="@/assets/img/icon/anonymous_icon.jpg">
+                  <img v-show="detailInfo.anonymous || detailInfo.headUrl===null" src="@/assets/img/image/avarot-default.png">
                 </div>
                 <span
                   class="presenter_info inline"
@@ -95,6 +95,7 @@
               <div
                 class="interest_info pointer"
                 v-for="i in interestList"
+                :key="i._id"
                 @click="showDetail(i._id)"
               >{{i.title}}</div>
             </div>
@@ -107,7 +108,7 @@
             <!-- 发表一级评论 -->
             <div class="comment_text">
               <div class="current_user inline">
-                <img src="@/assets/img/image/code_presenter.png" />
+                <img src="@/assets/img/image/avarot-default.png" />
               </div>
               <div class="current_edit inline">
                 <my-editor
@@ -138,11 +139,11 @@
             >
               <div class="current_user inline">
                 <img
-                  src="@/assets/img/image/code_presenter.png"
+                  src="@/assets/img/image/avarot-default.png"
                   v-if="!firstItem.authorInfo.avatar || firstItem.anonymous"
                 />
                 <img
-                  :src="!(!firstItem.authorInfo.avatar || firstItem.anonymous)"
+                  :src="firstItem.authorInfo.avatar"
                   v-if="firstItem.authorInfo.avatar"
                 />
               </div>
@@ -150,7 +151,7 @@
                 <!-- 一级评论 -->
                 <div class="first_comment_box">
                   <div class="comment_unit_name comment_unit_name_adopt">
-                    {{firstItem.commenterName}}
+                    {{firstItem.anonymous?'匿名':firstItem.commenterName}}
                     <img
                       src="@/assets/img/image/comment_adopt.png"
                       alt
@@ -215,7 +216,7 @@
                 <!-- 发表二级评论(回复一级评论) -->
                 <div class="margin_top_40" v-if="firstItem.isShowReplyFirstCom">
                   <div class="current_user inline">
-                    <img src="@/assets/img/image/code_presenter.png" />
+                    <img src="@/assets/img/image/avarot-default.png" />
                   </div>
                   <div class="current_edit inline">
                     <my-editor
@@ -245,7 +246,7 @@
                   >
                     <div class="current_user inline">
                       <img
-                        src="@/assets/img/image/code_presenter.png"
+                        src="@/assets/img/image/avarot-default.png"
                         v-if="!secondItem.authorInfo.avatar || secondItem.anonymous"
                       />
                       <img
@@ -255,9 +256,9 @@
                     </div>
                     <div class="comment_text inline">
                       <div class="comment_unit_name">
-                        {{secondItem.replyerName}}
+                        {{secondItem.anonymous?'匿名':secondItem.replyerName}}
                         <span>回复</span>
-                        {{secondItem.replyTargetName}}
+                        {{secondItem.targetAnonymous&&secondItem.replyTargetName==''?'匿名':secondItem.replyTargetName}}
                       </div>
                       <div class="comment_unit_content">{{secondItem.content}}</div>
                       <div class="comment_unit_bottom">
@@ -312,7 +313,7 @@
                   >
                     <div class="current_user inline">
                       <img
-                        src="@/assets/img/image/code_presenter.png"
+                        src="@/assets/img/image/avarot-default.png"
                         v-if="!secondItem.authorInfo.avatar || secondItem.anonymous"
                       />
                       <img
@@ -322,9 +323,9 @@
                     </div>
                     <div class="comment_text inline">
                       <div class="comment_unit_name">
-                        {{secondItem.replyerName}}
+                        {{secondItem.anonymous?'匿名':secondItem.replyerName}}
                         <span>回复</span>
-                        {{secondItem.replyTargetName}}
+                        {{secondItem.targetAnonymous&&secondItem.replyTargetName==''?'匿名':secondItem.replyTargetName}}
                       </div>
                       <div class="comment_unit_content">{{secondItem.content}}</div>
                       <div class="comment_unit_bottom">
@@ -377,7 +378,7 @@
                     :key="secondItem._id"
                   >
                     <div class="current_user inline">
-                      <img src="@/assets/img/image/code_presenter.png" />
+                      <img src="@/assets/img/image/avarot-default.png" />
                     </div>
                     <div class="current_edit inline">
                       <my-editor
@@ -688,7 +689,8 @@ export default {
         replyTargetId: replyType === 1 ? item.commenterId : item.replyerId,
         bugId: item.bugId,
         content: item.replyComContent,
-        anonymous: item.isAnonymous ? item.isAnonymous : "false"
+        anonymous: item.isAnonymous ? item.isAnonymous : "false",
+        targetAnonymous: item.anonymous
       };
       const res = await this.$axios.post(
         `${process.env.BASE_URL}/web_api/replyBug`,

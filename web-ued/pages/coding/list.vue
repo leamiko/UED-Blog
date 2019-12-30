@@ -30,7 +30,7 @@
           <!-- 无结果 -->
           <div class="code_noresult bg-white" v-show="noData">
             <div class="noresult_img">
-              <img src="@/assets/img/image/image-search-noresult-image.png" >
+              <img src="@/assets/img/image/image-search-noresult-image.png">
             </div>
             <div class="noresult_prompt">
               如你所料，果然没搜到！不妨试试
@@ -47,12 +47,12 @@
                 <div class="pointer" @click="showDetail(x._id)">
                   <div class="content_title">{{x.title}}</div>
                   <div class="content_question" v-html="x.content"></div>
-                </div>                
+                </div>
                 <div class="content_mark inline">
                   <div class="presenter flt">
                     <div class="presenter_head flt inline">
                       <img v-if="!x.anonymous && x.authorInfo.avatar!=='' && x.authorInfo.avatar!==null" :src="x.authorInfo.avatar">
-                      <img v-else-if="x.anonymous || x.authorInfo.avatar==='' || x.authorInfo.avatar===null" src="@/assets/img/icon/anonymous_icon.jpg">
+                      <img v-else-if="x.anonymous || x.authorInfo.avatar==='' || x.authorInfo.avatar===null" src="@/assets/img/image/avarot-default.png">
                     </div>
                     <span class="presenter_info inline">{{x.authorInfo.nickName}} · {{x.createAt | formatDateDay}}</span>
                     <div class="mark_tags inline">
@@ -95,7 +95,7 @@ export default {
     QuizDialog,
     MyTag
   },
-  data() {
+  data () {
     return {
       loading: true,
       className: 'custom-dialog',
@@ -105,9 +105,9 @@ export default {
       typeObject: custom.search.list[0], // 二级条目
       searchType: [], // 条目类别
       stateList: [
-        {id: '0', text: '全部', state: null, isActive: true},
-        {id: '1', text: '已解决', state: 'true', isActive: false},
-        {id: '2', text: '未解决', state: 'false', isActive: false},
+        { id: '0', text: '全部', state: null, isActive: true },
+        { id: '1', text: '已解决', state: true, isActive: false },
+        { id: '2', text: '未解决', state: false, isActive: false },
       ],
       solveState: null, // 解决状态
       noData: true, // 无数据
@@ -117,15 +117,15 @@ export default {
       count: '', // bug总条数
     }
   },
-  mounted() {
+  mounted () {
     this.getInfo();
   },
   watch: {
-    askShow(newVal, oldVal) {
+    askShow (newVal, oldVal) {
       if (oldVal === true && newVal === false) {
         this.pageIndex = 1;
         this.getInfo();
-      }      
+      }
     }
   },
   methods: {
@@ -134,24 +134,24 @@ export default {
       let params = {
         pageIndex: this.pageIndex,
         pageSize: 10,
-        filters: { 
+        filters: {
           title: this.searchVal,
-        	bugStatus: this.solveState,
-	        author: "", //作者，置空
-        	tags: this.searchType
+          bugStatus: this.solveState,
+          author: "", //作者，置空
+          tags: this.searchType
         }
       }
       const { data } = await this.$axios.post(`${process.env.BASE_URL}/web_api/GetBugList`, params);
       if (data.status_code === 200) {
-        if(data.data.length > 0) {
+        if (data.data.length > 0) {
           this.noData = false;
           this.bugList = data.data;
-          this.count = data.count;          
+          this.count = data.count;
           setTimeout(() => {
             this.loading = false;
-            this.listShow = true;            
+            this.listShow = true;
           }, 500);
-        } else {          
+        } else {
           setTimeout(() => {
             this.loading = false;
             this.noData = true;
@@ -159,7 +159,7 @@ export default {
               this.listShow = false;
             };
           }, 500);
-        }        
+        }
       } else {
         setTimeout(() => {
           this.loading = false;
@@ -171,24 +171,24 @@ export default {
       }
     },
     // 搜索
-    getSearch(val) {
-      if(val !== '') {
+    getSearch (val) {
+      if (val !== '') {
         this.getInfo();
       }
     },
     // 切换分类
-    changeType(val) {
+    changeType (val) {
       this.typeObject = {};
       this.typeObject = val;
     },
     // 选择分类
-    chooseTag(val) {
+    chooseTag (val) {
       this.searchType = [];
       this.searchType.push(val.name);
       this.getInfo();
     },
     // 切换状态
-    changeState(val) {
+    changeState (val) {
       for (let i = 0; i < this.stateList.length; i++) {
         if (this.stateList[i].id === val.id) {
           this.stateList[i].isActive = true;
@@ -200,7 +200,7 @@ export default {
       this.getInfo();
     },
     // 翻页
-    changePage(page) {
+    changePage (page) {
       this.pageIndex = page;
       this.getInfo();
     },
@@ -214,7 +214,7 @@ export default {
       })
     },
     // 创建
-    handleCommand(command) {
+    handleCommand (command) {
       if (command === 'answer') {
         this.$router.push({
           path: '/coding/solve'
@@ -274,13 +274,13 @@ export default {
           margin-right: 45px;
           .el-link {
             font-weight: 600;
-            .el-link--default{
-              color: #34485E;
+            .el-link--default {
+              color: #34485e;
             }
           }
         }
         .design_classI:active {
-          color: #3376FF;
+          color: #3376ff;
         }
         .design_classII {
           .el-tag.el-tag--info {
@@ -288,14 +288,14 @@ export default {
             margin-top: 16px;
             margin-right: 20px;
             padding: 0 16px;
-            color: #A3B3BF;
+            color: #a3b3bf;
             font-size: 14px;
-            background:#F0F5F9;
-            border-radius:16px;
+            background: #f0f5f9;
+            border-radius: 16px;
             border: none;
           }
           .type_select:active {
-            background: #3376FF; 
+            background: #3376ff;
             color: #ffffff;
           }
         }
@@ -307,11 +307,11 @@ export default {
       height: 218px;
       margin-top: 30px;
       padding-top: 38px;
-      box-shadow:0px 1px 5px 0px rgba(236,236,236,0.5);
+      box-shadow: 0px 1px 5px 0px rgba(236, 236, 236, 0.5);
       .noresult_img {
         width: 234px;
         height: 185px;
-        margin-left: calc((100% - 614px)/2);
+        margin-left: calc((100% - 614px) / 2);
         img {
           width: 100%;
         }
@@ -320,12 +320,12 @@ export default {
         flex: 1;
         margin-top: 60px;
         margin-left: 50px;
-        color: #A0A0A0;
+        color: #a0a0a0;
         .ask_btn {
           margin-left: 20px;
           padding: 6px 19px;
-          color: #3376FF;
-          border: 1px solid #3376FF;
+          color: #3376ff;
+          border: 1px solid #3376ff;
           border-radius: 15px;
         }
         .ask_btn:focus {
@@ -338,12 +338,10 @@ export default {
 
 @media screen and(min-width: 1024px) {
   .my-content {
-
     > div {
       width: 960px;
 
       &:first-child {
-
         > div {
           width: 600px;
         }
@@ -354,12 +352,10 @@ export default {
 
 @media screen and(min-width: 1100px) {
   .my-content {
-
     > div {
       width: 1000px;
 
       &:first-child {
-
         > div {
           width: 720px;
         }
@@ -369,12 +365,10 @@ export default {
 }
 @media screen and(min-width: 1280px) {
   .my-content {
-
     > div {
       width: 1100px;
 
       &:first-child {
-
         > div {
           width: 840px;
         }
@@ -385,12 +379,10 @@ export default {
 
 @media screen and(min-width: 1366px) {
   .my-content {
-
     > div {
       width: 1200px;
 
       &:first-child {
-
         > div {
           width: 922px;
         }
@@ -401,12 +393,10 @@ export default {
 
 @media screen and(min-width: 1440px) {
   .my-content {
-
     > div {
       width: 1200px;
 
       &:first-child {
-
         > div {
           width: 922px;
         }
@@ -417,12 +407,10 @@ export default {
 
 @media screen and(min-width: 1680px) {
   .my-content {
-
     > div {
       width: 1200px;
 
       &:first-child {
-
         > div {
           width: 922px;
         }
@@ -432,12 +420,10 @@ export default {
 }
 @media screen and(min-width: 1920px) {
   .my-content {
-
     > div {
       width: 1200px;
 
       &:first-child {
-
         > div {
           width: 922px;
         }
@@ -448,18 +434,18 @@ export default {
 
 .code_list {
   margin-top: 30px !important;
-  box-shadow: 0px 1px 5px 0px rgba(236,236,236,0.5);
+  box-shadow: 0px 1px 5px 0px rgba(236, 236, 236, 0.5);
   .category_tabs {
     width: 100%;
     text-align: right;
     padding: 30px 40px;
     .category_tab {
-      margin-left:30px;
+      margin-left: 30px;
       font-size: 16px;
-      color: #7D7D7D;
+      color: #7d7d7d;
     }
     .category_tab.active {
-      color: #3376FF;
+      color: #3376ff;
     }
   }
   // 数据
@@ -467,12 +453,12 @@ export default {
     padding: 0 75px;
     .code_content {
       padding: 40px 21px 30px;
-      border-top: 1px solid #EFF3F7;
+      border-top: 1px solid #eff3f7;
       .content_title {
         margin-bottom: 21px;
         font-size: 20px;
         font-weight: 600;
-        color: #34485E;
+        color: #34485e;
       }
       .content_question {
         width: 85%;
@@ -482,7 +468,7 @@ export default {
         color: #394145;
         font-weight: normal;
         font-style: normal;
-        font-family: PingFangSC-Regular,PingFang SC;
+        font-family: PingFangSC-Regular, PingFang SC;
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
@@ -490,7 +476,7 @@ export default {
       }
       .content_mark {
         width: 100%;
-        color: #394A58;
+        color: #394a58;
         .presenter {
           .presenter_head {
             width: 30px;
@@ -508,7 +494,7 @@ export default {
             margin-left: 20px;
             .mark_tag {
               margin-right: 16px;
-              color:#9EADBA;
+              color: #9eadba;
             }
           }
         }
@@ -529,12 +515,13 @@ export default {
     .el-pagination {
       font-weight: normal;
     }
-    .el-pagination.is-background .btn-prev, .el-pagination.is-background .btn-next, .el-pagination.is-background .el-pager li {
-      border: 1px solid #D9D9D9!important;
+    .el-pagination.is-background .btn-prev,
+    .el-pagination.is-background .btn-next,
+    .el-pagination.is-background .el-pager li {
+      border: 1px solid #d9d9d9 !important;
       background: #ffffff;
     }
   }
-
 }
 </style>
 <style lang="scss">
@@ -547,24 +534,32 @@ export default {
   color: #394145;
   font-weight: normal;
   font-style: normal;
-  font-family: PingFangSC-Regular,PingFang SC;
+  font-family: PingFangSC-Regular, PingFang SC;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
   // 统一富文本样式
-  p, ul, ol, li, pre, blockquote, strong, em {
+  p,
+  ul,
+  ol,
+  li,
+  pre,
+  blockquote,
+  strong,
+  em {
     list-style: none;
     padding-left: 0px;
     font-size: 18px;
     color: #394145;
     font-weight: normal;
     font-style: normal;
-    font-family: PingFangSC-Regular,PingFang SC;
+    font-family: PingFangSC-Regular, PingFang SC;
     background: #ffffff;
   }
   // 隐藏富文本中的图片
-  p img, blockquote img {
+  p img,
+  blockquote img {
     display: none;
   }
 }
