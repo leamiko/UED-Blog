@@ -653,7 +653,35 @@ exports.getBlogComment = async function(req, res) {
             '$commentName'
           ]
         },
-        userInfo: { avatar: 1, _id: 1, nickName: 1 }
+        userInfo: {
+          avatar: {
+            $cond: [
+              {
+                $eq: ['$anonymous', true]
+              },
+              '',
+              '$authorInfo.avatar'
+            ]
+          },
+          account: {
+            $cond: [
+              {
+                $eq: ['$anonymous', true]
+              },
+              '',
+              '$authorInfo.account'
+            ]
+          },
+          nickName: {
+            $cond: [
+              {
+                $eq: ['$anonymous', true]
+              },
+              '',
+              '$authorInfo.nickName'
+            ]
+          }
+        }
       }
     },
     {
@@ -700,7 +728,35 @@ exports.getBlogComment = async function(req, res) {
             '$replyName'
           ]
         },
-        userInfo: { avatar: 1, _id: 1, nickName: 1 }
+        userInfo: {
+          avatar: {
+            $cond: [
+              {
+                $eq: ['$anonymous', true]
+              },
+              '',
+              '$authorInfo.avatar'
+            ]
+          },
+          account: {
+            $cond: [
+              {
+                $eq: ['$anonymous', true]
+              },
+              '',
+              '$authorInfo.account'
+            ]
+          },
+          nickName: {
+            $cond: [
+              {
+                $eq: ['$anonymous', true]
+              },
+              '',
+              '$authorInfo.nickName'
+            ]
+          }
+        }
       }
     },
     {

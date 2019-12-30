@@ -31,6 +31,9 @@ var ReplySchema = new Schema(
     },
     anonymous: {
       type: Boolean //是否匿名
+    },
+    parentAnonymous: {
+      type: Boolean //父级是否匿名
     }
   },
   { timestamps: { createdAt: 'createAt', updatedAt: 'updateAt' } }
