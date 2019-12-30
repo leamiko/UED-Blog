@@ -30,7 +30,10 @@ var bugReplySchema = new Schema({
     },
     anonymous: {
         type: Boolean //是否匿名
-    }
+    },
+    targetAnonymous: {
+        type: Boolean //回复目标是否匿名
+    },
 }, {
     timestamps: {
         createdAt: 'createAt',

@@ -110,11 +110,7 @@ exports.GetBugList = async function (req, res, next) {
     }
   }
   try {
-    console.log(1)
-
-    const count = await Bug.countDocuments(filters)
-    console.log(2)
-
+    const count = await Bug.countDocuments(filters);
     const result = await Bug.aggregate(
       [{
           $match: filters
@@ -134,11 +130,12 @@ exports.GetBugList = async function (req, res, next) {
             content: 1,
             bugStatus: 1,
             // bugSolution: 1,
-            userId: {
-              $cond: [{
-                $eq: ["$anonymous", true]
-              }, '', "$userId"]
-            },
+            // userId: {
+            //   $cond: [{
+            //     $eq: ["$anonymous", true]
+            //   }, '', "$userId"]
+            // },
+            userId: 1,
             likeNum: 1,
             viewNum: 1,
             commentNum: 1,
@@ -538,13 +535,18 @@ exports.getBugComment = async function (req, res, next) {
               }, '', "$replyerName"]
             },
             replyerId: 1,
-            replyTargetName: 1,
+            replyTargetName: {
+              $cond: [{
+                $eq: ["$targetAnonymous", true]
+              }, '', "$replyTargetName"]
+            },
             replyTargetId: 1,
             bugId: 1,
             commentId: 1,
             likeNum: 1,
             content: 1,
             anonymous: 1,
+            targetAnonymous: 1,
             createAt: 1,
             authorInfo: {
               avatar: {
@@ -845,7 +847,15 @@ exports.deleteBugComment = async function (req, res, next) {
     const foundThis = await bugComment.findOne(whereComment);
     if (foundThis) {
       if (foundThis.commenterId == req.body.userId) {
-        const delComed = await bugComment.deleteOne(whereComment)
+        const delComed = await bugComment.deleteOne(whereComment);
+        // 更新删除评论后的bug条目的评论数
+        await Bug.where({
+          _id: req.body.bugId
+        }).updateOne({
+          $inc: {
+            commentNum: -1
+          }
+        })
         res.json({
           status_code: 200,
           message: '删除成功！',
@@ -884,7 +894,8 @@ exports.replyBug = async function (req, res, next) {
           replyTargetId: req.body.replyTargetId,
           bugId: req.body.bugId,
           content: req.body.content,
-          anonymous: req.body.anonymous
+          anonymous: req.body.anonymous,
+          targetAnonymous: req.body.targetAnonymous
         }
         const addReplyed = await bugReply.create([reply]);
         res.json({
