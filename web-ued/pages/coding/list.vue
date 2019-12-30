@@ -106,8 +106,8 @@ export default {
       searchType: [], // 条目类别
       stateList: [
         {id: '0', text: '全部', state: null, isActive: true},
-        {id: '1', text: '已解决', state: 'true', isActive: false},
-        {id: '2', text: '未解决', state: 'false', isActive: false},
+        {id: '1', text: '已解决', state: true, isActive: false},
+        {id: '2', text: '未解决', state: false, isActive: false},
       ],
       solveState: null, // 解决状态
       noData: true, // 无数据

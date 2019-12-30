@@ -110,7 +110,11 @@ exports.GetBugList = async function (req, res, next) {
     }
   }
   try {
+    console.log(1)
+
     const count = await Bug.countDocuments(filters)
+    console.log(2)
+
     const result = await Bug.aggregate(
       [{
           $match: filters
@@ -129,7 +133,7 @@ exports.GetBugList = async function (req, res, next) {
             tags: 1,
             content: 1,
             bugStatus: 1,
-            bugSolution: 1,
+            // bugSolution: 1,
             userId: {
               $cond: [{
                 $eq: ["$anonymous", true]
@@ -144,6 +148,13 @@ exports.GetBugList = async function (req, res, next) {
             rank: 1,
             deleted: 1,
             createAt: 1,
+            // authorInfo: {
+            //   $cond: [{
+            //       $eq: ["$anonymous", true]
+            //     },
+            //     [], "$authorInfo[0]"
+            //   ]
+            // }
             authorInfo: {
               nickName: {
                 $cond: [{
