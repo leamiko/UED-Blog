@@ -3,11 +3,16 @@
     title
     :visible.sync="visible"
     width="40%"
-    :show-close="false"
     :modal="true"
+    :before-close="cancelModal"
+    destroy-on-close
+    append-to-body
     :close-on-click-modal="false"
     :close-on-press-escape="false"
+    class="dialog"
   >
+    <img src="@/assets/img/bg/bg-dialog-reg.png" slot="title" class="dialog-img" />
+
     <el-form
       :label-position="labelPosition"
       :model="form1"
@@ -15,22 +20,22 @@
       status-icon
       :rules="rules"
       ref="form1"
-      class="demo-ruleForm"
+      class="demo-ruleForm reg-from"
       hide-required-asterisk
     >
       <el-form-item label="名称" prop="name">
-        <el-input v-model="form1.name" autocomplete="off"></el-input>
+        <el-input v-model="form1.name" autocomplete="off" placeholder="请在此输入名称"></el-input>
       </el-form-item>
       <el-form-item label="描述" prop="desc">
-        <el-input v-model="form1.desc" autocomplete="off"></el-input>
+        <el-input v-model="form1.desc" autocomplete="off"  placeholder="请在此输入描述"></el-input>
       </el-form-item>
       <el-form-item label="正则表达式" prop="reg">
-        <el-input v-model="form1.reg" autocomplete="off"></el-input>
+        <el-input v-model="form1.reg" autocomplete="off"  placeholder="请在此输入正则表达式"></el-input>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="cancelModal">取 消</el-button>
-      <el-button type="primary" @click="submitForm('form1')">保存</el-button>
+      <button @click="cancelModal" class="cancel-btn">取 消</button>
+      <el-button type="primary" round size="small" @click="submitForm('form1')">测试匹配</el-button>
     </div>
   </el-dialog>
 </template>
@@ -114,7 +119,4 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.demo-ruleForm {
-  padding: 30px 20px 0;
-}
 </style>
