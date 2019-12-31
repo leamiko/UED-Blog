@@ -1,28 +1,15 @@
 <template>
-  <my-scrollbar
-    hasFoot
-    @scrollTop="getScrollTop"
-  >
+  <my-scrollbar hasFoot @scrollTop="getScrollTop">
     <div slot="container">
       <my-header
         class="cus-fixed my-header"
-        :class="{'bg_white': !isAddClass, 'text_white': isAddClass}"
+        :class="{ bg_white: !isAddClass, text_white: isAddClass }"
         activeLabel="首页"
-        :isChange='isAddClass'
+        :isChange="isAddClass"
       ></my-header>
-      <el-carousel
-        trigger="click"
-        :height="height + 'px'"
-        :interval="interval"
-      >
-        <el-carousel-item
-          v-for="item in config.swipers"
-          :key="item"
-        >
-          <img
-            :src="item"
-            style="width: 100%; height: 100%;"
-          >
+      <el-carousel trigger="click" :height="height + 'px'" :interval="interval">
+        <el-carousel-item v-for="item in config.swipers" :key="item">
+          <img :src="item" style="width: 100%; height: 100%;" />
         </el-carousel-item>
       </el-carousel>
       <div class="my-content">
@@ -33,13 +20,10 @@
             class="cus-flex"
             @click="goDetail(item.blog)"
           >
-            <img
-              :src="item.blog.midImgUrl"
-              class="my-img"
-            >
+            <img :src="item.blog.midImgUrl" class="my-img" />
             <div>
-              <span class="list_title">{{item.blog.title}}</span>
-              <span class="desc">{{item.blog.info}}</span>
+              <span class="list_title">{{ item.blog.title }}</span>
+              <span class="desc">{{ item.blog.info }}</span>
               <div class="cus-flex cus-align-center">
                 <el-avatar
                   v-show="$store.state.flag"
@@ -47,20 +31,41 @@
                   :src="item.userInfo.avatar"
                   class="avatar"
                 ></el-avatar>
-                <span class="text_color_time"><span v-show="$store.state.flag">{{item.userInfo.nickName}} ·</span> {{item.userInfo.updateAt | datetimeFormat}}</span>&emsp;&emsp;
-                <span class="text_color">{{ item.blog.blogType == 1 ? "技术" : item.blog.blogType == 2 ? "交互" :item.blog.blogType == 3 ? "设计" :item.blog.blogType == 4 ? "管理" :"其它" }}</span>&emsp;&emsp;
-                <span class="text_color"><img src="@/assets/img/icon/eyes.svg">{{item.blog.viewNum}}</span>&emsp;&emsp;
-                <span class="text_color"><img src="@/assets/img/icon/like.svg">{{item.blog.likeNum}}</span>
+                <span class="text_color_time"
+                  ><span v-show="$store.state.flag"
+                    >{{ item.userInfo.nickName }} ·</span
+                  >
+                  {{ item.userInfo.updateAt | datetimeFormat }}</span
+                >&emsp;&emsp;
+                <span class="text_color">{{
+                  item.blog.blogType == 1
+                    ? '技术'
+                    : item.blog.blogType == 2
+                    ? '交互'
+                    : item.blog.blogType == 3
+                    ? '设计'
+                    : item.blog.blogType == 4
+                    ? '管理'
+                    : '其它'
+                }}</span
+                >&emsp;&emsp;
+                <span class="text_color"
+                  ><img src="@/assets/img/icon/eyes.svg" />{{
+                    item.blog.viewNum
+                  }}</span
+                >&emsp;&emsp;
+                <span class="text_color"
+                  ><img src="@/assets/img/icon/like.svg" />{{
+                    item.blog.likeNum
+                  }}</span
+                >
               </div>
             </div>
           </li>
         </ul>
         <div class="center">
           <router-link :to="custom.menu[1].redirectUrl">
-            <el-button
-              round
-              class="btn_style"
-            >
+            <el-button round class="btn_style">
               查看更多
             </el-button>
           </router-link>
@@ -71,13 +76,13 @@
 </template>
 
 <script>
-import * as custom from "@/assets/js/custom.config";
-import MyScrollbar from "@/components/scroller/Scrollbar";
-import MyHeader from "@/components/header/Header";
-import { Loading } from 'element-ui';
+import * as custom from '@/assets/js/custom.config'
+import MyScrollbar from '@/components/scroller/Scrollbar'
+import MyHeader from '@/components/header/Header'
+import { Loading } from 'element-ui'
 
 export default {
-  inject: ["reload"],
+  inject: ['reload'],
   // fetch ({ redirect, store }) {
   //   console.log(store.state)
   //   if (!store.state.authToken) {
@@ -88,7 +93,7 @@ export default {
     MyScrollbar,
     MyHeader
   },
-  data () {
+  data() {
     return {
       custom: custom.head,
       config: custom.index,
@@ -100,77 +105,80 @@ export default {
       avatar: custom.index.newsList[0].avatar,
       updateTime: custom.index.newsList[0].updateTime,
       screenWidth: Number,
-      loadingInstance1: {},
-    };
+      loadingInstance1: {}
+    }
   },
-  head () {
+  head() {
     return {
-      title: "首页",
+      title: '首页',
       meta: [
         {
-          hid: "description",
-          name: "description",
-          content: "My custom description"
+          hid: 'description',
+          name: 'description',
+          content: 'My custom description'
         }
       ]
-    };
+    }
   },
   filters: {
-    datetimeFormat: function (value) {
+    datetimeFormat: function(value) {
       if (!value) return ''
       value = value.toString()
-      let date = value.split('T')[0];
-      return date;
+      let date = value.split('T')[0]
+      return date
     }
   },
   methods: {
     //跳转明细页
-    goDetail (e) {
-      console.log(e);
+    goDetail(e) {
+      console.log(e)
       var detailParams = {
         detailId: e._id,
         imgUrl: e.imgUrl
-      };
+      }
       this.$router.push({
-        path: "writing/detail?detailParams=" + JSON.stringify(detailParams)
-      });
+        path: 'writing/detail?detailParams=' + JSON.stringify(detailParams)
+      })
     },
-    getScrollTop (val) {
+    getScrollTop(val) {
       if (val > this.height - 100) {
-        this.isAddClass = false;
+        this.isAddClass = false
       } else {
-        this.isAddClass = true;
+        this.isAddClass = true
       }
     },
     // 获取文章列表
-    async getHomeList () {
-      let response = await this.$axios.get(`${process.env.BASE_URL}/web_api/getHomeList`);
+    async getHomeList() {
+      let response = await this.$axios.get(
+        `${process.env.BASE_URL}/web_api/getHomeList`
+      )
       response.data.data.forEach(element => {
         if (element !== null) {
-          element.userInfo = element.userInfo ? element.userInfo : {};
-          this.list.push(element);
+          element.userInfo = element.userInfo ? element.userInfo : {}
+          this.list.push(element)
         }
-      });
-      console.log(this.list);
-      return 1;
-    },
+      })
+      console.log(this.list)
+      return 1
+    }
   },
-  async mounted () {
-    this.screenWidth = document.body.clientWidth;
-    this.height = (document.body.clientWidth / 1920) * 645;
+  async mounted() {
+    this.screenWidth = document.body.clientWidth
+    this.height = (document.body.clientWidth / 1920) * 645
     window.onresize = () => {
       return (() => {
-        this.height = (document.body.clientWidth / 1920) * 645;
+        this.height = (document.body.clientWidth / 1920) * 645
       })()
     }
-    await this.getHomeList();
-    setTimeout(()=>{this.loadingInstance1.close();},500)
+    await this.getHomeList()
+    setTimeout(() => {
+      this.loadingInstance1.close()
+    }, 500)
   },
-  created () {
-    this.loadingInstance1 = Loading.service({ fullscreen: true });    
-
-  },
-};
+  created() {
+    this.loadingInstance1 = Loading.service({ fullscreen: true })
+  }
+}
 </script>
 <style lang="scss" scoped>
 .el-dialog__body {

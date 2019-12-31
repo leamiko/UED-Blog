@@ -141,7 +141,9 @@
               <div @mouseenter="mouseHoverDelComBtn(firstIndex, firstItem.commentUserId, true)"
                    @mouseleave="mouseHoverDelComBtn(firstIndex, firstItem.commentUserId, false)">
                 <div class="comment_unit_name"
-                     v-if="firstItem.anonymous==false&&firstItem.userInfo.length!=0">{{firstItem.userInfo[0].nickName}}</div>
+                     v-if="!firstItem.anonymous&&firstItem.userInfo.length!=0">{{firstItem.userInfo[0].nickName}}</div>
+                <div class="comment_unit_name"
+                     v-if="firstItem.anonymous">匿名</div>
                 <div class="comment_unit_content">{{firstItem.content}}</div>
                 <div class="comment_unit_bottom">
                   <div class="comment_unit_bottom_left">
@@ -204,8 +206,10 @@
                       <div class="comment_unit_name">
                         <span class="color"
                               v-if="!secondItem.anonymous||secondItem.anonymous==false">{{secondItem.userInfo[0].nickName}}</span>
+                        <span class="color"
+                              v-if="secondItem.anonymous">匿名</span>
                         <span>回复</span>
-                        {{firstItem.userInfo[0].nickName}}
+                        {{firstItem.anonymous ? '匿名' : firstItem.userInfo[0].nickName}}
                       </div>
                       <div class="comment_unit_content">{{secondItem.content}}</div>
                       <div class="comment_unit_bottom">
@@ -268,8 +272,10 @@
                       <div class="comment_unit_name">
                         <span class="color"
                               v-if="!secondItem.anonymous||secondItem.anonymous==false">{{secondItem.userInfo[0].nickName}}</span>
+                        <span class="color"
+                              v-if="secondItem.anonymous">匿名</span>
                         <span>回复</span>
-                        {{firstItem.userInfo[0].nickName}}
+                        {{firstItem.anonymous ? '匿名' : firstItem.userInfo[0].nickName}}
                       </div>
                       <div class="comment_unit_content">{{secondItem.content}}</div>
                       <div class="comment_unit_bottom">

@@ -1,10 +1,6 @@
 <template>
   <div class="content">
-    <my-header
-      :activeLabel="headActive"
-      v-show="hasHead"
-      :innerStyle="headStyle"
-    >
+    <my-header :activeLabel="headActive" v-if="hasHead" :innerStyle="headStyle">
       <div slot="box_cus">
         <slot name="head_custom"></slot>
       </div>
@@ -12,24 +8,20 @@
     <div
       class="main"
       ref="main"
-      :style="{'height': hasHead ? 'calc(100% - 82px)' : '100%'}"
+      :style="{ height: hasHead ? 'calc(100% - 82px)' : '100%' }"
     >
-      <el-backtop
-        target=".main"
-        :bottom="bottom"
-      ><img :src="backImg" /></el-backtop>
+      <el-backtop target=".main" :bottom="bottom"
+        ><img :src="backImg"
+      /></el-backtop>
       <slot name="container"></slot>
-      <my-footer
-        :hasMenu="isFootMenu"
-        v-show="hasFoot"
-      ></my-footer>
+      <my-footer :hasMenu="isFootMenu" v-if="hasFoot"></my-footer>
     </div>
   </div>
 </template>
 <script>
-import MyHeader from '@/components/header/Header';
-import MyFooter from '@/components/footer/Footer';
-import * as custom from "@/assets/js/custom.config";
+import MyHeader from '@/components/header/Header'
+import MyFooter from '@/components/footer/Footer'
+import * as custom from '@/assets/js/custom.config'
 export default {
   components: {
     MyHeader,
@@ -72,22 +64,26 @@ export default {
       required: false
     }
   },
-  data () {
+  data() {
     return {
-      backImg: custom.index.backTopUrl,
+      backImg: custom.index.backTopUrl
     }
   },
-  mounted () {
+  mounted() {
     if (this.mainStyle) {
       Object.keys(this.mainStyle).forEach(key => {
-        this.$refs.main.style[key] = this.mainStyle[key];
+        this.$refs.main.style[key] = this.mainStyle[key]
       })
     }
-    window.addEventListener('scroll', () => {
-      if (this.$refs.main && this.$refs.main.scrollTop) {
-        this.$emit('scrollTop', this.$refs.main.scrollTop);
-      }
-    }, true);
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (this.$refs.main && this.$refs.main.scrollTop) {
+          this.$emit('scrollTop', this.$refs.main.scrollTop)
+        }
+      },
+      true
+    )
   }
 }
 </script>
