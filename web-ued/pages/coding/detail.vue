@@ -30,8 +30,14 @@
               {{detailInfo.title}}
               <div class="detail_presenter">
                 <div class="presenter_head flt inline">
-                  <img v-show="!detailInfo.anonymous && detailInfo.headUrl!==null" :src="detailInfo.headUrl">
-                  <img v-show="detailInfo.anonymous || detailInfo.headUrl===null" src="@/assets/img/image/avarot-default.png">
+                  <img
+                    v-show="!detailInfo.anonymous && detailInfo.headUrl!==null"
+                    :src="detailInfo.headUrl"
+                  />
+                  <img
+                    v-show="detailInfo.anonymous || detailInfo.headUrl===null"
+                    src="@/assets/img/image/avarot-default.png"
+                  />
                 </div>
                 <span
                   class="presenter_info inline"
@@ -108,7 +114,11 @@
             <!-- 发表一级评论 -->
             <div class="comment_text">
               <div class="current_user inline">
-                <img src="@/assets/img/image/avarot-default.png" />
+                <img
+                  src="@/assets/img/image/avarot-default.png"
+                  v-if="!userInfo.avatar || isAnonymous"
+                />
+                <img :src="userInfo.avatar" v-if="userInfo.avatar && !isAnonymous" />
               </div>
               <div class="current_edit inline">
                 <my-editor
@@ -142,16 +152,13 @@
                   src="@/assets/img/image/avarot-default.png"
                   v-if="!firstItem.authorInfo.avatar || firstItem.anonymous"
                 />
-                <img
-                  :src="firstItem.authorInfo.avatar"
-                  v-if="firstItem.authorInfo.avatar"
-                />
+                <img :src="firstItem.authorInfo.avatar" v-if="firstItem.authorInfo.avatar" />
               </div>
               <div class="current_edit inline">
                 <!-- 一级评论 -->
                 <div class="first_comment_box">
                   <div class="comment_unit_name comment_unit_name_adopt">
-                    {{firstItem.anonymous?'匿名':firstItem.commenterName}}
+                    {{firstItem.anonymous && userInfo._id !=firstItem.commenterId ?'匿名':firstItem.anonymous && userInfo._id ==firstItem.commenterId?userInfo.nickName+'(已匿名)':firstItem.commenterName}}
                     <img
                       src="@/assets/img/image/comment_adopt.png"
                       alt
@@ -201,7 +208,7 @@
                       <!-- 删除 -->
                       <div
                         class="comment_unit_bottom_btn margin_left_15 first_comment_delete_btn"
-                        v-if="userInfo._id === detailInfo.userId && !firstItem.adopt && !haveComAdopt"
+                        v-if="!detailInfo.bugStatus && userInfo._id === detailInfo.userId && !firstItem.adopt && !haveComAdopt"
                         @click="adoptCom(firstItem._id)"
                       >采纳</div>
                       <div
@@ -216,7 +223,11 @@
                 <!-- 发表二级评论(回复一级评论) -->
                 <div class="margin_top_40" v-if="firstItem.isShowReplyFirstCom">
                   <div class="current_user inline">
-                    <img src="@/assets/img/image/avarot-default.png" />
+                    <img
+                      src="@/assets/img/image/avarot-default.png"
+                      v-if="!userInfo.avatar || firstItem.isAnonymous"
+                    />
+                    <img :src="userInfo.avatar" v-if="userInfo.avatar && !firstItem.isAnonymous" />
                   </div>
                   <div class="current_edit inline">
                     <my-editor
@@ -232,6 +243,7 @@
                         round
                         size="small"
                         @click="submitSecondCom(firstItem,1)"
+                        v-bind:class="{comment_btn_gray: !firstItem.haveComContent}"
                       >&emsp;评&nbsp;论&emsp;</el-button>
                     </div>
                   </div>
@@ -256,9 +268,10 @@
                     </div>
                     <div class="comment_text inline">
                       <div class="comment_unit_name">
-                        {{secondItem.anonymous?'匿名':secondItem.replyerName}}
+                        {{secondItem.anonymous && userInfo._id !=secondItem.replyerId ?'匿名':secondItem.anonymous && userInfo._id ==secondItem.replyerId?userInfo.nickName+'(已匿名)':secondItem.replyerName}}
                         <span>回复</span>
-                        {{secondItem.targetAnonymous&&secondItem.replyTargetName==''?'匿名':secondItem.replyTargetName}}
+                        <!-- &&secondItem.replyTargetName=='' -->
+                        {{secondItem.targetAnonymous&& userInfo._id !=secondItem.replyTargetId ?'匿名':secondItem.targetAnonymous && userInfo._id ==secondItem.replyTargetId?userInfo.nickName+'(已匿名)':secondItem.replyTargetName}}
                       </div>
                       <div class="comment_unit_content">{{secondItem.content}}</div>
                       <div class="comment_unit_bottom">
@@ -323,9 +336,13 @@
                     </div>
                     <div class="comment_text inline">
                       <div class="comment_unit_name">
-                        {{secondItem.anonymous?'匿名':secondItem.replyerName}}
+                        <!-- {{secondItem.anonymous?'匿名':secondItem.replyerName}}
                         <span>回复</span>
-                        {{secondItem.targetAnonymous&&secondItem.replyTargetName==''?'匿名':secondItem.replyTargetName}}
+                        {{secondItem.targetAnonymous&&secondItem.replyTargetName==''?'匿名':secondItem.replyTargetName}}-->
+                        {{secondItem.anonymous && userInfo._id !=secondItem.replyerId ?'匿名':secondItem.anonymous && userInfo._id ==secondItem.replyerId?userInfo.nickName+'(已匿名)':secondItem.replyerName}}
+                        <span>回复</span>
+                        <!-- &&secondItem.replyTargetName=='' -->
+                        {{secondItem.targetAnonymous&& userInfo._id !=secondItem.replyTargetId ?'匿名':secondItem.targetAnonymous && userInfo._id ==secondItem.replyTargetId?userInfo.nickName+'(已匿名)':secondItem.replyTargetName}}
                       </div>
                       <div class="comment_unit_content">{{secondItem.content}}</div>
                       <div class="comment_unit_bottom">
@@ -378,7 +395,11 @@
                     :key="secondItem._id"
                   >
                     <div class="current_user inline">
-                      <img src="@/assets/img/image/avarot-default.png" />
+                      <img
+                        src="@/assets/img/image/avarot-default.png"
+                        v-if="!userInfo.avatar || secondItem.isAnonymous"
+                      />
+                      <img :src="userInfo.avatar" v-if="userInfo.avatar && !secondItem.isAnonymous" />
                     </div>
                     <div class="current_edit inline">
                       <my-editor
@@ -394,6 +415,7 @@
                           round
                           size="small"
                           @click="submitSecondCom(secondItem,2)"
+                          v-bind:class="{comment_btn_gray: !secondItem.haveComContent}"
                         >&emsp;评&nbsp;论&emsp;</el-button>
                       </div>
                     </div>
@@ -452,8 +474,8 @@ export default {
       this.getInfo();
       this.getCommentList();
     }
-    console.log(this.userInfo);
     this.userInfo = JSON.parse(localStorage.getItem("user")); // 获取当前用户信息
+    console.log(this.userInfo, "dld");
     // 可视区内保留一个点赞icon
     (this.visualScroll = new IntersectionObserver(([entry]) => {
       if (entry && entry.isIntersecting) {
@@ -480,13 +502,21 @@ export default {
       if (res.status === 200) {
         if (res.data.data && res.data.data !== null) {
           this.detailInfo = res.data.data;
-          if(res.data.data.authorInfo && res.data.data.authorInfo.avatar !== '' && res.data.data.authorInfo.avatar !== null){
-            this.detailInfo.headUrl = res.data.data.authorInfo.avatar;//头像url
+          if (
+            res.data.data.authorInfo &&
+            res.data.data.authorInfo.avatar !== "" &&
+            res.data.data.authorInfo.avatar !== null
+          ) {
+            this.detailInfo.headUrl = res.data.data.authorInfo.avatar; //头像url
           } else {
             this.detailInfo.headUrl = null;
           }
-          if(res.data.data.authorInfo && res.data.data.authorInfo.nickName !== '' && res.data.data.authorInfo.nickName !== null){
-            this.detailInfo.author = res.data.data.authorInfo.nickName;//作者昵称
+          if (
+            res.data.data.authorInfo &&
+            res.data.data.authorInfo.nickName !== "" &&
+            res.data.data.authorInfo.nickName !== null
+          ) {
+            this.detailInfo.author = res.data.data.authorInfo.nickName; //作者昵称
           } else {
             this.detailInfo.author = null;
           }
@@ -537,7 +567,7 @@ export default {
           title: "错误",
           message: res.data.message
         });
-      }      
+      }
     },
     // 获取感兴趣信息
     async getInterestInfo(tagList) {
@@ -665,7 +695,6 @@ export default {
       if (!this.haveFirstComContent) return;
       console.log(this.firstComContent);
       const params = {
-        // commenterName: this.userInfo.nickName,
         commenterId: this.userInfo._id,
         bugId: this.Id,
         content: this.firstComContent,
@@ -683,6 +712,7 @@ export default {
     // 发表二级评论
     async submitSecondCom(item, replyType) {
       // replyType 1 回复一级评论 2 回复二级评论
+      if (!item.haveComContent) return;
       const params = {
         commentId: replyType === 1 ? item._id : item.commentId,
         replyerId: this.userInfo._id,
@@ -711,18 +741,22 @@ export default {
     },
     // 监听二级评论（回复一级）框
     onEditorChangeReplyFirstCom({ editor, html, text }, firstItem) {
+      this.$forceUpdate();
       this.commentList.forEach(item => {
         if (item._id === firstItem._id) {
           item["replyComContent"] = text;
+          item["haveComContent"] = html ? true : false;
         }
       });
     },
     // 监听二级评论（回复二级）框
     onEditorChangeReplySecondCom({ editor, html, text }, secondItem) {
+      this.$forceUpdate();
       this.commentList.forEach(item => {
         item.replies.forEach(ele => {
           if (ele._id === secondItem._id) {
             ele["replyComContent"] = text;
+            ele["haveComContent"] = html ? true : false;
           }
         });
       });
