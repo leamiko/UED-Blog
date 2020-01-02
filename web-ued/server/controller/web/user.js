@@ -11,7 +11,6 @@ exports.login = function(req, res) {
     account: account,
     passWord: end_paw
   }
-  console.log(wxUnionId)
   User.findOneAndUpdate(params, { wxUnionId: wxUnionId }, function(err, user) {
     if (err) {
       return res.json({
