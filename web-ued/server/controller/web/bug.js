@@ -97,8 +97,10 @@ exports.GetBugList = async function (req, res, next) {
     if (req.body.filters.title) {
       filters.title = new RegExp(req.body.filters.title)
     }
-    if (req.body.filters.bugStatus) {
-      filters.bugStatus = req.body.filters.bugStatus
+    if (req.body.filters.hasOwnProperty('bugStatus')) {
+      if (req.body.filters.bugStatus !== null) {
+        filters.bugStatus = !!req.body.filters.bugStatus;
+      }
     }
     if (req.body.filters.author) {
       filters.author = req.body.filters.author
