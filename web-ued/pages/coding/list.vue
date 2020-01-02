@@ -46,7 +46,7 @@
               <div class="code_content" v-for="x in bugList" :key="x._id">
                 <div class="pointer" @click="showDetail(x._id)">
                   <div class="content_title">{{x.title}}</div>
-                  <div class="content_question" v-html="x.content"></div>
+                  <!-- <div class="content_question" v-html="x.content"></div> -->
                 </div>
                 <div class="content_mark inline">
                   <div class="presenter flt">
