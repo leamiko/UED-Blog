@@ -134,14 +134,18 @@
                v-for="(firstItem,firstIndex) in commentList"
                :key="firstIndex">
             <div class="current_user inline"
-                 v-if="firstItem.userInfo.length!=0">
-              <img :src="firstItem.userInfo[0].avatar" />
+                 v-if="firstItem.anonymous">
+              <img src="@/assets/img/image/avarot-default.png" />
+            </div>
+            <div class="current_user inline"
+                 v-if="!firstItem.anonymous">
+              <img :src="firstItem.userInfo.avatar" />
             </div>
             <div class="current_edit inline">
               <div @mouseenter="mouseHoverDelComBtn(firstIndex, firstItem.commentUserId, true)"
                    @mouseleave="mouseHoverDelComBtn(firstIndex, firstItem.commentUserId, false)">
                 <div class="comment_unit_name"
-                     v-if="!firstItem.anonymous&&firstItem.userInfo.length!=0">{{firstItem.userInfo[0].nickName}}</div>
+                     v-if="!firstItem.anonymous&&firstItem.userInfo.length!=0">{{firstItem.userInfo.nickName}}</div>
                 <div class="comment_unit_name"
                      v-if="firstItem.anonymous">匿名</div>
                 <div class="comment_unit_content">{{firstItem.content}}</div>
@@ -163,7 +167,7 @@
                          @click="replyFirstComBtn(firstItem)"
                          v-bind:class="{comment_unit_bottom_btn_selected: firstItem.isShowReplyFirstCom}">回复</div>
                     <div class="comment_unit_bottom_btn margin_left_15"
-                         v-if="firstItem.userInfo.length!=0&&user._id ==firstItem.userInfo[0]._id && (firstComIndex == firstIndex && deleteComBtnIsHover)"
+                         v-if="firstItem.userInfo.length!=0&&user._id ==firstItem.commentUserId && (firstComIndex == firstIndex && deleteComBtnIsHover)"
                          @click="deleteFirstCom(firstItem._id)">删除</div>
                   </div>
                   <div class="comment_unit_bottom_right">{{firstItem.createAt | formatDateDay}}</div>
@@ -197,19 +201,19 @@
                      class="oneReply">
                   <div class="two_commment_div margin_top_40">
                     <div class="current_user inline">
-                      <img src="@/assets/img/image/code_presenter.png"
+                      <img src="@/assets/img/image/avarot-default.png"
                            v-if="secondItem.anonymous==true" />
-                      <img :src="secondItem.userInfo[0].avatar"
+                      <img :src="secondItem.userInfo.avatar"
                            v-if="!secondItem.anonymous||secondItem.anonymous==false" />
                     </div>
                     <div class="comment_text inline">
                       <div class="comment_unit_name">
                         <span class="color"
-                              v-if="!secondItem.anonymous||secondItem.anonymous==false">{{secondItem.userInfo[0].nickName}}</span>
+                              v-if="!secondItem.anonymous||secondItem.anonymous==false">{{secondItem.userInfo.nickName}}</span>
                         <span class="color"
                               v-if="secondItem.anonymous">匿名</span>
                         <span>回复</span>
-                        {{firstItem.anonymous ? '匿名' : firstItem.userInfo[0].nickName}}
+                        {{secondItem.parentAnonymous ? '匿名' : secondItem.reReplyName}}
                       </div>
                       <div class="comment_unit_content">{{secondItem.content}}</div>
                       <div class="comment_unit_bottom">
@@ -229,7 +233,7 @@
                                @click="replySecondComBtn(secondItem)"
                                v-bind:class="{comment_unit_bottom_btn_selected: secondItem.isShowReplyRecondCom}">回复</div>
                           <div class="comment_unit_bottom_btn margin_left_15"
-                               v-if="user._id == secondItem.userInfo[0]._id"
+                               v-if="user._id == firstItem.commentUserId"
                                @click="deleteReply(secondItem._id)">删除</div>
                         </div>
                         <div class="comment_unit_bottom_right">{{secondItem.createAt | formatDateDay}}</div>
@@ -263,19 +267,19 @@
                      class="moreReplies">
                   <div class="two_commment_div margin_top_40">
                     <div class="current_user inline">
-                      <img src="@/assets/img/image/code_presenter.png"
+                      <img src="@/assets/img/image/avarot-default.png"
                            v-if="secondItem.anonymous==true" />
-                      <img :src="secondItem.userInfo[0].avatar"
+                      <img :src="secondItem.userInfo.avatar"
                            v-if="!secondItem.anonymous||secondItem.anonymous==false" />
                     </div>
                     <div class="comment_text inline">
                       <div class="comment_unit_name">
                         <span class="color"
-                              v-if="!secondItem.anonymous||secondItem.anonymous==false">{{secondItem.userInfo[0].nickName}}</span>
+                              v-if="!secondItem.anonymous||secondItem.anonymous==false">{{secondItem.userInfo.nickName}}</span>
                         <span class="color"
                               v-if="secondItem.anonymous">匿名</span>
                         <span>回复</span>
-                        {{firstItem.anonymous ? '匿名' : firstItem.userInfo[0].nickName}}
+                        {{secondItem.parentAnonymous ? '匿名' : secondItem.reReplyName}}
                       </div>
                       <div class="comment_unit_content">{{secondItem.content}}</div>
                       <div class="comment_unit_bottom">
@@ -293,9 +297,9 @@
                           </div>
                           <div class="comment_unit_bottom_btn margin_left_15"
                                @click="replySecondComBtn(secondItem)"
-                               v-bind:class="{comment_unit_bottom_btn_selected: secondItem.isShowReplyRecondCom}">回复aaa</div>
+                               v-bind:class="{comment_unit_bottom_btn_selected: secondItem.isShowReplyRecondCom}">回复</div>
                           <div class="comment_unit_bottom_btn margin_left_15"
-                               v-if="user._id == secondItem.userInfo[0]._id"
+                               v-if="user._id == firstItem.commentUserId"
                                @click="deleteReply(secondItem._id)">删除</div>
                         </div>
                         <div class="comment_unit_bottom_right">{{secondItem.createAt | formatDateDay}}</div>
@@ -589,12 +593,13 @@ export default {
       const params = {
         replyName: this.user.nickName,
         replyId: this.user._id,
-        reReplyname: firstItem.userInfo[0].nickName,
-        reReplyId: firstItem.userInfo[0]._id,
+        reReplyName: firstItem.commentName,
+        reReplyId: firstItem.commentUserId,
         blogId: this.detailParams.detailId,
         commentId: firstItem._id,
         content: firstItem.secondComContent,
-        anonymous: firstItem.isAnonymous
+        anonymous: firstItem.isAnonymous ? firstItem.isAnonymous : false,
+        parentAnonymous: firstItem.anonymous
       };
       const res = await this.$axios.post(
         `${process.env.BASE_URL}/web_api/replyBlog`,
@@ -617,13 +622,13 @@ export default {
       const params = {
         replyName: this.user.nickName,
         replyId: this.user._id,
-        reReplyname: secondItem.userInfo[0].nickName,
-        reReplyId: secondItem.userInfo[0]._id,
+        reReplyName: secondItem.replyName,
+        reReplyId: firstItem.commentUserId,
         blogId: this.detailParams.detailId,
         commentId: firstItem._id,
         content: secondItem.secondComContent,
-        anonymous: secondItem.isAnonymous,
-        parentAnonymous: firstItem.anonymous
+        anonymous: secondItem.isAnonymous ? secondItem.isAnonymous : false,
+        parentAnonymous: secondItem.anonymous
       };
       const res = await this.$axios.post(
         `${process.env.BASE_URL}/web_api/replyBlog`,

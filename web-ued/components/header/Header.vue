@@ -241,6 +241,7 @@ export default {
       );
       if (res.data.status_code == 200) {
         localStorage.setItem("user", JSON.stringify(res.data.user));
+        this.$store.commit("flag", new Date().toLocaleTimeString());
         this.loginForm = {};
         if (!res.data.user.nickName) {
           this.infoShow = true;

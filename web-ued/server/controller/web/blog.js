@@ -630,15 +630,7 @@ exports.getBlogComment = async function(req, res) {
     },
     {
       $project: {
-        commentUserId: {
-          $cond: [
-            {
-              $eq: ['$anonymous', true]
-            },
-            '',
-            '$commentUserId'
-          ]
-        },
+        commentUserId: 1,
         blogId: 1,
         likeNum: 1,
         content: 1,
@@ -660,7 +652,7 @@ exports.getBlogComment = async function(req, res) {
                 $eq: ['$anonymous', true]
               },
               '',
-              '$authorInfo.avatar'
+              '$userInfo.avatar'
             ]
           },
           account: {
@@ -669,7 +661,7 @@ exports.getBlogComment = async function(req, res) {
                 $eq: ['$anonymous', true]
               },
               '',
-              '$authorInfo.account'
+              '$userInfo.account'
             ]
           },
           nickName: {
@@ -678,7 +670,7 @@ exports.getBlogComment = async function(req, res) {
                 $eq: ['$anonymous', true]
               },
               '',
-              '$authorInfo.nickName'
+              '$userInfo.nickName'
             ]
           }
         }
@@ -702,21 +694,22 @@ exports.getBlogComment = async function(req, res) {
     },
     {
       $project: {
-        replyId: {
-          $cond: [
-            {
-              $eq: ['$anonymous', true]
-            },
-            '',
-            '$replyId'
-          ]
-        },
+        replyId: 1,
         blogId: 1,
         commentId: 1,
         likeNum: 1,
         content: 1,
         anonymous: 1,
-        reReplyName: 1,
+        parentAnonymous: 1,
+        reReplyName: {
+          $cond: [
+            {
+              $eq: ['$parentAnonymous', true]
+            },
+            '',
+            '$reReplyName'
+          ]
+        },
         reReplyId: 1,
         createAt: 1,
         replyName: {
@@ -735,7 +728,7 @@ exports.getBlogComment = async function(req, res) {
                 $eq: ['$anonymous', true]
               },
               '',
-              '$authorInfo.avatar'
+              '$userInfo.avatar'
             ]
           },
           account: {
@@ -744,7 +737,7 @@ exports.getBlogComment = async function(req, res) {
                 $eq: ['$anonymous', true]
               },
               '',
-              '$authorInfo.account'
+              '$userInfo.account'
             ]
           },
           nickName: {
@@ -753,7 +746,7 @@ exports.getBlogComment = async function(req, res) {
                 $eq: ['$anonymous', true]
               },
               '',
-              '$authorInfo.nickName'
+              '$userInfo.nickName'
             ]
           }
         }
@@ -800,20 +793,36 @@ exports.getBlogComment = async function(req, res) {
     comments[i]['replies'] = []
     if (commentsLikesids.indexOf(comments[i]._id.toString()) != -1) {
       comments[i]['isLike'] = true
-      commentArr.push(comments[i])
     } else {
       comments[i]['isLike'] = false
-      commentArr.push(comments[i])
     }
+    if (comments[i].anonymous) {
+      comments[i].userInfo = {}
+    } else {
+      comments[i].userInfo = {
+        nickName: comments[i].userInfo[0].nickName[0],
+        account: comments[i].userInfo[0].account[0],
+        avatar: comments[i].userInfo[0].avatar[0]
+      }
+    }
+    commentArr.push(comments[i])
   }
   for (let i = 0; i < replys.length; i++) {
     if (replysLikesids.indexOf(replys[i]._id.toString()) != -1) {
       replys[i]['isLike'] = true
-      replyArr.push(replys[i])
     } else {
       replys[i]['isLike'] = false
-      replyArr.push(replys[i])
     }
+    if (replys[i].anonymous) {
+      replys[i].userInfo = {}
+    } else {
+      replys[i].userInfo = {
+        nickName: replys[i].userInfo[0].nickName[0],
+        account: replys[i].userInfo[0].account[0],
+        avatar: replys[i].userInfo[0].avatar[0]
+      }
+    }
+    replyArr.push(replys[i])
   }
 
   // 合并评论回复

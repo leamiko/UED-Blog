@@ -107,7 +107,6 @@ export default {
   methods: {
     Qrcode () {
       this.iscodeBox = !this.iscodeBox;
-      // this.$store.state.qrcodeBindBox = false;
       this.$emit("titleChanged", "登录");
     },
     //登录二维码
@@ -141,7 +140,6 @@ export default {
             `${process.env.BASE_URL}/web_api/login`,
             this.loginForm
           );
-          // console.log(data);
           if (data.status_code == 200) {
             localStorage.setItem("user", JSON.stringify(data.user));
             this.$emit("modalChanged", false);
