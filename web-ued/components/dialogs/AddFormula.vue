@@ -23,19 +23,37 @@
       class="demo-ruleForm reg-from"
       hide-required-asterisk
     >
-      <el-form-item label="名称" prop="name">
-        <el-input v-model="form1.name" autocomplete="off" placeholder="请在此输入名称"></el-input>
+      <!-- hide-required-asterisk -->
+
+      <el-form-item label="名称" prop="name" class="require">
+        <el-input
+          v-model="form1.name"
+          autocomplete="off"
+          placeholder="请在此输入名称"
+          maxlength="10"
+        ></el-input>
       </el-form-item>
       <el-form-item label="描述" prop="desc">
-        <el-input v-model="form1.desc" autocomplete="off"  placeholder="请在此输入描述"></el-input>
+        <el-input v-model="form1.desc" autocomplete="off" placeholder="请在此输入描述" maxlength="50"></el-input>
       </el-form-item>
-      <el-form-item label="正则表达式" prop="reg">
-        <el-input v-model="form1.reg" autocomplete="off"  placeholder="请在此输入正则表达式"></el-input>
+      <el-form-item label="正则表达式" prop="reg" class="require">
+        <el-input
+          v-model="form1.reg"
+          autocomplete="off"
+          placeholder="请在此输入正则表达式"
+          maxlength="100"
+        ></el-input>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <button @click="cancelModal" class="cancel-btn">取 消</button>
-      <el-button type="primary" round size="small" @click="submitForm('form1')">测试匹配</el-button>
+      <el-button
+        type="primary"
+        round
+        size="small"
+        @click="submitForm('form1')"
+        class="save-btn"
+      >保&nbsp;存</el-button>
     </div>
   </el-dialog>
 </template>
@@ -119,4 +137,19 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.save-btn {
+  width: 80px;
+}
+.require .el-form-item__label::after {
+    content: '*';
+    color: #F56C6C;
+    // margin-right: 4px;
+}
+</style>
+<style lang="scss">
+.require .el-form-item__label::after {
+    content: '*';
+    color: #F56C6C;
+    margin-left: 4px;
+}
 </style>

@@ -1,6 +1,12 @@
 <template>
   <div>
-    <my-scrollbar hasHead hasFoot :headStyle="{'background':'white'}" :headActive="'打码'">
+    <my-scrollbar
+      hasHead
+      hasFoot
+      :headActive="'打码'"
+      :isFootMenu="true"
+      :headStyle="{'background':'white'}"
+    >
       <div slot="head_custom">
         <el-dropdown
           trigger="click"
@@ -42,7 +48,13 @@
             <span class="reg_title">正则表达式</span>
             <div class="reg_btn">
               <button class="online-verify" @click="onlineVerify()">在线验证</button>
-              <button class="add-verify" type="primary" round size="small" @click="form1Visible=true">新增</button>
+              <button
+                class="add-verify"
+                type="primary"
+                round
+                size="small"
+                @click="form1Visible=true"
+              >新增</button>
             </div>
             <el-table :data="tableData" class="data_table">
               <el-table-column label="名称" prop="regularName">
@@ -66,7 +78,7 @@
                   <div slot="reference" class="name-wrapper">{{scope.row.regularCategory|category}}</div>
                 </template>
               </el-table-column>
-              <el-table-column label="表达式" prop="regular"></el-table-column>
+              <el-table-column label="正则表达式" prop="regular"></el-table-column>
               <el-table-column label="状态" prop="status">
                 <template slot-scope="scope">
                   <div slot="reference" class="name-wrapper">
@@ -115,6 +127,9 @@
 }
 .data_table th {
   background-color: #f7f8fa !important;
+}
+.el-link.el-link--primary.is-underline:hover:after {
+  content: none;
 }
 </style>
 <style lang="scss" scoped>
@@ -318,6 +333,12 @@ export default {
   },
   data() {
     return {
+      styleConf: {
+        background: "white",
+        borderBottom: "1px solid #DCDFE6",
+        boxShadow: "0 0 2px rgba(0, 0, 0, 0.12)",
+        marginBottom: "4px"
+      },
       searchVal: "",
       disabled: false,
       menuItems: [
@@ -402,6 +423,7 @@ export default {
       );
       if (data.status_code === 200) {
         this.tableData = data.data;
+        this.searchVal = "";
       } else {
         this.$notify.error({
           title: "失败",
