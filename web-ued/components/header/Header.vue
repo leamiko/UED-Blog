@@ -170,7 +170,6 @@ export default {
     }
   },
   beforeMount () {
-    this.isLogin();
     this.wxLogin();
   },
   mounted () {
@@ -250,7 +249,8 @@ export default {
         //登录失败
         this.$store.state.wxUnionId = res.data.data.wxUnionId;
         this.$store.state.modalVisible = true;
-        console.log("还没绑");
+      } else {
+        this.isLogin();
       }
     },
     getQueryVariable (variable) {
