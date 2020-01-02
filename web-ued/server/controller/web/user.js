@@ -100,7 +100,6 @@ exports.register = function(req, res) {
 
 exports.wxLogin = function(req, res) {
   // 这里接收前端的 redirect_url 传递的 code
-  console.log(req.session.user)
   const { code } = req.query
   if (code != 'false') {
     wxPcClient.getAccessToken(code, (err, result) => {
@@ -120,12 +119,6 @@ exports.wxLogin = function(req, res) {
               })
             } else {
               // 绑定
-
-              return res.json({
-                status_code: 200,
-                message: '绑定成功！',
-                user: req.session.user
-              })
               if (req.session.user) {
                 User.findByIdAndUpdate(
                   req.session.user._id,
