@@ -108,6 +108,7 @@ exports.wxLogin = function(req, res) {
         wxPcClient.getUser(openId, (err, result) => {
           // 这里获取到了用户的信息, 可以存储在数据库中
           const { unionid } = result
+          console.log(unionid)
           User.findOne({ wxUnionId: unionid }, function(err, user) {
             if (user) {
               // 登录
