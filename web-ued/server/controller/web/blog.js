@@ -660,7 +660,7 @@ exports.getBlogComment = async function(req, res) {
                 $eq: ['$anonymous', true]
               },
               '',
-              '$authorInfo.avatar'
+              '$userInfo.avatar'
             ]
           },
           account: {
@@ -669,7 +669,7 @@ exports.getBlogComment = async function(req, res) {
                 $eq: ['$anonymous', true]
               },
               '',
-              '$authorInfo.account'
+              '$userInfo.account'
             ]
           },
           nickName: {
@@ -678,7 +678,7 @@ exports.getBlogComment = async function(req, res) {
                 $eq: ['$anonymous', true]
               },
               '',
-              '$authorInfo.nickName'
+              '$userInfo.nickName'
             ]
           }
         }
@@ -735,7 +735,7 @@ exports.getBlogComment = async function(req, res) {
                 $eq: ['$anonymous', true]
               },
               '',
-              '$authorInfo.avatar'
+              '$userInfo.avatar'
             ]
           },
           account: {
@@ -744,7 +744,7 @@ exports.getBlogComment = async function(req, res) {
                 $eq: ['$anonymous', true]
               },
               '',
-              '$authorInfo.account'
+              '$userInfo.account'
             ]
           },
           nickName: {
@@ -753,7 +753,7 @@ exports.getBlogComment = async function(req, res) {
                 $eq: ['$anonymous', true]
               },
               '',
-              '$authorInfo.nickName'
+              '$userInfo.nickName'
             ]
           }
         }
