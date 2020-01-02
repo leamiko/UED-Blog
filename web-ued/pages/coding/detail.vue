@@ -487,6 +487,9 @@ export default {
     })),
       this.visualScroll.observe(document.querySelector("#praise"));
   },
+  beforeDestroy(){
+    
+  },
   destroyed() {
     this.visualScroll.disconnect();
   },
