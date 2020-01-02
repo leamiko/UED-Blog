@@ -100,6 +100,7 @@ exports.register = function(req, res) {
 
 exports.wxLogin = function(req, res) {
   // 这里接收前端的 redirect_url 传递的 code
+  console.log(req.session.user)
   const { code } = req.query
   if (code != 'false') {
     wxPcClient.getAccessToken(code, (err, result) => {
@@ -108,7 +109,6 @@ exports.wxLogin = function(req, res) {
         wxPcClient.getUser(openId, (err, result) => {
           // 这里获取到了用户的信息, 可以存储在数据库中
           const { unionid } = result
-          // console.log(unionid)
           User.findOne({ wxUnionId: unionid }, function(err, user) {
             if (user) {
               // 登录
@@ -120,6 +120,12 @@ exports.wxLogin = function(req, res) {
               })
             } else {
               // 绑定
+
+              return res.json({
+                status_code: 200,
+                message: '绑定成功！',
+                user: req.session.user
+              })
               if (req.session.user) {
                 User.findByIdAndUpdate(
                   req.session.user._id,
@@ -149,7 +155,7 @@ exports.wxLogin = function(req, res) {
   } else {
     return res.json({
       status_code: 402,
-      message: '请先登录绑定账号！'
+      message: '未登录！'
     })
   }
 }
