@@ -1,69 +1,61 @@
 <template>
-  <div class="cus-full-screen cus-full-height hidden">
-    <my-scrollbar>
-      <div slot="container">
-        <div class="cus-fixed cus-header">
-          <my-header activeLabel="打码"></my-header>
+  <div>
+    <div class="my-content cus-box-center">
+      <el-card>
+        <div class="flex space-between">
+          <h5 class="font-size--lg">在线验证</h5>
         </div>
-        <div class="my-content cus-box-center">
-          <el-card>
-            <template slot="header">
-              <div class="flex space-between">
-                <h5 class="font-size--lg">在线验证</h5>
-              </div>
-            </template>
-            <div class="card-content">
-              <div class="inline inline_auto">
-                <el-form
-                  :label-position="labelPosition"
-                  :model="form"
-                  label-width="120px"
-                  status-icon
-                  :rules="rules"
-                  ref="form"
-                  class="demo-ruleForm"
-                  hide-required-asterisk
-                >
-                  <el-form-item label="正则表达式" prop="name" class="from-label">
-                    <el-input
-                      type="textarea"
-                      :rows="8"
-                      v-model="form.name"
-                      autocomplete="off"
-                      placeholder="请在此处输入正则表达式"
-                      class="textarea"
-                    ></el-input>
-                  </el-form-item>
-                  <el-form-item label="测试内容" prop="content" class="from-label">
-                    <el-input
-                      type="textarea"
-                      :rows="8"
-                      v-model="form.content"
-                      autocomplete="off"
-                      placeholder="请在此处输入测试内容"
-                      class="textarea"
-                    ></el-input>
-                  </el-form-item>
-                  <!-- <el-form-item label="测试结果" prop="result" class="from-label">
+        <div class="card-content">
+          <div class="inline inline_auto">
+            <el-form :label-position="labelPosition"
+                     :model="form"
+                     label-width="120px"
+                     status-icon
+                     :rules="rules"
+                     ref="form"
+                     class="demo-ruleForm"
+                     hide-required-asterisk>
+              <el-form-item label="正则表达式"
+                            prop="name"
+                            class="from-label">
+                <el-input type="textarea"
+                          :rows="8"
+                          v-model="form.name"
+                          autocomplete="off"
+                          placeholder="请在此处输入正则表达式"
+                          class="textarea"></el-input>
+              </el-form-item>
+              <el-form-item label="测试内容"
+                            prop="content"
+                            class="from-label">
+                <el-input type="textarea"
+                          :rows="8"
+                          v-model="form.content"
+                          autocomplete="off"
+                          placeholder="请在此处输入测试内容"
+                          class="textarea"></el-input>
+              </el-form-item>
+              <!-- <el-form-item label="测试结果" prop="result" class="from-label">
                     <span class="result">{{testResult}}</span>
                   </el-form-item>-->
-                </el-form>
-                <div class="result">
-                  <label>测试结果</label>
-                  <span>{{testResult}}</span>
-                </div>
-                <div class="text-right">
-                  <button @click="$router.back()" class="cancel-btn">返回</button>
-
-                  <el-button type="primary" round size="small" @click="submitForm('form')">测试匹配</el-button>
-                </div>
-              </div>
+            </el-form>
+            <div class="result">
+              <label>测试结果</label>
+              <span>{{testResult}}</span>
             </div>
-          </el-card>
+            <div class="text-right">
+              <button @click="$router.back()"
+                      class="cancel-btn">返回</button>
+
+              <el-button type="primary"
+                         round
+                         size="small"
+                         @click="submitForm('form')">测试匹配</el-button>
+            </div>
+          </div>
         </div>
-        <my-footer :hasMenu="true"></my-footer>
-      </div>
-    </my-scrollbar>
+      </el-card>
+    </div>
   </div>
 </template>
 
@@ -80,7 +72,7 @@ export default {
     MyFooter,
     MySearch
   },
-  data() {
+  data () {
     return {
       form: {
         name: this.reg,
@@ -100,7 +92,7 @@ export default {
     };
   },
   methods: {
-    submitForm(formName) {
+    submitForm (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           if (new RegExp(this.form.name).test(this.form.content)) {
@@ -114,7 +106,7 @@ export default {
       });
     }
   },
-  mounted() {}
+  mounted () { }
 };
 </script>
 
@@ -139,7 +131,7 @@ export default {
 //   border: 1px solid rgb(243, 245, 246);
 // }
 .my-content {
-  padding-top: 100px;
+  padding-top: 20px;
   padding-bottom: 60px;
   min-height: 560px;
   min-width: 600px;
@@ -175,7 +167,7 @@ export default {
     margin-left: 30px;
   }
 }
-.text-right{
+.text-right {
   margin: 25px 0 40px 0;
 }
 </style>

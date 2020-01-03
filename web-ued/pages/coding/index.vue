@@ -87,8 +87,6 @@ export default {
         'boxShadow': '0 0 2px rgba(0, 0, 0, 0.12)',
         'marginBottom': '4px'
       },
-      // list: custom.search.hotLabel,
-      // hotList: custom.search.hotList,
       list: [],
       tagChild: [],
       hotList: [],
@@ -138,8 +136,6 @@ export default {
           if (this.list.length > 9) {
             this.list.length = 9;
           }
-          // this.list = res.data.data;
-          // this.tagChild = res.data.data[0].children;
         }
       } else {
         this.$notify.error({
@@ -148,10 +144,6 @@ export default {
         });
       }
     },
-    // 切换分类
-    // changeType(val) {
-    //   this.tagChild = val.children;
-    // },
     myRecursion (tagList, result) {
       tagList.forEach((item) => {
         if (item.children && item.children.length > 0) {

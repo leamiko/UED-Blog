@@ -1,112 +1,98 @@
 <template>
   <div>
-    <my-scrollbar hasHead hasFoot :headStyle="{'background':'white'}" :headActive="'打码'">
-      <div slot="head_custom">
-        <el-dropdown
-          trigger="click"
-          size="medium"
-          split-button
-          type="primary"
-          @command="handleCommand"
-        >
-          创建
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="askShow">
-              <p>我要提问</p>
-            </el-dropdown-item>
-            <el-dropdown-item command="answer">
-              <p>提供解决方案</p>
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+    <div class="body-search">
+      <div class="my-search">
+        <my-search @search="getSearch"
+                   :value="searchVal"
+                   :placeholder="'请输入关键词~'"></my-search>
       </div>
-      <div slot="container" class="body-search">
-        <div class="my-search">
-          <my-search @search="getSearch" :value="searchVal" :placeholder="'请输入关键词~'"></my-search>
-        </div>
-      </div>
-      <div slot="container" class="container">
-        <!-- other block -->
-        <div class="other_article">
-          <div class="left_menu">
-            <ul>
-              <li
-                v-for="item in menuItems"
+    </div>
+    <div class="container">
+      <!-- other block -->
+      <div class="other_article">
+        <div class="left_menu">
+          <ul>
+            <li v-for="item in menuItems"
                 :key="item.id"
                 @click="chooseType(item)"
-                :class="{'active': item.id == regClass}"
-              >{{item.name}}</li>
-            </ul>
+                :class="{'active': item.id == regClass}">{{item.name}}</li>
+          </ul>
+        </div>
+        <div class="right_articles">
+          <span class="reg_title">正则表达式</span>
+          <div class="reg_btn">
+            <button class="online-verify"
+                    @click="onlineVerify()">在线验证</button>
+            <button class="add-verify"
+                    type="primary"
+                    round
+                    size="small"
+                    @click="form1Visible=true">新增</button>
           </div>
-          <div class="right_articles">
-            <span class="reg_title">正则表达式</span>
-            <div class="reg_btn">
-              <button class="online-verify" @click="onlineVerify()">在线验证</button>
-              <button class="add-verify" type="primary" round size="small" @click="form1Visible=true">新增</button>
-            </div>
-            <el-table :data="tableData" class="data_table">
-              <el-table-column label="名称" prop="regularName">
-                <template slot-scope="scope">
-                  <div slot="reference" class="name-wrapper">{{scope.row.regularName}}</div>
-                </template>
-              </el-table-column>
-              <el-table-column label="描述" prop="regularDescribe">
-                <template slot-scope="scope">
-                  <el-popover trigger="hover" placement="top">
-                    <p>{{ scope.row.regularDescribe }}</p>
-                    <div
-                      slot="reference"
-                      class="name-wrapper"
-                    >{{shortString(scope.row.regularDescribe) }}</div>
-                  </el-popover>
-                </template>
-              </el-table-column>
-              <el-table-column label="分类" prop="regularCategory">
-                <template slot-scope="scope">
-                  <div slot="reference" class="name-wrapper">{{scope.row.regularCategory|category}}</div>
-                </template>
-              </el-table-column>
-              <el-table-column label="表达式" prop="regular"></el-table-column>
-              <el-table-column label="状态" prop="status">
-                <template slot-scope="scope">
-                  <div slot="reference" class="name-wrapper">
-                    <span v-if="scope.row.status==='1'">
-                      <span class="green-circle"></span>
-                      <span>已审核</span>
-                    </span>
-                    <span v-if="scope.row.status==='0'">
-                      <span class="orange-circle"></span>
-                      <span>未审核</span>
-                    </span>
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column label="操作">
-                <template slot-scope="scope">
-                  <el-link type="primary" @click="handleVerify(scope.$index, scope.row)">验证</el-link>
-                </template>
-              </el-table-column>
-            </el-table>
-            <!-- no result -->
-            <formula-verify
-              ref="form"
-              v-if="formVisible"
-              :visible.sync="formVisible"
-              :disabled="disabled"
-              :reg="reg"
-            ></formula-verify>
-            <add-formula ref="form1" v-if="form1Visible" :visible.sync="form1Visible"></add-formula>
-          </div>
+          <el-table :data="tableData"
+                    class="data_table">
+            <el-table-column label="名称"
+                             prop="regularName">
+              <template slot-scope="scope">
+                <div slot="reference"
+                     class="name-wrapper">{{scope.row.regularName}}</div>
+              </template>
+            </el-table-column>
+            <el-table-column label="描述"
+                             prop="regularDescribe">
+              <template slot-scope="scope">
+                <el-popover trigger="hover"
+                            placement="top">
+                  <p>{{ scope.row.regularDescribe }}</p>
+                  <div slot="reference"
+                       class="name-wrapper">{{shortString(scope.row.regularDescribe) }}</div>
+                </el-popover>
+              </template>
+            </el-table-column>
+            <el-table-column label="分类"
+                             prop="regularCategory">
+              <template slot-scope="scope">
+                <div slot="reference"
+                     class="name-wrapper">{{scope.row.regularCategory|category}}</div>
+              </template>
+            </el-table-column>
+            <el-table-column label="表达式"
+                             prop="regular"></el-table-column>
+            <el-table-column label="状态"
+                             prop="status">
+              <template slot-scope="scope">
+                <div slot="reference"
+                     class="name-wrapper">
+                  <span v-if="scope.row.status==='1'">
+                    <span class="green-circle"></span>
+                    <span>已审核</span>
+                  </span>
+                  <span v-if="scope.row.status==='0'">
+                    <span class="orange-circle"></span>
+                    <span>未审核</span>
+                  </span>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作">
+              <template slot-scope="scope">
+                <el-link type="primary"
+                         @click="handleVerify(scope.$index, scope.row)">验证</el-link>
+              </template>
+            </el-table-column>
+          </el-table>
+          <!-- no result -->
+          <formula-verify ref="form"
+                          v-if="formVisible"
+                          :visible.sync="formVisible"
+                          :disabled="disabled"
+                          :reg="reg"></formula-verify>
+          <add-formula ref="form1"
+                       v-if="form1Visible"
+                       :visible.sync="form1Visible"></add-formula>
         </div>
       </div>
-    </my-scrollbar>
-    <!-- 模态框 -->
-    <quiz-dialog
-      :isShow="askShow"
-      :classStyle="className"
-      placeholder="请一句话描述你的问题"
-      @hide="askShow=false"
-    ></quiz-dialog>
+    </div>
   </div>
 </template>
 <style lang="scss" >
@@ -302,7 +288,6 @@
 </style>
 <script>
 import * as custom from "@/assets/js/custom.config";
-import MyScrollbar from "@/components/scroller/Scrollbar";
 import FormulaVerify from "@/components/dialogs/FormulaVerify";
 import AddFormula from "@/components/dialogs/AddFormula";
 import QuizDialog from "@/components/dialogs/QuizDialog";
@@ -310,13 +295,12 @@ import MySearch from "@/components/search/Search";
 
 export default {
   components: {
-    MyScrollbar,
     FormulaVerify,
     AddFormula,
     MySearch,
     QuizDialog
   },
-  data() {
+  data () {
     return {
       searchVal: "",
       disabled: false,
@@ -354,7 +338,7 @@ export default {
     };
   },
   filters: {
-    category: function(value) {
+    category: function (value) {
       if (value === "1") {
         return "数字校验";
       }
@@ -370,28 +354,20 @@ export default {
       return "无";
     }
   },
-  mounted() {
+  mounted () {
+    this.$store.commit("headActive", "打码");
     this.getRegList();
   },
   watch: {
-    form1Visible(val) {
+    form1Visible (val) {
       if (!val) {
         this.getRegList();
       }
     }
   },
   methods: {
-    handleCommand(command) {
-      if (command === "answer") {
-        this.$router.push({
-          path: "/coding/solve"
-        });
-        return;
-      }
-      this[command] = !this[command];
-    },
     // 列表
-    async getRegList() {
+    async getRegList () {
       let params = {
         regularCategory: this.regClass,
         searchValue: this.searchVal
@@ -410,20 +386,20 @@ export default {
       }
     },
 
-    getSearch(val) {
+    getSearch (val) {
       this.searchVal = val;
       this.getRegList();
     },
 
     // 操作列验证方法
-    handleVerify(index, row) {
+    handleVerify (index, row) {
       this.reg = row.regular;
       this.formVisible = true;
       this.disabled = true;
     },
 
     // 在线验证
-    onlineVerify() {
+    onlineVerify () {
       // this.reg = "";
       // this.formVisible = true;
       // this.disabled = false;
@@ -434,7 +410,7 @@ export default {
     },
 
     // 截取正则描述前十个字符串
-    shortString(string) {
+    shortString (string) {
       if (string.length > 6) {
         return string.substring(0, 5) + "...";
       } else {
@@ -443,7 +419,7 @@ export default {
     },
 
     // 选择正则分类
-    chooseType(item) {
+    chooseType (item) {
       this.regClass = item.id;
       this.getRegList();
     }

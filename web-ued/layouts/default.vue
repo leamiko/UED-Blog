@@ -2,9 +2,9 @@
   <div class="content">
     <my-header v-if="!isIndexPage"
                :activeLabel="$store.state.headActive"
-               :innerStyle="{'background':'white'}">
+               class="bg_white">
       <div slot="box_cus"
-           v-if="$route.path == '/coding'">
+           v-if="$route.path == '/coding' || $route.path == '/coding/list'">
         <el-dropdown trigger="click"
                      size="medium"
                      split-button
@@ -98,7 +98,6 @@ export default {
     }
   },
   mounted () {
-    console.log(this.$route.path)
     if (this.$route.path == '/') {
       this.isIndexPage = true
       this.isAddClass = true

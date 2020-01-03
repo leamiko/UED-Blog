@@ -76,7 +76,7 @@ export const mutations = {
     state.headActive = data
   },
   askShow(state, data) {
-    state.headActive = data
+    state.askShow = data
   }
 }
 

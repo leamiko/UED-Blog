@@ -1,95 +1,101 @@
 <template>
-  <div class="cus-full-screen hidden" v-loading="loading">
-    <my-scrollbar>
-      <div slot="container">
-        <div class="cus-fixed cus-header">
-          <my-header activeLabel="打码">
-            <div slot="box_cus">
-              <el-dropdown trigger="click" size="medium" split-button type="primary" @command="handleCommand">
-                创建
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="askShow">我要提问</el-dropdown-item>
-                  <el-dropdown-item command="answer">提供解决方案</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </div>
-          </my-header>
-        </div>
-        <div class="my-content">
-          <div class="code_search">
-            <my-search @search="getSearch" :value="searchVal"></my-search>
-            <div class="design_bar">
-              <div class="design_classI inline" v-for="item in classList.list" :key="item.id">
-                <el-link :underline="false" :key="item.id" @click="changeType(item)">{{item.name}}</el-link>
-              </div>
-              <div class="design_classII">
-                <el-tag type="info" class="type_select pointer" v-for="tag in typeObject.content" :key="tag.id" @click="chooseTag(tag)">{{tag.name}}</el-tag>
-              </div>
-            </div>
+  <div class="cus-full-screen hidden"
+       v-loading="loading">
+    <div class="my-content">
+      <div class="code_search">
+        <my-search @search="getSearch"
+                   :value="searchVal"></my-search>
+        <div class="design_bar">
+          <div class="design_classI inline"
+               v-for="item in classList.list"
+               :key="item.id">
+            <el-link :underline="false"
+                     :key="item.id"
+                     @click="changeType(item)">{{item.name}}</el-link>
           </div>
-          <!-- 无结果 -->
-          <div class="code_noresult bg-white" v-show="noData">
-            <div class="noresult_img">
-              <img src="@/assets/img/image/image-search-noresult-image.png">
-            </div>
-            <div class="noresult_prompt">
-              如你所料，果然没搜到！不妨试试
-              <button type="button" class="ask_btn bg-white pointer" @click="askShow=true">我要提问</button>
-            </div>
-          </div>
-          <!-- 数据列表 -->
-          <div class="code_list bg-white" v-show="listShow">
-            <div class="category_tabs inline">
-              <span class="category_tab pointer" :class="{'active':m.isActive}" v-for="m in stateList" @click="changeState(m)">{{m.text}}</span>
-            </div>
-            <div class="code_info">
-              <div class="code_content" v-for="x in bugList" :key="x._id">
-                <div class="pointer" @click="showDetail(x._id)">
-                  <div class="content_title">{{x.title}}</div>
-                  <!-- <div class="content_question" v-html="x.content"></div> -->
-                </div>
-                <div class="content_mark inline">
-                  <div class="presenter flt">
-                    <div class="presenter_head flt inline">
-                      <img v-if="!x.anonymous && x.authorInfo.avatar!=='' && x.authorInfo.avatar!==null" :src="x.authorInfo.avatar">
-                      <img v-else-if="x.anonymous || x.authorInfo.avatar==='' || x.authorInfo.avatar===null" src="@/assets/img/image/avarot-default.png">
-                    </div>
-                    <span class="presenter_info inline">{{x.authorInfo.nickName}} · {{x.createAt | formatDateDay}}</span>
-                    <div class="mark_tags inline">
-                      <span class="mark_tag" v-for="y in x.tags">{{y}}</span>
-                    </div>
-                  </div>
-                  <div class="respondents frt">已有{{x.commentNum}}人回答</div>
-                </div>
-              </div>
-            </div>
-            <div class="page_flipper">
-              <el-pagination background layout="prev, pager, next" :total="count?count:0" @current-change="changePage"></el-pagination>
-            </div>
+          <div class="design_classII">
+            <el-tag type="info"
+                    class="type_select pointer"
+                    v-for="tag in typeObject.content"
+                    :key="tag.id"
+                    @click="chooseTag(tag)">{{tag.name}}</el-tag>
           </div>
         </div>
-        <my-footer :hasMenu="true"></my-footer>
       </div>
-    </my-scrollbar>
+      <!-- 无结果 -->
+      <div class="code_noresult bg-white"
+           v-show="noData">
+        <div class="noresult_img">
+          <img src="@/assets/img/image/image-search-noresult-image.png">
+        </div>
+        <div class="noresult_prompt">
+          如你所料，果然没搜到！不妨试试
+          <button type="button"
+                  class="ask_btn bg-white pointer"
+                  @click="askShow=true">我要提问</button>
+        </div>
+      </div>
+      <!-- 数据列表 -->
+      <div class="code_list bg-white"
+           v-show="listShow">
+        <div class="category_tabs inline">
+          <span class="category_tab pointer"
+                :class="{'active':m.isActive}"
+                v-for="(m,index) in stateList"
+                :key="index"
+                @click="changeState(m)">{{m.text}}</span>
+        </div>
+        <div class="code_info">
+          <div class="code_content"
+               v-for="x in bugList"
+               :key="x._id">
+            <div class="pointer"
+                 @click="showDetail(x._id)">
+              <div class="content_title">{{x.title}}</div>
+            </div>
+            <div class="content_mark inline">
+              <div class="presenter flt">
+                <div class="presenter_head flt inline">
+                  <img v-if="!x.anonymous && x.authorInfo.avatar!=='' && x.authorInfo.avatar!==null"
+                       :src="x.authorInfo.avatar">
+                  <img v-else-if="x.anonymous || x.authorInfo.avatar==='' || x.authorInfo.avatar===null"
+                       src="@/assets/img/image/avarot-default.png">
+                </div>
+                <span class="presenter_info inline">{{x.authorInfo.nickName}} · {{x.createAt | formatDateDay}}</span>
+                <div class="mark_tags inline">
+                  <span class="mark_tag"
+                        v-for="(y,index) in x.tags"
+                        :key="index">{{y}}</span>
+                </div>
+              </div>
+              <div class="respondents frt">已有{{x.commentNum}}人回答</div>
+            </div>
+          </div>
+        </div>
+        <div class="page_flipper">
+          <el-pagination background
+                         layout="prev, pager, next"
+                         :total="count?count:0"
+                         @current-change="changePage"></el-pagination>
+        </div>
+      </div>
+    </div>
     <!-- 模态框 -->
-    <quiz-dialog :isShow="askShow" :classStyle="className" placeholder="请一句话描述你的问题" @hide="askShow=false"></quiz-dialog>
+    <quiz-dialog :isShow="askShow"
+                 :classStyle="className"
+                 placeholder="请一句话描述你的问题"
+                 @hide="askShow=false"></quiz-dialog>
   </div>
 </template>
 
 <script>
 import * as custom from '@/assets/js/custom.config';
-import MyScrollbar from '@/components/scroller/Scrollbar';
-import MyHeader from '@/components/header/Header';
-import MyFooter from '@/components/footer/Footer';
 import MySearch from '@/components/search/Search';
 import NoResult from '@/components/search/NoResult';
 import QuizDialog from '@/components/dialogs/QuizDialog';
 import MyTag from '@/components/Tag';
 export default {
   components: {
-    MyScrollbar,
-    MyHeader,
-    MyFooter,
     MySearch,
     NoResult,
     QuizDialog,
@@ -118,6 +124,7 @@ export default {
     }
   },
   mounted () {
+    this.$store.commit("headActive", "打码");
     this.getInfo();
   },
   watch: {

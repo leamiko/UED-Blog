@@ -1,6 +1,5 @@
 <template>
-  <div class="my-header"
-       ref="header">
+  <div class="my-header">
     <div class="cus-flex cus-flex-between cus-align-center">
       <div>
         <el-avatar :size="42"
@@ -127,11 +126,6 @@ export default {
       type: String,
       required: false
     },
-    innerStyle: {
-      default: null,
-      type: Object,
-      required: false
-    },
     isChange: {
       default: null,
       type: Boolean
@@ -158,8 +152,11 @@ export default {
       className: "info_dialog",
       userName: "",
       avatar: null,
-      account: ""
+      account: ''
     };
+  },
+  beforeMount () {
+    this.wxLogin();
   },
   watch: {
     "$store.state.flag": function () {
@@ -167,18 +164,6 @@ export default {
         this.avatar = JSON.parse(localStorage.getItem("user")).avatar;
         this.userName = JSON.parse(localStorage.getItem("user")).nickName;
       }
-    }
-  },
-  beforeMount () {
-    this.wxLogin();
-  },
-  mounted () {
-    console.log(this.innerStyle)
-    if (this.innerStyle) {
-      Object.keys(this.innerStyle).forEach(key => {
-        console.log(key)
-        this.$refs.header.style[key] = this.innerStyle[key];
-      });
     }
   },
   methods: {
@@ -195,7 +180,6 @@ export default {
       this.title = e;
     },
     modalChanged (e) {
-      // this.$store.state.modalVisible = e;
       this.$store.commit("modalVisible", e);
     },
     // 退出登录
