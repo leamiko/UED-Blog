@@ -1,27 +1,22 @@
 <template>
   <div class="cus-full-screen hidden bg-white">
-    <my-scrollbar hasHead hasFoot :headActive="'打码'" :isFootMenu="false" :mainStyle="{'background':'white'}" :headStyle="styleConf">
-      <div slot="head_custom">
-        <el-dropdown trigger="click" size="medium" split-button type="primary" @command="handleCommand">
-          创建
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="askShow"><p>我要提问</p></el-dropdown-item>
-            <el-dropdown-item command="answer"><p>提供解决方案</p></el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </div>
-      <div slot="container" class="my-body">
-        <div>
-          <div class="my-search">
-            <h1 class="text-center">Bug避坑专用搜索引擎</h1>
-            <my-search @select="getSearch" :isAsync="true"></my-search>
-            <div v-if="list && list.length > 0">
-              <br><br>
-              <h4 class="text-dark">大家都在搜</h4><br>
-              <div>
-                <my-tag class="my-tag" v-for="item in list" :key="item.name" :text="item.name" @active="getSearch(item.name)"></my-tag>
-              </div>
-              <!-- <div class="design_bar">
+    <div class="my-body">
+      <div>
+        <div class="my-search">
+          <h1 class="text-center">Bug避坑专用搜索引擎</h1>
+          <my-search @select="getSearch"
+                     :isAsync="true"></my-search>
+          <div v-if="list && list.length > 0">
+            <br><br>
+            <h4 class="text-dark">大家都在搜</h4><br>
+            <div>
+              <my-tag class="my-tag"
+                      v-for="item in list"
+                      :key="item.name"
+                      :text="item.name"
+                      @active="getSearch(item.name)"></my-tag>
+            </div>
+            <!-- <div class="design_bar">
                 <div class="design_classI inline" v-for="item in list" :key="item._id">
                   <el-link :underline="false" :key="item._id" @click="changeType(item)">{{item.name}}</el-link>
                 </div>
@@ -29,38 +24,45 @@
                   <el-tag type="info" class="type_select pointer" v-for="tag in tagChild" :key="tag.id" @click="getSearch(tag.name)">{{tag.name}}</el-tag>
                 </div>
               </div> -->
-            </div>
           </div>
-          <div class="my-card">
-            <div class="cus-flex cus-flex-between cus-align-center">
-              <h4 class="text-dark">热门问题</h4>
-              <el-button size="medium" round @click="pathRedirect('/coding/list')"> 全部问题 <i class="el-icon-arrow-right el-icon-caret-right"></i> </el-button>
+        </div>
+        <div class="my-card">
+          <div class="cus-flex cus-flex-between cus-align-center">
+            <h4 class="text-dark">热门问题</h4>
+            <el-button size="medium"
+                       round
+                       @click="pathRedirect('/coding/list')"> 全部问题 <i class="el-icon-arrow-right el-icon-caret-right"></i> </el-button>
+          </div>
+          <ul v-if="hotList && hotList.length > 0">
+            <li v-show="hotList && hotList.length >= 4">
+              <img src="../../assets/img/image/image-code-hot-hotimg.png">
+            </li>
+            <li v-for="item in hotList"
+                :key="item.id">
+              <el-link :underline="false"
+                       :href="'/coding/detail?bugId=' + item._id">{{item.title}}</el-link>
+            </li>
+          </ul>
+          <!-- 无结果 -->
+          <div class="code_noresult"
+               v-else>
+            <div class="noresult_img">
+              <img src="@/assets/img/image/image-search-noresult-image.png">
             </div>
-            <ul v-if="hotList && hotList.length > 0">
-              <li v-show="hotList && hotList.length >= 4">
-                <img src="../../assets/img/image/image-code-hot-hotimg.png">
-              </li>
-              <li v-for="item in hotList" :key="item.id">
-                <el-link :underline="false" :href="'/coding/detail?bugId=' + item._id">{{item.title}}</el-link>
-              </li>
-            </ul>
-            <!-- 无结果 -->
-            <div class="code_noresult" v-else>
-              <div class="noresult_img">
-                <img src="@/assets/img/image/image-search-noresult-image.png" >
-              </div>
-              <div class="noresult_prompt">
-                暂无数据~~~
-                <button type="button" class="ask_btn bg-white pointer" @click="askShow=true">我要提问</button>
-              </div>
+            <div class="noresult_prompt">
+              暂无数据~~~
+              <button type="button"
+                      class="ask_btn bg-white pointer"
+                      @click="askShow=true">我要提问</button>
             </div>
           </div>
         </div>
       </div>
-    </my-scrollbar>
-
-    <!-- 模态框 -->
-    <quiz-dialog :isShow="askShow" :classStyle="className" placeholder="请一句话描述你的问题" @hide="askShow=false"></quiz-dialog>
+    </div>
+    <quiz-dialog :isShow="$store.state.askShow"
+                 :classStyle="className"
+                 placeholder="请一句话描述你的问题"
+                 @hide="$store.commit('askShow', true)"></quiz-dialog>
   </div>
 </template>
 
@@ -77,11 +79,11 @@ export default {
     MySearch,
     MyTag
   },
-  data() {
+  data () {
     return {
       styleConf: {
-        'background':'white',
-        'borderBottom':'1px solid #DCDFE6',
+        'background': 'white',
+        'borderBottom': '1px solid #DCDFE6',
         'boxShadow': '0 0 2px rgba(0, 0, 0, 0.12)',
         'marginBottom': '4px'
       },
@@ -95,32 +97,23 @@ export default {
     }
   },
   methods: {
-    handleCommand(command) {
-      if (command === 'answer') {
-        this.$router.push({
-          path: '/coding/solve'
-        })
-        return;
-      }
-      this[command] = !this[command];
-    },
-    getSearch(val) {
+    getSearch (val) {
       this.$router.push({
         path: '/coding/list',
-        query: val ? {search: val} : null
+        query: val ? { search: val } : null
       });
     },
-    pathRedirect(url) {
+    pathRedirect (url) {
       this.$router.push({
         path: url
       });
     },
     // 获取热门问题以及在搜标签
-    async getHotData() {
+    async getHotData () {
       const parmas = {
         pageIndex: 1,
         pageSize: 5,
-        filters:{}
+        filters: {}
       };
       const res = await this.$axios.post(`${process.env.BASE_URL}/web_api/GetBugList`, parmas);
       if (res.status === 200 && res.data.message === 'success') {
@@ -134,7 +127,7 @@ export default {
         });
       }
     },
-    async getTags() {
+    async getTags () {
       const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/GetBugTags`);
       if (res.status === 200 && res.data.message === 'success') {
         if (res.data.data && res.data.data.length > 0) {
@@ -159,7 +152,7 @@ export default {
     // changeType(val) {
     //   this.tagChild = val.children;
     // },
-    myRecursion(tagList, result) {
+    myRecursion (tagList, result) {
       tagList.forEach((item) => {
         if (item.children && item.children.length > 0) {
           item.children.forEach(tag => {
@@ -169,7 +162,8 @@ export default {
       });
     }
   },
-  mounted() {
+  mounted () {
+    this.$store.commit("headActive", "打码");
     this.getHotData();
     this.getTags();
   }
@@ -177,8 +171,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/style/cus.scss';
-@import '@/assets/style/base.scss';
+@import "@/assets/style/cus.scss";
+@import "@/assets/style/base.scss";
 .my-body {
   min-height: calc(100% - 151px);
   > div {
@@ -194,8 +188,8 @@ export default {
       margin-bottom: 50px;
     }
   }
-  .my-card  {
-    background: #F7FAFC;
+  .my-card {
+    background: #f7fafc;
     border-radius: 4px;
     padding: 30px;
     margin: 140px 0 95px;
@@ -208,7 +202,7 @@ export default {
       > li {
         padding: 20px 0;
         padding-left: 45px;
-        border-bottom: 1px solid #EFF3F7;
+        border-bottom: 1px solid #eff3f7;
 
         &:first-child {
           position: absolute;
@@ -217,24 +211,27 @@ export default {
           padding: 0;
           border: 0;
           width: 300px;
-          height: 222px;;
+          height: 222px;
           img {
             width: 100%;
           }
         }
 
         &:nth-child(2) {
-          background: url('../../assets/img/image/image-code-hot-1.png') no-repeat center left;
+          background: url("../../assets/img/image/image-code-hot-1.png")
+            no-repeat center left;
           background-size: 30px 30px;
         }
 
         &:nth-child(3) {
-          background: url('../../assets/img/image/image-code-hot-2.png') no-repeat center left;
+          background: url("../../assets/img/image/image-code-hot-2.png")
+            no-repeat center left;
           background-size: 30px 30px;
         }
 
         &:nth-child(4) {
-          background: url('../../assets/img/image/image-code-hot-3.png') no-repeat center left;
+          background: url("../../assets/img/image/image-code-hot-3.png")
+            no-repeat center left;
           background-size: 30px 30px;
         }
 
@@ -291,11 +288,11 @@ export default {
   height: 218px;
   margin-top: 30px;
   padding-top: 38px;
-  box-shadow:0px 1px 5px 0px rgba(236,236,236,0.5);
+  box-shadow: 0px 1px 5px 0px rgba(236, 236, 236, 0.5);
   .noresult_img {
     width: 234px;
     height: 185px;
-    margin-left: calc((100% - 614px)/2);
+    margin-left: calc((100% - 614px) / 2);
     img {
       width: 100%;
     }
@@ -304,12 +301,12 @@ export default {
     flex: 1;
     margin-top: 60px;
     margin-left: 50px;
-    color: #A0A0A0;
+    color: #a0a0a0;
     .ask_btn {
       margin-left: 20px;
       padding: 6px 19px;
-      color: #3376FF;
-      border: 1px solid #3376FF;
+      color: #3376ff;
+      border: 1px solid #3376ff;
       border-radius: 15px;
     }
     .ask_btn:focus {

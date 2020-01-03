@@ -173,8 +173,10 @@ export default {
     this.wxLogin();
   },
   mounted () {
+    console.log(this.innerStyle)
     if (this.innerStyle) {
       Object.keys(this.innerStyle).forEach(key => {
+        console.log(key)
         this.$refs.header.style[key] = this.innerStyle[key];
       });
     }
@@ -228,8 +230,6 @@ export default {
       }
       if (localStorage.getItem("user") !== null) {
         this.$store.commit("flag", new Date().toLocaleTimeString());
-        this.avatar = JSON.parse(localStorage.getItem("user")).avatar;
-        this.userName = JSON.parse(localStorage.getItem("user")).nickName;
       }
     },
     // 调用微信扫码API

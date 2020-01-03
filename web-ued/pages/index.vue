@@ -1,43 +1,33 @@
 <template>
-  <my-scrollbar hasFoot @scrollTop="getScrollTop">
-    <div slot="container">
-      <my-header
-        class="cus-fixed my-header"
-        :class="{ bg_white: !isAddClass, text_white: isAddClass }"
-        activeLabel="首页"
-        :isChange="isAddClass"
-      ></my-header>
-      <el-carousel trigger="click" :height="height + 'px'" :interval="interval">
-        <el-carousel-item v-for="item in config.swipers" :key="item">
-          <img :src="item" style="width: 100%; height: 100%;" />
-        </el-carousel-item>
-      </el-carousel>
-      <div class="my-content">
-        <ul>
-          <li
-            v-for="item in list"
+  <div>
+    <el-carousel trigger="click"
+                 :height="height + 'px'"
+                 :interval="interval">
+      <el-carousel-item v-for="item in config.swipers"
+                        :key="item">
+        <img :src="item"
+             style="width: 100%; height: 100%;" />
+      </el-carousel-item>
+    </el-carousel>
+    <div class="my-content">
+      <ul>
+        <li v-for="item in list"
             :key="item.id"
             class="cus-flex"
-            @click="goDetail(item.blog)"
-          >
-            <img :src="item.blog.midImgUrl" class="my-img" />
-            <div>
-              <span class="list_title">{{ item.blog.title }}</span>
-              <span class="desc">{{ item.blog.info }}</span>
-              <div class="cus-flex cus-align-center">
-                <el-avatar
-                  v-show="$store.state.flag"
-                  size="small"
-                  :src="item.userInfo.avatar"
-                  class="avatar"
-                ></el-avatar>
-                <span class="text_color_time"
-                  ><span v-show="$store.state.flag"
-                    >{{ item.userInfo.nickName }} ·</span
-                  >
-                  {{ item.userInfo.updateAt | datetimeFormat }}</span
-                >&emsp;&emsp;
-                <span class="text_color">{{
+            @click="goDetail(item.blog)">
+          <img :src="item.blog.midImgUrl"
+               class="my-img" />
+          <div>
+            <span class="list_title">{{ item.blog.title }}</span>
+            <span class="desc">{{ item.blog.info }}</span>
+            <div class="cus-flex cus-align-center">
+              <el-avatar v-show="$store.state.flag"
+                         size="small"
+                         :src="item.userInfo.avatar"
+                         class="avatar"></el-avatar>
+              <span class="text_color_time"><span v-show="$store.state.flag">{{ item.userInfo.nickName }} ·</span>
+                {{ item.userInfo.updateAt | datetimeFormat }}</span>&emsp;&emsp;
+              <span class="text_color">{{
                   item.blog.blogType == 1
                     ? '技术'
                     : item.blog.blogType == 2
@@ -47,32 +37,27 @@
                     : item.blog.blogType == 4
                     ? '管理'
                     : '其它'
-                }}</span
-                >&emsp;&emsp;
-                <span class="text_color"
-                  ><img src="@/assets/img/icon/eyes.svg" />{{
+                }}</span>&emsp;&emsp;
+              <span class="text_color"><img src="@/assets/img/icon/eyes.svg" />{{
                     item.blog.viewNum
-                  }}</span
-                >&emsp;&emsp;
-                <span class="text_color"
-                  ><img src="@/assets/img/icon/like.svg" />{{
+                  }}</span>&emsp;&emsp;
+              <span class="text_color"><img src="@/assets/img/icon/like.svg" />{{
                     item.blog.likeNum
-                  }}</span
-                >
-              </div>
+                  }}</span>
             </div>
-          </li>
-        </ul>
-        <div class="center">
-          <router-link :to="custom.menu[1].redirectUrl">
-            <el-button round class="btn_style">
-              查看更多
-            </el-button>
-          </router-link>
-        </div>
+          </div>
+        </li>
+      </ul>
+      <div class="center">
+        <router-link :to="custom.menu[1].redirectUrl">
+          <el-button round
+                     class="btn_style">
+            查看更多
+          </el-button>
+        </router-link>
       </div>
     </div>
-  </my-scrollbar>
+  </div>
 </template>
 
 <script>
@@ -83,32 +68,24 @@ import { Loading } from 'element-ui'
 
 export default {
   inject: ['reload'],
-  // fetch ({ redirect, store }) {
-  //   console.log(store.state)
-  //   if (!store.state.authToken) {
-  //     redirect('/login');
-  //   }
-  // },
   components: {
     MyScrollbar,
     MyHeader
   },
-  data() {
+  data () {
     return {
       custom: custom.head,
       config: custom.index,
       height: Number,
-      isAddClass: true,
       list: [],
       interval: 6000,
       img: custom.index.newsList[0].img,
       avatar: custom.index.newsList[0].avatar,
       updateTime: custom.index.newsList[0].updateTime,
-      screenWidth: Number,
       loadingInstance1: {}
     }
   },
-  head() {
+  head () {
     return {
       title: '首页',
       meta: [
@@ -121,16 +98,19 @@ export default {
     }
   },
   filters: {
-    datetimeFormat: function(value) {
+    datetimeFormat: function (value) {
       if (!value) return ''
       value = value.toString()
       let date = value.split('T')[0]
       return date
     }
   },
+  mounted () {
+    this.$store.commit("headActive", "首页");
+  },
   methods: {
     //跳转明细页
-    goDetail(e) {
+    goDetail (e) {
       console.log(e)
       var detailParams = {
         detailId: e._id,
@@ -140,15 +120,8 @@ export default {
         path: 'writing/detail?detailParams=' + JSON.stringify(detailParams)
       })
     },
-    getScrollTop(val) {
-      if (val > this.height - 100) {
-        this.isAddClass = false
-      } else {
-        this.isAddClass = true
-      }
-    },
     // 获取文章列表
-    async getHomeList() {
+    async getHomeList () {
       let response = await this.$axios.get(
         `${process.env.BASE_URL}/web_api/getHomeList`
       )
@@ -162,8 +135,7 @@ export default {
       return 1
     }
   },
-  async mounted() {
-    this.screenWidth = document.body.clientWidth
+  async mounted () {
     this.height = (document.body.clientWidth / 1920) * 645
     window.onresize = () => {
       return (() => {
@@ -175,7 +147,7 @@ export default {
       this.loadingInstance1.close()
     }, 500)
   },
-  created() {
+  created () {
     this.loadingInstance1 = Loading.service({ fullscreen: true })
   }
 }
@@ -183,21 +155,6 @@ export default {
 <style lang="scss" scoped>
 .el-dialog__body {
   height: 500px;
-}
-
-.bg_white {
-  transition: all 0.5s ease;
-  background: white;
-  border-bottom: 1px solid rgb(220, 223, 230);
-  box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 2px;
-}
-.my-header {
-  top: 0;
-  width: 100%;
-  z-index: 11;
-}
-.text_white {
-  color: white !important;
 }
 .my-content {
   max-width: 1008px;

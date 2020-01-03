@@ -43,8 +43,10 @@ export const state = () => ({
   modalVisible: false,
   qrcodeBindBox: false,
   wxUnionId: null,
-  flag:null,
-  redirect: null
+  flag: null,
+  redirect: null,
+  headActive: '',
+  askShow: false
 })
 
 export const mutations = {
@@ -64,36 +66,34 @@ export const mutations = {
   wxUnionId(state, data) {
     state.wxUnionId = data
   },
-  flag(state, data){
+  flag(state, data) {
     state.flag = data
   },
   ChangeRedirect(state, data) {
     state.redirect = data
+  },
+  headActive(state, data) {
+    state.headActive = data
+  },
+  askShow(state, data) {
+    state.headActive = data
   }
 }
 
 export const actions = {
   // nuxtServerInit is called by Nuxt.js before server-rendering every page
-  nuxtServerInit({
-    commit
-  }, {
-    req
-  }) {
+  nuxtServerInit({ commit }, { req }) {
     if (req.session.user) {
       commit('SET_TOKEN', Encrypt(req.session.user.account))
     }
   },
-  async login({
-    commit
-  }, data) {
+  async login({ commit }, data) {
     // 设置cookie缓存，时限为 30d
     VueCookie.set('AUTHTOKEN', Encrypt(data.account), 60 * 60 * 24 * 30)
     commit('SET_TOKEN', Encrypt(data.account))
   },
 
-  async logout({
-    commit
-  }) {
+  async logout({ commit }) {
     commit('SET_TOKEN', null)
-  },
+  }
 }
