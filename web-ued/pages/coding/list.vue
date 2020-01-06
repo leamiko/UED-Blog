@@ -17,13 +17,13 @@
         </div>
         <div class="my-content">
           <div class="code_search">
-            <my-search @search="getSearch" :value="searchVal"></my-search>
+            <my-search @search="getSearch" v-model="searchVal"></my-search>
             <div class="design_bar">
-              <div class="design_classI inline" v-for="item in classList.list" :key="item.id">
-                <el-link :underline="false" :key="item.id" @click="changeType(item)">{{item.name}}</el-link>
+              <div class="design_classI inline" v-for="(item, index) in classList" :key="item._id">
+                <el-link :type="index == classListActive ? 'primary' : ''" :underline="false" :key="item.id" @click="changeType(item, index)">{{item.name}}</el-link>
               </div>
-              <div class="design_classII">
-                <el-tag type="info" class="type_select pointer" v-for="tag in typeObject.content" :key="tag.id" @click="chooseTag(tag)">{{tag.name}}</el-tag>
+              <div class="design_classII" v-if="typeObject && typeObject.length > 0">
+                <el-tag type="info" class="type_select pointer" v-for="tag in typeObject" :key="tag._id" @click="chooseTag(tag)">{{tag.name}}</el-tag>
               </div>
             </div>
           </div>
@@ -40,7 +40,7 @@
           <!-- 数据列表 -->
           <div class="code_list bg-white" v-show="listShow">
             <div class="category_tabs inline">
-              <span class="category_tab pointer" :class="{'active':m.isActive}" v-for="m in stateList" @click="changeState(m)">{{m.text}}</span>
+              <span class="category_tab pointer" :class="{'active':m.isActive}" v-for="(m, mIndex) in stateList" :key="m.text + mIndex" @click="changeState(m)">{{m.text}}</span>
             </div>
             <div class="code_info">
               <div class="code_content" v-for="x in bugList" :key="x._id">
@@ -56,7 +56,7 @@
                     </div>
                     <span class="presenter_info inline">{{x.authorInfo.nickName}} · {{x.createAt | formatDateDay}}</span>
                     <div class="mark_tags inline">
-                      <span class="mark_tag" v-for="y in x.tags">{{y}}</span>
+                      <span class="mark_tag" v-for="(y, yIndex) in x.tags" :key="y + yIndex">{{y}}</span>
                     </div>
                   </div>
                   <div class="respondents frt">已有{{x.commentNum}}人回答</div>
@@ -77,14 +77,12 @@
 </template>
 
 <script>
-import * as custom from '@/assets/js/custom.config';
 import MyScrollbar from '@/components/scroller/Scrollbar';
 import MyHeader from '@/components/header/Header';
 import MyFooter from '@/components/footer/Footer';
 import MySearch from '@/components/search/Search';
 import NoResult from '@/components/search/NoResult';
 import QuizDialog from '@/components/dialogs/QuizDialog';
-import MyTag from '@/components/Tag';
 export default {
   components: {
     MyScrollbar,
@@ -92,8 +90,7 @@ export default {
     MyFooter,
     MySearch,
     NoResult,
-    QuizDialog,
-    MyTag
+    QuizDialog
   },
   data () {
     return {
@@ -101,8 +98,9 @@ export default {
       className: 'custom-dialog',
       askShow: false,
       searchVal: null, // 搜索内容
-      classList: custom.search, // 条目
-      typeObject: custom.search.list[0], // 二级条目
+      classList: null, // 条目
+      typeObject: null, // 二级条目
+      classListActive: 0,
       searchType: [], // 条目类别
       stateList: [
         { id: '0', text: '全部', state: null, isActive: true },
@@ -119,6 +117,7 @@ export default {
   },
   mounted () {
     this.getInfo();
+    this.getTags();
   },
   watch: {
     askShow (newVal, oldVal) {
@@ -129,6 +128,25 @@ export default {
     }
   },
   methods: {
+    // 获取tag标签
+    async getTags() {
+      const res = await this.$axios.get(`${process.env.BASE_URL}/web_api/GetBugTags`);
+      if (res.status === 200 && res.data.message === 'success') {
+        if (res.data.data && res.data.data.length > 0) {
+          this.classList = res.data.data;
+          this.typeObject = this.classList[0].children;
+          this.classListActive = 0;
+        } else {
+          this.classList = null;
+          this.typeObject = null;
+        }
+      } else {
+        this.$notify.error({
+          title: '错误',
+          message: res.data.message
+        });
+      }
+    },
     // 获取列表信息
     async getInfo () {
       let params = {
@@ -177,9 +195,10 @@ export default {
       }
     },
     // 切换分类
-    changeType (val) {
+    changeType (val, index) {
+      this.classListActive = index;
       this.typeObject = {};
-      this.typeObject = val;
+      this.typeObject = val.children;
     },
     // 选择分类
     chooseTag (val) {
