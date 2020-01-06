@@ -1,6 +1,12 @@
 <template>
-  <div>
-    <my-scrollbar hasHead hasFoot :headStyle="{'background':'white'}" :headActive="'打码'">
+  <div class="cus-full-screen hidden">
+    <my-scrollbar
+      hasHead
+      hasFoot
+      :headActive="'打码'"
+      :isFootMenu="true"
+      :headStyle="styleConf"
+    >
       <div slot="head_custom">
         <el-dropdown
           trigger="click"
@@ -26,7 +32,6 @@
         </div>
       </div>
       <div slot="container" class="container">
-        <!-- other block -->
         <div class="other_article">
           <div class="left_menu">
             <ul>
@@ -42,7 +47,13 @@
             <span class="reg_title">正则表达式</span>
             <div class="reg_btn">
               <button class="online-verify" @click="onlineVerify()">在线验证</button>
-              <button class="add-verify" type="primary" round size="small" @click="form1Visible=true">新增</button>
+              <button
+                class="add-verify"
+                type="primary"
+                round
+                size="small"
+                @click="form1Visible=true"
+              >新增</button>
             </div>
             <el-table :data="tableData" class="data_table">
               <el-table-column label="名称" prop="regularName">
@@ -66,7 +77,7 @@
                   <div slot="reference" class="name-wrapper">{{scope.row.regularCategory|category}}</div>
                 </template>
               </el-table-column>
-              <el-table-column label="表达式" prop="regular"></el-table-column>
+              <el-table-column label="正则表达式" prop="regular"></el-table-column>
               <el-table-column label="状态" prop="status">
                 <template slot-scope="scope">
                   <div slot="reference" class="name-wrapper">
@@ -116,6 +127,17 @@
 .data_table th {
   background-color: #f7f8fa !important;
 }
+.data_table .el-link.el-link--primary.is-underline:hover:after {
+  content: none;
+}
+.data_table.el-table--group::after,
+.data_table.el-table--border::after,
+.data_table::before {
+  content: none;
+}
+.data_table tr:last-child td {
+  border-bottom: none;
+}
 </style>
 <style lang="scss" scoped>
 .body-search {
@@ -136,19 +158,6 @@
   padding: 0 0 48px;
   width: 1200px;
   margin: 0 auto;
-
-  .top_article {
-    height: 332px;
-    display: flex;
-    margin-bottom: 42px;
-    background: white;
-    border-radius: 20px;
-  }
-
-  .right_detail {
-    width: 419px;
-    cursor: pointer;
-  }
 }
 
 .right_articles {
@@ -200,12 +209,7 @@
 .data_table {
   width: 100%;
 }
-// .reg-name{
-//   color: #595959;
-// }
-// .reg-desc{
-//   color: #000;
-// }
+
 .orange-circle {
   display: inline-block;
   background: #f24724;
@@ -226,23 +230,6 @@
   vertical-align: middle;
   margin-right: 2px;
   margin-top: -2px;
-}
-
-.right_detail {
-  padding: 16px 17px 0 31px;
-  position: relative;
-
-  img {
-    position: absolute;
-    right: 15px;
-  }
-
-  .title {
-    color: #34485e;
-    font-size: 22px;
-    font-weight: bold;
-    margin: 60px 0 84px 0;
-  }
 }
 
 .other_article {
@@ -318,6 +305,12 @@ export default {
   },
   data() {
     return {
+      styleConf: {
+        background: "white",
+        borderBottom: "1px solid #DCDFE6",
+        boxShadow: "0 0 2px rgba(0, 0, 0, 0.12)",
+        marginBottom: "0"
+      },
       searchVal: "",
       disabled: false,
       menuItems: [
@@ -402,6 +395,7 @@ export default {
       );
       if (data.status_code === 200) {
         this.tableData = data.data;
+        this.searchVal = "";
       } else {
         this.$notify.error({
           title: "失败",

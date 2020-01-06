@@ -44,13 +44,10 @@
                       class="textarea"
                     ></el-input>
                   </el-form-item>
-                  <!-- <el-form-item label="测试结果" prop="result" class="from-label">
-                    <span class="result">{{testResult}}</span>
-                  </el-form-item>-->
                 </el-form>
                 <div class="result">
                   <label>测试结果</label>
-                  <span>{{testResult}}</span>
+                  <span :class="{'red' : !result, 'green': result}">{{testResult}}</span>
                 </div>
                 <div class="text-right">
                   <button @click="$router.back()" class="cancel-btn">返回</button>
@@ -87,6 +84,7 @@ export default {
         content: "",
         result: ""
       },
+      result: false,
       labelPosition: "top",
       rules: {
         name: [
@@ -103,10 +101,12 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          if (new RegExp(this.form.name).test(this.form.content)) {
+          if (eval(this.form.name).test(this.form.content)) {
             this.testResult = "验证匹配";
+            this.result = true;
           } else {
             this.testResult = "没有匹配";
+            this.result = false;
           }
         } else {
           return false;
@@ -171,11 +171,16 @@ export default {
     color: #000;
   }
   span {
-    color: #f24724;
     margin-left: 30px;
   }
+  .red {
+    color: #f24724;
+  }
+  .green {
+    color: #52c41a;
+  }
 }
-.text-right{
+.text-right {
   margin: 25px 0 40px 0;
 }
 </style>

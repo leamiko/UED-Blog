@@ -33,7 +33,13 @@
       <el-form-item label="测试内容" prop="content" class="from-label" placeholder="请在此输入测试内容">
         <el-input v-model="form.content" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="测试结果" prop="result" class="from-label">{{testResult}}</el-form-item>
+      <!-- <el-form-item label="测试结果" prop="result" class="from-label">
+        <span :class="{'red' : !result, 'green': result}">{{testResult}}</span>
+      </el-form-item>-->
+      <div class="result">
+        <label>测试结果</label>
+        <span :class="{'red' : !result, 'green': result}">{{testResult}}</span>
+      </div>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <button @click="cancelModal" class="cancel-btn">取 消</button>
@@ -73,7 +79,8 @@ export default {
           { required: true, message: "请输入测试内容", trigger: "blur" }
         ]
       },
-      testResult: ""
+      testResult: "",
+      result: false
     };
   },
   mounted() {},
@@ -87,10 +94,12 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          if (new RegExp(this.form.name).test(this.form.content)) {
+          if (eval(this.form.name).test(this.form.content)) {
             this.testResult = "验证成功";
+            this.result = true;
           } else {
             this.testResult = "验证失败";
+            this.result = false;
           }
         } else {
           return false;
@@ -123,7 +132,7 @@ export default {
         width: 100%;
       }
     }
-    .el-dialog__body{
+    .el-dialog__body {
       padding: 0 35px;
     }
   }
@@ -145,5 +154,21 @@ export default {
 .dialog-footer {
   margin-right: 20px;
   margin-bottom: 20px;
+}
+
+.result {
+  label {
+    font-weight: 600;
+    color: #000;
+  }
+  span {
+    margin-left: 58px;
+  }
+  .red {
+    color: #f24724;
+  }
+  .green {
+    color: #52c41a;
+  }
 }
 </style>
