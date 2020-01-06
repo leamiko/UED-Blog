@@ -24,7 +24,7 @@
 
     <!-- 表格 -->
     <div class="tables">
-      <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :dataSource="data" :columns="columns" :rowKey:="columns.key" :loading="loading">
+      <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :dataSource="data" :columns="columns" :rowKey:="columns.key" :loading="loading" :locale="{emptyText: '暂无数据'}">
         <template slot="operation" slot-scope="text, record">
           <a @click="editDictionary(record)" class="right_gap"> 编辑 </a>
           <a @click="showDictionary(record)" class="right_gap"> 查看 </a>
@@ -52,18 +52,63 @@
     </a-modal>
 
     <!-- 编辑 -->
-    <a-modal title="编辑字典库" v-model="EditModal" @ok="editTreeNode" okText="保存" cancelText="取消">
+    <a-modal title="编辑字典库" v-model="EditModal" @ok="editTreeNode" :okText="editModalStatus == 'show' ? '确定' : '保存'" cancelText="取消" :width="800">
       <a-spin :spinning="modalloading">
         <div class="spin-content">
-          <a-form :form="editform">
-            <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="所属模块">
-              <a-tree-select v-model="editValue" :dropdownStyle="treeConfig" placeholder='请选择' allowClear treeDefaultExpandAll @change="editBelong" :treeData="treeData">
-              </a-tree-select>
-            </a-form-item>
-            <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="字典名称">
-              <a-input v-decorator="['name', {rules: [{ required: true, message: '请填写字典名称' }]}]" placeholder="请填写字典名称" />
-            </a-form-item>
-          </a-form>
+          <a-row>
+            <a-col :span="12">
+              <a-tree :treeData="editTreeData">
+                <template slot="custom" slot-scope="item">
+                  <span @click="editModalChange(item, 'show')">{{item.title}}</span>&emsp;
+                  <a-icon type="cluster" title="新增子级" @click="()=> editModalChange(item, 'new')"/>&emsp;
+                  <a-icon type="edit" title="编辑" @click="()=> editModalChange(item, 'edit')"/>
+                  <span v-if="item.level >= 1">&emsp;</span>
+                  <a-icon type="delete" title="删除" @click="(e)=> editModalRemove(item)" v-if="item.level >= 1"/>
+                </template>
+              </a-tree>
+            </a-col>
+            <a-col :span="12">
+              <!-- 新建 -->
+              <div class="ant-row ant-form-item" v-if="editModalStatus === 'new'">
+                <div class="ant-col-6 ant-form-item-label">
+                  <label class="ant-form-item-required" title="子级名称">子级名称</label>
+                </div>
+                <div class="ant-col-16 ant-form-item-control-wrapper">
+                  <div class="ant-form-item-control">
+                    <span class="ant-form-item-children">
+                      <a-input v-model="editNewNode" placeholder="请填写子级名称" />
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <!-- 展示 -->
+              <div class="ant-row ant-form-item" v-if="editModalStatus === 'show'">
+                <div class="ant-col-6 ant-form-item-label">
+                  <label title="字典名称">字典名称</label>
+                </div>
+                <div class="ant-col-16 ant-form-item-control-wrapper">
+                  <div class="ant-form-item-control">
+                    <span class="ant-form-item-children">
+                      <span v-if="editSelectNode">{{editSelectNode.title}}</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <!-- 编辑 -->
+              <div class="ant-row ant-form-item" v-else-if="editModalStatus === 'edit'">
+                <div class="ant-col-6 ant-form-item-label">
+                  <label class="ant-form-item-required" title="字典名称">字典名称</label>
+                </div>
+                <div class="ant-col-16 ant-form-item-control-wrapper">
+                  <div class="ant-form-item-control">
+                    <span class="ant-form-item-children">
+                      <a-input v-model="editSelectNode.title" placeholder="请填写字典名称" />
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </a-col>
+          </a-row>
         </div>
       </a-spin>
     </a-modal>
@@ -71,16 +116,14 @@
     <!-- 查看 -->
     <a-modal title="查看字典库" v-model="ShowModal" :footer="null">
       <a-spin :spinning="modalloading">
-        <a-tree showLine :defaultExpandedKeys="['0-0-0']" @select="onSelect" :treeData="showtreeData"></a-tree>
+        <a-tree showLine :defaultExpandedKeys="['0-0-0']" :treeData="showtreeData"></a-tree>
       </a-spin>
     </a-modal>
   </div>
 </template>
 
 <script>
-import { setTimeout } from 'timers'
 import moment from 'moment'
-import { log } from 'util';
 export default {
   data () {
     return {
@@ -146,7 +189,10 @@ export default {
         wrapperCol: { span: 12 }
       },
       addform: this.$form.createForm(this),
-      editform: this.$form.createForm(this),
+      editTreeData: [],
+      editModalStatus: 'show',
+      editSelectNode: null,
+      editNewNode: '',
       // 展示
       expandedKeys: [],
       searchValue: '',
@@ -163,33 +209,6 @@ export default {
         description: msg
       })
     },
-    async postDictionaryUpdateInfo (name, parentId, id) {
-      const params = {
-        name: name,
-        parentId: parentId,
-        id: id
-      }
-      const blogURL = this.api.CreateOrEditDictionary;
-      const res = await this.$http.post(blogURL, params)
-      if (res.status_code === 200) {
-        this.modalloading = false
-        if (id) {
-          this.EditModal = false
-        } else {
-          this.AddModal = false
-        }
-        this.$notification['success']({
-          message: '字典管理',
-          placement: 'bottomRight',
-          description: res.message
-        })
-        this.getDictionaryList()
-        this.getAddList()
-      } else {
-        this.modalloading = false
-        this.error(res.message)
-      }
-    },
     // 获得列表
     async getDictionaryList () {
       this.loading = true
@@ -202,7 +221,7 @@ export default {
           name: this.searchform.getFieldValue('name') ? this.searchform.getFieldValue('name') : ''
         }
       }
-      const blogURL = this.api.GetDictionaryList;
+      const blogURL = this.api.GetDictionaryList
       const res = await this.$http.post(blogURL, params)
       if (res.status_code === 200) {
         this.loading = false
@@ -221,10 +240,10 @@ export default {
     },
     async getAddList () {
       // const blogURL = BASE_URL + 'dictionary/GetModelList'
-      const blogURL = this.api.GetDictionaryTree;
+      const blogURL = this.api.GetDictionaryTree
       const res = await this.$http.post(blogURL)
       if (res.status_code === 200) {
-        this.treeData = this.changeTreeNodeData(res.data)
+        this.treeData = this.changeTreeNodeData(res.data, 0)
       } else {
         this.error(res.message)
       }
@@ -244,7 +263,7 @@ export default {
     },
     // 删除字典库
     async onDelete (key) {
-      const blogURL = this.api.DeleteDictionaryById;
+      const blogURL = this.api.DeleteDictionaryById
       const res = await this.$http.get(`${blogURL}?_id=${key}`)
       if (res.status_code === 200) {
         this.loading = false
@@ -286,26 +305,120 @@ export default {
         }
       )
     },
+    async postDictionaryUpdateInfo (name, parentId) {
+      const params = {
+        name: name,
+        parentId: parentId
+      }
+      const blogURL = this.api.CreateOrEditDictionary
+      const res = await this.$http.post(blogURL, params)
+      if (res.status_code === 200) {
+        this.modalloading = false
+        this.AddModal = false
+        this.$notification['success']({
+          message: '字典管理',
+          placement: 'bottomRight',
+          description: res.message
+        })
+        this.getDictionaryList()
+        this.getAddList()
+      } else {
+        this.modalloading = false
+        this.error(res.message)
+      }
+    },
     // 编辑
-    editDictionary (data) {
+    async editDictionary (data) {
       this.editValue = data.parentId
       this.editNodeId = data.key
       this.modalloading = true
       this.EditModal = true
-      // 这里一定要用计时器，不然会报错，大概意思是在modal页面未渲染完成就执行了赋值
-      setTimeout(() => {
-        this.editform.setFieldsValue({ name: data.name })
+      // 获取对应的数据结构
+      const params = {
+        _id: data.key
+      }
+      const blogURL = this.api.GetDictionaryTree
+      const res = await this.$http.post(blogURL, params)
+      if (res.status_code === 200) {
+        this.editTreeData = this.changeTreeNodeData(res.data, 0, true)
+        this.editSelectNode = this.editTreeData[0]
         this.modalloading = false
-      }, 300)
+      } else {
+        this.modalloading = false
+        this.error(res.message)
+      }
     },
-    editTreeNode () {
-      this.editform.validateFields(
-        (err) => {
-          if (!err) {
-            this.postDictionaryUpdateInfo(this.editform.getFieldValue('name'), this.editValue, this.editNodeId)
+    // 编辑中的状态改变
+    editModalChange (data, status) {
+      this.editSelectNode = data
+      this.editModalStatus = status
+    },
+    // 编辑模态框中的删除
+    editModalRemove (data) {
+      const that = this
+      this.$confirm({
+        title: '删除字典库',
+        content: '确定删除该项字典库?',
+        okText: '确定',
+        okType: 'danger',
+        cancelText: '取消',
+        async onOk () {
+          const blogURL = that.api.DeleteDictionaryById
+          const res = await that.$http.get(`${blogURL}?_id=${data.value}`)
+          if (res.status_code === 200) {
+            that.removeOption(data.value, that.editTreeData)
+            that.$notification['success']({
+              message: '字典管理',
+              placement: 'bottomRight',
+              description: res.message
+            })
+          } else {
+            that.error(res.message)
           }
+        },
+        onCancel () {
         }
-      )
+      })
+    },
+    // 编辑模态框中的保存操作
+    editTreeNode () {
+      switch (this.editModalStatus) {
+        case 'new':
+          this.UpdateNode(this.editNewNode, this.editSelectNode._id)
+          this.EditModal = false
+          break
+        case 'show':
+          this.EditModal = false
+          break
+        case 'edit':
+          this.UpdateNode(this.editSelectNode.title, this.editSelectNode.parentId, this.editSelectNode._id)
+          this.editModalStatus = 'show'
+          break
+        default:
+          break
+      }
+    },
+    // 更新操作
+    async UpdateNode (name, parentId, id) {
+      const params = {
+        name: name,
+        parentId: parentId,
+        _id: id
+      }
+      const blogURL = this.api.CreateOrEditDictionary
+      const res = await this.$http.post(blogURL, params)
+      if (res.status_code === 200) {
+        this.$notification['success']({
+          message: '字典管理',
+          placement: 'bottomRight',
+          description: res.message
+        })
+        this.getDictionaryList()
+        this.getAddList()
+      } else {
+        this.modalloading = false
+        this.error(res.message)
+      }
     },
     // 查看
     async showDictionary (data) {
@@ -314,32 +427,44 @@ export default {
       const params = {
         _id: data.key
       }
-      const blogURL = this.api.GetDictionaryTree;
+      const blogURL = this.api.GetDictionaryTree
       const res = await this.$http.post(blogURL, params)
       if (res.status_code === 200) {
-        this.showtreeData = this.changeTreeNodeData(res.data)
+        this.showtreeData = this.changeTreeNodeData(res.data, 0)
         this.modalloading = false
       } else {
         this.modalloading = false
         this.error(res.message)
       }
     },
-    changeTreeNodeData (data) {
+    // 递归实现树形结构数据自定义
+    changeTreeNodeData (data, level, isCus) {
       data.forEach(element => {
         element['title'] = element.name
         element['value'] = element._id
         element['key'] = element.name
+        element['level'] = level
+        if (isCus) {
+          element['scopedSlots'] = { title: 'custom' }
+        }
         if (element.children && element.children.length > 0) {
-          this.changeTreeNodeData(element.children)
+          this.changeTreeNodeData(element.children, level + 1, isCus)
         }
       })
       return data
     },
-    onSelect (selectedKeys, info) {
-      // console.log('selected', selectedKeys, info)
-    },
-    editBelong () {
-
+    // 递归删除
+    removeOption (data, tree) {
+      tree.forEach((item, index) => {
+        if (item.value === data) {
+          tree.splice(index, 1)
+        } else {
+          if (item.children && item.children.length > 0) {
+            this.removeOption(data, item.children)
+          }
+        }
+      })
+      return tree
     }
   },
   mounted () {
@@ -348,6 +473,3 @@ export default {
   }
 }
 </script>
-
-<style lang='scss' scoped>
-</style>
