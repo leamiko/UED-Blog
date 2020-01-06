@@ -1,6 +1,6 @@
 <template>
   <div class="cus-flex">
-    <el-input v-if="!isAsync" class="input_content" v-model="value" :placeholder="placeholder"></el-input>
+    <el-input v-if="!isAsync" class="input_content" :value="value" @input="change" :placeholder="placeholder"></el-input>
     <el-select v-if="isAsync" class="input_content" v-model="selectValue" filterable :placeholder="placeholder"
       remote :remote-method="remoteMethod" :loading="loading" @change="goDetail" :no-data-text="'暂无数据'">
       <el-option v-for="item in options" :key="item._id" :label="item.title" :value="item._id">
@@ -11,6 +11,11 @@
 </template>
 <script>
 export default {
+  // 模拟双向绑定
+  model: {
+    prop: 'value',
+    event: 'changeValue'
+  },
   props: {
     placeholder: {
       default: '有Bug，这里搜～',
@@ -35,8 +40,11 @@ export default {
       loading: false
     }
   },
-  mounted() {},
   methods: {
+    // 输入框内容改动提交
+    change(e) {
+      this.$emit('changeValue', e);
+    },
     emit() {
       if (!this.isAsync) {
         this.$emit('search', this.value);
