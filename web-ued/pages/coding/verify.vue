@@ -101,7 +101,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          if (new RegExp(this.form.name).test(this.form.content)) {
+          if (eval(this.form.name).test(this.form.content)) {
             this.testResult = "验证匹配";
             this.result = true;
           } else {

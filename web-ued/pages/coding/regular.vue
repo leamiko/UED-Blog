@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div class="cus-full-screen hidden">
     <my-scrollbar
       hasHead
       hasFoot
       :headActive="'打码'"
       :isFootMenu="true"
-      :headStyle="{'background':'white'}"
+      :headStyle="styleConf"
     >
       <div slot="head_custom">
         <el-dropdown
@@ -32,7 +32,6 @@
         </div>
       </div>
       <div slot="container" class="container">
-        <!-- other block -->
         <div class="other_article">
           <div class="left_menu">
             <ul>
@@ -128,8 +127,16 @@
 .data_table th {
   background-color: #f7f8fa !important;
 }
-.el-link.el-link--primary.is-underline:hover:after {
+.data_table .el-link.el-link--primary.is-underline:hover:after {
   content: none;
+}
+.data_table.el-table--group::after,
+.data_table.el-table--border::after,
+.data_table::before {
+  content: none;
+}
+.data_table tr:last-child td {
+  border-bottom: none;
 }
 </style>
 <style lang="scss" scoped>
@@ -151,19 +158,6 @@
   padding: 0 0 48px;
   width: 1200px;
   margin: 0 auto;
-
-  .top_article {
-    height: 332px;
-    display: flex;
-    margin-bottom: 42px;
-    background: white;
-    border-radius: 20px;
-  }
-
-  .right_detail {
-    width: 419px;
-    cursor: pointer;
-  }
 }
 
 .right_articles {
@@ -215,12 +209,7 @@
 .data_table {
   width: 100%;
 }
-// .reg-name{
-//   color: #595959;
-// }
-// .reg-desc{
-//   color: #000;
-// }
+
 .orange-circle {
   display: inline-block;
   background: #f24724;
@@ -241,23 +230,6 @@
   vertical-align: middle;
   margin-right: 2px;
   margin-top: -2px;
-}
-
-.right_detail {
-  padding: 16px 17px 0 31px;
-  position: relative;
-
-  img {
-    position: absolute;
-    right: 15px;
-  }
-
-  .title {
-    color: #34485e;
-    font-size: 22px;
-    font-weight: bold;
-    margin: 60px 0 84px 0;
-  }
 }
 
 .other_article {
@@ -337,7 +309,7 @@ export default {
         background: "white",
         borderBottom: "1px solid #DCDFE6",
         boxShadow: "0 0 2px rgba(0, 0, 0, 0.12)",
-        marginBottom: "4px"
+        marginBottom: "0"
       },
       searchVal: "",
       disabled: false,

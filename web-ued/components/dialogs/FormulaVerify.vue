@@ -94,9 +94,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          //     console.log(this.form.name.substr(1));
-          // const reg= new RegExp(this.form.name.substring(1,this.form.name.length-1));
-          if (new RegExp(this.form.name).test(this.form.content)) {
+          if (eval(this.form.name).test(this.form.content)) {
             this.testResult = "验证成功";
             this.result = true;
           } else {
