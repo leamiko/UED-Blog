@@ -487,9 +487,7 @@ export default {
     })),
       this.visualScroll.observe(document.querySelector("#praise"));
   },
-  beforeDestroy(){
-    
-  },
+  beforeDestroy() {},
   destroyed() {
     this.visualScroll.disconnect();
   },
@@ -903,16 +901,18 @@ export default {
           firstItem[`showMoreRepliesName`] = "查看更多回复"; // 展示更多回复按钮文本
           // 判断当前用户是否对一级评论点赞
           firstItem.likerList.forEach(ele => {
-            firstItem.firstComIsLike =
-              this.userInfo._id === ele.userId ? true : false;
+            if (this.userInfo._id === ele.userId) {
+              firstItem.firstComIsLike = true;
+            }
           });
           // 循环二级评论
           firstItem.replies.forEach(secondItem => {
             secondItem[`isShowReplySecondCom`] = false; // 是否展示发表二级评论(回复二级)框
             // 判断当前用户是否对二级评论点赞
             secondItem.likerList.forEach(ele => {
-              secondItem.secondComIsLike =
-                this.userInfo._id === ele.userId ? true : false;
+              if (this.userInfo._id === ele.userId) {
+                secondItem.secondComIsLike = true;
+              }
             });
           });
         });
@@ -1211,6 +1211,7 @@ export default {
   font-size: 1rem;
   font-weight: 400;
   color: rgba(0, 0, 0, 1);
+  word-break: break-word;
 }
 .comment_unit_bottom {
   margin-top: 10px;
