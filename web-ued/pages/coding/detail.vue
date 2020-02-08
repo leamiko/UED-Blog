@@ -165,7 +165,7 @@
                       v-if="firstItem.adopt"
                     />
                   </div>
-                  <div class="comment_unit_content">{{firstItem.content}}</div>
+                  <div class="comment_unit_content" v-html="firstItem.content"></div>
                   <div class="comment_unit_bottom">
                     <div class="comment_unit_bottom_left">
                       <!-- 点赞 -->
@@ -273,7 +273,7 @@
                         <!-- &&secondItem.replyTargetName=='' -->
                         {{secondItem.targetAnonymous&& userInfo._id !=secondItem.replyTargetId ?'匿名':secondItem.targetAnonymous && userInfo._id ==secondItem.replyTargetId?userInfo.nickName+'(已匿名)':secondItem.replyTargetName}}
                       </div>
-                      <div class="comment_unit_content">{{secondItem.content}}</div>
+                      <div class="comment_unit_content" v-html="secondItem.content"></div>
                       <div class="comment_unit_bottom">
                         <div class="comment_unit_bottom_left">
                           <div
@@ -344,7 +344,7 @@
                         <!-- &&secondItem.replyTargetName=='' -->
                         {{secondItem.targetAnonymous&& userInfo._id !=secondItem.replyTargetId ?'匿名':secondItem.targetAnonymous && userInfo._id ==secondItem.replyTargetId?userInfo.nickName+'(已匿名)':secondItem.replyTargetName}}
                       </div>
-                      <div class="comment_unit_content">{{secondItem.content}}</div>
+                      <div class="comment_unit_content" v-html="secondItem.content"></div>
                       <div class="comment_unit_bottom">
                         <div class="comment_unit_bottom_left">
                           <div
@@ -733,7 +733,7 @@ export default {
     },
     // 监听一级评论框
     onEditorChange({ editor, html, text }) {
-      this.firstComContent = text;
+      this.firstComContent = html;
       this.haveFirstComContent = html ? true : false;
     },
     // 清空一级评论框
@@ -745,7 +745,7 @@ export default {
       this.$forceUpdate();
       this.commentList.forEach(item => {
         if (item._id === firstItem._id) {
-          item["replyComContent"] = text;
+          item["replyComContent"] = html;
           item["haveComContent"] = html ? true : false;
         }
       });
@@ -756,7 +756,7 @@ export default {
       this.commentList.forEach(item => {
         item.replies.forEach(ele => {
           if (ele._id === secondItem._id) {
-            ele["replyComContent"] = text;
+            ele["replyComContent"] = html;
             ele["haveComContent"] = html ? true : false;
           }
         });
@@ -1383,6 +1383,12 @@ export default {
   // 图片宽度
   p img,
   blockquote img {
+    width: 100%;
+  }
+}
+// 评论图片限制
+.comment_unit_content {
+  p img {
     width: 100%;
   }
 }
